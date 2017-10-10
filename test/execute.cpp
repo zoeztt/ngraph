@@ -1863,10 +1863,10 @@ TEST(type_prop, reshape_m2m_dim_change_transpose)
 
 TEST(execute, sin)
 {
-    auto shape = Shape{ 6 };
+    auto shape = Shape{6};
     auto A = make_shared<op::Parameter>(element::Float32::element_type(), shape);
     auto result_type = make_shared<TensorViewType>(element::Float32::element_type(), shape);
-    auto f = make_shared<Function>(make_shared<op::Sin>(A), result_type, op::Parameters{ A });
+    auto f = make_shared<Function>(make_shared<op::Sin>(A), result_type, op::Parameters{A});
 
     auto manager = runtime::Manager::get("NGVM");
     auto external = manager->compile(f);
@@ -1876,10 +1876,10 @@ TEST(execute, sin)
     // Create some tensors for input/output
     float pi = acosf(-1);
     auto a = backend->make_parameterized_tensor_view<element::Float32>(shape);
-    *a = vector<float>{ pi / 2, 0.0f, -0.0f, pi / 6, -pi, pi};
+    *a = vector<float>{pi / 2, 0.0f, -0.0f, pi / 6, -pi, pi};
     auto result = backend->make_parameterized_tensor_view<element::Float32>(shape);
 
-    (*cf)({ a }, { result });
+    (*cf)({a}, {result});
     ASSERT_EQ(
         (vector<float>{sinf(pi / 2), sinf(0.0f), sinf(-0.0f), sinf(pi / 6), sinf(-pi), sin(pi)}),
         result->get_vector());
