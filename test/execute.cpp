@@ -1863,7 +1863,7 @@ TEST(type_prop, reshape_m2m_dim_change_transpose)
 
 TEST(execute, sin)
 {
-    auto shape = Shape{ 8 };
+    auto shape = Shape{ 6 };
     auto A = make_shared<op::Parameter>(element::Float32::element_type(), shape);
     auto result_type = make_shared<TensorViewType>(element::Float32::element_type(), shape);
     auto f = make_shared<Function>(make_shared<op::Sin>(A), result_type, op::Parameters{ A });
