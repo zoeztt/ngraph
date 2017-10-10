@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // ----------------------------------------------------------------------------
 
+#include <algorithm>
 #include "gtest/gtest.h"
 
 #include <cmath>
@@ -1879,10 +1880,11 @@ TEST(execute, sin)
     *a = vector<float>{pi / 2, 0.0f, -0.0f, pi / 6, -pi, pi};
     auto result = backend->make_parameterized_tensor_view<element::Float32>(shape);
 
+    auto in = a->get_vector();
+    std::transform(in.begin(), in.end(), in.begin(), [](float f) -> float { return sin(f); });
+
     (*cf)({a}, {result});
-    ASSERT_EQ(
-        (vector<float>{sinf(pi / 2), sinf(0.0f), sinf(-0.0f), sinf(pi / 6), sinf(-pi), sin(pi)}),
-        result->get_vector());
+    ASSERT_EQ(in, result->get_vector());
 }
 
 TEST(execute, exp)
