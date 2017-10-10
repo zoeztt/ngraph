@@ -1877,14 +1877,15 @@ TEST(execute, sin)
     // Create some tensors for input/output
     float pi = acosf(-1);
     auto a = backend->make_parameterized_tensor_view<element::Float32>(shape);
-    *a = vector<float>{pi / 2, 0.0f, -0.0f, pi / 6, -pi, pi};
+    auto input = vector<float>{pi / 2, 0.0f, -0.0f, pi / 6, -pi, pi};
+    *a = input;
     auto result = backend->make_parameterized_tensor_view<element::Float32>(shape);
 
-    auto in = a->get_vector();
-    std::transform(in.begin(), in.end(), in.begin(), [](float f) -> float { return sin(f); });
+    std::transform(
+        input.begin(), input.end(), input.begin(), [](float f) -> float { return sin(f); });
 
     (*cf)({a}, {result});
-    ASSERT_EQ(in, result->get_vector());
+    ASSERT_EQ(input, result->get_vector());
 }
 
 TEST(execute, exp)
