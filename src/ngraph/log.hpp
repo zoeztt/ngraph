@@ -64,19 +64,11 @@ namespace nervana
     class log_helper
     {
     public:
-        log_helper(LOG_TYPE, const char* file, int line, const char* func, bool ds = false);
+        log_helper(LOG_TYPE, const char* file, int line, const char* func);
         ~log_helper();
         std::ostream& stream() { return _stream; }
-    protected:
+    private:
         std::stringstream _stream;
-        bool dummy_stream; //overridden by null_log_helper to discard the output
-    };
-
-    class null_log_helper : public log_helper
-    {
-    public:
-        null_log_helper(LOG_TYPE type, const char* file, int line, const char* func)
-            : log_helper(type, file, line, func, true){};
     };
 
     class logger
@@ -95,6 +87,13 @@ namespace nervana
         static std::string log_path;
         static std::deque<std::string> queue;
     };
+
+    class nullbuffer : public std::streambuf
+    {
+    public:
+        int overflow(int c) { return c; }
+    };
+    extern nullbuffer noopbuffer;
 
 #define NGRAPH_ERR                                                                                 \
     nervana::log_helper(nervana::LOG_TYPE::_LOG_TYPE_ERROR,                                        \
@@ -116,15 +115,13 @@ namespace nervana
         .stream()
 
 #ifdef ENABLE_DEBUG_TRACE //set this as a preprocessor option (i.e. -D ENABLE_DEBUG_TRACE)
-#define LOGGER_TYPE nervana::log_helper
-#else
-#define LOGGER_TYPE nervana::null_log_helper
-#endif
-
 #define NGRAPH_DEBUG                                                                               \
-    LOGGER_TYPE(nervana::LOG_TYPE::_LOG_TYPE_DEBUG,                                                \
-                nervana::get_file_name(__FILE__),                                                  \
-                __LINE__,                                                                          \
-                __PRETTY_FUNCTION__)                                                               \
+    nervana::log_helper(nervana::LOG_TYPE::_LOG_TYPE_INFO,                                         \
+                        nervana::get_file_name(__FILE__),                                          \
+                        __LINE__,                                                                  \
+                        __PRETTY_FUNCTION__)                                                       \
         .stream()
+#else
+#define NGRAPH_DEBUG std::ostream(&::nervana::noopbuffer)
+#endif
 }
