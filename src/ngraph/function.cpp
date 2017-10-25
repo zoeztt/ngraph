@@ -36,48 +36,48 @@ Function::Function(const std::shared_ptr<Node>& result,
     traverse_nodes(this, [&](shared_ptr<Node> node) { m_ops.push_back(node); });
 }
 
-void Function::rebuild_ops() 
+void Function::rebuild_ops()
 {
-	m_ops.clear();
-	traverse_nodes(this, [&](shared_ptr<Node> node) { m_ops.push_back(node); });
-	m_ordered_ops_valid = true;
+    m_ops.clear();
+    traverse_nodes(this, [&](shared_ptr<Node> node) { m_ops.push_back(node); });
+    m_ordered_ops_valid = true;
 }
 
-void Function::rebuild_ordered_ops() 
+void Function::rebuild_ordered_ops()
 {
-	list<shared_ptr<Node>> result_list;
-	deque<Node*> independent_nodes;
-	unordered_map<const Node*, size_t> node_depencency_count;
-	unordered_map<Node*, shared_ptr<Node>> node_map;
+    list<shared_ptr<Node>> result_list;
+    deque<Node*> independent_nodes;
+    unordered_map<const Node*, size_t> node_depencency_count;
+    unordered_map<Node*, shared_ptr<Node>> node_map;
 
-	traverse_nodes(this, [&](shared_ptr<Node> node) {
-		node_map[node.get()] = node;
-		node_depencency_count[node.get()] = node->get_arguments().size();
-		if (node->get_arguments().size() == 0)
-		{
-			independent_nodes.push_back(node.get());
-		}
-	});
+    traverse_nodes(this, [&](shared_ptr<Node> node) {
+        node_map[node.get()] = node;
+        node_depencency_count[node.get()] = node->get_arguments().size();
+        if (node->get_arguments().size() == 0)
+        {
+            independent_nodes.push_back(node.get());
+        }
+    });
 
-	while (independent_nodes.size() > 0)
-	{
-		auto independent_node = independent_nodes.front();
-		result_list.push_back(node_map[independent_node]);
-		independent_nodes.pop_front();
+    while (independent_nodes.size() > 0)
+    {
+        auto independent_node = independent_nodes.front();
+        result_list.push_back(node_map[independent_node]);
+        independent_nodes.pop_front();
 
-		for (auto user : independent_node->users())
-		{
-			node_depencency_count[user] -= 1;
-			size_t count = node_depencency_count[user];
-			if (count == 0)
-			{
-				independent_nodes.push_back(user);
-			}
-		}
-	}
+        for (auto user : independent_node->users())
+        {
+            node_depencency_count[user] -= 1;
+            size_t count = node_depencency_count[user];
+            if (count == 0)
+            {
+                independent_nodes.push_back(user);
+            }
+        }
+    }
 
-	set_ordered_ops(result_list);
-	return;
+    set_ordered_ops(result_list);
+    return;
 }
 
 void Function::set_ordered_ops(const std::list<shared_ptr<Node>>& ordered_ops)
@@ -88,19 +88,19 @@ void Function::set_ordered_ops(const std::list<shared_ptr<Node>>& ordered_ops)
 
 std::list<shared_ptr<Node>>& Function::get_ops()
 {
-	if (!m_ops_valid) 
-	{
-		rebuild_ops();
-	}
+    if (!m_ops_valid)
+    {
+        rebuild_ops();
+    }
     return m_ops;
 }
 
 const std::list<shared_ptr<Node>>& Function::get_ops() const
 {
-	if (!m_ops_valid)
-	{
-		const_cast<Function*>(this)->rebuild_ops();
-	}
+    if (!m_ops_valid)
+    {
+        const_cast<Function*>(this)->rebuild_ops();
+    }
     return m_ops;
 }
 
@@ -108,17 +108,17 @@ std::list<shared_ptr<Node>>& Function::get_ordered_ops()
 {
     if (!m_ordered_ops_valid)
     {
-		const_cast<Function*>(this)->rebuild_ops();
+        const_cast<Function*>(this)->rebuild_ops();
     }
     return m_ordered_ops;
 }
 
 const std::list<shared_ptr<Node>>& Function::get_ordered_ops() const
 {
-	if (!m_ordered_ops_valid)
-	{
-		const_cast<Function*>(this)->rebuild_ordered_ops();
-	}
+    if (!m_ordered_ops_valid)
+    {
+        const_cast<Function*>(this)->rebuild_ordered_ops();
+    }
     return m_ordered_ops;
 }
 

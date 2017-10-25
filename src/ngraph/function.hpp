@@ -53,22 +53,23 @@ namespace ngraph
         const std::list<std::shared_ptr<Node>>& get_ordered_ops() const;
         void set_ordered_ops(const std::list<std::shared_ptr<Node>>&);
         void set_ordered_ops_valid() { m_ordered_ops_valid = true; }
-		void clear_ops_valid() { m_ops_valid = false; }
+        void clear_ops_valid() { m_ops_valid = false; }
         void clear_ordered_ops_valid() { m_ordered_ops_valid = false; }
         friend std::ostream& operator<<(std::ostream&, const Function&);
-		void rebuild_ops();
-		void rebuild_ordered_ops();
-		void invalidate_ops_lists() 
-		{
-			clear_ops_valid();
-			clear_ordered_ops_valid();
-		}
+        void rebuild_ops();
+        void rebuild_ordered_ops();
+        void invalidate_ops_lists()
+        {
+            clear_ops_valid();
+            clear_ordered_ops_valid();
+        }
+
     protected:
         std::shared_ptr<Node> m_result;
         std::vector<std::shared_ptr<ngraph::op::Parameter>> m_parameters;
         std::string m_name;
         std::shared_ptr<const ValueType> m_result_type;
-		bool m_ops_valid;
+        bool m_ops_valid;
         bool m_ordered_ops_valid;
         std::list<std::shared_ptr<Node>> m_ordered_ops;
         std::list<std::shared_ptr<Node>> m_ops;
