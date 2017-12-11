@@ -121,24 +121,79 @@ const element::Type& to_ref(const element::Type& t)
     throw runtime_error("type not valid");
 }
 
+
 static json write_element_type(const ngraph::element::Type& n)
 {
-    json j;
-    j["bitwidth"] = n.bitwidth();
-    j["is_real"] = n.is_real();
-    j["is_signed"] = n.is_signed();
-    j["c_type_string"] = n.c_type_string();
-    return j;
+	json j;
+	j["bitwidth"] = n.bitwidth();
+	j["is_real"] = n.is_real();
+	j["is_signed"] = n.is_signed();
+	j["c_type_string"] = n.c_type_string();
+	return j;
 }
 
 static const element::Type& read_element_type(const json& j)
 {
-    size_t bitwidth = j.at("bitwidth").get<size_t>();
-    bool is_real = j.at("is_real").get<bool>();
-    bool is_signed = j.at("is_signed").get<bool>();
-    string c_type_string = j.at("c_type_string").get<string>();
+	size_t bitwidth = j.at("bitwidth").get<size_t>();
+	bool is_real = j.at("is_real").get<bool>();
+	bool is_signed = j.at("is_signed").get<bool>();
+	string c_type_string = j.at("c_type_string").get<string>();
 
-    return to_ref(element::Type(bitwidth, is_real, is_signed, c_type_string));
+	return to_ref(element::Type(bitwidth, is_real, is_signed, c_type_string));
+}
+
+
+//void print_value_type(std::shared_ptr<const ValueType> vt) 
+//{
+//
+//}
+
+static json write_value_type(std::shared_ptr<const ValueType> vt)
+{
+
+	const bool UNREACHABLE = false;
+	if (auto tt = std::dynamic_pointer_cast<const ngraph::TupleType>(vt))
+	{
+		json j;
+		//std::cout << "num of elements : " << tt->get_element_types().size() << std::endl;
+		for (auto e : tt->get_element_types())
+		{
+			//std::cout << "type  = " << j << std::endl;
+			j.push_back(write_value_type(e));
+		}
+		return j;
+	}
+
+	if (auto tvt = std::dynamic_pointer_cast<const ngraph::TensorViewType>(vt)) 
+	{
+		//std::cout << "in tensor view type \n";
+		json j;
+		j["type"] = write_element_type(tvt->get_element_type());
+		j["shape"] = tvt->get_shape();
+		return j;
+	}
+	assert(UNREACHABLE);
+}
+
+std::shared_ptr<const ValueType> read_value_type(const json& j) 
+{
+	if (j.is_array())
+	{
+		std::vector<std::shared_ptr<const ValueType>> vts;
+
+		for (auto& e : j) 
+		{
+			vts.push_back(read_value_type(e));
+		}
+		return make_shared<const TupleType>(vts);
+	}
+	else
+	{
+		const auto& et = read_element_type(j.at("type"));
+		auto shape = j.at("shape").get<vector<size_t>>();
+		auto tvt = make_shared<TensorViewType>(et, shape);
+		return tvt;
+	}
 }
 
 string ngraph::serialize(shared_ptr<ngraph::Function> func)
@@ -177,8 +232,9 @@ json write(const Function& f)
 {
     json function;
     function["name"] = f.get_name();
-    function["result_type"] = write_element_type(f.get_result_type()->get_element_type());
-    function["result_shape"] = f.get_result_type()->get_shape();
+	std::cout << "dumping function result type start " << f.get_name() << std::endl;
+    function["result_type"] = write_value_type(f.get_result_type());
+	std::cout << "dumping function result type end\n";
     for (auto param : f.get_parameters())
     {
         function["parameters"].push_back(param->get_name());
@@ -235,14 +291,15 @@ shared_ptr<ngraph::Function>
     string func_name = func_js.at("name").get<string>();
     vector<string> func_result = func_js.at("result").get<vector<string>>();
     vector<string> func_parameters = func_js.at("parameters").get<vector<string>>();
-    const element::Type& result_type = read_element_type(func_js.at("result_type"));
-    vector<size_t> result_shape = func_js.at("result_shape").get<vector<size_t>>();
+	const auto& rvt = read_value_type(func_js.at("result_type"));
     unordered_map<string, shared_ptr<Node>> node_map;
     for (json node_js : func_js.at("ops"))
     {
         string node_name = node_js.at("name").get<string>();
         string node_op = node_js.at("op").get<string>();
-        const element::Type& node_etype = read_element_type(node_js.at("element_type"));
+
+        //const element::Type& node_etype = read_element_type(node_js.at("element_type"));
+		auto nvt = read_value_type(node_js.at("type"));
         vector<string> node_inputs = node_js.at("inputs").get<vector<string>>();
         vector<string> node_outputs = node_js.at("outputs").get<vector<string>>();
         shared_ptr<Node> node;
@@ -298,7 +355,7 @@ shared_ptr<ngraph::Function>
         {
             auto shape = node_js.at("shape").get<vector<size_t>>();
             auto value = node_js.at("value").get<vector<string>>();
-            node = make_shared<op::Constant>(node_etype, shape, value);
+            node = make_shared<op::Constant>(nvt->get_element_type(), shape, value);
         }
         else if (node_op == "Convert")
         {
@@ -386,7 +443,7 @@ shared_ptr<ngraph::Function>
         else if (node_op == "Parameter")
         {
             auto shape = node_js.at("shape");
-            node = make_shared<op::Parameter>(node_etype, shape);
+            node = make_shared<op::Parameter>(nvt->get_element_type(), shape);
         }
         else if (node_op == "Power")
         {
@@ -466,8 +523,12 @@ shared_ptr<ngraph::Function>
     {
         params.push_back(dynamic_pointer_cast<op::Parameter>(node_map.at(param_name)));
     }
-    auto rt = make_shared<TensorViewType>(result_type, result_shape);
-    rc = make_shared<Function>(result, rt, params, func_name);
+
+	json jt;
+
+	std::cout << "result node name = " << result->get_name() << "type = " << write_value_type(result->get_value_type()) << std::endl;
+	std::cout << "return type = " << write_value_type(rvt) << std::endl;
+    rc = make_shared<Function>(result, rvt, params, func_name);
     function_map[func_name] = rc;
 
     return rc;
@@ -478,7 +539,7 @@ json write(const Node& n)
     json node;
     node["name"] = n.get_name();
     node["op"] = n.description();
-    node["element_type"] = write_element_type(n.get_element_type());
+	node["type"] = write_value_type(n.get_value_type());
     json inputs = json::array();
     json outputs = json::array();
     for (const descriptor::Input& input : n.get_inputs())
