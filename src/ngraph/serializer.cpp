@@ -141,11 +141,6 @@ static const element::Type& read_element_type(const json& j)
     return to_ref(element::Type(bitwidth, is_real, is_signed, c_type_string));
 }
 
-//void print_value_type(std::shared_ptr<const ValueType> vt)
-//{
-//
-//}
-
 static json write_value_type(std::shared_ptr<const ValueType> vt)
 {
     const bool UNREACHABLE = false;
