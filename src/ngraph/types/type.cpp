@@ -14,38 +14,28 @@
 
 #include <memory>
 
-#include <iostream>
-
 #include "ngraph/except.hpp"
 #include "ngraph/log.hpp"
 #include "ngraph/types/type.hpp"
 #include "ngraph/util.hpp"
-
-
 
 using namespace std;
 using namespace ngraph;
 
 bool TensorViewType::operator==(const ValueType& that) const
 {
-	
-	std::cout << "Comparing TensorViewType\n";
     auto that_tvt = dynamic_cast<const TensorViewType*>(&that);
     if (nullptr == that_tvt)
     {
-		std::cout << "nullptr == that_tvt\n";
         return false;
     }
 
-
     if (that_tvt->get_element_type() != m_element_type)
     {
-		std::cout << "Types are not equal this_type = " << m_element_type.c_type_string() << " , that_type = " << that_tvt->get_element_type().c_type_string() << std::endl;
         return false;
     }
     if (that_tvt->get_shape() != m_shape)
     {
-		std::cout << "shapes aren't equal\n";
         return false;
     }
     return true;
@@ -62,25 +52,22 @@ bool TupleType::operator==(const ValueType& that) const
     auto that_tvt = dynamic_cast<const TupleType*>(&that);
     if (nullptr == that_tvt)
     {
-		std::cout << "that_tvt is null\n";
         return false;
     }
 
-	std::cout << "this size = " << get_element_types().size() << " , that size = " << that_tvt->get_element_types().size() << std::endl;
-	if (get_element_types().size() != that_tvt->get_element_types().size())
-	{
-		return false;
-	}
-	for (size_t i = 0; i < get_element_types().size(); i++) 
-	{
-		std::cout << "comparing " << i << " th element\n";
-		if (*get_element_types().at(i) != *that_tvt->get_element_types().at(i))
-		{
-			return false;
-		}
-		
-	}
-	return true;
+    if (get_element_types().size() != that_tvt->get_element_types().size())
+    {
+        return false;
+    }
+
+    for (size_t i = 0; i < get_element_types().size(); i++)
+    {
+        if (*get_element_types().at(i) != *that_tvt->get_element_types().at(i))
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 void TupleType::collect_tensor_views(
