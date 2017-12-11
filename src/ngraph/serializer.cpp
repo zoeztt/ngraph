@@ -285,7 +285,6 @@ shared_ptr<ngraph::Function>
         string node_name = node_js.at("name").get<string>();
         string node_op = node_js.at("op").get<string>();
 
-        //const element::Type& node_etype = read_element_type(node_js.at("element_type"));
         auto nvt = read_value_type(node_js.at("type"));
         vector<string> node_inputs = node_js.at("inputs").get<vector<string>>();
         vector<string> node_outputs = node_js.at("outputs").get<vector<string>>();
