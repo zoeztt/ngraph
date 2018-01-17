@@ -19,7 +19,8 @@
 
 bool ngraph::pass::GraphRewrite::run_matchers_on_nodes_list(
     const std::list<std::shared_ptr<ngraph::Node>>& nodes,
-    const std::vector<std::shared_ptr<pattern::Matcher>>& matchers)
+    const std::vector<std::shared_ptr<pattern::Matcher>>& matchers,
+    std::shared_ptr<ngraph::Function> f)
 {
     bool rewritten = false;
     for (auto node : nodes)
@@ -28,14 +29,16 @@ bool ngraph::pass::GraphRewrite::run_matchers_on_nodes_list(
         {
             NGRAPH_DEBUG << "Running matcher " << matcher << " on " << node << " , "
                          << node->get_name() << " , is_output = " << node->is_output();
-            if (!node->is_output() /*this restriction can be lifted when we find an use case for it*/
-                &&
-                matcher->match(node))
+            if (matcher->match(node))
             {
                 NGRAPH_DEBUG << "Matcher " << matcher << " matched " << node << " , "
                              << node->get_name();
                 rewritten = true;
-                matcher->process_match();
+                auto result = matcher->process_match();
+                if (result)
+                {
+                    f->replace_node(node, result);
+                }
                 break; //move onto the next node
             }
         }
@@ -43,9 +46,9 @@ bool ngraph::pass::GraphRewrite::run_matchers_on_nodes_list(
     return rewritten;
 }
 
-bool ngraph::pass::GraphRewrite::run_on_call_graph(const std::list<std::shared_ptr<Node>>& nodes)
+bool ngraph::pass::GraphRewrite::run_on_function(std::shared_ptr<ngraph::Function> f)
 {
-    return run_matchers_on_nodes_list(nodes, m_matchers);
+    return run_matchers_on_nodes_list(f->get_ordered_ops(), m_matchers, f);
 }
 
 static bool init_cblas_arg(std::shared_ptr<ngraph::Node> reshape,
@@ -118,47 +121,48 @@ void ngraph::pass::CPUFusion::construct_gemm_pattern()
     auto pbroadcast = std::make_shared<op::Broadcast>(b, shape_dot, AxisSet{0});
     auto padd = pdot + pbroadcast;
 
-    auto callback = [W, x, b](pattern::Matcher& m) {
+    ngraph::pattern::gr_callback_fn callback = [W, x, b](pattern::Matcher& m) {
         NGRAPH_DEBUG << "In callback for construct_gemm_pattern against node = "
                      << m.match_root()->get_name();
         auto pattern_map = m.get_pattern_map();
+        std::shared_ptr<Node> nn = nullptr;
 
         auto mpattern = m.match_root();
         if (mpattern->get_element_type() != element::f32)
         {
             NGRAPH_DEBUG << "mpattern = " << mpattern->get_name() << " type is not float!";
-            return;
+            return nn;
         }
 
         auto dot = mpattern->get_input_op(0);
         if (dot->get_shape().size() != 2)
         {
             NGRAPH_DEBUG << "dot = " << dot->get_name() << " shape is not equal to 2!";
-            return;
+            return nn;
         }
 
         bool transpose_w = false;
         Shape shape_arg0{pattern_map[W]->get_shape()};
         if (!init_cblas_arg(dot->get_input_op(0), pattern_map[W], transpose_w, shape_arg0))
         {
-            return;
+            return nn;
         }
 
         bool transpose_x = false;
         Shape shape_arg1{pattern_map[x]->get_shape()};
         if (!init_cblas_arg(dot->get_input_op(1), pattern_map[x], transpose_x, shape_arg1))
         {
-            return;
+            return nn;
         }
 
-        auto cg = std::make_shared<op::CblasGemm>(pattern_map[W],
-                                                  pattern_map[x],
-                                                  mpattern->get_input_op(1),
-                                                  shape_arg0,
-                                                  shape_arg1,
-                                                  transpose_w,
-                                                  transpose_x);
-        ngraph::replace_node(m.match_root(), cg);
+        auto cg = std::shared_ptr<Node>(new op::CblasGemm(pattern_map[W],
+                                                          pattern_map[x],
+                                                          mpattern->get_input_op(1),
+                                                          shape_arg0,
+                                                          shape_arg1,
+                                                          transpose_w,
+                                                          transpose_x));
+        return cg;
     };
 
     auto m = std::make_shared<ngraph::pattern::Matcher>(padd, callback);
