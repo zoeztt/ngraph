@@ -66,12 +66,15 @@ std::string pass::VisualizeTree::get_attributes(shared_ptr<Node> node)
     stringstream ss;
     if (node->is_parameter())
     {
-        ss << "    " << node->get_name() << " [shape=box color=blue]\n";
+        ss << "    " << node->get_name() << " [shape=box color=blue";
     }
     else
     {
-        ss << "    " << node->get_name() << " [shape=ellipse color=black]\n";
+        ss << "    " << node->get_name() << " [shape=ellipse color=black";
     }
+
+    ss << " label=\"" << node->get_name() << vector_to_string(node->get_shape()) << " \"]\n";
+
     return ss.str();
 }
 

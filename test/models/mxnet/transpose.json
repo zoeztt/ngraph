@@ -1,0 +1,205 @@
+[{
+  "name" : "Function_0",
+  "ops" : [
+    {
+      "element_type" : "float",
+      "inputs" : [],
+      "name" : "Parameter_21",
+      "op" : "Parameter",
+      "outputs" : ["Parameter_21_0"],
+      "shape" : [10]
+    },
+    {
+      "element_type" : "float",
+      "inputs" : [],
+      "name" : "Parameter_20",
+      "op" : "Parameter",
+      "outputs" : ["Parameter_20_0"],
+      "shape" : [ 10, 64 ]
+    },
+    {
+      "element_type" : "float",
+      "inputs" : [],
+      "name" : "Parameter_12",
+      "op" : "Parameter",
+      "outputs" : ["Parameter_12_0"],
+      "shape" : [64]
+    },
+    {
+      "element_type" : "float",
+      "inputs" : [],
+      "name" : "Parameter_11",
+      "op" : "Parameter",
+      "outputs" : ["Parameter_11_0"],
+      "shape" : [ 64, 128 ]
+    },
+    {
+      "element_type" : "float",
+      "inputs" : [],
+      "name" : "Parameter_3",
+      "op" : "Parameter",
+      "outputs" : ["Parameter_3_0"],
+      "shape" : [128]
+    },
+    {
+      "element_type" : "float",
+      "inputs" : [],
+      "name" : "Parameter_2",
+      "op" : "Parameter",
+      "outputs" : ["Parameter_2_0"],
+      "shape" : [ 128, 784 ]
+    },
+    {
+      "element_type" : "float",
+      "inputs" : [],
+      "name" : "Parameter_0",
+      "op" : "Parameter",
+      "outputs" : ["Parameter_0_0"],
+      "shape" : [ 64, 1, 28, 28 ]
+    },
+    {
+      "element_type" : "float",
+      "inputs" : [],
+      "name" : "Constant_17",
+      "op" : "Constant",
+      "outputs" : ["Constant_17_0"],
+      "shape" : [],
+      "value" : ["0"]
+    },
+    {
+      "element_type" : "float",
+      "inputs" : [],
+      "name" : "Constant_8",
+      "op" : "Constant",
+      "outputs" : ["Constant_8_0"],
+      "shape" : [],
+      "value" : ["0"]
+    },
+    {
+      "axes" : [0],
+      "inputs" : ["Parameter_21"],
+      "name" : "Broadcast_24",
+      "op" : "Broadcast",
+      "outputs" : ["Broadcast_24_0"],
+      "shape" : [ 64, 10 ]
+    },
+    {
+      "input_order" : [ 1, 0 ],
+      "inputs" : ["Parameter_20"],
+      "name" : "Reshape_22",
+      "op" : "Reshape",
+      "output_shape" : [ 64, 10 ],
+      "outputs" : ["Reshape_22_0"]
+    },
+    {
+      "axes" : [0],
+      "inputs" : ["Parameter_12"],
+      "name" : "Broadcast_15",
+      "op" : "Broadcast",
+      "outputs" : ["Broadcast_15_0"],
+      "shape" : [ 64, 64 ]
+    },
+    {
+      "input_order" : [ 1, 0 ],
+      "inputs" : ["Parameter_11"],
+      "name" : "Reshape_13",
+      "op" : "Reshape",
+      "output_shape" : [ 128, 64 ],
+      "outputs" : ["Reshape_13_0"]
+    },
+    {
+      "axes" : [0],
+      "inputs" : ["Parameter_3"],
+      "name" : "Broadcast_6",
+      "op" : "Broadcast",
+      "outputs" : ["Broadcast_6_0"],
+      "shape" : [ 64, 128 ]
+    },
+    {
+      "input_order" : [ 1, 0 ],
+      "inputs" : ["Parameter_2"],
+      "name" : "Reshape_4",
+      "op" : "Reshape",
+      "output_shape" : [ 784, 128 ],
+      "outputs" : ["Reshape_4_0"]
+    },
+    {
+      "input_order" : [ 0, 1, 2, 3 ],
+      "inputs" : ["Parameter_0"],
+      "name" : "Reshape_1",
+      "op" : "Reshape",
+      "output_shape" : [ 64, 784 ],
+      "outputs" : ["Reshape_1_0"]
+    },
+    {
+      "axes" : [ 0, 1 ],
+      "inputs" : ["Constant_17"],
+      "name" : "Broadcast_18",
+      "op" : "Broadcast",
+      "outputs" : ["Broadcast_18_0"],
+      "shape" : [ 64, 64 ]
+    },
+    {
+      "axes" : [ 0, 1 ],
+      "inputs" : ["Constant_8"],
+      "name" : "Broadcast_9",
+      "op" : "Broadcast",
+      "outputs" : ["Broadcast_9_0"],
+      "shape" : [ 64, 128 ]
+    },
+    {
+      "inputs" : [ "Reshape_1", "Reshape_4" ],
+      "name" : "Dot_5",
+      "op" : "Dot",
+      "outputs" : ["Dot_5_0"]
+    },
+    {
+      "inputs" : [ "Dot_5", "Broadcast_6" ],
+      "name" : "Add_7",
+      "op" : "Add",
+      "outputs" : ["Add_7_0"]
+    },
+    {
+      "inputs" : [ "Add_7", "Broadcast_9" ],
+      "name" : "Maximum_10",
+      "op" : "Maximum",
+      "outputs" : ["Maximum_10_0"]
+    },
+    {
+      "inputs" : [ "Maximum_10", "Reshape_13" ],
+      "name" : "Dot_14",
+      "op" : "Dot",
+      "outputs" : ["Dot_14_0"]
+    },
+    {
+      "inputs" : [ "Dot_14", "Broadcast_15" ],
+      "name" : "Add_16",
+      "op" : "Add",
+      "outputs" : ["Add_16_0"]
+    },
+    {
+      "inputs" : [ "Add_16", "Broadcast_18" ],
+      "name" : "Maximum_19",
+      "op" : "Maximum",
+      "outputs" : ["Maximum_19_0"]
+    },
+    {
+      "inputs" : [ "Maximum_19", "Reshape_22" ],
+      "name" : "Dot_23",
+      "op" : "Dot",
+      "outputs" : ["Dot_23_0"]
+    },
+    {
+      "inputs" : [ "Dot_23", "Broadcast_24" ],
+      "name" : "Add_25",
+      "op" : "Add",
+      "outputs" : ["Add_25_0"]
+    }
+  ],
+  "parameters" : [
+    "Parameter_0", "Parameter_2", "Parameter_3", "Parameter_11", "Parameter_12",
+    "Parameter_20", "Parameter_21"
+  ],
+  "result" : ["Add_25"]
+}]
+

@@ -75,9 +75,13 @@ public:
     CPUFusion()
         : GraphRewrite()
     {
-        construct_gemm_pattern();
+        construct_identity_reshape_pattern();
+        construct_reshapex2_pattern();
+        //construct_gemm_pattern();
     }
 
 private:
     void construct_gemm_pattern();
+    void construct_identity_reshape_pattern();
+    void construct_reshapex2_pattern();
 };
