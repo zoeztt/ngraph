@@ -77,7 +77,7 @@ public:
     {
         construct_identity_reshape_pattern();
         construct_reshapex2_pattern();
-        //construct_gemm_pattern();
+        construct_gemm_pattern();
     }
 
 private:
