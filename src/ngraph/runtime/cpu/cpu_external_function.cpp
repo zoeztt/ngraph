@@ -94,6 +94,7 @@
 #include "ngraph/ops/sum.hpp"
 #include "ngraph/ops/tan.hpp"
 #include "ngraph/ops/tanh.hpp"
+#include "ngraph/ops/get_output_element.hpp"
 #include "ngraph/pass/dump_sorted.hpp"
 #include "ngraph/pass/liveness.hpp"
 #include "ngraph/pass/manager.hpp"
@@ -109,6 +110,8 @@
 #include "ngraph/runtime/cpu/ops/matmul_bias.hpp"
 #include "ngraph/runtime/cpu/pass/cpu_fusion.hpp"
 #include "ngraph/runtime/cpu/pass/cpu_layout.hpp"
+
+#include <iostream>
 
 #ifdef NGRAPH_DISTRIBUTED
 #include "ngraph/ops/allreduce.hpp"
@@ -177,6 +180,7 @@ static const runtime::cpu::OpMap dispatcher{
     {TI(ngraph::op::Concat), &runtime::cpu::CPU_Emitter::emit<op::Concat>},
     {TI(ngraph::op::Divide), &runtime::cpu::CPU_Emitter::emit<op::Divide>},
     {TI(ngraph::op::Equal), &runtime::cpu::CPU_Emitter::emit<op::Equal>},
+    {TI(ngraph::op::GetOutputElement), &runtime::cpu::CPU_Emitter::emit<op::GetOutputElement>},
     {TI(ngraph::op::Greater), &runtime::cpu::CPU_Emitter::emit<op::Greater>},
     {TI(ngraph::op::GreaterEq), &runtime::cpu::CPU_Emitter::emit<op::GreaterEq>},
     {TI(ngraph::op::Less), &runtime::cpu::CPU_Emitter::emit<op::Less>},
@@ -227,6 +231,7 @@ static const runtime::cpu::OpMap dispatcher{
     {TI(ngraph::op::AvgPoolBackprop), &runtime::cpu::CPU_Emitter::emit<op::AvgPoolBackprop>},
     {TI(ngraph::op::Pad), &runtime::cpu::CPU_Emitter::emit<op::Pad>},
     {TI(ngraph::op::BatchNorm), &runtime::cpu::CPU_Emitter::emit<op::BatchNorm>},
+    {TI(ngraph::op::BatchNormBackprop), &runtime::cpu::CPU_Emitter::emit<op::BatchNormBackprop>},
     {TI(ngraph::op::MaxPoolBackprop), &runtime::cpu::CPU_Emitter::emit<op::MaxPoolBackprop>},
     {TI(ngraph::op::Product), &runtime::cpu::CPU_Emitter::emit<op::Product>},
     {TI(ngraph::op::Max), &runtime::cpu::CPU_Emitter::emit<op::Max>},
@@ -463,6 +468,7 @@ using namespace ngraph::runtime;
                 continue;
             }
             Node& node = *op_list[i];
+            std::cout << " node = " << node.get_name() << std::endl;
             string s = emit_op_as_function(node, "f");
             node_cache.insert({&node, s});
         }

@@ -44,6 +44,18 @@
 #include "util/matcher.hpp"
 #include "util/test_tools.hpp"
 
+//
+#include "ngraph/file_util.hpp"
+#include "ngraph/json.hpp"
+#include "ngraph/pass/reshape_elimination.hpp"
+#include "ngraph/pass/visualize_tree.hpp"
+#include "ngraph/runtime/cpu/ops/matmul_bias.hpp"
+#include "ngraph/runtime/cpu/pass/cpu_fusion.hpp"
+#include "ngraph/serializer.hpp"
+#include "ngraph/util.hpp"
+#include "util/all_close.hpp"
+#include "util/test_tools.hpp"
+
 using namespace ngraph;
 using namespace std;
 
@@ -273,6 +285,81 @@ TEST(cpu_fusion, batchnorm_fprop_b2c2h2w1)
     EXPECT_TRUE(test::all_close(expected_result, read_vector<float>(result)));
 }
 
+TEST(cpu_fusion, batchnorm_bprop_b2c2h2w1)
+{
+    auto input_shape = Shape{2, 2, 2, 1};
+    auto input = make_shared<op::Parameter>(element::f32, input_shape);
+    auto mean_shape = Shape{2};
+    auto mean = make_shared<op::Parameter>(element::f32, mean_shape);
+    auto var_shape = Shape{2};
+    auto var = make_shared<op::Parameter>(element::f32, var_shape);
+    auto gamma_shape = Shape{2};
+    auto gamma = make_shared<op::Parameter>(element::f32, gamma_shape);
+    auto beta_shape = Shape{2};
+    auto beta = make_shared<op::Parameter>(element::f32, beta_shape);
+    double eps = 0.001;
+    auto shape_r = Shape{2, 2, 2, 1};
+    auto bn = make_shared<op::BatchNorm>(eps, gamma, beta, input, mean, var);
+
+    // Create some tensors for input/output
+    auto manager = runtime::Manager::get("CPU");
+    auto backend = manager->allocate_backend();
+    auto _input = backend->make_primary_tensor_view(element::f32, input_shape);
+    vector<float> dataInput {0.54881352f,
+                            0.71518934f,
+                            0.60276335f,
+                            0.54488319f,
+                            0.42365479f,
+                            0.64589411f,
+                            0.4375872,
+                            0.89177299};
+    copy_data(_input, dataInput);
+
+    auto _mean = backend->make_primary_tensor_view(element::f32, mean_shape);
+    copy_data(_mean, vector<float>{0.60291237, 0.59972727});
+    auto _var = backend->make_primary_tensor_view(element::f32, var_shape);
+    copy_data(_var, vector<float>{0.00472505, 0.03617825});
+    auto _gamma = backend->make_primary_tensor_view(element::f32, gamma_shape);
+    copy_data(_gamma, vector<float>{1.0f, 1.0f});
+    auto _beta = backend->make_primary_tensor_view(element::f32, beta_shape);
+    copy_data(_beta, vector<float>{0.0f, 0.0f});
+    auto result = backend->make_primary_tensor_view(element::f32, shape_r);
+
+    shared_ptr<runtime::TensorView> _delta =
+    backend->make_primary_tensor_view(element::f32, shape_r);
+    vector<float> deltaData(shape_size(shape_r), 4);
+    copy_data(_delta, deltaData);
+    
+    auto f = make_shared<Function>(bn, op::Parameters{mean, var, input, gamma, beta});
+
+
+    //auto df = autodiff::backprop_function(f);
+    auto C = std::make_shared<op::Parameter>(element::f32, shape_r);
+    auto dinput = bn->backprop_node(input, C);
+    auto dgamma = bn->backprop_node(gamma, C);
+    auto dbeta = bn->backprop_node(beta, C);
+    auto df = make_shared<Function>(Nodes{dinput, dgamma, dbeta}, op::Parameters{mean, var, input, gamma, beta, C});
+
+    auto external = manager->compile(df);
+    auto cf = backend->make_call_frame(external);
+
+    shared_ptr<runtime::TensorView> _dinput =
+    backend->make_primary_tensor_view(element::i32, shape_r);
+    shared_ptr<runtime::TensorView> _dgamma =
+    backend->make_primary_tensor_view(element::i32, gamma_shape);
+    shared_ptr<runtime::TensorView> _dbeta =
+    backend->make_primary_tensor_view(element::i32, beta_shape);
+
+    cf->call({_mean, _var, _input, _gamma, _beta, _delta}, {_dinput, _dgamma, _dbeta});
+
+    std::cout << vector_to_string(read_vector<float>(_dinput)) << std::endl;
+    std::cout << "_dinput : \n";
+    std::cout << vector_to_string(read_vector<float>(_dgamma)) << std::endl;
+    std::cout << "_dgamma : \n";
+    std::cout << vector_to_string(read_vector<float>(_dbeta)) << std::endl;
+    std::cout << "_dbeta : \n";
+}
+
 TEST(cpu_fusion, fuse_fprop_bn)
 {
     pass::Manager pass_manager;
@@ -287,4 +374,103 @@ TEST(cpu_fusion, fuse_fprop_bn)
     pass_manager.run_passes(func);
     size_t ccg = count_ops_of_type<op::BatchNorm>(func);
     ASSERT_EQ(ccg, 1);
+}
+
+TEST(pattern, conv_bias)
+{
+    pass::Manager pass_manager;
+    pass_manager.register_pass<pass::VisualizeTree>("bn_bprop_before.pdf");
+    pass_manager.register_pass<ngraph::pass::ReshapeElimination>();
+    pass_manager.register_pass<runtime::cpu::pass::CPUFusion>();
+    pass_manager.register_pass<pass::VisualizeTree>("bn_bprop_after.pdf");
+    std::cout << file_util::path_join(SERIALIZED_ZOO, "mxnet/bn_bprop.json") << std::endl;
+    const string json_path = file_util::path_join(SERIALIZED_ZOO, "mxnet/bn_bprop.json");
+    const string json_string = file_util::read_file_to_string(json_path);
+    stringstream ss(json_string);
+    shared_ptr<Function> func = ngraph::deserialize(ss);
+    pass_manager.run_passes(func);
+
+    std::cout << "results = " << std::endl;
+    for (auto r : func->get_results())
+    {
+        std::cout << "r = " << r->get_name() << std::endl;
+    }
+    //size_t ccg = count_ops_of_type<op::ConvolutionBias>(func);
+    //ASSERT_GT(ccg, 0);
+}
+
+TEST (cpu_fusion, bn_bprop2)
+{
+    auto input_shape = Shape{4, 3, 2, 2};
+    auto shape_mean = Shape {3};
+    auto input = make_shared<op::Parameter>(element::f32, input_shape);
+    auto mean_shape = Shape{3};
+    auto mean = make_shared<op::Parameter>(element::f32, mean_shape);
+    auto var_shape = Shape{3};
+    auto var = make_shared<op::Parameter>(element::f32, var_shape);
+    auto gamma_shape = Shape{3};
+    auto gamma = make_shared<op::Parameter>(element::f32, gamma_shape);
+    auto beta_shape = Shape{3};
+    auto beta = make_shared<op::Parameter>(element::f32, beta_shape);
+    double eps = 0.001;
+    auto shape_r = Shape{4, 3, 2, 2};
+    auto bn = make_shared<op::BatchNorm>(eps, gamma, beta, input, mean, var);
+
+    auto manager = runtime::Manager::get("CPU");
+    auto backend = manager->allocate_backend();
+    
+    auto _input = backend->make_primary_tensor_view(element::f32, input_shape);
+    vector<float> dataInput {
+            10.76331902f, 11.51178265f, 10.31018162f, 12.2993021f, 14.17626667f,
+            14.63498497f, 13.63494492f, 13.84248161f, 11.34602547f, 13.22014618f,
+            10.46686649f, 10.39842987f, 12.94806862f, 11.71670246f, 14.94438076f,
+            13.13236618f, 13.40889645f, 12.76128387f, 11.34430027f, 11.86629677f,
+            11.11464024f, 10.93221283f, 11.95324039f, 10.96581173f, 13.05455494f,
+            14.41404247f, 13.11169434f, 11.26559448f, 10.89965153f, 14.08202171f,
+            11.12685776f, 12.58428574f, 12.59247875f, 13.00187492f, 12.66310215f,
+            10.06655025f, 12.62048626f, 14.47942352f, 13.84950638f, 10.61425877f,
+            11.47936344f, 13.06011772f, 13.63069057f, 12.31748772f, 13.84555244f
+    };
+    copy_data(_input, dataInput);
+    auto _mean = backend->make_primary_tensor_view(element::f32, mean_shape);
+    copy_data(_mean, vector<float>{201.03566, 204.84993, 189.0683});
+    auto _var = backend->make_primary_tensor_view(element::f32, var_shape);
+    copy_data(_var, vector<float>{1.9455765, 1.3277245, 1.2816358});
+    auto _gamma = backend->make_primary_tensor_view(element::f32, gamma_shape);
+    copy_data(_gamma, vector<float>{2.0f, 2.0f, 2.0f});
+    auto _beta = backend->make_primary_tensor_view(element::f32, beta_shape);
+    copy_data(_beta, vector<float>{1.0f, 1.0f, 1.0f});
+    auto result = backend->make_primary_tensor_view(element::f32, shape_r);
+
+    shared_ptr<runtime::TensorView> _delta =
+    backend->make_primary_tensor_view(element::f32, shape_r);
+    vector<float> deltaData(shape_size(shape_r), 1);
+    copy_data(_delta, deltaData);
+    
+    auto f = make_shared<Function>(bn, op::Parameters{mean, var, input, gamma, beta});
+
+    auto C = std::make_shared<op::Parameter>(element::f32, shape_r);
+    auto dinput = bn->backprop_node(input, C);
+    auto dgamma = bn->backprop_node(gamma, C);
+    auto dbeta = bn->backprop_node(beta, C);
+    auto df = make_shared<Function>(Nodes{dinput, dgamma, dbeta}, op::Parameters{mean, var, input, gamma, beta, C});
+
+    auto external = manager->compile(df);
+    auto cf = backend->make_call_frame(external);
+
+    shared_ptr<runtime::TensorView> _dinput =
+    backend->make_primary_tensor_view(element::f32, shape_r);
+    shared_ptr<runtime::TensorView> _dgamma =
+    backend->make_primary_tensor_view(element::f32, gamma_shape);
+    shared_ptr<runtime::TensorView> _dbeta =
+    backend->make_primary_tensor_view(element::f32, beta_shape);
+
+    cf->call({_mean, _var, _input, _gamma, _beta, _delta}, {_dinput, _dgamma, _dbeta});
+
+    std::cout << vector_to_string(read_vector<float>(_dinput)) << std::endl;
+    std::cout << "_dinput : \n";
+    std::cout << vector_to_string(read_vector<float>(_dgamma)) << std::endl;
+    std::cout << "_dgamma : \n";
+    std::cout << vector_to_string(read_vector<float>(_dbeta)) << std::endl;
+    std::cout << "_dbeta : \n";
 }
