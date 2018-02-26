@@ -418,7 +418,7 @@ TEST (cpu_fusion, bn_bprop2)
 
     auto manager = runtime::Manager::get("CPU");
     auto backend = manager->allocate_backend();
-    
+
     auto _input = backend->make_primary_tensor_view(element::f32, input_shape);
     vector<float> dataInput {
             10.76331902f, 11.51178265f, 10.31018162f, 12.2993021f, 14.17626667f,
@@ -444,7 +444,7 @@ TEST (cpu_fusion, bn_bprop2)
 
     shared_ptr<runtime::TensorView> _delta =
     backend->make_primary_tensor_view(element::f32, shape_r);
-    vector<float> deltaData(shape_size(shape_r), 1);
+    vector<float> deltaData(shape_size(shape_r), 1.0f);
     copy_data(_delta, deltaData);
     
     auto f = make_shared<Function>(bn, op::Parameters{mean, var, input, gamma, beta});
@@ -467,10 +467,10 @@ TEST (cpu_fusion, bn_bprop2)
 
     cf->call({_mean, _var, _input, _gamma, _beta, _delta}, {_dinput, _dgamma, _dbeta});
 
-    std::cout << vector_to_string(read_vector<float>(_dinput)) << std::endl;
     std::cout << "_dinput : \n";
-    std::cout << vector_to_string(read_vector<float>(_dgamma)) << std::endl;
+    std::cout << vector_to_string(read_vector<float>(_dinput)) << std::endl;
     std::cout << "_dgamma : \n";
-    std::cout << vector_to_string(read_vector<float>(_dbeta)) << std::endl;
+    std::cout << vector_to_string(read_vector<float>(_dgamma)) << std::endl;
     std::cout << "_dbeta : \n";
+    std::cout << vector_to_string(read_vector<float>(_dbeta)) << std::endl;
 }
