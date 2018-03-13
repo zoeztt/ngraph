@@ -352,10 +352,14 @@ namespace ngraph
                 void CPUAssignment::ASSIGN_DECL(ngraph::op::BatchNorm)
                 {
                     auto batchnorm = static_cast<op::BatchNorm*>(node);
-                    auto op_annotations =
-                        std::make_shared<ngraph::runtime::cpu::CPUOpAnnotations>();
-                    op_annotations->set_mkldnn_op(true);
-                    batchnorm->set_op_annotations(op_annotations);
+
+                    if (batchnorm->get_input_shape(2).at(1) > 3)
+                    {
+                        auto op_annotations =
+                            std::make_shared<ngraph::runtime::cpu::CPUOpAnnotations>();
+                        op_annotations->set_mkldnn_op(true);
+                        batchnorm->set_op_annotations(op_annotations);
+                    }
                 }
 
                 template <>
