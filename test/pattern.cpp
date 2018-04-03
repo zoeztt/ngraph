@@ -44,6 +44,11 @@
 #include "util/matcher.hpp"
 #include "util/test_tools.hpp"
 
+#include "ngraph/pass/visualize_tree.hpp"
+#include "ngraph/runtime/cpu/op/matmul_bias.hpp"
+#include "ngraph/runtime/cpu/op/sigmoid.hpp"
+#include "ngraph/runtime/cpu/pass/cpu_assignment.hpp"
+
 using namespace ngraph;
 using namespace std;
 
@@ -618,4 +623,89 @@ TEST(pattern, recurrent_pattern)
     ASSERT_EQ(iconst_matches.at(0), iconst0);
     ASSERT_EQ(iconst_matches.at(1), iconst0);
     ASSERT_EQ(iconst_matches.at(2), iconst0);
+}
+
+TEST(cpu_fusion, lstm)
+{
+    auto multiply_pred = [](std::shared_ptr<Node> n) {
+        return static_cast<bool>(std::dynamic_pointer_cast<op::Multiply>(n));
+    };
+
+    auto bias1 = std::make_shared<pattern::op::Label>(element::f32, Shape{400});
+    auto bias2 = std::make_shared<pattern::op::Label>(element::f32, Shape{400});
+
+    auto param1_1 =
+        std::make_shared<pattern::op::Label>(element::f32, Shape{10, 100}, multiply_pred);
+    auto param1_2 = std::make_shared<pattern::op::Label>(element::f32, Shape{400, 100});
+
+    auto param2_1 = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 50});
+    auto param2_2 = std::make_shared<pattern::op::Label>(element::f32, Shape{400, 50});
+
+    auto MatmulBias1 = std::make_shared<op::MatmulBias>(param1_1,
+                                                        param1_2,
+                                                        bias1,
+                                                        param1_1->get_shape(),
+                                                        param1_2->get_shape(),
+                                                        false,
+                                                        true,
+                                                        AxisSet{0});
+    auto MatmulBias2 = std::make_shared<op::MatmulBias>(param2_1,
+                                                        param2_2,
+                                                        bias2,
+                                                        param2_1->get_shape(),
+                                                        param2_2->get_shape(),
+                                                        false,
+                                                        true,
+                                                        AxisSet{0});
+
+    //auto X = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 400});
+
+    auto X = std::make_shared<op::Add>(MatmulBias1, MatmulBias2);
+    // construct forget gate
+    auto input_slice_0 = std::make_shared<op::Slice>(X, Coordinate{0, 0}, Coordinate{10, 100});
+    auto forget_gate = std::make_shared<op::Sigmoid>(input_slice_0);
+
+    auto broadcast_pred = [](std::shared_ptr<Node> n) {
+        return static_cast<bool>(std::dynamic_pointer_cast<op::Broadcast>(n));
+    };
+
+    auto ct_1 = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 100});
+    auto skip_ct_1 = std::make_shared<pattern::op::Any>(ct_1, broadcast_pred);
+    // auto broadcast_ct_1 = std::make_shared<op::Broadcast>(ct_1, Shape{10, 100}, AxisSet{0, 1});
+    // auto ct_1_label = std::make_shared<pattern::op::Label>(broadcast_ct_1, nullptr, NodeVector{broadcast_ct_1});
+    auto multiply_forget_gate_ct_1 = std::make_shared<op::Multiply>(forget_gate, skip_ct_1);
+
+    // construct input gate
+    auto input_slice_1 = std::make_shared<op::Slice>(X, Coordinate{0, 100}, Coordinate{10, 200});
+    auto input_gate = std::make_shared<op::Sigmoid>(input_slice_1);
+    auto input_slice_2 = std::make_shared<op::Slice>(X, Coordinate{0, 200}, Coordinate{10, 300});
+    auto tanh_1 = std::make_shared<op::Tanh>(input_slice_2);
+    auto multiply_input_gate_tanh_1 = std::make_shared<op::Multiply>(input_gate, tanh_1);
+
+    auto add_ct_1_input_gate_tanh_1 =
+        std::make_shared<op::Add>(multiply_forget_gate_ct_1, multiply_input_gate_tanh_1);
+
+    // construct output gate
+    auto input_slice_3 = std::make_shared<op::Slice>(X, Coordinate{0, 300}, Coordinate{10, 400});
+    auto output_gate = std::make_shared<op::Sigmoid>(input_slice_3);
+    auto tanh_2 = std::make_shared<op::Tanh>(add_ct_1_input_gate_tanh_1);
+    auto ht = std::make_shared<op::Multiply>(output_gate, tanh_2);
+
+    pass::Manager pass_manager;
+    //pass_manager.register_pass<pass::VisualizeTree>("bn_fprop_before_fusion.png");
+    pass_manager.register_pass<runtime::cpu::pass::CPUFusion>();
+    pass_manager.register_pass<pass::VisualizeTree>("3LSTM_forward_after_cpu_fusion.json.pdf");
+    const string json_path = file_util::path_join(SERIALIZED_ZOO, "mxnet/3LSTM_forward.json");
+    const string json_string = file_util::read_file_to_string(json_path);
+    stringstream ss(json_string);
+    shared_ptr<Function> func = ngraph::deserialize(ss);
+    pass_manager.run_passes(func);
+
+    NGRAPH_DEBUG << "RECURRENT MATCHING START!!!!!!";
+    using ngraph::pattern::Matcher;
+    ngraph::pattern::RPatternMap matches;
+    std::set<std::shared_ptr<pattern::op::Label>> empty_correlated_matches;
+    Matcher::match_recurring_pattern(
+        func->get_result()->get_input_op(0), ht, param1_1, matches, empty_correlated_matches);
+    NGRAPH_DEBUG << "matches.size() " << matches.size();
 }
