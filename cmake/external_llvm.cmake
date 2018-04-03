@@ -76,6 +76,7 @@ if((NGRAPH_CPU_ENABLE OR NGRAPH_GPU_ENABLE) AND (NOT ${CMAKE_SYSTEM_NAME} MATCHE
                    -DLLVM_INCLUDE_EXAMPLES=OFF
                    -DLLVM_BUILD_TOOLS=ON
                    -DLLVM_TARGETS_TO_BUILD=X86
+                   -DLLVM_USE_INTEL_JITEVENTS=ON
                    -DLLVM_EXTERNAL_CLANG_SOURCE_DIR=${CLANG_SOURCE_DIR}
                    -DLLVM_EXTERNAL_OPENMP_SOURCE_DIR=${OPENMP_SOURCE_DIR}
         UPDATE_COMMAND ""
@@ -223,6 +224,7 @@ if((NGRAPH_CPU_ENABLE OR NGRAPH_GPU_ENABLE) AND (NOT ${CMAKE_SYSTEM_NAME} MATCHE
             LLVMMCJIT
             LLVMLineEditor
             LLVMInterpreter
+            LLVMIntelJITEvents
             LLVMExecutionEngine
             LLVMRuntimeDyld
             LLVMCodeGen

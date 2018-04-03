@@ -188,12 +188,25 @@ namespace ngraph
                 }
                 else
                 {
+                    if (args[0].get_element_type() == element::f32 &&
+                        out[0].get_size() >= 16*8*256)
+                    {
+                        writer << "cpu::kernel::ewadd_float32("
+                               << args[0].get_name() << ", "
+                               << args[1].get_name() << ", "
+                               << out[0].get_name() << ", "
+                               << out[0].get_size()
+                               << ");\n";
+                    }
+                    else
+                    {
                     writer << "#pragma omp parallel for\n";
                     writer << "for (size_t i = 0; i < " << out[0].get_size() << "; i++)\n";
                     writer.block_begin();
                     writer << out[0].get_name() << "[i] = " << args[0].get_name() << "[i] + "
                            << args[1].get_name() << "[i];\n";
                     writer.block_end();
+                    }
                 }
 #endif
                 writer.block_end();
@@ -1315,13 +1328,28 @@ namespace ngraph
                     writer << "               );\n";
                 }
 #else
-                kernel::emit_reshape(writer,
-                                     args[0].get_element_type().c_type_string(),
-                                     args[0].get_name(),
-                                     out[0].get_name(),
-                                     args[0].get_shape(),
-                                     out[0].get_shape(),
-                                     reshape->get_input_order());
+                if (args[0].get_element_type() == element::f32 &&
+                    args[0].get_shape().size() == 4 &&
+                    out[0].get_shape().size() == 4)
+                {
+                    writer << "cpu::kernel::reshape_4d_4d_float32("
+                           << args[0].get_name() << ", "
+                           << out[0].get_name() << ", "
+                           << "{" << join(args[0].get_shape()) << "}, "
+                           << "{" << join(reshape->get_input_order()) << "}, "
+                           << "{" << join(out[0].get_shape()) << "}"
+                           << ");\n";
+                }
+                else
+                {
+                    kernel::emit_reshape(writer,
+                                         args[0].get_element_type().c_type_string(),
+                                         args[0].get_name(),
+                                         out[0].get_name(),
+                                         args[0].get_shape(),
+                                         out[0].get_shape(),
+                                         reshape->get_input_order());
+                }
 #endif
                 writer.block_end();
             }
@@ -1707,7 +1735,7 @@ namespace ngraph
                            << "});\n";
                 }
 #else
-                if (args[0].get_shape().size() == 1 && sum->get_reduction_axes().size() == 1)
+                if (args[0].get_element_type() == element::f32 && args[0].get_shape().size() == 1 && sum->get_reduction_axes().size() == 1)
                 {
                     writer << "cpu::kernel::reduce_sum_all_1d_float32(" << args[0].get_name()
                            << ", " << out[0].get_name() << ", "
@@ -1715,7 +1743,7 @@ namespace ngraph
                            << "{" << join(out[0].get_shape()) << "}"
                            << ");\n";
                 }
-                else if (args[0].get_shape().size() == 2 && sum->get_reduction_axes().size() == 2)
+                else if (args[0].get_element_type() == element::f32 && args[0].get_shape().size() == 2 && sum->get_reduction_axes().size() == 2)
                 {
                     writer << "cpu::kernel::reduce_sum_all_2d_float32(" << args[0].get_name()
                            << ", " << out[0].get_name() << ", "
@@ -1723,7 +1751,7 @@ namespace ngraph
                            << "{" << join(out[0].get_shape()) << "}"
                            << ");\n";
                 }
-                else if (args[0].get_shape().size() == 2 && sum->get_reduction_axes().size() == 1)
+                else if (args[0].get_element_type() == element::f32 && args[0].get_shape().size() == 2 && sum->get_reduction_axes().size() == 1)
                 {
                     writer << "cpu::kernel::reduce_sum_2d_1rd_float32(" << args[0].get_name()
                            << ", " << out[0].get_name() << ", "
@@ -1732,7 +1760,7 @@ namespace ngraph
                            << "{" << join(sum->get_reduction_axes()) << "}"
                            << ");\n";
                 }
-                else if (args[0].get_shape().size() == 4 && sum->get_reduction_axes().size() == 4)
+                else if (args[0].get_element_type() == element::f32 && args[0].get_shape().size() == 4 && sum->get_reduction_axes().size() == 4)
                 {
                     writer << "cpu::kernel::reduce_sum_all_4d_float32(" << args[0].get_name()
                            << ", " << out[0].get_name() << ", "
@@ -3098,14 +3126,26 @@ namespace ngraph
                            << "});\n";
                 }
 #else
-                // TODO: add an emitter akin to the emit_sum
-                writer << "reference::max<" << out[0].get_type() << ">(" << args[0].get_name()
-                       << ",\n";
-                writer << "                         " << out[0].get_name() << ",\n";
-                writer << "                         {" << join(args[0].get_shape()) << "},\n";
-                writer << "                         {" << join(out[0].get_shape()) << "},\n";
-                writer << "                         {" << join(max->get_reduction_axes())
-                       << "});\n";
+                if (args[0].get_element_type() == element::f32 &&
+                    args[0].get_shape().size() == 2 && max->get_reduction_axes().size() == 1)
+                {
+                    writer << "cpu::kernel::reduce_max_2d_1rd_float32(" << args[0].get_name()
+                           << ", " << out[0].get_name() << ", "
+                           << "{" << join(args[0].get_shape()) << "}, "
+                           << "{" << join(out[0].get_shape()) << "}, "
+                           << "{" << join(max->get_reduction_axes()) << "}"
+                           << ");\n";
+                }
+                else
+                {
+                    writer << "reference::max<" << out[0].get_type() << ">(" << args[0].get_name()
+                           << ",\n";
+                    writer << "                         " << out[0].get_name() << ",\n";
+                    writer << "                         {" << join(args[0].get_shape()) << "},\n";
+                    writer << "                         {" << join(out[0].get_shape()) << "},\n";
+                    writer << "                         {" << join(max->get_reduction_axes())
+                           << "});\n";
+                }
 #endif
                 writer.block_end();
             }
