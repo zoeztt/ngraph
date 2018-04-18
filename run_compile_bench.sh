@@ -22,13 +22,11 @@ for REPEAT in 0 1 2 3 4 5 6 7 8 9
     do
         for BACKEND_OPT_LEVEL in 0 1 2 3
         do
-
-                echo ""
-                echo "###############################"
-                echo "[FRONTEND_OPT_LEVEL=${FRONTEND_OPT_LEVEL} BACKEND_OPT_LEVEL=${BACKEND_OPT_LEVEL} REPEAT=${REPEAT}]"
-                FRONTEND_OPT_LEVEL=${FRONTEND_OPT_LEVEL} BACKEND_OPT_LEVEL=${BACKEND_OPT_LEVEL} \
-                    ${NBENCH} -f ${MODEL} -b ${BACKEND} -i ${ITERATION}
-
+            echo ""
+            echo "###############################"
+            echo "[FRONTEND_OPT_LEVEL=${FRONTEND_OPT_LEVEL} BACKEND_OPT_LEVEL=${BACKEND_OPT_LEVEL} REPEAT=${REPEAT}]"
+            FRONTEND_OPT_LEVEL=${FRONTEND_OPT_LEVEL} BACKEND_OPT_LEVEL=${BACKEND_OPT_LEVEL} \
+                ${NBENCH} -f ${MODEL} -b ${BACKEND} -i ${ITERATION}
         done
     done
 done
