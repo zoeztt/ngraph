@@ -14,12 +14,12 @@
 * limitations under the License.
 *******************************************************************************/
 
-#include <string>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
+#include <string>
 
 #include "ngraph/codegen/execution_engine.hpp"
-#include "ngraph/log.hpp"
 #include "ngraph/except.hpp"
+#include "ngraph/log.hpp"
 
 using namespace ngraph;
 using namespace std;
