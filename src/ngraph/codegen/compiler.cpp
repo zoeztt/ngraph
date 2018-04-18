@@ -204,17 +204,20 @@ void codegen::StaticCompiler::initialize()
 
     // CodeGen options
     auto& CGO = m_compiler->getInvocation().getCodeGenOpts();
+
     char const* opt_level_char = getenv("FRONTEND_OPT_LEVEL");
+    int opt_level_int;
     if (opt_level_char != NULL)
     {
-        int opt_level_int = atoi(opt_level_char);
-        NGRAPH_INFO << "CGO.OptimizationLevel = " << opt_level_int;
-        CGO.OptimizationLevel = opt_level_int;
+        opt_level_int = atoi(opt_level_char);
     }
     else
     {
-        CGO.OptimizationLevel = 3;
+        opt_level_int = 3;
     }
+    NGRAPH_INFO << "FRONTEND_OPT_LEVEL = " << opt_level_int;
+    CGO.OptimizationLevel = opt_level_int;
+
     CGO.RelocationModel = "static";
     // CGO.CodeModel = "medium";
     CGO.ThreadModel = "posix";

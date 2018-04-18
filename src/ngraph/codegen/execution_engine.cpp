@@ -14,11 +14,15 @@
 * limitations under the License.
 *******************************************************************************/
 
+#include <string>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 
 #include "ngraph/codegen/execution_engine.hpp"
+#include "ngraph/log.hpp"
+#include "ngraph/except.hpp"
 
 using namespace ngraph;
+using namespace std;
 
 codegen::ExecutionEngine::ExecutionEngine()
     : m_execution_engine{nullptr}
@@ -39,6 +43,42 @@ bool codegen::ExecutionEngine::add_module(std::unique_ptr<ngraph::codegen::Modul
     {
         if (!m_execution_engine)
         {
+            auto opt_level_to_string = [](int opt_level_int) -> string {
+                if (opt_level_int == 0)
+                {
+                    return "llvm::CodeGenOpt::None";
+                }
+                else if (opt_level_int == 1)
+                {
+                    return "llvm::CodeGenOpt::Less";
+                }
+                else if (opt_level_int == 2)
+                {
+                    return "llvm::CodeGenOpt::Default";
+                }
+                else if (opt_level_int == 3)
+                {
+                    return "llvm::CodeGenOpt::Aggressive";
+                }
+                else
+                {
+                    throw ngraph_error("Wrong opt_level_int");
+                }
+            };
+
+            char const* opt_level_char = getenv("BACKEND_OPT_LEVEL");
+            int opt_level_int;
+            if (opt_level_char != NULL)
+            {
+                opt_level_int = atoi(opt_level_char);
+            }
+            else
+            {
+                opt_level_int = 3;
+            }
+            NGRAPH_INFO << "BACKEND_OPT_LEVEL = " << opt_level_int << " "
+                        << opt_level_to_string(opt_level_int);
+
             m_execution_engine.reset(llvm::EngineBuilder(module->take_module())
                                          .setEngineKind(llvm::EngineKind::JIT)
                                          .setOptLevel(llvm::CodeGenOpt::Aggressive)
