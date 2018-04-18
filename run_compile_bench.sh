@@ -5,7 +5,7 @@
 
 # Parameters
 NBENCH="/home/yixing/repo/ngraph/build/src/tools/nbench/nbench"
-BACKEND=CPU
+BACKEND=NNP
 ITERATION=10
 
 # MODEL="/home/yixing/repo/ngraph-models/models/tensorflow/resnet50_I1k/tf_function_cluster_8.v1836.json"
