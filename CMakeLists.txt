@@ -16,7 +16,8 @@
 
 cmake_minimum_required (VERSION 3.1)
 
-set(NGRAPH_VERSION 0.3.0)
+set(NGRAPH_VERSION_SHORT 0.3.0)
+set(NGRAPH_VERSION "v${NGRAPH_VERSION_SHORT}")
 
 set(NGRAPH_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -211,6 +212,7 @@ add_subdirectory(third-party)
 # - defines the 'NGRAPH_VERSION' cmake variable.
 # - install-related targets.
 add_subdirectory(src)
+add_subdirectory(python)
 
 add_subdirectory(test)
 
