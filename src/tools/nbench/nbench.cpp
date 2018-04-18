@@ -159,7 +159,7 @@ OPTIONS
             cout << op_info.first << ": " << op_info.second << " ops" << endl;
         }
     }
-    else if (iterations > 0)
+    else
     {
         cout << "Benchmarking " << model << ", " << backend << " backend, " << iterations
              << " iterations.\n";
