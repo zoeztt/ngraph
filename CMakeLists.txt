@@ -16,6 +16,8 @@
 
 cmake_minimum_required (VERSION 3.1)
 
+set(NGRAPH_VERSION 0.3.0)
+
 set(NGRAPH_INCLUDE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
