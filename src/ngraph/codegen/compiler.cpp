@@ -207,8 +207,7 @@ void codegen::StaticCompiler::initialize()
     char const* opt_level_char = getenv("FRONTEND_OPT_LEVEL");
     if (opt_level_char != NULL)
     {
-        std::string opt_level_string(opt_level_char);
-        int opt_level_int = atoi(opt_level_string.c_str());
+        int opt_level_int = atoi(opt_level_char);
         NGRAPH_INFO << "CGO.OptimizationLevel = " << opt_level_int;
         CGO.OptimizationLevel = opt_level_int;
     }
