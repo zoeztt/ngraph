@@ -66,6 +66,29 @@ bool codegen::ExecutionEngine::add_module(std::unique_ptr<ngraph::codegen::Modul
                 }
             };
 
+            auto opt_level_to_enum = [](int opt_level_int) -> llvm::CodeGenOpt::Level {
+                if (opt_level_int == 0)
+                {
+                    return llvm::CodeGenOpt::None;
+                }
+                else if (opt_level_int == 1)
+                {
+                    return llvm::CodeGenOpt::Less;
+                }
+                else if (opt_level_int == 2)
+                {
+                    return llvm::CodeGenOpt::Default;
+                }
+                else if (opt_level_int == 3)
+                {
+                    return llvm::CodeGenOpt::Aggressive;
+                }
+                else
+                {
+                    throw ngraph_error("Wrong opt_level_int");
+                }
+            };
+
             char const* opt_level_char = getenv("BACKEND_OPT_LEVEL");
             int opt_level_int;
             if (opt_level_char != NULL)
@@ -77,11 +100,12 @@ bool codegen::ExecutionEngine::add_module(std::unique_ptr<ngraph::codegen::Modul
                 opt_level_int = 3;
             }
             NGRAPH_INFO << "BACKEND_OPT_LEVEL = " << opt_level_int << " "
-                        << opt_level_to_string(opt_level_int);
+                        << opt_level_to_string(opt_level_int) << " "
+                        << opt_level_to_enum(opt_level_int);
 
             m_execution_engine.reset(llvm::EngineBuilder(module->take_module())
                                          .setEngineKind(llvm::EngineKind::JIT)
-                                         .setOptLevel(llvm::CodeGenOpt::Aggressive)
+                                         .setOptLevel(opt_level_to_enum(opt_level_int))
                                          .setMCPU(llvm::sys::getHostCPUName())
                                          //  .setCodeModel(llvm::CodeModel::Medium)
                                          .setErrorStr(&m_jit_error)
