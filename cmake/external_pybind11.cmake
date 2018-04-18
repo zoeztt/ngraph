@@ -23,6 +23,8 @@ include(ExternalProject)
 
 SET(PYBIND11_GIT_REPO_URL https://github.com/pybind/pybind11.git)
 SET(PYBIND11_GIT_LABEL v2.2.2)
+set(PYBIND11_HEADER_DIR "")
+set(PYBIND11_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/pybind11)
 
 # The 'BUILD_BYPRODUCTS' argument was introduced in CMake 3.2.
 if (${CMAKE_VERSION} VERSION_LESS 3.2)
@@ -30,20 +32,30 @@ if (${CMAKE_VERSION} VERSION_LESS 3.2)
         pybind11
         GIT_REPOSITORY ${PYBIND11_GIT_REPO_URL}
         GIT_TAG ${PYBIND11_GIT_LABEL}
+        PREFIX ${PYBIND11_PREFIX}
         # Disable install step
-        INSTALL_COMMAND ""
         UPDATE_COMMAND ""
-        CMAKE_ARGS -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_FLAGS="-fPIC"
+        INSTALL_COMMAND ""
+        CMAKE_ARGS -DPYBIND11_INSTALL=${PYBIND11_HEADER_DIR}
+                   -DPYBIND11_TEST=FALSE
+                   -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+                   -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+                   -DCMAKE_CXX_FLAGS="-fPIC"
         )
 else()
     ExternalProject_Add(
         pybind11
         GIT_REPOSITORY ${PYBIND11_GIT_REPO_URL}
         GIT_TAG ${PYBIND11_GIT_LABEL}
+        PREFIX ${PYBIND11_PREFIX}
         # Disable install step
-        INSTALL_COMMAND ""
         UPDATE_COMMAND ""
-        CMAKE_ARGS -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_FLAGS="-fPIC"
+        INSTALL_COMMAND ""
+        CMAKE_ARGS -DPYBIND11_INSTALL=${PYBIND11_HEADER_DIR}
+                   -DPYBIND11_TEST=FALSE
+                   -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+                   -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+                   -DCMAKE_CXX_FLAGS="-fPIC"
         )
 endif()
 
