@@ -205,42 +205,45 @@ void run_benchmark(shared_ptr<Function> f,
     cout.imbue(locale(""));
     cout << "compile time: " << timer.get_milliseconds() << "ms" << endl;
 
-    vector<shared_ptr<runtime::TensorView>> args;
-    for (shared_ptr<op::Parameter> param : f->get_parameters())
+    if (iterations > 0)
     {
-        auto tensor = backend->create_tensor(param->get_element_type(), param->get_shape());
-        random_init(tensor);
-        args.push_back(tensor);
+        vector<shared_ptr<runtime::TensorView>> args;
+        for (shared_ptr<op::Parameter> param : f->get_parameters())
+        {
+            auto tensor = backend->create_tensor(param->get_element_type(), param->get_shape());
+            random_init(tensor);
+            args.push_back(tensor);
+        }
+        vector<shared_ptr<runtime::TensorView>> results;
+        for (shared_ptr<Node> out : f->get_results())
+        {
+            auto result = backend->create_tensor(out->get_element_type(), out->get_shape());
+            results.push_back(result);
+        }
+
+        stopwatch t1;
+        t1.start();
+        for (size_t i = 0; i < static_cast<size_t>(iterations); i++)
+        {
+            backend->call(f, results, args);
+        }
+        t1.stop();
+        float time = t1.get_milliseconds();
+        cout << time / iterations << "ms per iteration" << endl;
+
+        vector<runtime::PerformanceCounter> perf_data = backend->get_performance_data(f);
+        sort(perf_data.begin(),
+            perf_data.end(),
+            [](const runtime::PerformanceCounter& p1, const runtime::PerformanceCounter& p2) {
+                return p1.total_microseconds() > p2.total_microseconds();
+            });
+        multimap<size_t, string> timing = aggregate_timing(perf_data);
+        multimap<size_t, string> timing_details = aggregate_timing_details(perf_data, f);
+
+        cout << "\n---- Aggregate times per op type ----\n";
+        print_times(timing);
+
+        cout << "\n---- Aggregate times per op type/shape ----\n";
+        print_times(timing_details);
     }
-    vector<shared_ptr<runtime::TensorView>> results;
-    for (shared_ptr<Node> out : f->get_results())
-    {
-        auto result = backend->create_tensor(out->get_element_type(), out->get_shape());
-        results.push_back(result);
-    }
-
-    stopwatch t1;
-    t1.start();
-    for (size_t i = 0; i < static_cast<size_t>(iterations); i++)
-    {
-        backend->call(f, results, args);
-    }
-    t1.stop();
-    float time = t1.get_milliseconds();
-    cout << time / iterations << "ms per iteration" << endl;
-
-    vector<runtime::PerformanceCounter> perf_data = backend->get_performance_data(f);
-    sort(perf_data.begin(),
-         perf_data.end(),
-         [](const runtime::PerformanceCounter& p1, const runtime::PerformanceCounter& p2) {
-             return p1.total_microseconds() > p2.total_microseconds();
-         });
-    multimap<size_t, string> timing = aggregate_timing(perf_data);
-    multimap<size_t, string> timing_details = aggregate_timing_details(perf_data, f);
-
-    cout << "\n---- Aggregate times per op type ----\n";
-    print_times(timing);
-
-    cout << "\n---- Aggregate times per op type/shape ----\n";
-    print_times(timing_details);
 }
