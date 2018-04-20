@@ -20,6 +20,9 @@ with open(input_file, 'r') as fi:
     per_iteration_times = re.findall(r'\n(.+?)ms per iteration', lines)
     print(per_iteration_times)
 
-    for f, b, c, i in zip(frontend_opt_levels, backend_opt_levels,
-                            compile_times, per_iteration_times):
-        writer.writerow([f, b, c, i])
+    # for f, b, c, i in zip(frontend_opt_levels, backend_opt_levels,
+    #                         compile_times, per_iteration_times):
+    #     writer.writerow([f, b, c, i])
+
+    for f, b, c in zip(frontend_opt_levels, backend_opt_levels, compile_times):
+        writer.writerow([f, b, c])
