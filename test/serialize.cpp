@@ -26,6 +26,9 @@
 #include "nlohmann/json.hpp"
 #include "util/test_tools.hpp"
 
+#include "ngraph/pass/manager.hpp"
+#include "ngraph/pass/visualize_tree.hpp"
+
 using namespace std;
 using namespace ngraph;
 using json = nlohmann::json;
@@ -169,4 +172,37 @@ TEST(benchmark, serialize)
     shared_ptr<Function> f = ngraph::deserialize(json_string);
     timer.stop();
     cout << "deserialize took " << timer.get_milliseconds() << "ms\n";
+}
+
+TEST(dump_graph, example)
+{
+    vector<string> models = {"bn_bprop.json",
+                             "bn_fprop_b2c3h2w2.json",
+                             "bn_fprop.json",
+                             "conv_bias.json",
+                             "tf_function_cluster_12[_XlaCompiledKernel=true,_XlaNumConstantArgs=3,"
+                             "_XlaNumResourceArgs=0].v23.json",
+                             "tf_function_cluster_13[_XlaCompiledKernel=true,_XlaNumConstantArgs=0,"
+                             "_XlaNumResourceArgs=0].v33.json",
+                             "tf_function_cluster_17[_XlaCompiledKernel=true,_XlaNumConstantArgs=1,"
+                             "_XlaNumResourceArgs=0].v170.json",
+                             "tf_function_cluster_4[_XlaCompiledKernel=true,_XlaNumConstantArgs=1,_"
+                             "XlaNumResourceArgs=0].v82.json",
+                             "tf_function_cluster_8[_XlaCompiledKernel=true,_XlaNumConstantArgs=2,_"
+                             "XlaNumResourceArgs=0].v28.json",
+                             "tranpose.json"};
+    const string root_path = "/home/yixing/repo/downloads/ngraph_outputs";
+
+    for (string& model : models)
+    {
+        const string json_path = file_util::path_join(root_path, model);
+        const string json_string = file_util::read_file_to_string(json_path);
+        stringstream ss(json_string);
+        shared_ptr<Function> f = deserialize(ss);
+
+        pass::Manager pass_manager;
+        pass_manager.register_pass<pass::VisualizeTree>(
+            file_util::path_join(root_path, model + ".png"));
+        pass_manager.run_passes(f);
+    }
 }
