@@ -36,6 +36,9 @@ void descriptor::Output::add_input(Input* input)
 
 void descriptor::Output::remove_input(Input* input)
 {
+    std::cout << "Removing " << input->m_node->get_name() << " Input_" << input->get_index()
+        << " from " << this->m_node->get_name() << " Output_" << this->get_index() << std::endl;
+
     m_inputs.erase(input);
 }
 

@@ -152,8 +152,18 @@ std::shared_ptr<Node> Node::get_argument(size_t index)
 
 Node::~Node()
 {
+    std::cout << "Destroying " << this->get_name() << std::endl;
     for (auto& input : m_inputs)
     {
+        if (input.get_output().get_inputs().count(&input) == 0)
+        {
+            stringstream ss;
+            ss << "Input_" << input.get_index() << " , " << this->get_name() <<
+                " from Output_" << input.get_output().get_index() << " , " << input.get_output().get_node()->get_name();
+            auto err = ss.str();
+            std::cout << ss.str() << std::endl;
+            throw ngraph_error(err);
+        }
         input.get_output().remove_input(&input);
     }
 }

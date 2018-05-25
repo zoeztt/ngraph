@@ -101,7 +101,8 @@ bool ngraph::pass::NopElimination::run_on_function(std::shared_ptr<ngraph::Funct
 {
     bool clobbered = false;
 
-    for (const auto& n : function->get_ops())
+    std::cout << "BEGIN NOP ELIMINATION\n";
+    for (const auto& n : function->get_ordered_ops())
     {
         // Work around a warning [-Wpotentially-evaluated-expression]
         const Node& node = *n;
@@ -111,6 +112,7 @@ bool ngraph::pass::NopElimination::run_on_function(std::shared_ptr<ngraph::Funct
             clobbered = handler->second(function, n) || clobbered;
         }
     }
+    std::cout << "END NOP ELIMINATION\n";
 
     return clobbered;
 }

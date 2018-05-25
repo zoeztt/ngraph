@@ -27,6 +27,7 @@ Input::Input(Node* node, size_t index, Output& output)
     , m_index(index)
     , m_output(&output)
 {
+    std::cout << node->get_name() << " owns " << output.get_node()->get_name() << std::endl;
     m_src_node = std::shared_ptr<Node>(output.get_node());
     output.add_input(this);
 }
@@ -36,7 +37,12 @@ void Input::replace_output(Output& new_output)
     m_output->remove_input(this);
     new_output.add_input(this);
     m_output = &new_output;
+    std::cout << this->m_node->get_name() << " did own " << m_src_node->get_name() << std::endl;
+    std::cout << "  reference count = " << m_src_node.use_count() << std::endl;
+
     m_src_node = std::shared_ptr<Node>(new_output.get_node());
+    std::cout << this->m_node->get_name() << " now owns " << m_src_node->get_name() << std::endl;
+    std::cout << "  reference count = " << m_src_node.use_count() << std::endl;
 }
 
 void Input::replace_output(std::shared_ptr<Node> node, size_t i)
