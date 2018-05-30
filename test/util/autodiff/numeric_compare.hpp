@@ -16,7 +16,7 @@
 
 #include "ngraph/log.hpp"
 #include "ngraph/type/element_type.hpp"
-#include "util/all_close.hpp"
+#include "util/all_close_f.hpp"
 #include "util/autodiff/backprop_derivative.hpp"
 #include "util/autodiff/numeric_derivative.hpp"
 #include "util/test_tools.hpp"
@@ -25,8 +25,8 @@ template <typename T>
 bool autodiff_numeric_compare(const std::shared_ptr<ngraph::runtime::Backend>& backend,
                               std::function<std::shared_ptr<ngraph::Function>()> make_graph,
                               const std::vector<std::shared_ptr<ngraph::runtime::TensorView>>& args,
-                              T rtol,
-                              T atol)
+                              int mantissa_bits = 8,
+                              int tolerance_bits = 2)
 {
     T delta = static_cast<T>(0.0009765625f); // Binary-representable number near 0.001
 
@@ -69,7 +69,8 @@ bool autodiff_numeric_compare(const std::shared_ptr<ngraph::runtime::Backend>& b
         interpreter_results_sym.push_back(interpreter_result);
     }
 
-    return ngraph::test::all_close(results_num, interpreter_results_sym, rtol, atol);
+    return ngraph::test::all_close_f(
+        results_num, interpreter_results_sym, mantissa_bits, tolerance_bits);
 }
 
 template <typename T>
@@ -77,9 +78,9 @@ bool autodiff_numeric_compare_selective(
     const std::shared_ptr<ngraph::runtime::Backend>& backend,
     std::function<std::shared_ptr<ngraph::Function>()> make_graph,
     const std::vector<std::shared_ptr<ngraph::runtime::TensorView>>& args,
-    T rtol,
-    T atol,
-    const std::vector<bool>& indep_param_mask)
+    const std::vector<bool>& indep_param_mask,
+    int mantissa_bits = 8,
+    int tolerance_bits = 2)
 {
     // Use INTERPRETER to compute numerical derivatives
     std::vector<std::shared_ptr<ngraph::op::Parameter>> f_indep_params;
@@ -145,5 +146,6 @@ bool autodiff_numeric_compare_selective(
         interpreter_results_sym.push_back(interpreter_result);
     }
 
-    return ngraph::test::all_close(results_num, interpreter_results_sym, rtol, atol);
+    return ngraph::test::all_close_f(
+        results_num, interpreter_results_sym, mantissa_bits, tolerance_bits);
 }

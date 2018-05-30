@@ -250,7 +250,7 @@ NGRAPH_TEST (${BACKEND_NAME}, %s)
     EXPECT_TRUE(test::all_close<float>(vector<float>{expected_result}, read_vector<float>(result), 1.0e-4f, 1.0e-6f));
     // only test backprop for certain cases as it takes significant compute resources
     if(%s) {
-        EXPECT_TRUE(autodiff_numeric_compare<float>(backend, make_graph, {a, b}, .01f, .01f));
+        EXPECT_TRUE(autodiff_numeric_compare<float>(backend, make_graph, {a, b}));
     }
 }
 '''
