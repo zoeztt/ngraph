@@ -23,7 +23,7 @@
 #include "ngraph/log.hpp"
 #include "ngraph/type/element_type.hpp"
 #include "ngraph/util.hpp"
-#include "util/all_close.hpp"
+#include "util/all_close_f.hpp"
 #include "util/test_tools.hpp"
 
 namespace ngraph
@@ -192,9 +192,7 @@ namespace ngraph
             auto clone_bwd = clone_function(*fprop_cache.bprop);
             auto cache_dfdx = get_autodiff<T>(backend, clone_bwd, mod_df_input_args, indep_params);
 
-            const auto numpy_atol = 1e-5f;
-            const auto numpy_rtol = 1e-8f;
-            auto close = ngraph::test::all_close<T>(dfdx, cache_dfdx, numpy_atol, numpy_rtol);
+            auto close = ngraph::test::all_close_f(dfdx, cache_dfdx);
             if (!close)
             {
                 throw ngraph_error(
