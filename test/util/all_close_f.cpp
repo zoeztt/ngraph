@@ -47,7 +47,21 @@ bool test::close_f(float a, float b, int mantissa_bits, int tolerance_bits)
     uint32_t tolerance_bit_shift = 32 - (1 + 8 + (mantissa_bits - 1) - tolerance_bits);
     uint32_t tolerance = static_cast<uint32_t>(1U) << tolerance_bit_shift;
 
-    return distance <= tolerance;
+    // return distance <= tolerance;
+
+    bool is_close = distance <= tolerance;
+
+    if (!is_close)
+    {
+        float near_zero_bound = 0.015625f;
+        float upper_bound = 0.f + near_zero_bound;
+        float lower_bound = 0.f - near_zero_bound;
+
+        is_close =
+            (a <= upper_bound) && (a >= lower_bound) && (b <= upper_bound) && (b >= lower_bound);
+    }
+
+    return is_close;
 }
 
 bool test::all_close_f(const vector<float>& a,

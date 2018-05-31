@@ -28,7 +28,7 @@ bool autodiff_numeric_compare(const std::shared_ptr<ngraph::runtime::Backend>& b
                               int mantissa_bits = 8,
                               int tolerance_bits = 2)
 {
-    T delta = static_cast<T>(0.0009765625f); // Binary-representable number near 0.001
+    T delta = static_cast<T>(0.000244140625f); // Binary-representable number
 
     // Use INTERPRETER to compute numerical derivatives
     auto interpreter_backend = ngraph::runtime::Backend::create("INTERPRETER");
