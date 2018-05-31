@@ -53,7 +53,7 @@ bool test::close_f(float a, float b, int mantissa_bits, int tolerance_bits)
 
     if (!is_close)
     {
-        float near_zero_bound = 0.015625f;
+        float near_zero_bound = 0.0078125f;
         float upper_bound = 0.f + near_zero_bound;
         float lower_bound = 0.f - near_zero_bound;
 

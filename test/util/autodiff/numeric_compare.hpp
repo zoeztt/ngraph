@@ -26,7 +26,7 @@ bool autodiff_numeric_compare(const std::shared_ptr<ngraph::runtime::Backend>& b
                               std::function<std::shared_ptr<ngraph::Function>()> make_graph,
                               const std::vector<std::shared_ptr<ngraph::runtime::TensorView>>& args,
                               int mantissa_bits = 8,
-                              int tolerance_bits = 2)
+                              int tolerance_bits = 3)
 {
     T delta = static_cast<T>(0.000244140625f); // Binary-representable number
 
@@ -80,8 +80,10 @@ bool autodiff_numeric_compare_selective(
     const std::vector<std::shared_ptr<ngraph::runtime::TensorView>>& args,
     const std::vector<bool>& indep_param_mask,
     int mantissa_bits = 8,
-    int tolerance_bits = 2)
+    int tolerance_bits = 3)
 {
+    float delta = 0.000244140625f; // Binary-representable number
+
     // Use INTERPRETER to compute numerical derivatives
     std::vector<std::shared_ptr<ngraph::op::Parameter>> f_indep_params;
     auto f = make_graph();
@@ -117,7 +119,7 @@ bool autodiff_numeric_compare_selective(
         interpreter_args.push_back(interpreter_arg);
     }
     auto results_num = ngraph::autodiff::numeric_derivative<T>(
-        interpreter_backend, f, interpreter_args, .001f, f_indep_params);
+        interpreter_backend, f, interpreter_args, delta, f_indep_params);
 
     // Use the backend being tested to compute symbolic derivatives
     std::vector<std::shared_ptr<ngraph::op::Parameter>> g_indep_params;
