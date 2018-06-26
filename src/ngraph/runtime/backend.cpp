@@ -78,7 +78,7 @@ void* runtime::Backend::open_shared_library(string type)
     }
     string lib_name = "lib" + to_lower(type) + "_backend" + ext;
     string my_directory = file_util::get_directory(find_my_file());
-    string full_path = file_util::path_join(my_directory, lib_name);
+    string full_path = lib_name; //file_util::path_join(my_directory, lib_name);
     handle = dlopen(full_path.c_str(), RTLD_NOW | RTLD_GLOBAL);
     if (handle)
     {
