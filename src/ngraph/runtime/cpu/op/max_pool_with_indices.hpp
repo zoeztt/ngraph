@@ -23,12 +23,18 @@ namespace ngraph
 {
     namespace op
     {
+
+        class CPUOp {
+            public:
+            virtual Shape get_workspace_shape() = 0;
+        };
+
         //MaxPoolWithIndices produces two outputs.
         //The first output is equivalent to what MaxPool produces
         //The second one contains the indices of the maximum numbers
         //for each window in input (arg)
         //These indices are used by MKLDNN for a back propagation pass
-        class MaxPoolWithIndices : public util::RequiresTensorViewArgs
+        class MaxPoolWithIndices : public util::RequiresTensorViewArgs, ngraph::op::CPUOp
         {
         public:
             MaxPoolWithIndices(const std::shared_ptr<Node>& arg,
@@ -48,6 +54,8 @@ namespace ngraph
             {
                 return ngraph::make_constant_from_string("0", get_element_type(), get_shape());
             }
+
+            virtual Shape get_workspace_shape() override { return Shape{1,1,1,1}; /*some dummy shape*/ };
 
         protected:
             virtual void generate_adjoints(autodiff::Adjoints& adjoints,
