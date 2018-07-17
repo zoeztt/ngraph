@@ -12,7 +12,7 @@ Clone the pybind repository
 
 ```
 cd ngraph/python
-git clone --recursive -b allow-nonconstructible-holders https://github.com/jagerman/pybind11.git
+git clone --recursive https://github.com/pybind/pybind11.git
 ```
 
 Set the environment variables

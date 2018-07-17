@@ -78,11 +78,11 @@ namespace ngraph
         friend class ngraph::pass::GetOutputElementElimination;
 
     protected:
+        virtual void generate_adjoints(autodiff::Adjoints& adjoints, const NodeVector& deltas) {}
+    public:
         Node(const std::string& node_type, const NodeVector& arguments);
         virtual ~Node();
 
-        virtual void generate_adjoints(autodiff::Adjoints& adjoints, const NodeVector& deltas) {}
-    public:
         /// The class name, must not contain spaces
         std::string description() const { return m_node_type; }
         const std::string& get_friendly_name() const;
