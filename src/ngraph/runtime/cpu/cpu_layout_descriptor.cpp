@@ -63,6 +63,7 @@ namespace ngraph
                     s *= shape[*it];
                 }
                 std::reverse(strides.begin(), strides.end());
+                m_size = shape_size(tvt->get_shape()) * tvt->get_element_type().size();
             }
 
             void LayoutDescriptor::set_axis_order(const AxisVector& perm) { axis_order = perm; }
@@ -122,16 +123,7 @@ namespace ngraph
                             fmt);
                         auto mem_prim_desc = mkldnn::memory::primitive_desc(
                             mem_desc, mkldnn_utils::global_cpu_engine);
-                        mkldnn_memory_size = mem_prim_desc.get_size();
-                    }
-                    else
-                    {
-                        size_t size = 1;
-                        for (size_t s : tvt->get_shape())
-                        {
-                            size *= s;
-                        }
-                        mkldnn_memory_size = size * tvt->get_element_type().size();
+                        m_size = mem_prim_desc.get_size();
                     }
                 }
                 catch (const mkldnn::error& e)
