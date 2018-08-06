@@ -688,6 +688,12 @@ using namespace ngraph::runtime;
             }
         }
 
+        static const char* print_tm = std::getenv("NGRAPH_PRINT_TENSOR_NAME_MAPPING");
+        if (print_tm)
+        {
+            std::cout << "Tensor name mapping for " << current_function->get_name() << std::endl;
+        }
+
         for (shared_ptr<Node> node : ordered_ops)
         {
             auto& n = *node; // Work around a compiler warning (*node inside typeid may have effects
@@ -709,7 +715,6 @@ using namespace ngraph::runtime;
                 node_input_names.emplace_back(tv->get_tensor().get_name());
             }
             vector<TensorViewWrapper> out;
-            static const char* print_tm = std::getenv("NGRAPH_PRINT_TENSOR_NAME_MAPPING");
             for (const descriptor::Output& output : node->get_outputs())
             {
                 shared_ptr<descriptor::TensorView> tv = output.get_tensor_view();
