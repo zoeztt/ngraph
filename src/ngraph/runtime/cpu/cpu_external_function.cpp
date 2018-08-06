@@ -709,11 +709,18 @@ using namespace ngraph::runtime;
                 node_input_names.emplace_back(tv->get_tensor().get_name());
             }
             vector<TensorViewWrapper> out;
+            static const char* print_tm = std::getenv("NGRAPH_PRINT_TENSOR_NAME_MAPPING");
             for (const descriptor::Output& output : node->get_outputs())
             {
                 shared_ptr<descriptor::TensorView> tv = output.get_tensor_view();
                 out.push_back(
                     TensorViewWrapper(tv, m_variable_name_map[tv->get_tensor().get_name()]));
+
+                if (print_tm)
+                {
+                    std::cout << tv->get_tensor().get_name() << "(" << node->get_name() << ") -> "
+                              << m_variable_name_map[tv->get_tensor().get_name()] << std::endl;
+                }
                 node_output_names.emplace_back(tv->get_tensor().get_name());
             }
 
