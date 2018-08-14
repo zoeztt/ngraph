@@ -16,19 +16,15 @@
 
 add_subdirectory(examples)
 
-if ("${NGRAPH_BUILD_DOCS}" MATCHES "^ON$")
-    add_custom_target( docs
-        COMMENT "Build all of the documentation types selected during CMake configuration."
-        )
+if (NGRAPH_BUILD_DOCS)
+    find_package(Doxygen REQUIRED)
+    find_package(Sphinx REQUIRED)
+    find_package(Breathe REQUIRED)
 
-    add_subdirectory( doxygen )
-    add_subdirectory( sphinx )
-else()
-    add_custom_target( docs
-        COMMAND echo
-        COMMAND echo "The 'docs' target is disabled. To enable the building of documentation, re-run cmake with the option -DNGRAPH_BUILD_DOCS=ON."
-        COMMAND echo
-        COMMAND false
-        VERBATIM
-        )
+    add_custom_target(docs
+        COMMENT "Build all of the documentation types selected during CMake configuration."
+    )
+
+    add_subdirectory(doxygen)
+    add_subdirectory(sphinx)
 endif()
