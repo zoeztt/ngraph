@@ -82,6 +82,14 @@ namespace ngraph
                 friend class CPU_Backend;
 
             public:
+                enum class CPUTensorRole
+                {
+                    INPUT,
+                    CONSTANT,
+                    OUTPUT,
+                    INTERMEDIATE
+                };
+
                 CPU_ExternalFunction(const std::shared_ptr<ngraph::Function>& function,
                                      bool release_function = true);
                 ~CPU_ExternalFunction();
@@ -142,6 +150,7 @@ namespace ngraph
                                                std::string output_name,
                                                bool dex);
 
+                bool computes_result(Node* node);
 #if !defined(NGRAPH_DEX_ONLY)
                 void emit_debug_function_entry(codegen::CodeWriter& writer,
                                                Node* node,
@@ -188,6 +197,7 @@ namespace ngraph
                 std::vector<std::shared_ptr<Node>> m_active_constants;
 
 #endif
+                std::unordered_map<std::string, CPUTensorRole> m_tensor_roles;
 
                 LayoutDescriptorPtrs parameter_layout_descriptors;
                 LayoutDescriptorPtrs result_layout_descriptors;
