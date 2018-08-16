@@ -151,6 +151,7 @@ namespace ngraph
                                                bool dex);
 
                 bool computes_result(Node* node);
+
 #if !defined(NGRAPH_DEX_ONLY)
                 void emit_debug_function_entry(codegen::CodeWriter& writer,
                                                Node* node,
