@@ -19,8 +19,6 @@
 
 std::ostream& ngraph::operator<<(std::ostream& s, const Shape& shape)
 {
-    s << "Shape{";
-    s << ngraph::join(shape);
-    s << "}";
+    s << "Shape{" << ngraph::join(shape) << "}";
     return s;
 }

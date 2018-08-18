@@ -69,7 +69,7 @@ add_custom_target(header_resource
     BYPRODUCTS
 )
 
-if (NGRAPH_GPU_ENABLE OR (NGRAPH_CPU_ENABLE AND NOT NGRAPH_DEX_ONLY))
+if (NGRAPH_GPU_ENABLE OR (NGRAPH_CPU_ENABLE AND NOT NGRAPH_DEX_ONLY) OR NGRAPH_CCPU_ENABLE)
     add_library(codegen SHARED ${SRC})
     set_target_properties(codegen PROPERTIES VERSION ${NGRAPH_VERSION} SOVERSION ${NGRAPH_API_VERSION})
     add_dependencies(codegen header_resource libmkldnn libeigen)

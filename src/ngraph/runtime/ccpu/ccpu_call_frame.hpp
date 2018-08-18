@@ -1,0 +1,68 @@
+//*****************************************************************************
+// Copyright 2017-2018 Intel Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//*****************************************************************************
+
+#pragma once
+
+#include <functional>
+#include <memory>
+#include <vector>
+
+#include "ngraph/function.hpp"
+#include "ngraph/runtime/ccpu/ccpu_layout_descriptor.hpp"
+#include "ngraph/runtime/ccpu/ccpu_runtime_context.hpp"
+#include "ngraph/runtime/tensor_view.hpp"
+
+namespace ngraph
+{
+    namespace runtime
+    {
+        namespace ccpu
+        {
+            class CCPUCallFrame;
+            class CCPUExternalFunction;
+
+            using EntryPoint_t = void(void** inputs, void** outputs, CCPURuntimeContext* ctx);
+
+            using EntryPoint = std::function<EntryPoint_t>;
+
+            // Compile and execute graphs
+            class CCPUCallFrame
+            {
+            public:
+                CCPUCallFrame(std::shared_ptr<CCPUExternalFunction> external_function,
+                              EntryPoint compiled_function);
+                ~CCPUCallFrame();
+
+                /// \brief Invoke the function with values matching the signature of the function.
+                ///
+                /// Tuples will be expanded into their tensor views to build the call frame.
+                void call(const std::vector<std::shared_ptr<runtime::TensorView>>& outputs,
+                          const std::vector<std::shared_ptr<runtime::TensorView>>& inputs);
+
+                void propagate_layouts(const std::vector<std::shared_ptr<runtime::TensorView>>& tvs,
+                                       const LayoutDescriptorPtrs& layouts) const;
+
+                void setup_runtime_context();
+                void cleanup_runtime_context();
+
+            protected:
+                std::shared_ptr<CCPUExternalFunction> m_external_function;
+                EntryPoint m_compiled_function;
+                CCPURuntimeContext* ctx;
+            };
+        }
+    }
+}

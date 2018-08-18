@@ -23,6 +23,7 @@ set(SRC
     copy.cpp
     cpio.cpp
     cse.cpp
+    custom.cpp
     element_type.cpp
     file_util.cpp
     all_close_f.cpp
@@ -52,10 +53,6 @@ endif()
 
 if (NGRAPH_INTERPRETER_ENABLE)
     set(SRC ${SRC} backend_debug_api.cpp builder.cpp backend_api.cpp)
-endif()
-
-if (NGRAPH_CPU_ENABLE)
-    set(SRC ${SRC} core_fusion.cpp)
 endif()
 
 add_subdirectory(models)
@@ -112,6 +109,9 @@ if(NGRAPH_ADDRESS_SANITIZER)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fsanitize=address -fno-omit-frame-pointer")
 endif()
 
+add_library(custom_op_library SHARED custom_so.cpp)
+target_link_libraries(custom_op_library PRIVATE ngraph)
+
 if(NGRAPH_DISTRIBUTED_ENABLE)
     find_package(MPI REQUIRED)
     add_definitions(-DNGRAPH_DISTRIBUTED)
@@ -121,6 +121,7 @@ if(NGRAPH_DISTRIBUTED_ENABLE)
 endif()
 
 add_executable(unit-test ${SRC})
+add_dependencies(unit-test custom_op_library)
 target_link_libraries(unit-test ngraph_test_util)
 target_link_libraries(unit-test ngraph libgtest libjson pthread)
 target_link_libraries(unit-test ${CMAKE_DL_LIBS})
@@ -132,6 +133,11 @@ endif()
 if (NGRAPH_CPU_ENABLE)
     # The INTERPRETER backend is required for graph_partition, convolution, and backwards unit tests
     target_link_libraries(unit-test cpu_backend interpreter_backend)
+    target_link_libraries(unit-test libmkldnn)
+endif()
+
+if (NGRAPH_CCPU_ENABLE)
+    target_link_libraries(unit-test ccpu_backend)
     target_link_libraries(unit-test libmkldnn)
 endif()
 

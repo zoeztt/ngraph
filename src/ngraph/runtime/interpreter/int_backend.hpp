@@ -33,6 +33,7 @@
 #include "ngraph/op/concat.hpp"
 #include "ngraph/op/constant.hpp"
 #include "ngraph/op/convolution.hpp"
+#include "ngraph/op/custom.hpp"
 #include "ngraph/op/dot.hpp"
 #include "ngraph/op/get_output_element.hpp"
 #include "ngraph/op/lrn.hpp"
@@ -1027,9 +1028,28 @@ private:
         }
         else
         {
-            std::stringstream ss;
-            ss << "unsupported op " << node_op;
-            throw ngraph_error(ss.str());
+            const op::Custom* custom = dynamic_cast<const op::Custom*>(&node);
+            if (!custom)
+            {
+                std::stringstream ss;
+                ss << "unsupported op " << node_op;
+                throw ngraph_error(ss.str());
+            }
+            else
+            {
+                std::vector<std::shared_ptr<runtime::TensorView>> outputs;
+                for (auto tv : out)
+                {
+                    outputs.push_back(std::static_pointer_cast<runtime::TensorView>(tv));
+                }
+
+                std::vector<std::shared_ptr<runtime::TensorView>> inputs;
+                for (auto tv : args)
+                {
+                    inputs.push_back(std::static_pointer_cast<runtime::TensorView>(tv));
+                }
+                custom->get_exec("INTERPRETER")(nullptr, this, outputs, inputs);
+            }
         }
     }
 };
