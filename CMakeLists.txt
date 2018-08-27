@@ -92,6 +92,12 @@ option(NGRAPH_INTERPRETER_ENABLE "Control the building of the INTERPRETER backen
 option(NGRAPH_DISTRIBUTED_ENABLE "Add distributed mode to the CPU backend" FALSE)
 option(NGRAPH_DEBUG_ENABLE "Enable output for NGRAPH_DEBUG statements" FALSE)
 option(NGRAPH_ONNX_IMPORT_ENABLE "Enable ONNX importer" FALSE)
+option(NGRAPH_DEX_ONLY "Build CPU DEX without codegen" FALSE)
+
+if (NGRAPH_ONNX_IMPORT_ENABLE)
+    option(NGRAPH_USE_SYSTEM_PROTOBUF "Use system provided Protobuf shared object" FALSE)
+    option(NGRAPH_ONNXIFI_ENABLE "Enable ONNX Interface for Framework Integration" TRUE)
+endif()
 
 cmake_dependent_option(NGRAPH_DEX_ONLY "Remove codegen from the build" FALSE
                        "NOT NGRAPH_INTELGPU_ENABLE;NOT NGRAPH_GPU_ENABLE;NOT NGRAPH_DISTRIBUTED_ENABLE" FALSE)
@@ -99,6 +105,10 @@ cmake_dependent_option(NGRAPH_DEX_ONLY "Remove codegen from the build" FALSE
 #-----------------------------------------------------------------------------------------------
 # Installation logic...
 #-----------------------------------------------------------------------------------------------
+
+if (NOT APPLE AND NOT WIN32)
+    include(cmake/platform.cmake)
+endif()
 
 if (DEFINED NGRAPH_INSTALL_PREFIX)
     set(CMAKE_INSTALL_PREFIX ${NGRAPH_INSTALL_PREFIX})
@@ -141,6 +151,10 @@ if (NOT "${NGRAPH_TARGET_ARCH}" STREQUAL "native")
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=${NGRAPH_TARGET_ARCH}")
+
+if (DEFINED NGRAPH_TUNE_ARCH)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mtune=${NGRAPH_TUNE_ARCH}")
+endif()
 
 # flags required for SDL-3
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -fPIE -D_FORTIFY_SOURCE=2")
@@ -213,13 +227,24 @@ set(NGRAPH_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/src/ngraph)
 
 set(EXTERNAL_INSTALL_DIR ${CMAKE_BINARY_DIR}/external)
 
-if (NGRAPH_ONNX_IMPORT_ENABLE)
-    find_package(Protobuf 2.6.1 REQUIRED)
-endif()
-
 if(NOT DEFINED EXTERNAL_PROJECTS_ROOT)
     set(EXTERNAL_PROJECTS_ROOT ${CMAKE_CURRENT_BINARY_DIR})
 endif()
+
+if (NGRAPH_ONNX_IMPORT_ENABLE)
+    if (NOT NGRAPH_USE_SYSTEM_PROTOBUF)
+        include(cmake/external_protobuf.cmake)
+    else()
+        find_package(Protobuf 2.6.1 REQUIRED)
+    endif()
+    if (NGRAPH_ONNXIFI_ENABLE)
+        include(cmake/external_onnx.cmake)
+        if (TARGET ext_protobuf)
+            add_dependencies(ext_onnx ext_protobuf)
+        endif()
+    endif()
+endif()
+
 include(cmake/external_gtest.cmake)
 include(cmake/external_json.cmake)
 include(cmake/external_eigen.cmake)

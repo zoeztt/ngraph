@@ -14,7 +14,15 @@
 # limitations under the License.
 # ******************************************************************************
 
-if (NGRAPH_CPU_ENABLE)
-    add_executable(compile_benchmark compile_benchmark.cpp)
-    target_link_libraries(compile_benchmark ngraph cpu_backend)
-endif()
+add_library(onnxifi-ngraph SHARED onnxifi.cpp)
+target_link_libraries(onnxifi-ngraph PRIVATE ngraph)
+
+add_dependencies(onnxifi-ngraph onnx::libonnx)
+target_include_directories(onnxifi-ngraph PRIVATE ${ONNX_INCLUDE_DIR})
+
+set(ONNXIFI_VERSION ${NGRAPH_VERSION})
+set(ONNXIFI_ABI_VERSION 1)
+
+set_target_properties(onnxifi-ngraph PROPERTIES VERSION ${ONNXIFI_VERSION} SOVERSION ${ONNXIFI_ABI_VERSION})
+
+install(TARGETS onnxifi-ngraph DESTINATION ${NGRAPH_INSTALL_LIB})

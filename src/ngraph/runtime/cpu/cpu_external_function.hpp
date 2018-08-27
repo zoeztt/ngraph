@@ -149,7 +149,6 @@ namespace ngraph
                 void propagate_in_place_output(ngraph::descriptor::Output* res_src_output,
                                                std::string output_name,
                                                bool dex);
-
                 bool computes_result(Node* node);
 
 #if !defined(NGRAPH_DEX_ONLY)
