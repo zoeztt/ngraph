@@ -51,7 +51,7 @@ namespace ngraph
             virtual std::shared_ptr<descriptor::Tensor> get_descriptor();
 
             const ngraph::Shape& get_shape() const;
-            const ngraph::Strides& get_strides() const;
+            ngraph::Strides get_strides() const;
             size_t get_element_count() const;
             const ngraph::descriptor::Tensor& get_tensor() const;
 

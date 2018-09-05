@@ -60,7 +60,7 @@ using namespace ngraph;
 using namespace ngraph::runtime::cpu;
 
 // Check if the input layout matches the layout requested in `required_mds`
-// If not, insert a layout conversion node between the input tensorview and
+// If not, insert a layout conversion node between the input tensor and
 // the `node`. For now, only MKLDNN nodes/kernels can request specific layouts
 shared_ptr<Node> runtime::cpu::pass::CPULayout::insert_input_conversions(
     runtime::cpu::CPU_ExternalFunction* external_function,
@@ -81,7 +81,7 @@ shared_ptr<Node> runtime::cpu::pass::CPULayout::insert_input_conversions(
     for (const descriptor::Input& input : node->get_inputs())
     {
         const auto& output = input.get_output();
-        auto tv = output.get_tensor_view();
+        auto tv = output.get_tensor_ptr();
         auto tvl = dynamic_pointer_cast<runtime::cpu::LayoutDescriptor>(tv->get_tensor_layout());
 
         if (!tvl)
@@ -144,7 +144,7 @@ void runtime::cpu::pass::CPULayout::set_output_layouts(shared_ptr<Node>& node,
 {
     for (size_t i = 0; i < node->get_output_size(); ++i)
     {
-        auto tv = node->get_output_tensor_view(i);
+        auto tv = node->get_output_tensor_ptr(i);
         auto tvl = tv->get_tensor_layout();
         if (tvl)
         {
@@ -171,7 +171,7 @@ void runtime::cpu::pass::CPULayout::set_native_layouts(
     for (descriptor::Input& input : node->get_inputs())
     {
         const auto& output = input.get_output();
-        auto tv = output.get_tensor_view();
+        auto tv = output.get_tensor_ptr();
         auto et = tv->get_element_type();
         auto shape = tv->get_shape();
         auto tvl = tv->get_tensor_layout();
@@ -233,7 +233,7 @@ void runtime::cpu::pass::CPULayout::set_native_layouts(
 
     for (size_t i = 0; i < node->get_output_size(); ++i)
     {
-        auto tv = node->get_output_tensor_view(i);
+        auto tv = node->get_output_tensor_ptr(i);
         if (tv->get_tensor_layout())
         {
             // TODO(jbobba): Should this be an error instead?
@@ -1074,7 +1074,7 @@ namespace ngraph
                 {
                     auto result = static_cast<const ngraph::op::Result*>(node.get());
                     auto cpu_tvl = dynamic_pointer_cast<runtime::cpu::LayoutDescriptor>(
-                        node->get_inputs()[0].get_output().get_tensor_view()->get_tensor_layout());
+                        node->get_inputs()[0].get_output().get_tensor_ptr()->get_tensor_layout());
 
                     if (result->needs_default_layout() || !cpu_tvl->is_mkldnn_layout() ||
                         cpu_tvl->get_size() * cpu_tvl->get_element_type().size() !=
@@ -1102,7 +1102,7 @@ namespace ngraph
                         auto axis_order = reshape->get_input_order();
                         auto tvl = node->get_inputs()[0]
                                        .get_output()
-                                       .get_tensor_view()
+                                       .get_tensor_ptr()
                                        ->get_tensor_layout();
                         auto cpu_tvl = dynamic_cast<runtime::cpu::LayoutDescriptor*>(tvl.get());
                         if (cpu_tvl && cpu_tvl->is_mkldnn_layout())
@@ -1136,7 +1136,7 @@ namespace ngraph
                             }
                             set_native_layouts(external_function, node);
                             auto output_tvl = dynamic_pointer_cast<runtime::cpu::LayoutDescriptor>(
-                                node->get_output_tensor_view()->get_tensor_layout());
+                                node->get_output_tensor_ptr()->get_tensor_layout());
                             // TODO (jbobba): For now non-MKLDNN layouts are always in row-major format
                             // Enable this once we support non row-major strided formats
                             // output_tvl->set_strides(output_strides);
