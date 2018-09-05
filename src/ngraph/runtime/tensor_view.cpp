@@ -36,7 +36,7 @@ const Shape& runtime::TensorView::get_shape() const
     return m_descriptor->get_shape();
 }
 
-const Strides& runtime::TensorView::get_strides() const
+Strides runtime::TensorView::get_strides() const
 {
     return m_descriptor->get_tensor_layout()->get_strides();
 }
