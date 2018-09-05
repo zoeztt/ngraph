@@ -118,7 +118,6 @@
 #include "ngraph/pass/manager.hpp"
 #include "ngraph/pass/memory_layout.hpp"
 #include "ngraph/pass/nop_elimination.hpp"
-#include "ngraph/pass/result_copy_elimination.hpp"
 #include "ngraph/runtime/aligned_buffer.hpp"
 #include "ngraph/runtime/ccpu/ccpu_backend.hpp"
 #include "ngraph/runtime/ccpu/ccpu_call_frame.hpp"
@@ -364,7 +363,6 @@ void runtime::ccpu::CCPUExternalFunction::compile()
     pass_manager.register_pass<runtime::ccpu::pass::CPUAssignment>(this);
     pass_manager.register_pass<runtime::ccpu::pass::CPULayout>(this);
     pass_manager.register_pass<runtime::ccpu::pass::CPUPostLayoutOptimizations>();
-    pass_manager.register_pass<ngraph::pass::ResultCopyElimination>();
     pass_manager.register_pass<ngraph::pass::GetOutputElementElimination>();
     unordered_map<Node*, Node*> node_function_map;
     string common_function_string;
@@ -639,14 +637,15 @@ using namespace ngraph::runtime;
             m_variable_name_map[tv->get_tensor().get_name()] = ss.str();
             m_tensor_roles[tv->get_tensor().get_name()] = CPUTensorRole::OUTPUT;
 
-            // it should be safe to assign both descriptors to one output*
-            // since needs_copy == false makes `op::Result` an nop
+            //keep assigning different outputs to a result descriptor
+            //op::Result emitter will check if in and out descriptors are the same
+            //and skip a copy
             auto res = std::dynamic_pointer_cast<ngraph::op::Result>(op);
-            if (!res->needs_copy())
+            auto input_node = res->get_inputs().at(0).get_output().get_node();
+            if (!input_node->is_constant() && !input_node->is_parameter())
             {
                 shared_ptr<descriptor::TensorView> itv =
                     res->get_inputs().at(0).get_output().get_tensor_view();
-
                 auto output_name = ss.str();
                 m_variable_name_map[itv->get_tensor().get_name()] = ss.str();
                 m_tensor_roles[itv->get_tensor().get_name()] = CPUTensorRole::OUTPUT;
