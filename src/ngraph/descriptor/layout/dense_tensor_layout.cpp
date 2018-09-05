@@ -36,14 +36,9 @@ size_t descriptor::layout::DenseTensorLayout::get_index_offset(const std::vector
     size_t result = 0;
     for (int i = 0; i < indices.size(); i++)
     {
-        result += strides[i] + indices[i];
+        result += strides[i] * indices[i];
     }
     return result;
-}
-
-size_t descriptor::layout::DenseTensorLayout::get_size()
-{
-    return ngraph::shape_size(get_shape());
 }
 
 Strides descriptor::layout::DenseTensorLayout::get_strides() const

@@ -53,10 +53,7 @@ namespace ngraph
                 return m_tensor_layout;
             }
 
-            void set_tensor_layout(const std::shared_ptr<layout::TensorLayout>& tensor_layout)
-            {
-                m_tensor_layout = tensor_layout;
-            }
+            void set_tensor_layout(const std::shared_ptr<layout::TensorLayout>& tensor_layout);
 
             void set_pool_offset(size_t);
             size_t get_pool_offset() const;
@@ -68,7 +65,7 @@ namespace ngraph
             Shape m_shape;
             std::string m_name;
             std::shared_ptr<layout::TensorLayout> m_tensor_layout;
-            size_t m_pool_offset;
+            size_t m_pool_offset{0};
         };
 
         using TensorView = Tensor;

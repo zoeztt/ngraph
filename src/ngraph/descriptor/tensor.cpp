@@ -58,6 +58,16 @@ size_t descriptor::Tensor::size() const
     }
 }
 
+void descriptor::Tensor::set_tensor_layout(
+    const std::shared_ptr<layout::TensorLayout>& tensor_layout)
+{
+    if (&tensor_layout->get_tensor() != this)
+    {
+        throw ngraph_error("Setting tensor's layout to another tensor's layout");
+    }
+    m_tensor_layout = tensor_layout;
+}
+
 ostream& operator<<(ostream& out, const descriptor::Tensor& tensor)
 {
     out << "Tensor(" << tensor.get_name() << ")";

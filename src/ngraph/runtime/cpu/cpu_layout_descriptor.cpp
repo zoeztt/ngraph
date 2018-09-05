@@ -30,10 +30,9 @@ namespace ngraph
                                             mkldnn::memory::f32,
                                             mkldnn::memory::format::format_undef);
 
-            LayoutDescriptor::LayoutDescriptor(const ngraph::descriptor::TensorView& tv)
+            LayoutDescriptor::LayoutDescriptor(const ngraph::descriptor::Tensor& tv)
                 : TensorLayout(tv)
                 , m_offset(0)
-                , m_size(ngraph::shape_size(tv.get_shape()))
                 , m_mkldnn_md(LayoutDescriptor::DummyDesc)
             {
                 auto shape = get_shape();

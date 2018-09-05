@@ -37,7 +37,6 @@ namespace ngraph
             public:
                 LayoutDescriptor(const ngraph::descriptor::TensorView& tv);
                 ~LayoutDescriptor() override {}
-                size_t get_size() override { return m_size; }
                 virtual size_t get_allocated_size() override { return m_mkldnn_memory_size; }
                 size_t get_offset() const { return m_offset; }
                 size_t get_index_offset(const std::vector<size_t>& indices) override;
@@ -59,7 +58,6 @@ namespace ngraph
                 // Native row-major layout for now
                 Strides m_strides;
                 size_t m_offset;
-                size_t m_size;
 
                 // For tensor views that can be tracked with MKLDNN memory
                 // descriptors, this holds the physical layout information
