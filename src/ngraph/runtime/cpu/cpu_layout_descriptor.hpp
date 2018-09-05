@@ -23,7 +23,7 @@
 
 #include <mkldnn.hpp>
 
-#include "ngraph/descriptor/layout/tensor_view_layout.hpp"
+#include "ngraph/descriptor/layout/tensor_layout.hpp"
 #include "ngraph/shape.hpp"
 
 namespace ngraph
@@ -32,7 +32,7 @@ namespace ngraph
     {
         namespace cpu
         {
-            class LayoutDescriptor : public ngraph::descriptor::layout::TensorViewLayout
+            class LayoutDescriptor : public ngraph::descriptor::layout::TensorLayout
             {
             public:
                 LayoutDescriptor(const ngraph::descriptor::TensorView& tv);
@@ -42,9 +42,9 @@ namespace ngraph
                 size_t get_offset() const { return m_offset; }
                 size_t get_index_offset(const std::vector<size_t>& indices) override;
 
-                const Strides& get_strides() const override { return m_strides; }
+                Strides get_strides() const override { return m_strides; }
                 void set_strides(Strides& strides) { m_strides = strides; }
-                bool operator==(const TensorViewLayout& other) const override;
+                bool operator==(const TensorLayout& other) const override;
 
                 const mkldnn::memory::desc& get_mkldnn_md() const { return m_mkldnn_md; }
                 void set_mkldnn_md(const mkldnn::memory::desc md);

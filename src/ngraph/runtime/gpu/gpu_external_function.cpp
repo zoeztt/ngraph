@@ -25,7 +25,7 @@
 #include <tuple>
 
 #include "ngraph/descriptor/input.hpp"
-#include "ngraph/descriptor/layout/dense_tensor_view_layout.hpp"
+#include "ngraph/descriptor/layout/dense_tensor_layout.hpp"
 #include "ngraph/descriptor/output.hpp"
 #include "ngraph/file_util.hpp"
 #include "ngraph/function.hpp"
@@ -275,7 +275,7 @@ void runtime::gpu::GPU_ExternalFunction::emit_header()
 #include <cudnn.h>
 
 #include "ngraph/descriptor/input.hpp"
-#include "ngraph/descriptor/layout/dense_tensor_view_layout.hpp"
+#include "ngraph/descriptor/layout/dense_tensor_layout.hpp"
 #include "ngraph/descriptor/output.hpp"
 #include "ngraph/file_util.hpp"
 #include "ngraph/function.hpp"
@@ -385,14 +385,12 @@ void runtime::gpu::GPU_ExternalFunction::emit_constant_declarations()
                 // get an allocator for transient per kernel gpu memory
                 runtime::gpu::GPUAllocator allocator =
                     m_shared_context->m_primitive_emitter->get_memory_allocator();
-                size_t idx = allocator.reserve_argspace(
-                    c->get_data_ptr(),
-                    tv->get_tensor().size() * tv->get_tensor().get_element_type().size());
-                m_writer << "static size_t " << tv->get_tensor().get_name() << "_idx = " << idx
-                         << ";\n";
-                m_writer << "static " << tv->get_tensor().get_element_type().c_type_string() << "* "
-                         << tv->get_tensor().get_name() << " = nullptr;\n";
-                m_variable_name_map[tv->get_tensor().get_name()] = tv->get_tensor().get_name();
+                size_t idx = allocator.reserve_argspace(c->get_data_ptr(),
+                                                        tv->size() * tv->get_element_type().size());
+                m_writer << "static size_t " << tv->get_name() << "_idx = " << idx << ";\n";
+                m_writer << "static " << tv->get_element_type().c_type_string() << "* "
+                         << tv->get_name() << " = nullptr;\n";
+                m_variable_name_map[tv->get_name()] = tv->get_name();
             }
         }
     }
@@ -413,10 +411,10 @@ void runtime::gpu::GPU_ExternalFunction::emit_constant_declarations()
                     {
                         shared_ptr<descriptor::TensorView> tv =
                             node->get_outputs()[0].get_tensor_view();
-                        m_writer << tv->get_tensor().get_name() << " = reinterpret_cast<"
-                                 << tv->get_tensor().get_element_type().c_type_string()
+                        m_writer << tv->get_name() << " = reinterpret_cast<"
+                                 << tv->get_element_type().c_type_string()
                                  << "*>(runtime::gpu::invoke_memory_primitive(m_runtime_context, "
-                                 << tv->get_tensor().get_name() << "_idx));\n";
+                                 << tv->get_name() << "_idx));\n";
                     }
                 }
             }
@@ -483,7 +481,7 @@ void runtime::gpu::GPU_ExternalFunction::emit_functions()
         for (shared_ptr<Node> op : current_function->get_results())
         {
             shared_ptr<descriptor::TensorView> tv = op->get_output_tensor_view();
-            output_names.insert(tv->get_tensor().get_name());
+            output_names.insert(tv->get_name());
         }
         set<descriptor::TensorView*> constants;
         for (shared_ptr<Node> node : m_function_ordered_ops.at(current_function))
@@ -518,7 +516,7 @@ void runtime::gpu::GPU_ExternalFunction::emit_functions()
                     string type = et.c_type_string();
                     stringstream ss;
                     ss << "((" << type << "*)(inputs[" << arg_index << "]))";
-                    m_variable_name_map[tv->get_tensor().get_name()] = ss.str();
+                    m_variable_name_map[tv->get_name()] = ss.str();
                     arg_index++;
                 }
             }
@@ -531,7 +529,7 @@ void runtime::gpu::GPU_ExternalFunction::emit_functions()
                 string type = tv->get_element_type().c_type_string();
                 stringstream ss;
                 ss << "((" << type << "*)(outputs[" << i << "]))";
-                m_variable_name_map[tv->get_tensor().get_name()] = ss.str();
+                m_variable_name_map[tv->get_name()] = ss.str();
 
                 // it should be safe to assign both descriptors to one output*
                 // since needs_copy == false makes `op::Result` an nop
@@ -540,7 +538,7 @@ void runtime::gpu::GPU_ExternalFunction::emit_functions()
                 {
                     shared_ptr<descriptor::TensorView> itv =
                         res->get_inputs().at(0).get_output().get_tensor_view();
-                    m_variable_name_map[itv->get_tensor().get_name()] = ss.str();
+                    m_variable_name_map[itv->get_name()] = ss.str();
                 }
             }
 
@@ -562,17 +560,15 @@ void runtime::gpu::GPU_ExternalFunction::emit_functions()
                 {
                     const descriptor::Output& output = input.get_output();
                     shared_ptr<descriptor::TensorView> tv = output.get_tensor_view();
-                    in.push_back(GPU_TensorViewWrapper(
-                        tv, m_variable_name_map[tv->get_tensor().get_name()]));
-                    node_input_names.emplace_back(tv->get_tensor().get_name());
+                    in.push_back(GPU_TensorViewWrapper(tv, m_variable_name_map[tv->get_name()]));
+                    node_input_names.emplace_back(tv->get_name());
                 }
                 vector<GPU_TensorViewWrapper> out;
                 for (const descriptor::Output& output : node->get_outputs())
                 {
                     shared_ptr<descriptor::TensorView> tv = output.get_tensor_view();
-                    out.push_back(GPU_TensorViewWrapper(
-                        tv, m_variable_name_map[tv->get_tensor().get_name()]));
-                    node_output_names.emplace_back(tv->get_tensor().get_name());
+                    out.push_back(GPU_TensorViewWrapper(tv, m_variable_name_map[tv->get_name()]));
+                    node_output_names.emplace_back(tv->get_name());
                 }
 
                 // Emit function description comment
@@ -647,7 +643,7 @@ void runtime::gpu::GPU_ExternalFunction::compile()
     m_pass_manager.register_pass<ngraph::pass::ResultCopyElimination>();
 
     m_pass_manager
-        .register_pass<ngraph::pass::AssignLayout<descriptor::layout::DenseTensorViewLayout>>();
+        .register_pass<ngraph::pass::AssignLayout<descriptor::layout::DenseTensorLayout>>();
 
     m_pass_manager.register_pass<runtime::gpu::pass::GPULayout>(this);
     m_pass_manager.register_pass<ngraph::pass::Liveness>();

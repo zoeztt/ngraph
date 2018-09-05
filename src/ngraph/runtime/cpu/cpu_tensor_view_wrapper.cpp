@@ -15,7 +15,7 @@
 //*****************************************************************************
 
 #include "ngraph/runtime/cpu/cpu_tensor_view_wrapper.hpp"
-#include "ngraph/descriptor/layout/tensor_view_layout.hpp"
+#include "ngraph/descriptor/layout/tensor_layout.hpp"
 #include "ngraph/descriptor/tensor.hpp"
 
 using namespace std;
@@ -30,29 +30,29 @@ runtime::cpu::TensorViewWrapper::TensorViewWrapper(const shared_ptr<descriptor::
 
 size_t runtime::cpu::TensorViewWrapper::get_size() const
 {
-    return m_tensor_view->get_tensor_view_layout()->get_size();
+    return m_tensor_view->get_tensor_layout()->get_size();
 }
 
 const Shape& runtime::cpu::TensorViewWrapper::get_shape() const
 {
-    return m_tensor_view->get_tensor_view_layout()->get_shape();
+    return m_tensor_view->get_tensor_layout()->get_shape();
 }
 
-const Strides& runtime::cpu::TensorViewWrapper::get_strides() const
+Strides runtime::cpu::TensorViewWrapper::get_strides() const
 {
-    return m_tensor_view->get_tensor_view_layout()->get_strides();
+    return m_tensor_view->get_tensor_layout()->get_strides();
 }
 
 const element::Type& runtime::cpu::TensorViewWrapper::get_element_type() const
 {
-    return m_tensor_view->get_tensor_view_layout()->get_element_type();
+    return m_tensor_view->get_tensor_layout()->get_element_type();
 }
 
 const std::string& runtime::cpu::TensorViewWrapper::get_name() const
 {
     if (m_alias.empty())
     {
-        return m_tensor_view->get_tensor().get_name();
+        return m_tensor_view->get_name();
     }
     else
     {

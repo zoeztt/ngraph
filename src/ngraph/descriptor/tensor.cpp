@@ -15,7 +15,7 @@
 //*****************************************************************************
 
 #include "ngraph/descriptor/tensor.hpp"
-#include "ngraph/descriptor/layout/tensor_view_layout.hpp"
+#include "ngraph/descriptor/layout/tensor_layout.hpp"
 #include "ngraph/node.hpp"
 
 using namespace ngraph;
@@ -34,10 +34,6 @@ void descriptor::Tensor::set_tensor_view_type(const element::Type& element_type,
 {
     m_shape = shape;
     m_element_type = element_type;
-    if (nullptr != m_tensor_view_layout)
-    {
-        m_tensor_view_layout->set_tensor_view_type(element_type, shape);
-    }
 }
 
 void descriptor::Tensor::set_pool_offset(size_t offset)
@@ -52,7 +48,7 @@ size_t descriptor::Tensor::get_pool_offset() const
 
 size_t descriptor::Tensor::size() const
 {
-    if (auto tvl = get_tensor_view_layout())
+    if (auto tvl = get_tensor_layout())
     {
         return tvl->get_allocated_size();
     }

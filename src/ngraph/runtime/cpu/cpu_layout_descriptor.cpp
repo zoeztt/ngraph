@@ -31,7 +31,7 @@ namespace ngraph
                                             mkldnn::memory::format::format_undef);
 
             LayoutDescriptor::LayoutDescriptor(const ngraph::descriptor::TensorView& tv)
-                : TensorViewLayout(tv)
+                : TensorLayout(tv)
                 , m_offset(0)
                 , m_size(ngraph::shape_size(tv.get_shape()))
                 , m_mkldnn_md(LayoutDescriptor::DummyDesc)
@@ -63,7 +63,7 @@ namespace ngraph
             }
 
             bool LayoutDescriptor::
-                operator==(const ngraph::descriptor::layout::TensorViewLayout& other) const
+                operator==(const ngraph::descriptor::layout::TensorLayout& other) const
             {
                 const LayoutDescriptor* p_other = dynamic_cast<const LayoutDescriptor*>(&other);
                 if (!p_other)
