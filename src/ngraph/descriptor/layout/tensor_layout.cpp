@@ -21,14 +21,14 @@
 using namespace ngraph;
 
 descriptor::layout::TensorLayout::TensorLayout(const descriptor::Tensor& tensor)
-    : m_tensor(tensor)
+    : m_element_type(tensor.get_element_type())
     , m_shape(tensor.get_shape())
 {
 }
 
 const element::Type& descriptor::layout::TensorLayout::get_element_type() const
 {
-    return m_tensor.get_element_type();
+    return m_element_type;
 }
 
 const Shape& descriptor::layout::TensorLayout::get_shape() const
