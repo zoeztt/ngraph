@@ -31,6 +31,7 @@ set (SRC
     descriptor/tensor.cpp
     file_util.cpp
     function.cpp
+    gp/gp_cf.cpp
     log.cpp
     node.cpp
     op/abs.cpp
