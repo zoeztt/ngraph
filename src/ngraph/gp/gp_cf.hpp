@@ -13,3 +13,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //*****************************************************************************
+
+
+#pragma once
+
+#include <memory.h>
+
+#include "ngraph/graph_util.hpp"
+#include "ngraph/log.hpp"
+
+
+namespace ngraph
+{
+    namespace gp
+    {
+
+        class cf
+        {
+            void calculate_cst(std::shared_ptr<Node> node);
+
+        };
+        
+    }
+}

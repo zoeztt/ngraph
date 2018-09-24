@@ -15,3 +15,11 @@
 //*****************************************************************************
 
 #include "gp/gp_cf.hpp"
+
+using namespace ngraph;
+using namespace std;
+
+void gp::cf::calculate_cst(std::shared_ptr<Node> node)
+{
+    
+}
