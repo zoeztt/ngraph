@@ -14,25 +14,7 @@
 // limitations under the License.
 //*****************************************************************************
 
+#include "pass/cf.hpp"
 
-#pragma once
-
-#include <memory.h>
-
-#include "ngraph/graph_util.hpp"
-#include "ngraph/log.hpp"
-
-
-namespace ngraph
-{
-    namespace gp
-    {
-
-        class CFRegistery
-        {
-            void calculate_cst(std::shared_ptr<Node> node);
-
-        };
-        
-    }
-}
+using namespace ngraph;
+using namespace std;

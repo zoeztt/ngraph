@@ -19,18 +19,22 @@
 
 #include <memory.h>
 
-#include "ngraph/graph_util.hpp"
+// #include "ngraph/graph_util.hpp"
+#include "ngraph/pass/pass.hpp"
 #include "ngraph/log.hpp"
 
 
 namespace ngraph
 {
-    namespace gp
+    namespace pass
     {
 
-        class CFRegistery
-        {
-            void calculate_cst(std::shared_ptr<Node> node);
+        class assign_c : public ngraph::pass::CallGraphPass
+        {   
+            public:
+
+                virtual bool
+                        run_on_call_graph(const std::list<std::shared_ptr<Node>>& nodes) override;
 
         };
         

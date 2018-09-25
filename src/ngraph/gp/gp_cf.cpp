@@ -19,7 +19,9 @@
 using namespace ngraph;
 using namespace std;
 
-void gp::cf::calculate_cst(std::shared_ptr<Node> node)
+void gp::CFRegistery::calculate_cst(std::shared_ptr<Node> node)
 {
+    NGRAPH_INFO << "begin of CFRegistery::calculate_cst "; 
     
+    NGRAPH_INFO << "end of CFRegistery::calculate_cst "; 
 }
