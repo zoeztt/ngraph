@@ -130,6 +130,7 @@ set (SRC
     pass/memory_layout.cpp
     pass/memory_visualize.cpp
     pass/nop_elimination.cpp
+    pass/quantization.cpp
     pass/pass.cpp
     pass/reshape_elimination.cpp
     pass/zero_dim_tensor_elimination.cpp

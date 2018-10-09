@@ -47,6 +47,7 @@ set(SRC
     util.cpp
     uuid.cpp
     zero_dim_tensor_elimination.cpp
+    quantization.cpp
 )
 
 if (NGRAPH_ONNX_IMPORT_ENABLE)
