@@ -16,6 +16,7 @@
 
 get_target_property(PYBIND11_INCLUDE_DIR libpybind11 INTERFACE_INCLUDE_DIRECTORIES)
 set(NGRAPH_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+set(PYNGRAPH_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(WRAPPER_SRC
     pyngraph/function.cpp
@@ -120,10 +121,6 @@ foreach(FILE ${WRAPPER_SRC})
 endforeach()
 string(REPLACE ";" ",\n           " WRAPPER_SRC_LIST "${TMP}")
 
-message(STATUS "******************** PYBIND11_INCLUDE_DIR ${PYBIND11_INCLUDE_DIR}")
-message(STATUS "******************** NGRAPH_INSTALL_PREFIX ${NGRAPH_INSTALL_PREFIX}")
-message(STATUS "******************** WRAPPER_SRC ${WRAPPER_SRC_LIST}")
+configure_file(setup.in.py ${CMAKE_CURRENT_BINARY_DIR}/../setup.py)
 
-configure_file(setup.in.py ${CMAKE_CURRENT_BINARY_DIR}/setup.py)
-
-# add_custom_command()
+add_custom_command(get_pybind11 DEPENDS libpybind11)
