@@ -21,47 +21,11 @@ import setuptools
 import os
 import distutils.ccompiler
 
-__version__ = '0.7.0'
-
-PYNGRAPH_SOURCE_DIR = os.path.abspath(os.path.dirname(__file__))
-NGRAPH_DEFAULT_INSTALL_DIR = os.environ.get('HOME')
+__version__ = '${NGRAPH_VERSION}'
 
 
-def find_ngraph_dist_dir():
-    """Return location of compiled ngraph library home."""
-    if os.environ.get('NGRAPH_CPP_BUILD_PATH'):
-        ngraph_dist_dir = os.environ.get('NGRAPH_CPP_BUILD_PATH')
-    else:
-        ngraph_dist_dir = os.path.join(NGRAPH_DEFAULT_INSTALL_DIR, 'ngraph_dist')
-
-    found = os.path.exists(os.path.join(ngraph_dist_dir, 'include/ngraph'))
-    if not found:
-        print("Cannot find nGraph library in {} make sure that "
-              "NGRAPH_CPP_BUILD_PATH is set correctly".format(ngraph_dist_dir))
-        sys.exit(1)
-    else:
-        print("nGraph library found in {}".format(ngraph_dist_dir))
-        return ngraph_dist_dir
-
-
-def find_pybind_headers_dir():
-    if os.environ.get('PYBIND_HEADERS_PATH'):
-        pybind_headers_dir = os.environ.get('PYBIND_HEADERS_PATH')
-    else:
-        pybind_headers_dir = os.path.join(PYNGRAPH_SOURCE_DIR, 'pybind11')
-
-    found = os.path.exists(os.path.join(pybind_headers_dir, 'include/pybind11'))
-    if not found:
-        print("Cannot find pybind11 library in {} make sure that "
-              "PYBIND_HEADERS_PATH is set correctly".format(pybind_headers_dir))
-        sys.exit(1)
-    else:
-        print("pybind11 library found in {}".format(pybind_headers_dir))
-        return pybind_headers_dir
-
-
-NGRAPH_CPP_DIST_DIR = find_ngraph_dist_dir()
-PYBIND11_INCLUDE_DIR = find_pybind_headers_dir() + "/include"
+NGRAPH_CPP_DIST_DIR = "${NGRAPH_INSTALL_PREFIX}"
+PYBIND11_INCLUDE_DIR = "${PYBIND11_INCLUDE_DIR}"
 NGRAPH_CPP_INCLUDE_DIR = NGRAPH_CPP_DIST_DIR + "/include"
 NGRAPH_CPP_LIBRARY_DIR = NGRAPH_CPP_DIST_DIR + "/lib"
 
@@ -122,102 +86,7 @@ def cpp_flag(compiler):
                            'is needed!')
 
 
-sources = ['pyngraph/function.cpp',
-           'pyngraph/serializer.cpp',
-           'pyngraph/node.cpp',
-           'pyngraph/node_vector.cpp',
-           'pyngraph/onnx_import/onnx_import.cpp',
-           'pyngraph/shape.cpp',
-           'pyngraph/strides.cpp',
-           'pyngraph/coordinate_diff.cpp',
-           'pyngraph/axis_set.cpp',
-           'pyngraph/axis_vector.cpp',
-           'pyngraph/coordinate.cpp',
-           'pyngraph/pyngraph.cpp',
-           'pyngraph/util.cpp',
-           'pyngraph/ops/util/arithmetic_reduction.cpp',
-           'pyngraph/ops/util/binary_elementwise_comparison.cpp',
-           'pyngraph/ops/util/op_annotations.cpp',
-           'pyngraph/ops/util/binary_elementwise_arithmetic.cpp',
-           'pyngraph/ops/util/binary_elementwise_logical.cpp',
-           'pyngraph/ops/util/regmodule_pyngraph_op_util.cpp',
-           'pyngraph/ops/util/unary_elementwise_arithmetic.cpp',
-           'pyngraph/ops/util/index_reduction.cpp',
-           'pyngraph/ops/abs.cpp',
-           'pyngraph/ops/acos.cpp',
-           'pyngraph/ops/add.cpp',
-           'pyngraph/ops/and.cpp',
-           'pyngraph/ops/argmax.cpp',
-           'pyngraph/ops/argmin.cpp',
-           'pyngraph/ops/asin.cpp',
-           'pyngraph/ops/atan.cpp',
-           'pyngraph/ops/avg_pool.cpp',
-           'pyngraph/ops/broadcast.cpp',
-           'pyngraph/ops/concat.cpp',
-           'pyngraph/ops/constant.cpp',
-           'pyngraph/ops/convert.cpp',
-           'pyngraph/ops/convolution.cpp',
-           'pyngraph/ops/cos.cpp',
-           'pyngraph/ops/cosh.cpp',
-           'pyngraph/ops/ceiling.cpp',
-           'pyngraph/ops/divide.cpp',
-           'pyngraph/ops/dot.cpp',
-           'pyngraph/ops/equal.cpp',
-           'pyngraph/ops/exp.cpp',
-           'pyngraph/ops/floor.cpp',
-           'pyngraph/ops/greater.cpp',
-           'pyngraph/ops/greater_eq.cpp',
-           'pyngraph/ops/less.cpp',
-           'pyngraph/ops/less_eq.cpp',
-           'pyngraph/ops/log.cpp',
-           'pyngraph/ops/lrn.cpp',
-           'pyngraph/ops/maximum.cpp',
-           'pyngraph/ops/max.cpp',
-           'pyngraph/ops/product.cpp',
-           'pyngraph/ops/max_pool.cpp',
-           'pyngraph/ops/minimum.cpp',
-           'pyngraph/ops/multiply.cpp',
-           'pyngraph/ops/negative.cpp',
-           'pyngraph/ops/not.cpp',
-           'pyngraph/ops/not_equal.cpp',
-           'pyngraph/ops/op.cpp',
-           'pyngraph/ops/one_hot.cpp',
-           'pyngraph/ops/or.cpp',
-           'pyngraph/ops/pad.cpp',
-           'pyngraph/ops/parameter.cpp',
-           'pyngraph/ops/parameter_vector.cpp',
-           'pyngraph/ops/power.cpp',
-           'pyngraph/ops/reduce.cpp',
-           'pyngraph/ops/regmodule_pyngraph_op.cpp',
-           'pyngraph/ops/relu.cpp',
-           'pyngraph/ops/replace_slice.cpp',
-           'pyngraph/ops/reshape.cpp',
-           'pyngraph/ops/reverse.cpp',
-           'pyngraph/ops/select.cpp',
-           'pyngraph/ops/sign.cpp',
-           'pyngraph/ops/sin.cpp',
-           'pyngraph/ops/sinh.cpp',
-           'pyngraph/ops/slice.cpp',
-           'pyngraph/ops/sqrt.cpp',
-           'pyngraph/ops/subtract.cpp',
-           'pyngraph/ops/sum.cpp',
-           'pyngraph/ops/tan.cpp',
-           'pyngraph/ops/tanh.cpp',
-           'pyngraph/ops/topk.cpp',
-           'pyngraph/ops/allreduce.cpp',
-           'pyngraph/ops/function_call.cpp',
-           'pyngraph/ops/get_output_element.cpp',
-           'pyngraph/ops/min.cpp',
-           'pyngraph/ops/batch_norm.cpp',
-           'pyngraph/ops/softmax.cpp',
-           'pyngraph/runtime/backend.cpp',
-           'pyngraph/runtime/regmodule_pyngraph_runtime.cpp',
-           'pyngraph/runtime/tensor.cpp',
-           'pyngraph/passes/manager.cpp',
-           'pyngraph/passes/regmodule_pyngraph_passes.cpp',
-           'pyngraph/types/element_type.cpp',
-           'pyngraph/types/regmodule_pyngraph_types.cpp',
-           ]
+sources = [${WRAPPER_SRC_LIST}]
 
 sources = [PYNGRAPH_SOURCE_DIR + "/" + source for source in sources]
 
