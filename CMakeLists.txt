@@ -96,6 +96,7 @@ option(NGRAPH_DISTRIBUTED_ENABLE "Add distributed mode to the CPU backend" FALSE
 option(NGRAPH_DEBUG_ENABLE "Enable output for NGRAPH_DEBUG statements" FALSE)
 option(NGRAPH_ONNX_IMPORT_ENABLE "Enable ONNX importer" FALSE)
 option(NGRAPH_DEX_ONLY "Build CPU DEX without codegen" FALSE)
+option(NGRAPH_PYTHON_ENABLE "Build nGraph python bindings" FALSE)
 
 if (NGRAPH_ONNX_IMPORT_ENABLE)
     option(NGRAPH_USE_SYSTEM_PROTOBUF "Use system provided Protobuf shared object" FALSE)
@@ -294,3 +295,6 @@ if (NGRAPH_DOC_BUILD_ENABLE)
     add_subdirectory(doc)
 endif()
 
+if (NGRAPH_PYTHON_ENABLE)
+    add_subdirectory(python)
+endif()
