@@ -29,6 +29,83 @@ using namespace ngraph;
 
 static default_random_engine s_random_engine;
 
+template <>
+void get_range(char& lower, char& upper)
+{
+    lower = 0;
+    upper = 1;
+}
+
+template <>
+void get_range(float& lower, float& upper)
+{
+    lower = -1;
+    upper = 1;
+}
+
+template <>
+void get_range(double& lower, double& upper)
+{
+    lower = -1;
+    upper = 1;
+}
+
+template <>
+void get_range(int8_t& lower, int8_t& upper)
+{
+    lower = -1;
+    upper = 1;
+}
+
+template <>
+void get_range(int16_t& lower, int16_t& upper)
+{
+    lower = -1;
+    upper = 1;
+}
+
+template <>
+void get_range(int32_t& lower, int32_t& upper)
+{
+    lower = 0;
+    upper = 1;
+}
+
+template <>
+void get_range(int64_t& lower, int64_t& upper)
+{
+    lower = -1;
+    upper = 1;
+}
+
+template <>
+void get_range(uint8_t& lower, uint8_t& upper)
+{
+    lower = 0;
+    upper = 1;
+}
+
+template <>
+void get_range(uint16_t& lower, uint16_t& upper)
+{
+    lower = 0;
+    upper = 1;
+}
+
+template <>
+void get_range(uint32_t& lower, uint32_t& upper)
+{
+    lower = 0;
+    upper = 1;
+}
+
+template <>
+void get_range(uint64_t& lower, uint64_t& upper)
+{
+    lower = 0;
+    upper = 1;
+}
+
 template <typename T>
 void init_int_tv(shared_ptr<runtime::Tensor> tv, T min, T max)
 {
@@ -99,47 +176,80 @@ static void random_init(shared_ptr<runtime::Tensor> tv)
     element::Type et = tv->get_element_type();
     if (et == element::boolean)
     {
-        init_int_tv<char>(tv, 0, 1);
+        char lower;
+        char upper;
+        get_range<char>(lower, upper);
+        init_int_tv<char>(tv, lower, upper);
     }
     else if (et == element::f32)
     {
-        init_real_tv<float>(tv, -1, 1);
+        float lower;
+        float upper;
+        get_range<float>(lower, upper);
+        init_real_tv<float>(tv, lower, upper);
     }
     else if (et == element::f64)
     {
-        init_real_tv<double>(tv, -1, 1);
+        double lower;
+        double upper;
+        get_range<double>(lower, upper);
+        init_real_tv<double>(tv, lower, upper);
     }
     else if (et == element::i8)
     {
-        init_int_tv<int8_t>(tv, -1, 1);
+        int8_t lower;
+        int8_t upper;
+        get_range<int8_t>(lower, upper);
+        init_int_tv<int8_t>(tv, lower, upper);
     }
     else if (et == element::i16)
     {
-        init_int_tv<int16_t>(tv, -1, 1);
+        int16_t lower;
+        int16_t upper;
+        get_range<int16_t>(lower, upper);
+        init_int_tv<int16_t>(tv, lower, upper);
     }
     else if (et == element::i32)
     {
-        init_int_tv<int32_t>(tv, 0, 1);
+        int32_t lower;
+        int32_t upper;
+        get_range<int32_t>(lower, upper);
+        init_int_tv<int32_t>(tv, lower, upper);
     }
     else if (et == element::i64)
     {
-        init_int_tv<int64_t>(tv, -1, 1);
+        int64_t lower;
+        int64_t upper;
+        get_range<int64_t>(lower, upper);
+        init_int_tv<int64_t>(tv, lower, upper);
     }
     else if (et == element::u8)
     {
-        init_int_tv<uint8_t>(tv, 0, 1);
+        uint8_t lower;
+        uint8_t upper;
+        get_range<uint8_t>(lower, upper);
+        init_int_tv<uint8_t>(tv, lower, upper);
     }
     else if (et == element::u16)
     {
-        init_int_tv<uint16_t>(tv, 0, 1);
+        uint16_t lower;
+        uint16_t upper;
+        get_range<uint16_t>(lower, upper);
+        init_int_tv<uint16_t>(tv, lower, upper);
     }
     else if (et == element::u32)
     {
-        init_int_tv<uint32_t>(tv, 0, 1);
+        uint32_t lower;
+        uint32_t upper;
+        get_range<uint32_t>(lower, upper);
+        init_int_tv<uint32_t>(tv, lower, upper);
     }
     else if (et == element::u64)
     {
-        init_int_tv<uint64_t>(tv, 0, 1);
+        uint64_t lower;
+        uint64_t upper;
+        get_range<uint64_t>(lower, upper);
+        init_int_tv<uint64_t>(tv, lower, upper);
     }
     else
     {
@@ -240,4 +350,79 @@ vector<runtime::PerformanceCounter> run_benchmark(shared_ptr<Function> f,
 
     vector<runtime::PerformanceCounter> perf_data = backend->get_performance_data(f);
     return perf_data;
+}
+
+void get_range_string(const Node* n, string& lower, string& upper)
+{
+    element::Type et = n->get_element_type();
+    if (et == element::boolean)
+    {
+        char lower;
+        char upper;
+        get_range<char>(lower, upper);
+    }
+    else if (et == element::f32)
+    {
+        float lower;
+        float upper;
+        get_range<float>(lower, upper);
+    }
+    else if (et == element::f64)
+    {
+        double lower;
+        double upper;
+        get_range<double>(lower, upper);
+    }
+    else if (et == element::i8)
+    {
+        int8_t lower;
+        int8_t upper;
+        get_range<int8_t>(lower, upper);
+    }
+    else if (et == element::i16)
+    {
+        int16_t lower;
+        int16_t upper;
+        get_range<int16_t>(lower, upper);
+    }
+    else if (et == element::i32)
+    {
+        int32_t lower;
+        int32_t upper;
+        get_range<int32_t>(lower, upper);
+    }
+    else if (et == element::i64)
+    {
+        int64_t lower;
+        int64_t upper;
+        get_range<int64_t>(lower, upper);
+    }
+    else if (et == element::u8)
+    {
+        uint8_t lower;
+        uint8_t upper;
+        get_range<uint8_t>(lower, upper);
+    }
+    else if (et == element::u16)
+    {
+        uint16_t lower;
+        uint16_t upper;
+        get_range<uint16_t>(lower, upper);
+    }
+    else if (et == element::u32)
+    {
+        uint32_t lower;
+        uint32_t upper;
+        get_range<uint32_t>(lower, upper);
+    }
+    else if (et == element::u64)
+    {
+        uint64_t lower;
+        uint64_t upper;
+        get_range<uint64_t>(lower, upper);
+    }
+    else
+    {
+        throw runtime_error("unsupported type");
+    }
 }

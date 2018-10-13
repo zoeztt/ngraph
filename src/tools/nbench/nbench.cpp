@@ -176,7 +176,8 @@ element::Type get_op_element_type(const Node& op)
 
 int main(int argc, char** argv)
 {
-    string model_arg;
+    string input;
+    string output;
     string backend;
     string directory;
     int iterations = 10;
@@ -186,17 +187,26 @@ int main(int argc, char** argv)
     bool visualize = false;
     int warmup_iterations = 1;
     bool copy_data = true;
+    bool generate_config = false;
 
     for (size_t i = 1; i < argc; i++)
     {
         string arg = argv[i];
-        if (arg == "-f" || arg == "--file")
+        if (arg == "-f" || arg == "--file" || arg == "-i" || arg == "--input")
         {
-            model_arg = argv[++i];
+            input = argv[++i];
         }
         else if (arg == "-b" || arg == "--backend")
         {
             backend = argv[++i];
+        }
+        else if (arg == "--generate_config")
+        {
+            generate_config = true;
+        }
+        else if (arg == "-o" || arg == "--output")
+        {
+            output = argv[++i];
         }
         else if (arg == "-i" || arg == "--iterations")
         {
@@ -248,9 +258,9 @@ int main(int argc, char** argv)
             failed = true;
         }
     }
-    if (!model_arg.empty() && !file_util::exists(model_arg))
+    if (!input.empty() && !file_util::exists(input))
     {
-        cout << "File " << model_arg << " not found\n";
+        cout << "File " << input << " not found\n";
         failed = true;
     }
     else if (!directory.empty() && !file_util::exists(directory))
@@ -258,7 +268,7 @@ int main(int argc, char** argv)
         cout << "Directory " << directory << " not found\n";
         failed = true;
     }
-    else if (directory.empty() && model_arg.empty())
+    else if (directory.empty() && input.empty())
     {
         cout << "Either file or directory must be specified\n";
         failed = true;
@@ -287,6 +297,33 @@ OPTIONS
         return 1;
     }
 
+    if (generate_config)
+    {
+        if (output.empty())
+        {
+            cout << "output file required for --generate_config\n";
+            return 0;
+        }
+        ofstream f(output);
+        if (!f)
+        {
+            cout << "failed to open output file '" << output << "'\n";
+            return 0;
+        }
+        shared_ptr<Function> func = deserialize(input);
+        for (const shared_ptr<Node>& node : func->get_ordered_ops())
+        {
+            string name = node->get_name();
+            string op_name = name.substr(0, name.find('_'));
+            if (op_name == "Parameter")
+            {
+                f << name << ": " << node->get_element_type().c_type_string();
+                f << "\n";
+            }
+        }
+        return 0;
+    }
+
     vector<string> models;
     if (!directory.empty())
     {
@@ -303,7 +340,7 @@ OPTIONS
     else
     {
         // Error case where model is missing already checked above
-        models.push_back(model_arg);
+        models.push_back(input);
     }
 
     vector<PerfShape> aggregate_perf_data;
