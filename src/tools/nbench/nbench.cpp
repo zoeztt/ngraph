@@ -318,6 +318,10 @@ OPTIONS
             if (op_name == "Parameter")
             {
                 f << name << ": " << node->get_element_type().c_type_string();
+                string lower;
+                string upper;
+                get_range_string(node.get(), lower, upper);
+                f << " " << lower << " " << upper;
                 f << "\n";
             }
         }

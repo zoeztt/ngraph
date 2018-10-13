@@ -357,69 +357,91 @@ void get_range_string(const Node* n, string& lower, string& upper)
     element::Type et = n->get_element_type();
     if (et == element::boolean)
     {
-        char lower;
-        char upper;
-        get_range<char>(lower, upper);
+        char l;
+        char u;
+        get_range<char>(l, u);
+        lower = to_string(l);
+        upper = to_string(u);
     }
     else if (et == element::f32)
     {
-        float lower;
-        float upper;
-        get_range<float>(lower, upper);
+        float l;
+        float u;
+        get_range<float>(l, u);
+        lower = to_string(l);
+        upper = to_string(u);
     }
     else if (et == element::f64)
     {
-        double lower;
-        double upper;
-        get_range<double>(lower, upper);
+        double l;
+        double u;
+        get_range<double>(l, u);
+        lower = to_string(l);
+        upper = to_string(u);
     }
     else if (et == element::i8)
     {
-        int8_t lower;
-        int8_t upper;
-        get_range<int8_t>(lower, upper);
+        int8_t l;
+        int8_t u;
+        get_range<int8_t>(l, u);
+        lower = to_string(l);
+        upper = to_string(u);
     }
     else if (et == element::i16)
     {
-        int16_t lower;
-        int16_t upper;
-        get_range<int16_t>(lower, upper);
+        int16_t l;
+        int16_t u;
+        get_range<int16_t>(l, u);
+        lower = to_string(l);
+        upper = to_string(u);
     }
     else if (et == element::i32)
     {
-        int32_t lower;
-        int32_t upper;
-        get_range<int32_t>(lower, upper);
+        int32_t l;
+        int32_t u;
+        get_range<int32_t>(l, u);
+        lower = to_string(l);
+        upper = to_string(u);
     }
     else if (et == element::i64)
     {
-        int64_t lower;
-        int64_t upper;
-        get_range<int64_t>(lower, upper);
+        int64_t l;
+        int64_t u;
+        get_range<int64_t>(l, u);
+        lower = to_string(l);
+        upper = to_string(u);
     }
     else if (et == element::u8)
     {
-        uint8_t lower;
-        uint8_t upper;
-        get_range<uint8_t>(lower, upper);
+        uint8_t l;
+        uint8_t u;
+        get_range<uint8_t>(l, u);
+        lower = to_string(l);
+        upper = to_string(u);
     }
     else if (et == element::u16)
     {
-        uint16_t lower;
-        uint16_t upper;
-        get_range<uint16_t>(lower, upper);
+        uint16_t l;
+        uint16_t u;
+        get_range<uint16_t>(l, u);
+        lower = to_string(l);
+        upper = to_string(u);
     }
     else if (et == element::u32)
     {
-        uint32_t lower;
-        uint32_t upper;
-        get_range<uint32_t>(lower, upper);
+        uint32_t l;
+        uint32_t u;
+        get_range<uint32_t>(l, u);
+        lower = to_string(l);
+        upper = to_string(u);
     }
     else if (et == element::u64)
     {
-        uint64_t lower;
-        uint64_t upper;
-        get_range<uint64_t>(lower, upper);
+        uint64_t l;
+        uint64_t u;
+        get_range<uint64_t>(l, u);
+        lower = to_string(l);
+        upper = to_string(u);
     }
     else
     {
