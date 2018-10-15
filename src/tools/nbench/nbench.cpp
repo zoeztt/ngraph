@@ -22,8 +22,10 @@
 
 #include <fstream>
 #include <iomanip>
+#include <regex>
 
 #include "benchmark.hpp"
+#include "default_values.hpp"
 #include "ngraph/except.hpp"
 #include "ngraph/file_util.hpp"
 #include "ngraph/graph_util.hpp"
@@ -32,7 +34,6 @@
 #include "ngraph/runtime/backend.hpp"
 #include "ngraph/serializer.hpp"
 #include "ngraph/util.hpp"
-#include "default_values.hpp"
 
 using namespace std;
 using namespace ngraph;
@@ -181,6 +182,7 @@ int main(int argc, char** argv)
     string output;
     string backend;
     string directory;
+    string config_file;
     int iterations = 10;
     bool failed = false;
     bool statistics = false;
@@ -204,6 +206,10 @@ int main(int argc, char** argv)
         else if (arg == "--generate_config")
         {
             generate_config = true;
+        }
+        else if (arg == "--config")
+        {
+            config_file = argv[++i];
         }
         else if (arg == "-o" || arg == "--output")
         {
@@ -259,19 +265,11 @@ int main(int argc, char** argv)
             failed = true;
         }
     }
-    if (!input.empty() && !file_util::exists(input))
+
+    // Check user input
+    if (config_file.empty() && input.empty() && directory.empty())
     {
-        cout << "File " << input << " not found\n";
-        failed = true;
-    }
-    else if (!directory.empty() && !file_util::exists(directory))
-    {
-        cout << "Directory " << directory << " not found\n";
-        failed = true;
-    }
-    else if (directory.empty() && input.empty())
-    {
-        cout << "Either file or directory must be specified\n";
+        cout << "Must specify --input, --config, or --directory\n";
         failed = true;
     }
 
@@ -285,15 +283,18 @@ SYNOPSIS
         nbench [-f <filename>] [-b <backend>] [-i <iterations>]
 
 OPTIONS
-        -f|--file                 Serialized model file
+        -f|--file|--i|--input     Serialized model file
+        -o|--output               Output file
         -b|--backend              Backend to use (default: CPU)
         -d|--directory            Directory to scan for models. All models are benchmarked.
         -i|--iterations           Iterations (default: 10)
         -s|--statistics           Display op stastics
         -v|--visualize            Visualize a model (WARNING: requires GraphViz installed)
-        --timing_detail           Gather detailed timing
         -w|--warmup_iterations    Number of warm-up iterations
+        --timing_detail           Gather detailed timing
         --no_copy_data            Disable copy of input/result data every iteration
+        --config                  Path to config file
+        --generate_config         Generate a default config file
 )###";
         return 1;
     }
@@ -311,6 +312,8 @@ OPTIONS
             cout << "failed to open output file '" << output << "'\n";
             return 0;
         }
+        f << "# nbench config file\n";
+        f << "input: " << input << "\n";
         shared_ptr<Function> func = deserialize(input);
         for (const shared_ptr<Node>& node : func->get_ordered_ops())
         {
@@ -318,7 +321,7 @@ OPTIONS
             string op_name = name.substr(0, name.find('_'));
             if (op_name == "Parameter")
             {
-                f << name << ": " << node->get_element_type().c_type_string();
+                f << "parameter: " << name << " " << node->get_element_type().c_type_string();
                 string lower;
                 string upper;
                 get_range_string(node.get(), lower, upper);
@@ -341,6 +344,41 @@ OPTIONS
                                      }
                                  },
                                  true);
+    }
+    else if (!config_file.empty())
+    {
+        regex input_regex("input: +(.*)");
+        regex parameter_regex("parameter: +(.*) +(.*) +(.*) +(.*)");
+        ifstream f(config_file);
+        if (f)
+        {
+            string line;
+            while (getline(f, line))
+            {
+                if (line.size() > 0 && line[0] == '#')
+                {
+                    // Comment
+                }
+                else
+                {
+                    smatch sm;
+                    if (regex_match(line, sm, input_regex))
+                    {
+                        string file = sm[1];
+                        NGRAPH_INFO << "input file: " << file;
+                    }
+                    else if (regex_match(line, sm, parameter_regex))
+                    {
+                        string name = sm[1];
+                        string type = sm[2];
+                        string lower = sm[3];
+                        string upper = sm[4];
+                        NGRAPH_INFO << "parameter: " << name << ", " << type << ", " << lower
+                                    << ", " << upper;
+                    }
+                }
+            }
+        }
     }
     else
     {
