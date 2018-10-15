@@ -221,6 +221,10 @@ if (NGRAPH_ONNX_IMPORT_ENABLE)
     target_link_libraries(ngraph PRIVATE onnx_import)
 endif()
 
+if (NGRAPH_PYTHON_ENABLE)
+    add_dependencies(ngraph ${CMAKE_BINARY_DIR}/setup.py)
+endif()
+
 #-----------------------------------------------------------------------------------------------
 # Installation logic...
 #-----------------------------------------------------------------------------------------------
