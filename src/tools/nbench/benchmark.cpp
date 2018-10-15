@@ -107,10 +107,13 @@ void get_range(uint64_t& lower, uint64_t& upper)
 }
 
 template <typename T>
-void init_int_tv(shared_ptr<runtime::Tensor> tv, T min, T max)
+void init_int_tv(shared_ptr<runtime::Tensor> tv)
 {
+    T lower;
+    T upper;
+    get_range<T>(lower, upper);
     size_t size = tv->get_element_count();
-    uniform_int_distribution<T> dist(min, max);
+    uniform_int_distribution<T> dist(lower, upper);
     vector<T> vec(size);
     for (T& element : vec)
     {
@@ -120,10 +123,13 @@ void init_int_tv(shared_ptr<runtime::Tensor> tv, T min, T max)
 }
 
 template <>
-void init_int_tv<char>(shared_ptr<runtime::Tensor> tv, char min, char max)
+void init_int_tv<char>(shared_ptr<runtime::Tensor> tv)
 {
+    char lower;
+    char upper;
+    get_range<char>(lower, upper);
     size_t size = tv->get_element_count();
-    uniform_int_distribution<int16_t> dist(static_cast<short>(min), static_cast<short>(max));
+    uniform_int_distribution<int16_t> dist(static_cast<short>(lower), static_cast<short>(upper));
     vector<char> vec(size);
     for (char& element : vec)
     {
@@ -133,10 +139,13 @@ void init_int_tv<char>(shared_ptr<runtime::Tensor> tv, char min, char max)
 }
 
 template <>
-void init_int_tv<int8_t>(shared_ptr<runtime::Tensor> tv, int8_t min, int8_t max)
+void init_int_tv<int8_t>(shared_ptr<runtime::Tensor> tv)
 {
+    int8_t lower;
+    int8_t upper;
+    get_range<int8_t>(lower, upper);
     size_t size = tv->get_element_count();
-    uniform_int_distribution<int16_t> dist(static_cast<short>(min), static_cast<short>(max));
+    uniform_int_distribution<int16_t> dist(static_cast<short>(lower), static_cast<short>(upper));
     vector<int8_t> vec(size);
     for (int8_t& element : vec)
     {
@@ -146,10 +155,13 @@ void init_int_tv<int8_t>(shared_ptr<runtime::Tensor> tv, int8_t min, int8_t max)
 }
 
 template <>
-void init_int_tv<uint8_t>(shared_ptr<runtime::Tensor> tv, uint8_t min, uint8_t max)
+void init_int_tv<uint8_t>(shared_ptr<runtime::Tensor> tv)
 {
+    uint8_t lower;
+    uint8_t upper;
+    get_range<uint8_t>(lower, upper);
     size_t size = tv->get_element_count();
-    uniform_int_distribution<int16_t> dist(static_cast<short>(min), static_cast<short>(max));
+    uniform_int_distribution<int16_t> dist(static_cast<short>(lower), static_cast<short>(upper));
     vector<uint8_t> vec(size);
     for (uint8_t& element : vec)
     {
@@ -159,10 +171,13 @@ void init_int_tv<uint8_t>(shared_ptr<runtime::Tensor> tv, uint8_t min, uint8_t m
 }
 
 template <typename T>
-void init_real_tv(shared_ptr<runtime::Tensor> tv, T min, T max)
+void init_real_tv(shared_ptr<runtime::Tensor> tv)
 {
+    T lower;
+    T upper;
+    get_range<T>(lower, upper);
     size_t size = tv->get_element_count();
-    uniform_real_distribution<T> dist(min, max);
+    uniform_real_distribution<T> dist(lower, upper);
     vector<T> vec(size);
     for (T& element : vec)
     {
@@ -176,80 +191,47 @@ static void random_init(shared_ptr<runtime::Tensor> tv)
     element::Type et = tv->get_element_type();
     if (et == element::boolean)
     {
-        char lower;
-        char upper;
-        get_range<char>(lower, upper);
-        init_int_tv<char>(tv, lower, upper);
+        init_int_tv<char>(tv);
     }
     else if (et == element::f32)
     {
-        float lower;
-        float upper;
-        get_range<float>(lower, upper);
-        init_real_tv<float>(tv, lower, upper);
+        init_real_tv<float>(tv);
     }
     else if (et == element::f64)
     {
-        double lower;
-        double upper;
-        get_range<double>(lower, upper);
-        init_real_tv<double>(tv, lower, upper);
+        init_real_tv<double>(tv);
     }
     else if (et == element::i8)
     {
-        int8_t lower;
-        int8_t upper;
-        get_range<int8_t>(lower, upper);
-        init_int_tv<int8_t>(tv, lower, upper);
+        init_int_tv<int8_t>(tv);
     }
     else if (et == element::i16)
     {
-        int16_t lower;
-        int16_t upper;
-        get_range<int16_t>(lower, upper);
-        init_int_tv<int16_t>(tv, lower, upper);
+        init_int_tv<int16_t>(tv);
     }
     else if (et == element::i32)
     {
-        int32_t lower;
-        int32_t upper;
-        get_range<int32_t>(lower, upper);
-        init_int_tv<int32_t>(tv, lower, upper);
+        init_int_tv<int32_t>(tv);
     }
     else if (et == element::i64)
     {
-        int64_t lower;
-        int64_t upper;
-        get_range<int64_t>(lower, upper);
-        init_int_tv<int64_t>(tv, lower, upper);
+        init_int_tv<int64_t>(tv);
     }
     else if (et == element::u8)
     {
-        uint8_t lower;
-        uint8_t upper;
-        get_range<uint8_t>(lower, upper);
-        init_int_tv<uint8_t>(tv, lower, upper);
+        init_int_tv<uint8_t>(tv);
     }
     else if (et == element::u16)
     {
-        uint16_t lower;
-        uint16_t upper;
-        get_range<uint16_t>(lower, upper);
-        init_int_tv<uint16_t>(tv, lower, upper);
+        init_int_tv<uint16_t>(tv);
     }
     else if (et == element::u32)
     {
-        uint32_t lower;
-        uint32_t upper;
-        get_range<uint32_t>(lower, upper);
-        init_int_tv<uint32_t>(tv, lower, upper);
+        init_int_tv<uint32_t>(tv);
     }
     else if (et == element::u64)
     {
-        uint64_t lower;
-        uint64_t upper;
-        get_range<uint64_t>(lower, upper);
-        init_int_tv<uint64_t>(tv, lower, upper);
+        init_int_tv<uint64_t>(tv);
     }
     else
     {
@@ -352,96 +334,62 @@ vector<runtime::PerformanceCounter> run_benchmark(shared_ptr<Function> f,
     return perf_data;
 }
 
+template <typename T>
+void get_range_string(string& lower, string& upper)
+{
+    T l;
+    T u;
+    get_range<T>(l, u);
+    lower = to_string(l);
+    upper = to_string(u);
+}
+
 void get_range_string(const Node* n, string& lower, string& upper)
 {
     element::Type et = n->get_element_type();
     if (et == element::boolean)
     {
-        char l;
-        char u;
-        get_range<char>(l, u);
-        lower = to_string(l);
-        upper = to_string(u);
+        get_range_string<char>(lower, upper);
     }
     else if (et == element::f32)
     {
-        float l;
-        float u;
-        get_range<float>(l, u);
-        lower = to_string(l);
-        upper = to_string(u);
+        get_range_string<float>(lower, upper);
     }
     else if (et == element::f64)
     {
-        double l;
-        double u;
-        get_range<double>(l, u);
-        lower = to_string(l);
-        upper = to_string(u);
+        get_range_string<double>(lower, upper);
     }
     else if (et == element::i8)
     {
-        int8_t l;
-        int8_t u;
-        get_range<int8_t>(l, u);
-        lower = to_string(l);
-        upper = to_string(u);
+        get_range_string<int8_t>(lower, upper);
     }
     else if (et == element::i16)
     {
-        int16_t l;
-        int16_t u;
-        get_range<int16_t>(l, u);
-        lower = to_string(l);
-        upper = to_string(u);
+        get_range_string<int16_t>(lower, upper);
     }
     else if (et == element::i32)
     {
-        int32_t l;
-        int32_t u;
-        get_range<int32_t>(l, u);
-        lower = to_string(l);
-        upper = to_string(u);
+        get_range_string<int32_t>(lower, upper);
     }
     else if (et == element::i64)
     {
-        int64_t l;
-        int64_t u;
-        get_range<int64_t>(l, u);
-        lower = to_string(l);
-        upper = to_string(u);
+        get_range_string<int64_t>(lower, upper);
     }
     else if (et == element::u8)
     {
-        uint8_t l;
-        uint8_t u;
-        get_range<uint8_t>(l, u);
-        lower = to_string(l);
-        upper = to_string(u);
+        get_range_string<uint8_t>(lower, upper);
     }
     else if (et == element::u16)
     {
-        uint16_t l;
-        uint16_t u;
-        get_range<uint16_t>(l, u);
-        lower = to_string(l);
-        upper = to_string(u);
+        get_range_string<uint16_t>(lower, upper);
     }
     else if (et == element::u32)
     {
-        uint32_t l;
-        uint32_t u;
-        get_range<uint32_t>(l, u);
-        lower = to_string(l);
-        upper = to_string(u);
+        get_range_string<uint32_t>(lower, upper);
     }
     else if (et == element::u64)
     {
-        uint64_t l;
-        uint64_t u;
-        get_range<uint64_t>(l, u);
-        lower = to_string(l);
-        upper = to_string(u);
+        get_range_string<uint64_t>(lower, upper);
     }
     else
     {
