@@ -32,6 +32,7 @@
 #include "ngraph/runtime/backend.hpp"
 #include "ngraph/serializer.hpp"
 #include "ngraph/util.hpp"
+#include "default_values.hpp"
 
 using namespace std;
 using namespace ngraph;

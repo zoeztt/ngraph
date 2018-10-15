@@ -35,11 +35,3 @@ std::vector<ngraph::runtime::PerformanceCounter> run_benchmark(std::shared_ptr<n
                                                                bool timing_detail,
                                                                int warmup_iterations,
                                                                bool copy_data);
-
-template <typename T>
-void get_range(T& lower, T& upper)
-{
-    throw std::runtime_error("Unsupported type");
-}
-
-void get_range_string(const ngraph::Node* n, std::string& lower, std::string& upper);

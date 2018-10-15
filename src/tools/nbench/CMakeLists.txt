@@ -17,6 +17,7 @@
 set (SRC
     nbench.cpp
     benchmark.cpp
+    default_values.cpp
 )
 
 add_executable(nbench ${SRC})
