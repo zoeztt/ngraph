@@ -29,3 +29,44 @@
 #include "ngraph/util.hpp"
 #include "util/ndarray.hpp"
 #include "util/test_tools.hpp"
+
+using namespace std;
+using namespace ngraph;
+
+class TestBackend
+{
+public:
+    TestBackend() {}
+    ~TestBackend() {}
+    bool compile(const shared_ptr<Function>& func)
+    {
+        if (m_function_map.find(func) == m_function_map.end())
+        {
+            // Clone function
+            FunctionInstance instance;
+            instance.m_function = clone_function(*func);
+
+            // Run placement pass
+            pass::Manager pass_manager;
+            pass_manager.run_passes(instance.m_function);
+        }
+        return true;
+    }
+
+    bool call_with_validate(const shared_ptr<Function>& func,
+                            const vector<shared_ptr<runtime::Tensor>>& outputs,
+                            const vector<shared_ptr<runtime::Tensor>>& inputs)
+    {
+        return true;
+    }
+
+protected:
+    class FunctionInstance
+    {
+    public:
+        shared_ptr<Function> m_function;
+        vector<shared_ptr<Function>> m_sub_functions;
+        unordered_map<shared_ptr<op::Parameter>, shared_ptr<op::Result>> m_map_parameter_to_result;
+    };
+    map<shared_ptr<Function>, FunctionInstance> m_function_map;
+};
