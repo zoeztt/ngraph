@@ -25,6 +25,7 @@
 #include "ngraph/ngraph.hpp"
 #include "ngraph/pass/assign_placement.hpp"
 #include "ngraph/pass/manager.hpp"
+#include "ngraph/runtime/backend.hpp"
 #include "ngraph/runtime/host_tensor.hpp"
 #include "ngraph/util.hpp"
 #include "util/ndarray.hpp"
@@ -33,7 +34,7 @@
 using namespace std;
 using namespace ngraph;
 
-class TestBackend
+class TestBackend : public runtime::Backend
 {
 public:
     TestBackend() {}
