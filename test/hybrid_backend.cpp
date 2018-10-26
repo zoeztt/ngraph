@@ -39,6 +39,15 @@ class TestBackend : public runtime::Backend
 public:
     TestBackend() {}
     ~TestBackend() {}
+    bool is_supported(const Node& node)
+    {
+        if (node.description() == "Add")
+        {
+            return true;
+        }
+
+        return false;
+    }
     bool compile(const shared_ptr<Function>& func)
     {
         if (m_function_map.find(func) == m_function_map.end())
