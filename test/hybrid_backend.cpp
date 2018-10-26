@@ -35,7 +35,7 @@
 using namespace std;
 using namespace ngraph;
 
-class TestBackend : public runtime::Backend
+class TestBackend
 {
 public:
     TestBackend() {}
@@ -100,6 +100,8 @@ TEST(Hybrid, abc)
     copy_data(a, test::NDArray<float, 2>({{1, 2}, {3, 4}}).get_vector());
     copy_data(b, test::NDArray<float, 2>({{5, 6}, {7, 8}}).get_vector());
     copy_data(c, test::NDArray<float, 2>({{9, 10}, {11, 12}}).get_vector());
+
+    auto backend_1 = make_shared<TestBackend>();
 
     // backend->call_with_validate(f, {result}, {a, b, c});
     // EXPECT_EQ(read_vector<float>(result),

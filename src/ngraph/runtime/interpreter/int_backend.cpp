@@ -225,6 +225,10 @@ bool runtime::interpreter::INTBackend::call(shared_ptr<Function> function,
     return true;
 }
 
+bool runtime::interpreter::INTBackend::is_supported(const Node& node)
+{
+    return true;
+}
 void runtime::interpreter::INTBackend::generate_calls(const element::Type& type,
                                                       const NodeWrapper& op,
                                                       const vector<shared_ptr<HostTensor>>& outputs,
