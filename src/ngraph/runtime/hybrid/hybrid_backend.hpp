@@ -46,6 +46,8 @@ namespace ngraph
                 bool call(std::shared_ptr<Function> function,
                           const std::vector<std::shared_ptr<Tensor>>& outputs,
                           const std::vector<std::shared_ptr<Tensor>>& intputs) override;
+                bool compile_for_backends(std::shared_ptr<Function> function,
+                                          std::vector<ngraph::runtime::Backend> backends);
 
             private:
                 class FunctionInstance
