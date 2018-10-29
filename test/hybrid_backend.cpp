@@ -35,11 +35,9 @@
 using namespace std;
 using namespace ngraph;
 
-class TestBackend
+class TestBackend 
 {
 public:
-    TestBackend() {}
-    ~TestBackend() {}
     bool is_supported(const Node& node)
     {
         if (node.description() == "Add")
@@ -48,7 +46,7 @@ public:
         }
         return false;
     }
-    bool compile(const shared_ptr<Function>& func)
+    bool compile(const shared_ptr<Function>& func) 
     {
         if (m_function_map.find(func) == m_function_map.end())
         {
@@ -61,7 +59,7 @@ public:
             pass_manager.run_passes(instance.m_function);
         }
         return true;
-    }
+    }  
 
     bool call_with_validate(const shared_ptr<Function>& func,
                             const vector<shared_ptr<runtime::Tensor>>& outputs,
@@ -89,19 +87,35 @@ TEST(Hybrid, abc)
     auto C = make_shared<op::Parameter>(element::f32, shape);
     auto f = make_shared<Function>((A + B) * C, op::ParameterVector{A, B, C});
 
-    auto backend = runtime::Backend::create("HYBRID");
+    auto hybrid_backend = runtime::Backend::create("HYBRID");
 
     // // Create some tensors for input/output
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> c = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> a = hybrid_backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> b = hybrid_backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> c = hybrid_backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> result = hybrid_backend->create_tensor(element::f32, shape);
 
     copy_data(a, test::NDArray<float, 2>({{1, 2}, {3, 4}}).get_vector());
     copy_data(b, test::NDArray<float, 2>({{5, 6}, {7, 8}}).get_vector());
     copy_data(c, test::NDArray<float, 2>({{9, 10}, {11, 12}}).get_vector());
 
-    auto backend_1 = make_shared<TestBackend>();
+    // auto test_backend = make_shared<TestBackend>();
+    auto interpreted_1 = runtime::Backend::create("INTERPRETER");
+    auto interpreted_2 = runtime::Backend::create("INTERPRETER");
+    vector<shared_ptr<ngraph::runtime::Backend>>  backends ;
+    backends.push_back(interpreted_1);
+    backends.push_back(interpreted_2);
+
+    // auto status_compiled = hybrid_backend->compile_for_backends(f,
+    //                                       backends);
+    // auto backend = runtime::Backend::create(TestBackend);
+    // auto test_backend = new TestBackend;
+    // shared_ptr<runtime::Backend> testbackend_intas = shared_ptr<runtime::Backend>(new TestBackend);
+    //  auto test_backend = make_shared<TestBackend>();
+
+    // vector<shared_ptr<runtime::Backend>> backend_vect; 
+    
+    // backend_vect.push_back(test_backend); 
 
     // backend->call_with_validate(f, {result}, {a, b, c});
     // EXPECT_EQ(read_vector<float>(result),

@@ -122,7 +122,7 @@ bool runtime::hybrid::HYBRIDBackend::call(shared_ptr<Function> function,
 }
 
 bool runtime::hybrid::HYBRIDBackend::compile_for_backends(shared_ptr<Function> function,
-                                                          vector<runtime::Backend> backends)
+                                                          vector<shared_ptr<runtime::Backend>> backends)
 {
     return true;
 }
