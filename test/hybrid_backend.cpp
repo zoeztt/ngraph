@@ -28,6 +28,7 @@
 #include "ngraph/pass/manager.hpp"
 #include "ngraph/runtime/backend.hpp"
 #include "ngraph/runtime/host_tensor.hpp"
+#include "ngraph/runtime/hybrid/hybrid_backend.hpp"
 #include "ngraph/util.hpp"
 #include "util/ndarray.hpp"
 #include "util/test_tools.hpp"
@@ -106,8 +107,11 @@ TEST(Hybrid, abc)
     backends.push_back(interpreted_1);
     backends.push_back(interpreted_2);
 
-    // auto status_compiled = hybrid_backend->compile_for_backends(f,
-    //                                       backends);
+    shared_ptr<runtime::hybrid::HYBRIDBackend> hybackend =
+        static_pointer_cast<runtime::hybrid::HYBRIDBackend>(hybrid_backend);
+
+    auto status_compiled = hybackend->compile_for_backends(f,
+                                          backends);
     // auto backend = runtime::Backend::create(TestBackend);
     // auto test_backend = new TestBackend;
     // shared_ptr<runtime::Backend> testbackend_intas = shared_ptr<runtime::Backend>(new TestBackend);

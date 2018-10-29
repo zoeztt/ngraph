@@ -82,7 +82,7 @@ public:
     /// \returns true if compile is successful, false otherwise
     virtual bool compile(std::shared_ptr<Function> func) = 0;
 
-    /// \brief Executes a single iteration of a Function. If func is not compiled the call will
+    // \brief Executes a single iteration of a Function. If func is not compiled the call will
     ///     compile it.
     /// \param func The function to execute
     /// \returns true if iteration is successful, false otherwise
