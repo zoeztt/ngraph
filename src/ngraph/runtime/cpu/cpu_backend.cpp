@@ -136,7 +136,7 @@ vector<runtime::PerformanceCounter>
 }
 
 bool runtime::cpu::CPU_Backend::is_supported(const Node& node)
-{   
+{
     if (node.description() == "Add")
     {
         return true;

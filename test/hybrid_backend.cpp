@@ -111,10 +111,10 @@ TEST(Hybrid, abc)
     vector<shared_ptr<ngraph::runtime::Backend>> backends;
     backends.push_back(cpu_1);
     backends.push_back(interpreted_1);
-    
+
     auto status_compiled = hybrid_backend->compile_for_backends(f, backends);
-    
-    // TestBackend test_backend; 
+
+    // TestBackend test_backend;
     // auto backend = runtime::Backend::create(TestBackend);
     // auto test_backend = new TestBackend;
     // shared_ptr<runtime::Backend> testbackend_intas = shared_ptr<runtime::Backend>(new TestBackend);
