@@ -36,7 +36,7 @@
 using namespace std;
 using namespace ngraph;
 
-class TestBackend 
+class TestBackend
 {
 public:
     bool is_supported(const Node& node)
@@ -47,7 +47,7 @@ public:
         }
         return false;
     }
-    bool compile(const shared_ptr<Function>& func) 
+    bool compile(const shared_ptr<Function>& func)
     {
         if (m_function_map.find(func) == m_function_map.end())
         {
@@ -60,7 +60,7 @@ public:
             pass_manager.run_passes(instance.m_function);
         }
         return true;
-    }  
+    }
 
     bool call_with_validate(const shared_ptr<Function>& func,
                             const vector<shared_ptr<runtime::Tensor>>& outputs,
@@ -103,23 +103,22 @@ TEST(Hybrid, abc)
     // auto test_backend = make_shared<TestBackend>();
     auto interpreted_1 = runtime::Backend::create("INTERPRETER");
     auto interpreted_2 = runtime::Backend::create("INTERPRETER");
-    vector<shared_ptr<ngraph::runtime::Backend>>  backends ;
+    vector<shared_ptr<ngraph::runtime::Backend>> backends;
     backends.push_back(interpreted_1);
     backends.push_back(interpreted_2);
 
     shared_ptr<runtime::hybrid::HYBRIDBackend> hybackend =
         static_pointer_cast<runtime::hybrid::HYBRIDBackend>(hybrid_backend);
 
-    auto status_compiled = hybackend->compile_for_backends(f,
-                                          backends);
+    auto status_compiled = hybackend->compile_for_backends(f, backends);
     // auto backend = runtime::Backend::create(TestBackend);
     // auto test_backend = new TestBackend;
     // shared_ptr<runtime::Backend> testbackend_intas = shared_ptr<runtime::Backend>(new TestBackend);
     //  auto test_backend = make_shared<TestBackend>();
 
-    // vector<shared_ptr<runtime::Backend>> backend_vect; 
-    
-    // backend_vect.push_back(test_backend); 
+    // vector<shared_ptr<runtime::Backend>> backend_vect;
+
+    // backend_vect.push_back(test_backend);
 
     // backend->call_with_validate(f, {result}, {a, b, c});
     // EXPECT_EQ(read_vector<float>(result),
