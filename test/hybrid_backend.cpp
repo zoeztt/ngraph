@@ -36,7 +36,7 @@
 using namespace std;
 using namespace ngraph;
 
-class TestBackend
+class TestBackend : public ngraph::runtime::Backend
 {
 public:
     bool is_supported(const Node& node)
@@ -88,7 +88,10 @@ TEST(Hybrid, abc)
     auto C = make_shared<op::Parameter>(element::f32, shape);
     auto f = make_shared<Function>((A + B) * C, op::ParameterVector{A, B, C});
 
-    auto hybrid_backend = runtime::Backend::create("HYBRID");
+    auto backend = runtime::Backend::create("HYBRID");
+
+    shared_ptr<runtime::hybrid::HYBRIDBackend> hybrid_backend =
+        static_pointer_cast<runtime::hybrid::HYBRIDBackend>(backend);
 
     // // Create some tensors for input/output
     shared_ptr<runtime::Tensor> a = hybrid_backend->create_tensor(element::f32, shape);
@@ -103,14 +106,15 @@ TEST(Hybrid, abc)
     // auto test_backend = make_shared<TestBackend>();
     auto interpreted_1 = runtime::Backend::create("INTERPRETER");
     auto interpreted_2 = runtime::Backend::create("INTERPRETER");
+    auto cpu_1 = runtime::Backend::create("CPU");
+
     vector<shared_ptr<ngraph::runtime::Backend>> backends;
+    backends.push_back(cpu_1);
     backends.push_back(interpreted_1);
-    backends.push_back(interpreted_2);
-
-    shared_ptr<runtime::hybrid::HYBRIDBackend> hybackend =
-        static_pointer_cast<runtime::hybrid::HYBRIDBackend>(hybrid_backend);
-
-    auto status_compiled = hybackend->compile_for_backends(f, backends);
+    
+    auto status_compiled = hybrid_backend->compile_for_backends(f, backends);
+    
+    // TestBackend test_backend; 
     // auto backend = runtime::Backend::create(TestBackend);
     // auto test_backend = new TestBackend;
     // shared_ptr<runtime::Backend> testbackend_intas = shared_ptr<runtime::Backend>(new TestBackend);
