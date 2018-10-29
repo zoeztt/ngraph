@@ -32,10 +32,13 @@ namespace ngraph
         public:
             // TODO: make policy a class
             AssignPlacement(std::function<Placement(std::shared_ptr<Node>)> placement_policy);
+            
+            AssignPlacement(std::vector<std::shared_ptr<runtime::Backend>> backends); 
 
         private:
             bool run_on_node(std::shared_ptr<Node> node) override;
             std::function<Placement(std::shared_ptr<Node>)> m_placement_policy;
+            std::vector<std::shared_ptr<runtime::Backend>> m_placement_bakends;
         };
     }
 }

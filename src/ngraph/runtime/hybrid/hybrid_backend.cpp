@@ -98,16 +98,7 @@ shared_ptr<runtime::Tensor> runtime::hybrid::HYBRIDBackend::create_tensor(const 
 
 bool runtime::hybrid::HYBRIDBackend::compile(shared_ptr<Function> function)
 {
-    if (m_function_map.find(function) == m_function_map.end())
-    {
-        // Clone function
-        FunctionInstance instance;
-        instance.m_function = clone_function(*function);
-
-        pass::Manager pass_manager;
-        pass_manager.run_passes(instance.m_function);
-    }
-    return true;
+    return false;
 }
 
 bool runtime::hybrid::HYBRIDBackend::call(shared_ptr<Function> function,
@@ -123,6 +114,18 @@ bool runtime::hybrid::HYBRIDBackend::call(shared_ptr<Function> function,
 
 bool runtime::hybrid::HYBRIDBackend::compile_for_backends(
     shared_ptr<Function> function, vector<shared_ptr<runtime::Backend>> backends)
-{
+{   
+    if (m_function_map.find(function) == m_function_map.end())
+    {
+        // Clone function
+        FunctionInstance instance;
+        instance.m_function = clone_function(*function);
+
+        pass::Manager pass_manager;
+        // pass_manager.register_pass<pass::AssignPlacement>(int_with_cpu_mul_policy);
+
+        pass_manager.run_passes(instance.m_function);
+    }
+
     return true;
 }
