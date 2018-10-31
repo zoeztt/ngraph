@@ -75,7 +75,8 @@ namespace ngraph
                     writer.block_end();
                 }
 
-            private:
+                static void emit_ArgReduce(EMIT_ARGS, cudnnReduceTensorOp_t);
+
                 /// \brief Create a list of node names for each arg in args
                 /// \param args list of tensor arguments
                 /// \param arg_indexes a list of indexes into args for which args to include in

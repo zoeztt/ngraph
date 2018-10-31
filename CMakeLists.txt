@@ -68,7 +68,7 @@ else()
 endif()
 
 # Prevent Eigen from using any LGPL3 code
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DEIGEN_MPL2_ONLY")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DEIGEN_MPL2_ONLY -DTBB_USE_THREADING_TOOLS")
 
 if($ENV{NGRAPH_USE_PREBUILT_LLVM})
     set(NGRAPH_USE_PREBUILT_LLVM TRUE)
@@ -92,16 +92,20 @@ option(NGRAPH_CPU_ENABLE "Control the building of the CPU backend" TRUE)
 option(NGRAPH_INTELGPU_ENABLE "Control the building of the Intel GPU backend with clDNN" FALSE)
 option(NGRAPH_GPU_ENABLE "Control the building of the GPU backend" FALSE)
 option(NGRAPH_INTERPRETER_ENABLE "Control the building of the INTERPRETER backend" TRUE)
+option(NGRAPH_HYBRID_ENABLE "Control the building of the HYBRID backend" FALSE)
 option(NGRAPH_DISTRIBUTED_ENABLE "Add distributed mode to the CPU backend" FALSE)
 option(NGRAPH_DEBUG_ENABLE "Enable output for NGRAPH_DEBUG statements" FALSE)
 option(NGRAPH_ONNX_IMPORT_ENABLE "Enable ONNX importer" FALSE)
 option(NGRAPH_DEX_ONLY "Build CPU DEX without codegen" FALSE)
 option(NGRAPH_PYTHON_ENABLE "Build nGraph python bindings" FALSE)
+option(NGRAPH_CODE_COVERAGE_ENABLE "Enable code coverage data collection" FALSE)
 
 if (NGRAPH_ONNX_IMPORT_ENABLE)
     option(NGRAPH_USE_SYSTEM_PROTOBUF "Use system provided Protobuf shared object" FALSE)
     option(NGRAPH_ONNXIFI_ENABLE "Enable ONNX Interface for Framework Integration" TRUE)
 endif()
+
+option(NGRAPH_PLAIDML_ENABLE "Enable the PlaidML backend" FALSE)
 
 #-----------------------------------------------------------------------------------------------
 # Installation logic...
@@ -109,7 +113,6 @@ endif()
 
 if (LINUX)
     include(GNUInstallDirs)
-    include(cmake/platform.cmake)
 else()
     set(CMAKE_INSTALL_BINDIR "bin")
     set(CMAKE_INSTALL_INCLUDEDIR "include")
@@ -157,6 +160,10 @@ endif()
 SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g")
 SET(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")
 
+if (NGRAPH_CODE_COVERAGE_ENABLE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+endif()
+
 # Enable build target CPU features
 set(NGRAPH_TARGET_ARCH native CACHE STRING "Target CPU architecture to build for. Defaults to the native CPU architecture")
 
@@ -197,25 +204,12 @@ if(WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS")
 endif()
 
-include(unit_test_control)
-set(UNIT_TEST_CONFIG_LIST "" CACHE INTERNAL "")
-
-if (NGRAPH_INTERPRETER_ENABLE)
-    unit_test_control(BACKEND INTERPRETER MANIFEST src/ngraph/runtime/interpreter/unit_test.manifest)
-endif()
-
-# Set true if CPU backend is built by default
 if (NGRAPH_CPU_ENABLE)
-    unit_test_control(BACKEND CPU MANIFEST src/ngraph/runtime/cpu/unit_test.manifest)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNGRAPH_CPU_ENABLE")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNGRAPH_CPU_ENABLE")	
 endif()
 
-if (NGRAPH_INTELGPU_ENABLE)
-    unit_test_control(BACKEND INTELGPU MANIFEST src/ngraph/runtime/intelgpu/unit_test.manifest)
-endif()
-
-if (NGRAPH_GPU_ENABLE)
-    unit_test_control(BACKEND GPU MANIFEST src/ngraph/runtime/gpu/unit_test.manifest)
+if (NGRAPH_PLAIDML_ENABLE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNGRAPH_PlaidML_ENABLE")
 endif()
 
 if (NOT DEFINED NGRAPH_TBB_ENABLE)

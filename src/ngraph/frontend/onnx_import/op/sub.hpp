@@ -28,14 +28,33 @@ namespace ngraph
     {
         namespace op
         {
-            inline NodeVector sub(const Node& node)
+            namespace set_1
             {
-                NodeVector ng_inputs{
-                    numpy_style_broadcast_for_binary_operation(node.get_ng_inputs())};
-                return {std::make_shared<ngraph::op::Subtract>(ng_inputs.at(0), ng_inputs.at(1))};
-            }
+                inline NodeVector sub(const Node& node)
+                {
+                    auto axis = node.get_attribute_value<int64_t>("axis", 0);
+                    NodeVector ng_inputs{legacy_style_broadcast_for_binary_operation(
+                        node.get_ng_inputs().at(0), node.get_ng_inputs().at(1), axis)};
 
-        } // namespace op
+                    return {
+                        std::make_shared<ngraph::op::Subtract>(ng_inputs.at(0), ng_inputs.at(1))};
+                }
+
+            } // namespace set_1
+
+            namespace set_7
+            {
+                inline NodeVector sub(const Node& node)
+                {
+                    NodeVector ng_inputs{
+                        numpy_style_broadcast_for_binary_operation(node.get_ng_inputs())};
+                    return {
+                        std::make_shared<ngraph::op::Subtract>(ng_inputs.at(0), ng_inputs.at(1))};
+                }
+
+            } // namespace set_1
+
+        } //namespace op
 
     } // namespace onnx_import
 
