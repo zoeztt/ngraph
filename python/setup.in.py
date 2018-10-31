@@ -104,6 +104,26 @@ sources = [${WRAPPER_SRC_LIST}]
 
 sources = [PYNGRAPH_SOURCE_DIR + "/" + source for source in sources]
 
+package_dir = {
+    'ngraph': PYNGRAPH_SOURCE_DIR + "/ngraph",
+    'ngraph.utils': PYNGRAPH_SOURCE_DIR + "/ngraph/utils",
+    'ngraph.impl': PYNGRAPH_SOURCE_DIR + "/ngraph/impl",
+    'ngraph.impl.op': PYNGRAPH_SOURCE_DIR + "/ngraph/impl/op",
+    'ngraph.impl.op.util': PYNGRAPH_SOURCE_DIR + "/ngraph/impl/op/util",
+    'ngraph.impl.passes': PYNGRAPH_SOURCE_DIR + "/ngraph/impl/passes",
+    'ngraph.impl.runtime': PYNGRAPH_SOURCE_DIR + "/ngraph/impl/runtime",
+}
+
+packages = [
+    'ngraph',
+    'ngraph.utils',
+    'ngraph.impl',
+    'ngraph.impl.op',
+    'ngraph.impl.op.util',
+    'ngraph.impl.passes',
+    'ngraph.impl.runtime',
+]
+
 include_dirs = [PYNGRAPH_SOURCE_DIR, NGRAPH_CPP_INCLUDE_DIR, PYBIND11_INCLUDE_DIR]
 
 library_dirs = [NGRAPH_CPP_LIBRARY_DIR]
@@ -137,7 +157,7 @@ ext_modules = [
     )
 ]
 
-if os.environ.get('NGRAPH_ONNX_IMPORT_ENABLE') == 'TRUE':
+if ${NGRAPH_ONNX_IMPORT_ENABLE}:
     onnx_sources = [
         'pyngraph/pyngraph_onnx_import.cpp',
         'pyngraph/onnx_import/onnx_import.cpp',
