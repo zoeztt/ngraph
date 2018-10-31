@@ -14,16 +14,26 @@
 # limitations under the License.
 # ******************************************************************************
 
+cmake_minimum_required(VERSION 3.1)
+
+include(ExternalProject)
+
+project(pybind11-fetch NONE)
+
 #------------------------------------------------------------------------------
-# Fetch and configure pybind11
+# Download pybind11
 #------------------------------------------------------------------------------
 
-configure_file(${CMAKE_SOURCE_DIR}/cmake/pybind11_fetch.in.cmake ${CMAKE_CURRENT_BINARY_DIR}/pybind11/CMakeLists.txt)
-message(STATUS "*********** ${CMAKE_CURRENT_BINARY_DIR}/pybind11")
-execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/pybind11")
-message(STATUS "**")
-execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/pybind11")
+SET(PYBIND11_GIT_REPO_URL https://github.com/jagerman/pybind11.git)
+SET(PYBIND11_GIT_LABEL v1.8.1)
 
-# set(TBB_ROOT ${CMAKE_CURRENT_BINARY_DIR}/tbb/tbb-src)
+ExternalProject_Add(
+    ext_pybind11
+    GIT_REPOSITORY ${PYBIND11_GIT_REPO_URL}
+    GIT_TAG ${PYBIND11_GIT_LABEL}
+    # SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/pybind11/pybind11-src"
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    UPDATE_COMMAND ""
+    INSTALL_COMMAND ""
+)

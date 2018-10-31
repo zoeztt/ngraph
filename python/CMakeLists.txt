@@ -126,3 +126,5 @@ configure_file(setup.in.py ${CMAKE_BINARY_DIR}/setup.py)
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/setup.py
     COMMAND configure_file(setup.in.py ${CMAKE_BINARY_DIR}/setup.py)
     DEPENDS libpybind11 ${WRAPPER_SRC})
+
+add_custom_target(PYBIND_DUMMY_TARGET DEPENDS libpybind11)

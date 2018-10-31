@@ -291,5 +291,6 @@ if (NGRAPH_DOC_BUILD_ENABLE)
 endif()
 
 if (NGRAPH_PYTHON_ENABLE)
+    include(cmake/external_pybind11.cmake)
     add_subdirectory(python)
 endif()
