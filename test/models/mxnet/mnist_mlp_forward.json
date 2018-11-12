@@ -8,7 +8,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [],
                 "name": "Parameter_19",
@@ -26,7 +28,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [],
                 "name": "Parameter_18",
@@ -45,7 +49,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [],
                 "name": "Parameter_11",
@@ -63,7 +69,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [],
                 "name": "Parameter_10",
@@ -82,7 +90,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [],
                 "name": "Parameter_3",
@@ -100,7 +110,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [],
                 "name": "Parameter_2",
@@ -119,7 +131,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [],
                 "name": "Parameter_0",
@@ -140,7 +154,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [],
                 "name": "Constant_16",
@@ -4257,7 +4273,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [],
                 "name": "Constant_8",
@@ -12473,7 +12491,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [
                     "Parameter_19"
@@ -12494,7 +12514,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "input_order": [
                     1,
@@ -12522,7 +12544,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [
                     "Parameter_11"
@@ -12543,7 +12567,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "input_order": [
                     1,
@@ -12571,7 +12597,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [
                     "Parameter_3"
@@ -12592,7 +12620,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "input_order": [
                     1,
@@ -12617,7 +12647,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "input_order": [
                     0,
@@ -12644,7 +12676,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [
                     "Reshape_1",
@@ -12662,7 +12696,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [
                     "Dot_5",
@@ -12680,7 +12716,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [
                     "Add_7",
@@ -12698,7 +12736,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [
                     "Maximum_9",
@@ -12716,7 +12756,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [
                     "Dot_13",
@@ -12734,7 +12776,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [
                     "Add_15",
@@ -12752,7 +12796,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [
                     "Maximum_17",
@@ -12770,7 +12816,9 @@
                     "c_type_string": "float",
                     "is_real": true,
                     "is_signed": true,
-                    "is_quantized": false
+                    "is_quantized": false,
+					"quantized_min": 0,
+					"quantized_max": 0
                 },
                 "inputs": [
                     "Dot_21",

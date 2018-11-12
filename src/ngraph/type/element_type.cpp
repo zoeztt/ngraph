@@ -16,23 +16,36 @@
 
 #include <cmath>
 #include <iostream>
+#include <limits>
 
 #include "ngraph/type/element_type.hpp"
 
 using namespace ngraph;
 
 const element::Type element::dynamic(0, false, false, false, 0, 0, "dynamic");
-const element::Type element::boolean(8, false, true, false, std::numeric_limits<bool>::min(), std::numeric_limits<bool>::max(), "char");
+const element::Type element::boolean(8, false, true, false, 0, 0, "char");
 const element::Type element::bf16(16, true, true, false, 0, 0, "bfloat16");
 const element::Type element::f32(32, true, true, false, 0, 0, "float");
 const element::Type element::f64(64, true, true, false, 0, 0, "double");
-const element::Type element::i8(8, false, true, true, std::numeric_limits<int8_t>::min(), std::numeric_limits<int8_t>::max(), "int8_t");
-const element::Type element::i16(16, false, true, false, std::numeric_limits<int16_t>::min(), std::numeric_limits<int16_t>::max(), "int16_t");
-const element::Type element::i32(32, false, true, false, std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max(), "int32_t");
+const element::Type element::i8(8,
+                                false,
+                                true,
+                                true,
+                                std::numeric_limits<int8_t>::min(),
+                                std::numeric_limits<int8_t>::max(),
+                                "int8_t");
+const element::Type element::i16(16, false, true, false, 0, 0, "int16_t");
+const element::Type element::i32(32, false, true, false, 0, 0, "int32_t");
 const element::Type element::i64(64, false, true, false, 0, 0, "int64_t");
-const element::Type element::u8(8, false, false, true, std::numeric_limits<uint8_t>::min(), std::numeric_limits<uint8_t>::max(), "uint8_t");
-const element::Type element::u16(16, false, false, false, std::numeric_limits<uint16_t>::min(), std::numeric_limits<uint16_t>::max(), "uint16_t");
-const element::Type element::u32(32, false, false, false, std::numeric_limits<uint32_t>::min(), std::numeric_limits<uint32_t>::max(), "uint32_t");
+const element::Type element::u8(8,
+                                false,
+                                false,
+                                true,
+                                std::numeric_limits<uint8_t>::min(),
+                                std::numeric_limits<uint8_t>::max(),
+                                "uint8_t");
+const element::Type element::u16(16, false, false, false, 0, 0, "uint16_t");
+const element::Type element::u32(32, false, false, false, 0, 0, "uint32_t");
 const element::Type element::u64(64, false, false, false, 0, 0, "uint64_t");
 
 std::vector<const element::Type*> element::Type::get_known_types()
@@ -52,14 +65,19 @@ std::vector<const element::Type*> element::Type::get_known_types()
     return rc;
 }
 
-element::Type::Type(
-    size_t bitwidth, bool is_real, bool is_signed, bool is_quantized, int64_t min, int64_t max, const std::string& cname)
+element::Type::Type(size_t bitwidth,
+                    bool is_real,
+                    bool is_signed,
+                    bool is_quantized,
+                    int64_t quantized_min,
+                    int64_t quantized_max,
+                    const std::string& cname)
     : m_bitwidth{bitwidth}
     , m_is_real{is_real}
     , m_is_signed{is_signed}
     , m_is_quantized{is_quantized}
-    , m_min(min),
-    , m_max(max),
+    , m_quantized_min(quantized_min)
+    , m_quantized_max(quantized_max)
     , m_cname{cname}
 {
 }
@@ -70,8 +88,8 @@ element::Type& element::Type::operator=(const element::Type& t)
     m_is_real = t.m_is_real;
     m_is_signed = t.m_is_signed;
     m_is_quantized = t.m_is_quantized;
-    m_min = t.m_min;
-    m_max = t.m_max;
+    m_quantized_min = t.m_quantized_min;
+    m_quantized_max = t.m_quantized_max;
     m_cname = t.m_cname;
     return *this;
 }
@@ -84,7 +102,8 @@ const std::string& element::Type::c_type_string() const
 bool element::Type::operator==(const element::Type& other) const
 {
     return m_bitwidth == other.m_bitwidth && m_is_real == other.m_is_real &&
-           m_is_signed == other.m_is_signed && m_is_quantized == other.m_is_quantized && m_min == other.m_min && m_max == other.m_max &&
+           m_is_signed == other.m_is_signed && m_is_quantized == other.m_is_quantized &&
+           m_quantized_min == other.m_quantized_min && m_quantized_max == other.m_quantized_max &&
            m_cname == other.m_cname;
 }
 
@@ -114,7 +133,29 @@ size_t element::Type::hash() const
     size_t h2 = std::hash<bool>{}(m_is_real);
     size_t h3 = std::hash<bool>{}(m_is_signed);
     size_t h4 = std::hash<bool>{}(m_is_quantized);
-    return h1 ^ ((h2 ^ ((h3 ^ (h4 << 1)) << 1)) << 1);
+    size_t h5 = std::hash<int64_t>{}(m_quantized_min);
+    size_t h6 = std::hash<int64_t>{}(m_quantized_max);
+    return h1 ^ ((h2 ^ ((h3 ^ ((h4 ^ ((h5 ^ (h6 << 1)) << 1)) << 1)) << 1)) << 1);
+}
+
+int64_t element::Type::quantized_min() const
+{
+    if (!m_is_quantized)
+    {
+        throw ngraph_error("element::Type::quantized_min: Unsupported for non-quantized types");
+    }
+
+    return m_quantized_min;
+}
+
+int64_t element::Type::quantized_max() const
+{
+    if (!m_is_quantized)
+    {
+        throw ngraph_error("element::Type::quantized_max: Unsupported for non-quantized types");
+    }
+
+    return m_quantized_max;
 }
 
 namespace ngraph
@@ -192,7 +233,8 @@ namespace ngraph
 std::ostream& element::operator<<(std::ostream& out, const element::Type& obj)
 {
     out << "element::Type{" << obj.m_bitwidth << ", " << obj.m_is_real << ", " << obj.m_is_signed
-        << ", " << obj.m_is_quantized << ", \"" << obj.m_cname << "\"}";
+        << ", " << obj.m_is_quantized << obj.m_quantized_min << obj.m_quantized_max << ", \""
+        << obj.m_cname << "\"}";
     return out;
 }
 

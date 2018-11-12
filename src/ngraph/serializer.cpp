@@ -222,6 +222,8 @@ static element::Type read_element_type(const json& j)
     bool is_real = false;
     bool is_signed = false;
     bool is_quantized = false;
+    int64_t quantized_min = 0;
+    int64_t quantized_max = 0;
     string c_type_string = "";
     if (j.is_object())
     {
@@ -229,6 +231,8 @@ static element::Type read_element_type(const json& j)
         is_real = j.at("is_real").get<bool>();
         is_signed = j.at("is_signed").get<bool>();
         is_quantized = j.at("is_quantized").get<bool>();
+        quantized_min = j.at("quantized_min").get<int64_t>();
+        quantized_max = j.at("quantized_min").get<int64_t>();
         c_type_string = j.at("c_type_string").get<string>();
     }
     else
@@ -242,12 +246,15 @@ static element::Type read_element_type(const json& j)
                 is_real = t->is_real();
                 is_signed = t->is_signed();
                 is_quantized = t->is_quantized();
+                quantized_min = t->quantized_min();
+                quantized_max = t->quantized_max();
                 c_type_string = t->c_type_string();
                 break;
             }
         }
     }
-    return element::Type(bitwidth, is_real, is_signed, is_quantized, c_type_string);
+    return element::Type(
+        bitwidth, is_real, is_signed, is_quantized, quantized_min, quantized_max, c_type_string);
 }
 
 void ngraph::serialize(const string& path, shared_ptr<ngraph::Function> func, size_t indent)

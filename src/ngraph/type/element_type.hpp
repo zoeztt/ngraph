@@ -57,8 +57,8 @@ namespace ngraph
                  bool is_real,
                  bool is_signed,
                  bool is_quantized,
-                 int64_t min,
-                 int64_t max,
+                 int64_t quantized_min,
+                 int64_t quantized_max,
                  const std::string& cname);
             Type& operator=(const Type&);
             virtual ~Type() {}
@@ -70,8 +70,8 @@ namespace ngraph
             bool is_real() const { return m_is_real; }
             bool is_signed() const { return m_is_signed; }
             bool is_quantized() const { return m_is_quantized; }
-            int64_t min() const { return m_min; }
-            int64_t max() const { return m_max; }
+            int64_t quantized_min() const;
+            int64_t quantized_max() const;
             size_t bitwidth() const { return m_bitwidth; }
             bool operator==(const Type& other) const;
             bool operator!=(const Type& other) const { return !(*this == other); }
@@ -111,8 +111,8 @@ namespace ngraph
             bool m_is_real{false};
             bool m_is_signed{false};
             bool m_is_quantized{false};
-            int64_t m_min{0};
-            int64_t m_max{0};
+            int64_t m_quantized_min{0};
+            int64_t m_quantized_max{0};
             std::string m_cname{"dynamic"};
         };
 
