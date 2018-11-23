@@ -19,6 +19,7 @@ set (SRC
     all_close_f.cpp
     test_tools.cpp
     test_control.cpp
+    random.cpp
 )
 
 add_library(ngraph_test_util SHARED ${SRC})

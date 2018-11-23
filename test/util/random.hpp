@@ -64,5 +64,34 @@ namespace ngraph
             std::uniform_real_distribution<T> m_distribution;
             std::function<T()> m_r;
         };
+
+        static std::default_random_engine s_random_engine;
+        template <typename T>
+        void init_int_tv(runtime::Tensor* tv, T min, T max)
+        {
+            size_t size = tv->get_element_count();
+            std::uniform_int_distribution<T> dist(min, max);
+            std::vector<T> vec(size);
+            for (T& element : vec)
+            {
+                element = dist(s_random_engine);
+            }
+            tv->write(vec.data(), 0, vec.size() * sizeof(T));
+        }
+
+        template <typename T>
+        void init_real_tv(runtime::Tensor* tv, T min, T max)
+        {
+            size_t size = tv->get_element_count();
+            std::uniform_real_distribution<T> dist(min, max);
+            std::vector<T> vec(size);
+            for (T& element : vec)
+            {
+                element = dist(s_random_engine);
+            }
+            tv->write(vec.data(), 0, vec.size() * sizeof(T));
+        }
+
+        void random_init(runtime::Tensor* tv);
     }
 }
