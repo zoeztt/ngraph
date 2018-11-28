@@ -62,7 +62,7 @@ TEST(backend_api, invalid_name)
     ASSERT_ANY_THROW(ngraph::runtime::Backend::create("COMPLETELY-BOGUS-NAME"));
 }
 
-TEST(backend_api, performance)
+TEST(benchmark, backend_validate)
 {
     stopwatch timer;
 
