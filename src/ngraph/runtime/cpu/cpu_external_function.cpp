@@ -644,7 +644,7 @@ using namespace ngraph::runtime;
                 temporaries_used = true;
                 for (descriptor::Tensor* tensor : node->liveness_new_list)
                 {
-                    worst_case_tmp_size += tensor->size();
+                    worst_case_tmp_size += tensor->get_size_in_bytes();
                 }
             }
         }
@@ -1286,7 +1286,7 @@ void runtime::cpu::CPU_ExternalFunction::process_in_place_concat(
                         input_tensor->set_pool_offset(offset);
                         NGRAPH_DEBUG << "cpu_external_function: change offset, old offset is "
                                      << old_offset << ", new offset is " << offset << std::endl;
-                        offset += input_tensor->size();
+                        offset += input_tensor->get_size_in_bytes();
                     }
 
                     bool found_last_concat = true;
@@ -1352,7 +1352,7 @@ void runtime::cpu::CPU_ExternalFunction::propagate_in_place_concat(
                     NGRAPH_DEBUG
                         << "cpu_external_function, propagate: concat, change offset, old offset is "
                         << old_offset << ", new offset is " << offset << std::endl;
-                    offset += input_tensor->size();
+                    offset += input_tensor->get_size_in_bytes();
                     if (auto arg_concat = std::dynamic_pointer_cast<ngraph::op::Concat>(arg))
                     {
                         stack.push_front(arg_concat);

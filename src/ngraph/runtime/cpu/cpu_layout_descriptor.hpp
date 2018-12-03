@@ -37,7 +37,7 @@ namespace ngraph
             public:
                 LayoutDescriptor(const ngraph::descriptor::Tensor& tv);
                 ~LayoutDescriptor() override {}
-                virtual size_t get_allocated_size() override { return m_buffer_size; }
+                virtual size_t get_size_in_bytes() override { return m_buffer_size; }
                 size_t get_offset() const { return m_offset; }
                 size_t get_index_offset(const std::vector<size_t>& indices) override;
 

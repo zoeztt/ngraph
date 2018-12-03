@@ -62,7 +62,7 @@ namespace ngraph
             void set_pool_offset(size_t);
             size_t get_pool_offset() const;
 
-            size_t size() const;
+            size_t get_size_in_bytes() const;
 
         protected:
             element::Type m_element_type;

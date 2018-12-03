@@ -69,11 +69,11 @@ size_t descriptor::Tensor::get_pool_offset() const
     return m_pool_offset;
 }
 
-size_t descriptor::Tensor::size() const
+size_t descriptor::Tensor::get_size_in_bytes() const
 {
     if (auto tvl = get_tensor_layout())
     {
-        return tvl->get_allocated_size();
+        return tvl->get_size_in_bytes();
     }
     else
     {

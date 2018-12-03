@@ -35,7 +35,7 @@ runtime::HostTensor::HostTensor(const ngraph::element::Type& element_type,
     m_descriptor->set_tensor_layout(
         std::make_shared<ngraph::descriptor::layout::DenseTensorLayout>(*m_descriptor));
 
-    m_buffer_size = m_descriptor->get_tensor_layout()->get_size() * element_type.size();
+    m_buffer_size = m_descriptor->get_size_in_bytes();
 
     if (memory_pointer != nullptr)
     {

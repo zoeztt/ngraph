@@ -353,7 +353,7 @@ namespace ngraph
                 }
                 auto& src =
                     external_function->get_tensor_data(node->get_output_tensor(0).get_name());
-                auto size = node->get_output_tensor(0).size();
+                auto size = node->get_output_tensor(0).get_size_in_bytes();
                 auto functor = [&, dest, src, size](CPURuntimeContext* ctx,
                                                     CPUExecutionContext* ectx) {
                     for (auto p : dest)

@@ -36,12 +36,12 @@ const Shape& descriptor::layout::TensorLayout::get_shape() const
     return m_shape;
 }
 
-size_t descriptor::layout::TensorLayout::get_size() const
+size_t descriptor::layout::TensorLayout::get_element_count() const
 {
     return ngraph::shape_size(get_shape());
 }
 
-size_t descriptor::layout::TensorLayout::get_allocated_size()
+size_t descriptor::layout::TensorLayout::get_size_in_bytes()
 {
-    return get_size() * get_element_type().size();
+    return get_element_count() * get_element_type().size();
 }
