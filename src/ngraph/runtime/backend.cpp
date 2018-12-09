@@ -49,11 +49,11 @@ vector<ngraph::runtime::PerformanceCounter>
     return vector<PerformanceCounter>();
 }
 
-void runtime::Backend::validate_call(shared_ptr<const Function> function,
-                                     const vector<shared_ptr<runtime::Tensor>>& outputs,
-                                     const vector<shared_ptr<runtime::Tensor>>& inputs)
+bool runtime::Backend::validate(const Function& function,
+                                const vector<shared_ptr<runtime::Tensor>>& outputs,
+                                const vector<shared_ptr<runtime::Tensor>>& inputs)
 {
-    const ParameterVector& input_parameters = function->get_parameters();
+    const ParameterVector& input_parameters = function.get_parameters();
     if (input_parameters.size() != inputs.size())
     {
         stringstream ss;
@@ -61,11 +61,11 @@ void runtime::Backend::validate_call(shared_ptr<const Function> function,
            << input_parameters.size();
         throw runtime_error(ss.str());
     }
-    if (function->get_output_size() != outputs.size())
+    if (function.get_output_size() != outputs.size())
     {
         stringstream ss;
         ss << "Call output count " << outputs.size() << " does not match Function's Result count "
-           << function->get_output_size();
+           << function.get_output_size();
         throw runtime_error(ss.str());
     }
 
@@ -89,23 +89,24 @@ void runtime::Backend::validate_call(shared_ptr<const Function> function,
         }
     }
 
-    for (size_t i = 0; i < function->get_output_size(); i++)
+    for (size_t i = 0; i < function.get_output_size(); i++)
     {
-        if (function->get_output_element_type(i) != outputs[i]->get_element_type())
+        if (function.get_output_element_type(i) != outputs[i]->get_element_type())
         {
             stringstream ss;
             ss << "Output " << i << " type '" << outputs[i]->get_element_type()
-               << "' does not match Result type '" << function->get_output_element_type(i) << "'";
+               << "' does not match Result type '" << function.get_output_element_type(i) << "'";
             throw runtime_error(ss.str());
         }
-        if (function->get_output_shape(i) != outputs[i]->get_shape())
+        if (function.get_output_shape(i) != outputs[i]->get_shape())
         {
             stringstream ss;
             ss << "Output " << i << " shape {" << join(outputs[i]->get_shape())
-               << "} does not match Result shape {" << join(function->get_output_shape(i)) << "}";
+               << "} does not match Result shape {" << join(function.get_output_shape(i)) << "}";
             throw runtime_error(ss.str());
         }
     }
+    return true;
 }
 
 bool runtime::Backend::is_supported(const Node& node) const
@@ -113,4 +114,18 @@ bool runtime::Backend::is_supported(const Node& node) const
     // The default behavior is that a backend does not support any ops. If this is not the case
     // then override this method and enhance.
     return false;
+}
+
+bool runtime::Backend::save(Handle handle, const std::string& path) const
+{
+    return false;
+}
+
+runtime::Handle runtime::Backend::load(const std::string& path)
+{
+    return nullptr;
+}
+
+void runtime::Backend::enable_performance_data(std::shared_ptr<Function> func, bool enable)
+{
 }

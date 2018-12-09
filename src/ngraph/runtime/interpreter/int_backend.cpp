@@ -85,8 +85,6 @@ bool runtime::interpreter::INTBackend::call(shared_ptr<Function> function,
                                             const vector<shared_ptr<runtime::Tensor>>& outputs,
                                             const vector<shared_ptr<runtime::Tensor>>& inputs)
 {
-    validate_call(function, outputs, inputs);
-
     auto fit = m_function_map.find(function);
     if (fit == m_function_map.end())
     {
@@ -364,4 +362,28 @@ void runtime::interpreter::INTBackend::perform_nan_check(
         }
         arg_number++;
     }
+}
+
+runtime::Handle runtime::interpreter::INTBackend::compile(const Function& function,
+                                                          bool enable_performance_collection)
+{
+    throw runtime_error("unimplemented");
+}
+
+bool runtime::interpreter::INTBackend::execute(Handle handle,
+                                               const std::vector<std::shared_ptr<Tensor>>& outputs,
+                                               const std::vector<std::shared_ptr<Tensor>>& intputs)
+{
+    throw runtime_error("unimplemented");
+}
+
+const ParameterVector&
+    runtime::interpreter::INTBackend::get_parameter_descriptors(Handle handle) const
+{
+    throw runtime_error("unimplemented");
+}
+
+const ResultVector& runtime::interpreter::INTBackend::get_result_descriptors(Handle handle) const
+{
+    throw runtime_error("unimplemented");
 }

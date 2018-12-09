@@ -65,3 +65,26 @@ bool runtime::nop::NOPBackend::call(shared_ptr<Function> function,
 {
     return true;
 }
+
+runtime::Handle runtime::nop::NOPBackend::compile(const Function& function,
+                                                  bool enable_performance_collection)
+{
+    throw runtime_error("unimplemented");
+}
+
+bool runtime::nop::NOPBackend::execute(Handle handle,
+                                       const std::vector<std::shared_ptr<Tensor>>& outputs,
+                                       const std::vector<std::shared_ptr<Tensor>>& intputs)
+{
+    throw runtime_error("unimplemented");
+}
+
+const ParameterVector& runtime::nop::NOPBackend::get_parameter_descriptors(Handle handle) const
+{
+    throw runtime_error("unimplemented");
+}
+
+const ResultVector& runtime::nop::NOPBackend::get_result_descriptors(Handle handle) const
+{
+    throw runtime_error("unimplemented");
+}

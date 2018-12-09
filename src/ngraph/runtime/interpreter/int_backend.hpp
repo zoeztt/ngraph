@@ -161,13 +161,21 @@ public:
               const std::vector<std::shared_ptr<Tensor>>& outputs,
               const std::vector<std::shared_ptr<Tensor>>& intputs) override;
 
-    void set_nan_check(std::shared_ptr<Function> func, bool);
+    void set_nan_check(std::shared_ptr<Function> func, bool enable);
 
     void enable_performance_data(std::shared_ptr<Function> func, bool enable) override;
     std::vector<PerformanceCounter>
         get_performance_data(std::shared_ptr<Function> func) const override;
 
     bool is_supported(const Node& node) const override { return true; }
+    // New API methods
+    Handle compile(const Function& function, bool enable_performance_collection) override;
+    bool execute(Handle handle,
+                 const std::vector<std::shared_ptr<Tensor>>& outputs,
+                 const std::vector<std::shared_ptr<Tensor>>& intputs) override;
+    const ParameterVector& get_parameter_descriptors(Handle handle) const override;
+    const ResultVector& get_result_descriptors(Handle handle) const override;
+
 private:
     static const int m_alignment;
     class FunctionInstance
