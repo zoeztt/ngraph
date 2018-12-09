@@ -73,8 +73,8 @@ runtime::Handle runtime::nop::NOPBackend::compile(const Function& function,
 }
 
 bool runtime::nop::NOPBackend::execute(Handle handle,
-                                       const std::vector<std::shared_ptr<Tensor>>& outputs,
-                                       const std::vector<std::shared_ptr<Tensor>>& intputs)
+                                       const std::vector<Tensor*>& outputs,
+                                       const std::vector<Tensor*>& intputs)
 {
     throw runtime_error("unimplemented");
 }

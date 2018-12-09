@@ -107,12 +107,12 @@ public:
     /// \param inputs vector of runtime::Tensor used as inputs
     /// \returns true if iteration is successful, false otherwise
     virtual bool execute(Handle handle,
-                         const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
-                         const std::vector<std::shared_ptr<runtime::Tensor>>& inputs) = 0;
+                         const std::vector<runtime::Tensor*>& outputs,
+                         const std::vector<runtime::Tensor*>& inputs) = 0;
 
     bool validate(const Function& func,
-                  const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
-                  const std::vector<std::shared_ptr<runtime::Tensor>>& inputs);
+                  const std::vector<runtime::Tensor*>& outputs,
+                  const std::vector<runtime::Tensor*>& inputs);
 
     /// \deprecated use the stand-alone validate call
     /// \brief Validates the inputs and outputs against the function graph.
@@ -122,7 +122,7 @@ public:
                                        const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
                                        const std::vector<std::shared_ptr<runtime::Tensor>>& inputs)
     {
-        validate(*func, outputs, inputs);
+        // validate(*func, outputs, inputs);
         return call(func, outputs, inputs);
     }
 

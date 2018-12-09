@@ -371,8 +371,8 @@ runtime::Handle runtime::interpreter::INTBackend::compile(const Function& functi
 }
 
 bool runtime::interpreter::INTBackend::execute(Handle handle,
-                                               const std::vector<std::shared_ptr<Tensor>>& outputs,
-                                               const std::vector<std::shared_ptr<Tensor>>& intputs)
+                                               const std::vector<Tensor*>& outputs,
+                                               const std::vector<Tensor*>& intputs)
 {
     throw runtime_error("unimplemented");
 }

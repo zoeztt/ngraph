@@ -171,8 +171,8 @@ public:
     // New API methods
     Handle compile(const Function& function, bool enable_performance_collection) override;
     bool execute(Handle handle,
-                 const std::vector<std::shared_ptr<Tensor>>& outputs,
-                 const std::vector<std::shared_ptr<Tensor>>& intputs) override;
+                 const std::vector<Tensor*>& outputs,
+                 const std::vector<Tensor*>& intputs) override;
     const ParameterVector& get_parameter_descriptors(Handle handle) const override;
     const ResultVector& get_result_descriptors(Handle handle) const override;
 

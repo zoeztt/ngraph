@@ -50,8 +50,8 @@ vector<ngraph::runtime::PerformanceCounter>
 }
 
 bool runtime::Backend::validate(const Function& function,
-                                const vector<shared_ptr<runtime::Tensor>>& outputs,
-                                const vector<shared_ptr<runtime::Tensor>>& inputs)
+                                const vector<runtime::Tensor*>& outputs,
+                                const vector<runtime::Tensor*>& inputs)
 {
     const ParameterVector& input_parameters = function.get_parameters();
     if (input_parameters.size() != inputs.size())
