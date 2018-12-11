@@ -120,11 +120,7 @@ public:
     /// \returns true if iteration is successful, false otherwise
     DEPRECATED bool call_with_validate(std::shared_ptr<Function> func,
                                        const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
-                                       const std::vector<std::shared_ptr<runtime::Tensor>>& inputs)
-    {
-        // validate(*func, outputs, inputs);
-        return call(func, outputs, inputs);
-    }
+                                       const std::vector<std::shared_ptr<runtime::Tensor>>& inputs);
 
     /// \brief Compiled functions may be cached. This function removes a compiled function
     ///     from the cache.
