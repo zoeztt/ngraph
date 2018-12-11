@@ -31,7 +31,7 @@ namespace ngraph
         class ExternalFunction;
         class Tensor;
         class Backend;
-        using Handle = std::shared_ptr<Function>;
+        using Handle = void*;
     }
 }
 
@@ -93,16 +93,16 @@ public:
 
     /// \deprecated use the execute method.
     /// \brief Executes a single iteration of a Function.
-    /// \param func The function to execute
+    /// \param handle The Handle returned from compile or load
     /// \param outputs vector of runtime::Tensor used as outputs
     /// \param inputs vector of runtime::Tensor used as inputs
     /// \returns true if iteration is successful, false otherwise
-    DEPRECATED virtual bool call(std::shared_ptr<Function> func,
+    DEPRECATED virtual bool call(Handle handle,
                                  const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
                                  const std::vector<std::shared_ptr<runtime::Tensor>>& inputs) = 0;
 
     /// \brief Executes a single iteration of a Function.
-    /// \param handle A handle return by the compile method,
+    /// \param handle The Handle returned from compile or load
     /// \param outputs vector of runtime::Tensor used as outputs
     /// \param inputs vector of runtime::Tensor used as inputs
     /// \returns true if iteration is successful, false otherwise
@@ -122,22 +122,35 @@ public:
                                        const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
                                        const std::vector<std::shared_ptr<runtime::Tensor>>& inputs);
 
+    /// \deprecated Use the Handle based version of this call
     /// \brief Compiled functions may be cached. This function removes a compiled function
     ///     from the cache.
     /// \param func The function to execute
-    virtual void remove_compiled_function(std::shared_ptr<Function> func);
+    DEPRECATED virtual void remove_compiled_function(std::shared_ptr<Function> func);
 
+    /// \brief Compiled functions may be cached. This function removes a compiled function
+    ///     from the cache.
+    /// \param handle The Handle returned from compile or load
+    virtual void remove_compiled_function(Handle handle);
+
+    /// \deprecated Pass enable flag to compile method.
     /// \brief Enable the collection of per-op performance information on a specified Function.
     ///     Data collection is via the `get_performance_data` method.
     /// \param func The function to collect perfomance data on.
     /// \param enable Set to true to enable or false to disable data collection
-    virtual void enable_performance_data(std::shared_ptr<Function> func, bool enable);
+    DEPRECATED virtual void enable_performance_data(std::shared_ptr<Function> func, bool enable);
 
+    /// \deprecated Use the Handle based version of this call
     /// \brief Collect performance information gathered on a Function.
     /// \param func The function to get collected data.
     /// \returns Vector of PerformanceCounter information.
-    virtual std::vector<PerformanceCounter>
+    DEPRECATED virtual std::vector<PerformanceCounter>
         get_performance_data(std::shared_ptr<Function> func) const;
+
+    /// \brief Collect performance information gathered on a Function.
+    /// \param handle The Handle returned from compile or load
+    /// \returns Vector of PerformanceCounter information.
+    virtual std::vector<PerformanceCounter> get_performance_data(Handle handle) const;
 
     /// \brief Test if a backend is capable of supporting an op
     /// \param node is the op to test.
@@ -145,23 +158,23 @@ public:
     virtual bool is_supported(const Node& node) const;
 
     /// \brief Save the function's state.
-    /// \param handle Handle returned from compile() or load()
-    /// \param path File system path to the output file.
+    /// \param handle The Handle returned from compile or load
+    /// \param out Output stream.
     /// \returns true if save is successful.
-    virtual bool save(Handle handle, const std::string& path) const;
+    virtual bool save(Handle handle, std::ostream& out) const;
 
     /// \brief Load a function's saved state.
-    /// \param path File system path to the input file.
+    /// \param in Input stream.
     /// \returns non-nullptr Handle if successful, nullptr otherwise.
-    virtual Handle load(const std::string& path);
+    virtual Handle load(std::istream& in);
 
     /// \brief Query the input Parameters for a given Handle
-    /// \param handle Handle returned from compile() or load()
+    /// \param handle The Handle returned from compile or load
     /// \returns an ngraph::op::ParameterVector of all input parameters
     virtual const ngraph::ParameterVector& get_parameter_descriptors(Handle handle) const = 0;
 
     /// \brief Query the output Results for a given Handle
-    /// \param handle Handle returned from compile() or load()
+    /// \param handle The Handle returned from compile or load
     /// \returns an ngraph::ResultVector of all input parameters
     virtual const ngraph::ResultVector& get_result_descriptors(Handle handle) const = 0;
 };

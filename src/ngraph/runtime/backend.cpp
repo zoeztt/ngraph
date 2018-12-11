@@ -135,12 +135,12 @@ bool runtime::Backend::is_supported(const Node& node) const
     return false;
 }
 
-bool runtime::Backend::save(Handle handle, const std::string& path) const
+bool runtime::Backend::save(Handle handle, std::ostream& out) const
 {
     return false;
 }
 
-runtime::Handle runtime::Backend::load(const std::string& path)
+runtime::Handle runtime::Backend::load(std::istream& in)
 {
     return nullptr;
 }
