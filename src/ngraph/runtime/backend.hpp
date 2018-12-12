@@ -79,27 +79,11 @@ public:
         return create_tensor(element::from<T>(), shape);
     }
 
-    /// \deprecated use the two-argument compile.
-    /// \brief Compiles a Function.
-    /// \param func The function to compile
-    /// \returns compiled function or nullptr on failure
-    DEPRECATED virtual Handle compile(std::shared_ptr<Function> func) = 0;
-
     /// \brief Compiles a Function.
     /// \param func The function to compile
     /// \param enable_performance_collection Flag to add per-op performance profiling.
     /// \returns compiled function or nullptr on failure
     virtual Handle compile(const Function& func, bool enable_performance_collection = false) = 0;
-
-    /// \deprecated use the execute method.
-    /// \brief Executes a single iteration of a Function.
-    /// \param handle The Handle returned from compile or load
-    /// \param outputs vector of runtime::Tensor used as outputs
-    /// \param inputs vector of runtime::Tensor used as inputs
-    /// \returns true if iteration is successful, false otherwise
-    DEPRECATED virtual bool call(Handle handle,
-                                 const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
-                                 const std::vector<std::shared_ptr<runtime::Tensor>>& inputs) = 0;
 
     /// \brief Executes a single iteration of a Function.
     /// \param handle The Handle returned from compile or load
@@ -110,13 +94,12 @@ public:
                          const std::vector<runtime::Tensor*>& outputs,
                          const std::vector<runtime::Tensor*>& inputs) = 0;
 
-    bool validate(const Function& func,
+    bool validate(Handle,
                   const std::vector<runtime::Tensor*>& outputs,
                   const std::vector<runtime::Tensor*>& inputs);
 
     /// \deprecated use the stand-alone validate call
     /// \brief Validates the inputs and outputs against the function graph.
-    /// \param func The function to execute
     /// \returns true if iteration is successful, false otherwise
     DEPRECATED bool call_with_validate(std::shared_ptr<Function> func,
                                        const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
@@ -171,10 +154,10 @@ public:
     /// \brief Query the input Parameters for a given Handle
     /// \param handle The Handle returned from compile or load
     /// \returns an ngraph::op::ParameterVector of all input parameters
-    virtual const ngraph::ParameterVector& get_parameter_descriptors(Handle handle) const = 0;
+    virtual const ngraph::ParameterVector& get_parameters(Handle handle) const = 0;
 
     /// \brief Query the output Results for a given Handle
     /// \param handle The Handle returned from compile or load
     /// \returns an ngraph::ResultVector of all input parameters
-    virtual const ngraph::ResultVector& get_result_descriptors(Handle handle) const = 0;
+    virtual const ngraph::ResultVector& get_results(Handle handle) const = 0;
 };

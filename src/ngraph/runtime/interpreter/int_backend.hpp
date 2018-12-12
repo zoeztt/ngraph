@@ -156,9 +156,9 @@ public:
 
     std::shared_ptr<Tensor> create_tensor(const element::Type& type, const Shape& shape) override;
 
-    Handle compile(std::shared_ptr<Function> function) override;
+    std::shared_ptr<Function> compile(std::shared_ptr<Function> function) override;
 
-    bool call(std::shared_ptr<Function> function,
+    bool call(Handle handle,
               const std::vector<std::shared_ptr<Tensor>>& outputs,
               const std::vector<std::shared_ptr<Tensor>>& intputs) override;
 
@@ -174,8 +174,8 @@ public:
     bool execute(Handle handle,
                  const std::vector<Tensor*>& outputs,
                  const std::vector<Tensor*>& intputs) override;
-    const ParameterVector& get_parameter_descriptors(Handle handle) const override;
-    const ResultVector& get_result_descriptors(Handle handle) const override;
+    const ParameterVector& get_parameters(Handle handle) const override;
+    const ResultVector& get_results(Handle handle) const override;
 
 private:
     int get_alignment() const { return 64; }

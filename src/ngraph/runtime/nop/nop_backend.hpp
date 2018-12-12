@@ -44,15 +44,14 @@ public:
 
     std::shared_ptr<Tensor> create_tensor(const element::Type& type, const Shape& shape) override;
 
-    Handle compile(std::shared_ptr<Function> function) override;
-    Handle compile(const Function& function, bool enable_performance_collection) override;
+    Handle compile(std::shared_ptr<Function> func, bool enable_performance_collection) override;
 
-    bool call(std::shared_ptr<Function> function,
+    bool call(Handle handle,
               const std::vector<std::shared_ptr<Tensor>>& outputs,
               const std::vector<std::shared_ptr<Tensor>>& intputs) override;
     bool execute(Handle handle,
                  const std::vector<Tensor*>& outputs,
                  const std::vector<Tensor*>& intputs) override;
-    const ParameterVector& get_parameter_descriptors(Handle handle) const override;
-    const ResultVector& get_result_descriptors(Handle handle) const override;
+    const ParameterVector& get_parameters(Handle handle) const override;
+    const ResultVector& get_results(Handle handle) const override;
 };

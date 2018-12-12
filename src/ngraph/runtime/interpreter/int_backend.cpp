@@ -55,7 +55,7 @@ shared_ptr<runtime::Tensor> runtime::interpreter::INTBackend::create_tensor(
     return make_shared<runtime::HostTensor>(type, shape, memory_pointer, "external");
 }
 
-runtime::Handle runtime::interpreter::INTBackend::compile(shared_ptr<Function> function)
+std::shared_ptr<Function> runtime::interpreter::INTBackend::compile(shared_ptr<Function> function)
 {
     FunctionInstance& instance = m_function_map[function];
     if (!instance.m_is_compiled)
