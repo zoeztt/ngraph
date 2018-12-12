@@ -85,23 +85,20 @@ public:
 
     /// \brief Executes a single iteration of a Function. If func is not compiled the call will
     ///     compile it.
-    /// \param func The function to execute
+    /// \param handle The function to execute
     /// \returns true if iteration is successful, false otherwise
-    virtual bool call(std::shared_ptr<Function> func,
+    virtual bool call(Handle handle,
                       const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
                       const std::vector<std::shared_ptr<runtime::Tensor>>& inputs) = 0;
 
     /// \brief Executes a single iteration of a Function. If func is not compiled the call will
     ///     compile it. Optionally validates the inputs and outputs against the function graph.
-    /// \param func The function to execute
-    /// \returns true if iteration is successful, false otherwise
-    bool call_with_validate(std::shared_ptr<Function> func,
-                            const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
-                            const std::vector<std::shared_ptr<runtime::Tensor>>& inputs)
-    {
-        validate_call(func, outputs, inputs);
-        return call(func, outputs, inputs);
-    }
+    /// \param handle The function to execute
+    /// \param outputs Outputs for the execute call
+    /// \param inputs Inputs for the execute call
+    void validate(Handle handle,
+                  const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
+                  const std::vector<std::shared_ptr<runtime::Tensor>>& inputs);
 
     /// \brief Compiled functions may be cached. This function removes a compiled function
     ///     from the cache.
@@ -112,7 +109,8 @@ public:
     ///     Data collection is via the `get_performance_data` method.
     /// \param func The function to collect perfomance data on.
     /// \param enable Set to true to enable or false to disable data collection
-    virtual void enable_performance_data(std::shared_ptr<Function> func, bool enable) {}
+    virtual void enable_performance_data(std::shared_ptr<Function> func, bool enable);
+
     /// \brief Collect performance information gathered on a Function.
     /// \param func The function to get collected data.
     /// \returns Vector of PerformanceCounter information.
@@ -124,8 +122,13 @@ public:
     /// \returns true if the op is supported, false otherwise.
     virtual bool is_supported(const Node& node) const;
 
-protected:
-    void validate_call(std::shared_ptr<const Function> func,
-                       const std::vector<std::shared_ptr<runtime::Tensor>>& outputs,
-                       const std::vector<std::shared_ptr<runtime::Tensor>>& inputs);
+    /// \brief Query the input Parameters for a given Handle
+    /// \param handle The Handle returned from compile or load
+    /// \returns an ngraph::op::ParameterVector of all input parameters
+    virtual const ngraph::ParameterVector& get_parameters(Handle handle) const = 0;
+
+    /// \brief Query the output Results for a given Handle
+    /// \param handle The Handle returned from compile or load
+    /// \returns an ngraph::ResultVector of all input parameters
+    virtual const ngraph::ResultVector& get_results(Handle handle) const = 0;
 };

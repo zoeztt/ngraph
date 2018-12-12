@@ -179,7 +179,7 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
         }
 
         // Call
-        backend->call_with_validate(sub_function, result_tvs, parameter_tvs);
+        backend->call(sub_function, result_tvs, parameter_tvs);
     }
     return rc;
 }

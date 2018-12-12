@@ -171,6 +171,9 @@ public:
         get_performance_data(std::shared_ptr<Function> func) const override;
 
     bool is_supported(const Node& node) const override { return true; }
+    const ngraph::ParameterVector& get_parameters(Handle handle) const override;
+    const ngraph::ResultVector& get_results(Handle handle) const override;
+
 private:
     int get_alignment() const { return 64; }
     class FunctionInstance

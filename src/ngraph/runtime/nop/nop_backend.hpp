@@ -49,4 +49,7 @@ public:
     bool call(std::shared_ptr<Function> function,
               const std::vector<std::shared_ptr<Tensor>>& outputs,
               const std::vector<std::shared_ptr<Tensor>>& intputs) override;
+
+    const ngraph::ParameterVector& get_parameters(Handle handle) const override;
+    const ngraph::ResultVector& get_results(Handle handle) const override;
 };
