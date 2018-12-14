@@ -24,27 +24,6 @@
 using namespace ngraph;
 using namespace std;
 
-template <typename T>
-void copy_data(std::shared_ptr<ngraph::runtime::Tensor> tv, const std::vector<T>& data)
-{
-    size_t data_size = data.size() * sizeof(T);
-    tv->write(data.data(), 0, data_size);
-}
-
-template <typename T>
-std::vector<T> read_vector(std::shared_ptr<ngraph::runtime::Tensor> tv)
-{
-    if (ngraph::element::from<T>() != tv->get_tensor_layout()->get_element_type())
-    {
-        throw std::invalid_argument("read_vector type must match Tensor type");
-    }
-    size_t element_count = ngraph::shape_size(tv->get_shape());
-    size_t size = element_count * sizeof(T);
-    std::vector<T> rc(element_count);
-    tv->read(rc.data(), 0, size);
-    return rc;
-}
-
 runtime::hybrid::HybridBackend::HybridBackend(
     const std::vector<std::shared_ptr<runtime::Backend>>& backend_list)
     : m_backend_list{backend_list}
@@ -146,12 +125,12 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
             else
             {
                 auto result_node = instance.m_map_parameter_to_result.at(parameter_node);
-                auto result_tv = map_node_to_tensor.at(result_node);
-                auto parameter_tv = backend->create_tensor(parameter_node->get_element_type(),
-                                                           parameter_node->get_shape());
-                parameter_tv->copy_from(*result_tv);
-                map_node_to_tensor[parameter_node] = parameter_tv;
-                parameters.push_back(parameter_tv);
+                auto result = map_node_to_tensor.at(result_node);
+                auto parameter = backend->create_tensor(parameter_node->get_element_type(),
+                                                        parameter_node->get_shape());
+                parameter->copy_from(*result);
+                map_node_to_tensor[parameter_node] = parameter;
+                parameters.push_back(parameter);
             }
         }
 
@@ -165,10 +144,10 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
             }
             else
             {
-                auto result_tv = backend->create_tensor(result_node->get_element_type(),
-                                                        result_node->get_shape());
-                map_node_to_tensor[result_node] = result_tv;
-                results.push_back(result_tv);
+                auto result = backend->create_tensor(result_node->get_element_type(),
+                                                     result_node->get_shape());
+                map_node_to_tensor[result_node] = result;
+                results.push_back(result);
             }
         }
 
