@@ -19,10 +19,44 @@
 #include "ngraph/pass/manager.hpp"
 #include "ngraph/runtime/hybrid/hybrid_util.hpp"
 #include "ngraph/runtime/hybrid/pass/assign_placement.hpp"
+#include "ngraph/runtime/host_tensor.hpp"
 #include "ngraph/runtime/tensor.hpp"
+#include "ngraph/runtime/gpu/gpu_tensor.hpp"
+#include "ngraph/runtime/gpu/gpu_backend.hpp"
+#include "ngraph/runtime/interpreter/int_backend.hpp"
 
 using namespace ngraph;
 using namespace std;
+
+namespace
+{
+    string get_placement(const runtime::Tensor* t)
+    {
+        string rc;
+        if (dynamic_cast<const runtime::HostTensor*>(t) != nullptr)
+        {
+            rc = "HostTensor";
+        }
+        else if (dynamic_cast<const runtime::gpu::GPUTensor*>(t) != nullptr)
+        {
+            rc = "GPUTensor";
+        }
+        return rc;
+    }
+    string get_placement(const runtime::Backend* t)
+    {
+        string rc;
+        if (dynamic_cast<const runtime::interpreter::INTBackend*>(t) != nullptr)
+        {
+            rc = "INTBackend";
+        }
+        else if (dynamic_cast<const runtime::gpu::GPU_Backend*>(t) != nullptr)
+        {
+            rc = "GPU_Backend Backend";
+        }
+        return rc;
+    }
+}
 
 runtime::hybrid::HybridBackend::HybridBackend(
     const std::vector<std::shared_ptr<runtime::Backend>>& backend_list)
@@ -89,6 +123,7 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
     // Get FunctionInstance
     bool rc = true;
 
+    NGRAPH_INFO;
     auto it = m_function_map.find(func);
     if (it == m_function_map.end())
     {
@@ -96,31 +131,39 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
     }
     FunctionInstance& instance = it->second;
 
+    NGRAPH_INFO;
     // Parameter and result node in sub_function maps to one Tensor
     unordered_map<shared_ptr<Node>, shared_ptr<runtime::Tensor>> map_node_to_tensor;
     for (size_t i = 0; i < inputs.size(); ++i)
     {
+        NGRAPH_INFO << get_placement(inputs[i].get());
         map_node_to_tensor[instance.m_function->get_parameters()[i]] = inputs[i];
     }
+    NGRAPH_INFO;
     for (size_t i = 0; i < outputs.size(); ++i)
     {
+        NGRAPH_INFO << get_placement(outputs[i].get());
         map_node_to_tensor[instance.m_function->get_results()[i]] = outputs[i];
     }
 
+    NGRAPH_INFO;
     // Call subfunctions
-    for (shared_ptr<Function>& sub_function : instance.m_sub_functions)
+    for (const shared_ptr<Function>& sub_function : instance.m_sub_functions)
     {
         // Init backend
         size_t placement = get_colocated_function_placement_size(sub_function);
         auto backend = m_backend_list[placement];
+        NGRAPH_INFO << get_placement(backend.get());
 
         // Prepare parameter Tensors
+        NGRAPH_INFO;
         vector<shared_ptr<runtime::Tensor>> parameters;
         for (auto parameter_node : sub_function->get_parameters())
         {
-            if (map_node_to_tensor.find(parameter_node) != map_node_to_tensor.end())
+            auto it = map_node_to_tensor.find(parameter_node);
+            if (it != map_node_to_tensor.end())
             {
-                parameters.push_back(map_node_to_tensor.at(parameter_node));
+                parameters.push_back(it->second);
             }
             else
             {
@@ -135,12 +178,14 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
         }
 
         // Prepare result Tensors
+        NGRAPH_INFO;
         vector<shared_ptr<runtime::Tensor>> results;
         for (auto result_node : sub_function->get_results())
         {
-            if (map_node_to_tensor.find(result_node) != map_node_to_tensor.end())
+            auto it = map_node_to_tensor.find(result_node);
+            if (it != map_node_to_tensor.end())
             {
-                results.push_back(map_node_to_tensor.at(result_node));
+                results.push_back(it->second);
             }
             else
             {
@@ -152,8 +197,11 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
         }
 
         // Call
-        backend->call_with_validate(sub_function, results, parameters);
+        NGRAPH_INFO;
+        backend->call(sub_function, results, parameters);
+        NGRAPH_INFO;
     }
+    NGRAPH_INFO;
     return rc;
 }
 

@@ -25,7 +25,7 @@
 using namespace ngraph;
 using namespace std;
 
-#define DEBUG_MODE_INT
+// #define DEBUG_MODE_INT
 
 extern "C" const char* get_ngraph_version_string()
 {
@@ -50,7 +50,7 @@ runtime::gpuh::GPUHBackend::GPUHBackend()
 }
 #else
 runtime::gpuh::GPUHBackend::GPUHBackend()
-    : HybridBackend({make_shared<ngraph::runtime::interpreter::GPU_Backend>(),
+    : HybridBackend({make_shared<ngraph::runtime::gpu::GPU_Backend>(),
                      make_shared<ngraph::runtime::interpreter::INTBackend>()})
 {
 }

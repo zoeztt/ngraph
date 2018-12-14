@@ -16,7 +16,6 @@
 
 #pragma once
 
-#include <cuda.h>
 #include <memory>
 
 #include "ngraph/runtime/tensor.hpp"
