@@ -47,9 +47,8 @@ runtime::interpreter::INTBackend::INTBackend()
 {
 }
 
-runtime::interpreter::INTBackend::INTBackend(
-    std::initializer_list<std::string> unsupported_op_name_list)
-    : m_unsupported_op_name_list{unsupported_op_name_list}
+runtime::interpreter::INTBackend::INTBackend(const vector<string>& unsupported_op_name_list)
+    : m_unsupported_op_name_list{unsupported_op_name_list.begin(), unsupported_op_name_list.end()}
 {
 }
 

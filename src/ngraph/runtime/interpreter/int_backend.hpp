@@ -158,7 +158,7 @@ class ngraph::runtime::interpreter::INTBackend : public Backend
 {
 public:
     INTBackend();
-    INTBackend(std::initializer_list<std::string> unsupported_op_name_list);
+    INTBackend(const std::vector<std::string>& unsupported_op_name_list);
     INTBackend(const INTBackend&) = delete;
     INTBackend(INTBackend&&) = delete;
     INTBackend& operator=(const INTBackend&) = delete;
