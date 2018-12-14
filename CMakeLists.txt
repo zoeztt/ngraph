@@ -87,6 +87,10 @@ option(NGRAPH_CODE_COVERAGE_ENABLE "Enable code coverage data collection" FALSE)
 option(NGRAPH_LIB_VERSIONING_ENABLE "Enable shared library versioning" FALSE)
 option(NGRAPH_PYTHON_BUILD_ENABLE   "Enable build nGraph python package wheel" FALSE)
 
+if (NGRAPH_GPUH_ENABLE)
+    set(NGRAPH_GPU_ENABLE TRUE)
+endif()
+
 message(STATUS "NGRAPH_UNIT_TEST_ENABLE:      ${NGRAPH_UNIT_TEST_ENABLE}")
 message(STATUS "NGRAPH_TOOLS_ENABLE:          ${NGRAPH_TOOLS_ENABLE}")
 message(STATUS "NGRAPH_CPU_ENABLE:            ${NGRAPH_CPU_ENABLE}")
