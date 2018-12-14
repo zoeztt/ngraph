@@ -17,13 +17,13 @@
 #include "ngraph/runtime/hybrid/hybrid_backend.hpp"
 #include "ngraph/graph_util.hpp"
 #include "ngraph/pass/manager.hpp"
+#include "ngraph/runtime/gpu/gpu_backend.hpp"
+#include "ngraph/runtime/gpu/gpu_tensor.hpp"
+#include "ngraph/runtime/host_tensor.hpp"
 #include "ngraph/runtime/hybrid/hybrid_util.hpp"
 #include "ngraph/runtime/hybrid/pass/assign_placement.hpp"
-#include "ngraph/runtime/host_tensor.hpp"
-#include "ngraph/runtime/tensor.hpp"
-#include "ngraph/runtime/gpu/gpu_tensor.hpp"
-#include "ngraph/runtime/gpu/gpu_backend.hpp"
 #include "ngraph/runtime/interpreter/int_backend.hpp"
+#include "ngraph/runtime/tensor.hpp"
 
 using namespace ngraph;
 using namespace std;
