@@ -71,7 +71,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 include(var_functions)
 
-set(NGRAPH_HYBRID_ENABLE TRUE)
 option(NGRAPH_UNIT_TEST_ENABLE "Control the building of unit tests" TRUE)
 option(NGRAPH_TOOLS_ENABLE "Control the building of tool" TRUE)
 option(NGRAPH_CPU_ENABLE "Control the building of the CPU backend" TRUE)
@@ -103,10 +102,6 @@ message(STATUS "NGRAPH_DEX_ONLY:              ${NGRAPH_DEX_ONLY}")
 message(STATUS "NGRAPH_CODE_COVERAGE_ENABLE:  ${NGRAPH_CODE_COVERAGE_ENABLE}")
 message(STATUS "NGRAPH_LIB_VERSIONING_ENABLE: ${NGRAPH_LIB_VERSIONING_ENABLE}")
 message(STATUS "NGRAPH_PYTHON_BUILD_ENABLE:   ${NGRAPH_PYTHON_BUILD_ENABLE}")
-
-if (NGRAPH_HYBRID_ENABLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNGRAPH_HYBRID_ENABLE")
-endif()
 
 if (NGRAPH_ONNX_IMPORT_ENABLE)
     option(NGRAPH_USE_SYSTEM_PROTOBUF "Use system provided Protobuf shared object" FALSE)
