@@ -118,14 +118,14 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
     FunctionInstance& instance = it->second;
 
     // Parameter and result node in sub_function maps to one Tensor
-    unordered_map<shared_ptr<Node>, shared_ptr<runtime::Tensor>> map_node_to_tensor_view;
+    unordered_map<shared_ptr<Node>, shared_ptr<runtime::Tensor>> map_node_to_tensor;
     for (size_t i = 0; i < inputs.size(); ++i)
     {
-        map_node_to_tensor_view[instance.m_function->get_parameters()[i]] = inputs[i];
+        map_node_to_tensor[instance.m_function->get_parameters()[i]] = inputs[i];
     }
     for (size_t i = 0; i < outputs.size(); ++i)
     {
-        map_node_to_tensor_view[instance.m_function->get_results()[i]] = outputs[i];
+        map_node_to_tensor[instance.m_function->get_results()[i]] = outputs[i];
     }
 
     // Call subfunctions
@@ -135,45 +135,45 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
         size_t placement = get_colocated_function_placement_size(sub_function);
         auto backend = m_backend_list[placement];
 
-        // Prepare parameter TensorViews
-        vector<shared_ptr<runtime::Tensor>> parameter_tvs;
+        // Prepare parameter Tensors
+        vector<shared_ptr<runtime::Tensor>> parameters;
         for (auto parameter_node : sub_function->get_parameters())
         {
-            if (map_node_to_tensor_view.find(parameter_node) != map_node_to_tensor_view.end())
+            if (map_node_to_tensor.find(parameter_node) != map_node_to_tensor.end())
             {
-                parameter_tvs.push_back(map_node_to_tensor_view.at(parameter_node));
+                parameters.push_back(map_node_to_tensor.at(parameter_node));
             }
             else
             {
                 auto result_node = instance.m_map_parameter_to_result.at(parameter_node);
-                auto result_tv = map_node_to_tensor_view.at(result_node);
+                auto result_tv = map_node_to_tensor.at(result_node);
                 auto parameter_tv = backend->create_tensor(parameter_node->get_element_type(),
                                                            parameter_node->get_shape());
-                copy_data(parameter_tv, read_vector<float>(result_tv));
-                map_node_to_tensor_view[parameter_node] = parameter_tv;
-                parameter_tvs.push_back(parameter_tv);
+                parameter_tv->copy_from(*result_tv);
+                map_node_to_tensor[parameter_node] = parameter_tv;
+                parameters.push_back(parameter_tv);
             }
         }
 
-        // Prepare result TensorViews
-        vector<shared_ptr<runtime::Tensor>> result_tvs;
+        // Prepare result Tensors
+        vector<shared_ptr<runtime::Tensor>> results;
         for (auto result_node : sub_function->get_results())
         {
-            if (map_node_to_tensor_view.find(result_node) != map_node_to_tensor_view.end())
+            if (map_node_to_tensor.find(result_node) != map_node_to_tensor.end())
             {
-                result_tvs.push_back(map_node_to_tensor_view.at(result_node));
+                results.push_back(map_node_to_tensor.at(result_node));
             }
             else
             {
                 auto result_tv = backend->create_tensor(result_node->get_element_type(),
                                                         result_node->get_shape());
-                map_node_to_tensor_view[result_node] = result_tv;
-                result_tvs.push_back(result_tv);
+                map_node_to_tensor[result_node] = result_tv;
+                results.push_back(result_tv);
             }
         }
 
         // Call
-        backend->call_with_validate(sub_function, result_tvs, parameter_tvs);
+        backend->call_with_validate(sub_function, results, parameters);
     }
     return rc;
 }
