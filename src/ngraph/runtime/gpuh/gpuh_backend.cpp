@@ -35,6 +35,6 @@ extern "C" runtime::Backend* new_backend(const char* configuration_string)
 }
 
 runtime::gpuh::GPUHBackend::GPUHBackend()
-    : HybridBackend({{"INTERPRETER", make_shared<ngraph::runtime::interpreter::INTBackend>()}})
+    : HybridBackend({make_shared<ngraph::runtime::interpreter::INTBackend>()})
 {
 }

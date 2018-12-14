@@ -46,7 +46,7 @@ std::vector<T> read_vector(std::shared_ptr<ngraph::runtime::Tensor> tv)
 }
 
 runtime::hybrid::HybridBackend::HybridBackend(
-    const std::vector<std::pair<std::string, std::shared_ptr<runtime::Backend>>>& backend_list)
+    const std::vector<std::shared_ptr<runtime::Backend>>& backend_list)
     : m_backend_list{backend_list}
 {
 }
@@ -56,33 +56,27 @@ shared_ptr<runtime::Tensor>
                                                   const Shape& shape)
 {
     auto it = m_backend_list.begin();
-    return it->second->create_tensor(element_type, shape);
+    return (*it)->create_tensor(element_type, shape);
 }
 
 shared_ptr<runtime::Tensor> runtime::hybrid::HybridBackend::create_tensor(
     const element::Type& element_type, const Shape& shape, void* memory_pointer)
 {
     auto it = m_backend_list.begin();
-    return it->second->create_tensor(element_type, shape, memory_pointer);
+    return (*it)->create_tensor(element_type, shape, memory_pointer);
 }
 
 runtime::Handle runtime::hybrid::HybridBackend::compile(shared_ptr<Function> func)
 {
     if (m_function_map.find(func) == m_function_map.end())
     {
-        vector<shared_ptr<runtime::Backend>> backend_list;
-        for (auto p : m_backend_list)
-        {
-            backend_list.push_back(p.second);
-        }
-
         // Clone function
         FunctionInstance instance;
         instance.m_function = clone_function(*func);
 
         // Run placement pass
         ngraph::pass::Manager pass_manager;
-        pass_manager.register_pass<runtime::hybrid::pass::AssignPlacement>(backend_list);
+        pass_manager.register_pass<runtime::hybrid::pass::AssignPlacement>(m_backend_list);
         pass_manager.run_passes(instance.m_function);
 
         // Split function to sub_functions
@@ -95,7 +89,7 @@ runtime::Handle runtime::hybrid::HybridBackend::compile(shared_ptr<Function> fun
         {
             size_t placement = get_colocated_function_placement_size(sub_function);
             auto backend = m_backend_list[placement];
-            backend.second->compile(sub_function);
+            backend->compile(sub_function);
 
             // Compile will replace nodes so we need to make one more pass through all
             // ops to reset placement
@@ -139,7 +133,7 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
     {
         // Init backend
         size_t placement = get_colocated_function_placement_size(sub_function);
-        auto backend = m_backend_list[placement].second;
+        auto backend = m_backend_list[placement];
 
         // Prepare parameter TensorViews
         vector<shared_ptr<runtime::Tensor>> parameter_tvs;
