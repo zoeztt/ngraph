@@ -36,7 +36,8 @@ extern "C" runtime::Backend* new_backend(const char* configuration_string)
 }
 
 runtime::gpuh::GPUHBackend::GPUHBackend()
-    : HybridBackend({make_shared<ngraph::runtime::gpu::GPU_Backend>(),
+    : HybridBackend({shared_ptr<ngraph::runtime::interpreter::INTBackend>(
+                         new ngraph::runtime::interpreter::INTBackend({"Not"})),
                      make_shared<ngraph::runtime::interpreter::INTBackend>()})
 {
 }
