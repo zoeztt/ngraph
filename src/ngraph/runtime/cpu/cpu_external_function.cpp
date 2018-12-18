@@ -916,8 +916,7 @@ using namespace ngraph::runtime;
             // skip multi-output nodes since they would be covered by GetOutputElement
             if (node->get_output_size() == 1 &&
                 // skip non-FP nodes
-                (node->get_element_type() == f32 ||
-                 node->get_element_type() == f64))
+                (node->get_element_type() == f32 || node->get_element_type() == f64))
             {
                 // check inputs and constants?
                 if ((!node->is_parameter() && !node->is_constant()) ||

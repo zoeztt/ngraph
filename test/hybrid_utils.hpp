@@ -32,14 +32,12 @@ class TestBackend : public ngraph::runtime::Backend
 public:
     TestBackend(const std::vector<std::shared_ptr<ngraph::runtime::Backend>>& backend_list);
 
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::Type& element_type,
-                      const ngraph::Shape& shape) override;
+    std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::Type& element_type,
+                                                           const ngraph::Shape& shape) override;
 
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::Type& element_type,
-                      const ngraph::Shape& shape,
-                      void* memory_pointer) override;
+    std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::Type& element_type,
+                                                           const ngraph::Shape& shape,
+                                                           void* memory_pointer) override;
 
     bool compile(std::shared_ptr<ngraph::Function> func) override;
 
@@ -73,14 +71,12 @@ public:
                    const std::set<std::string>& supported_ops,
                    const std::string& name);
 
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::Type& element_type,
-                      const ngraph::Shape& shape) override;
+    std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::Type& element_type,
+                                                           const ngraph::Shape& shape) override;
 
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::Type& element_type,
-                      const ngraph::Shape& shape,
-                      void* memory_pointer) override;
+    std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::Type& element_type,
+                                                           const ngraph::Shape& shape,
+                                                           void* memory_pointer) override;
 
     bool compile(std::shared_ptr<ngraph::Function> func) override;
 

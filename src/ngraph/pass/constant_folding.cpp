@@ -144,8 +144,8 @@ void ngraph::pass::ConstantFolding::construct_constant_pad()
 
 void ngraph::pass::ConstantFolding::construct_constant_reshape()
 {
-    auto constant_label = make_shared<pattern::op::Label>(
-        f32, Shape{2, 4}, pattern::has_class<op::Constant>());
+    auto constant_label =
+        make_shared<pattern::op::Label>(f32, Shape{2, 4}, pattern::has_class<op::Constant>());
     auto reshape = make_shared<op::Reshape>(constant_label, AxisVector{0, 1}, Shape{2, 4, 1});
 
     auto constant_reshape_callback = [constant_label](pattern::Matcher& m) {
@@ -326,10 +326,8 @@ bool is_supported_binary_op(std::shared_ptr<Node> n)
 
 void ngraph::pass::ConstantFolding::construct_constant_binary()
 {
-    auto a = make_shared<pattern::op::Label>(
-        f32, Shape{2, 4}, pattern::has_class<op::Constant>());
-    auto b = make_shared<pattern::op::Label>(
-        f32, Shape{2, 4}, pattern::has_class<op::Constant>());
+    auto a = make_shared<pattern::op::Label>(f32, Shape{2, 4}, pattern::has_class<op::Constant>());
+    auto b = make_shared<pattern::op::Label>(f32, Shape{2, 4}, pattern::has_class<op::Constant>());
     auto is_bea = pattern::has_class<op::util::BinaryElementwiseArithmetic>();
     auto bea = std::make_shared<pattern::op::Any>(a, is_bea, NodeVector{a, b});
 
@@ -420,8 +418,8 @@ shared_ptr<op::Constant> make_constant_unary(shared_ptr<op::Constant> constant,
 
 void ngraph::pass::ConstantFolding::construct_constant_unary()
 {
-    auto constant_label = make_shared<pattern::op::Label>(
-        f32, Shape{2, 4}, pattern::has_class<op::Constant>());
+    auto constant_label =
+        make_shared<pattern::op::Label>(f32, Shape{2, 4}, pattern::has_class<op::Constant>());
     auto is_uea = pattern::has_class<op::util::UnaryElementwiseArithmetic>();
     auto uea =
         std::make_shared<pattern::op::Any>(constant_label, is_uea, NodeVector{constant_label});

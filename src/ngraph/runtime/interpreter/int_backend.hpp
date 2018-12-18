@@ -1207,8 +1207,8 @@ private:
                     node.get_inputs().at(0).get_element_type(), Shape{}, &x, "selection_temp_x");
                 auto ty = std::make_shared<runtime::HostTensor>(
                     node.get_inputs().at(1).get_element_type(), Shape{}, &y, "selection_temp_y");
-                auto tr = std::make_shared<runtime::HostTensor>(
-                    boolean, Shape{}, "selection_temp_r");
+                auto tr =
+                    std::make_shared<runtime::HostTensor>(boolean, Shape{}, "selection_temp_r");
                 auto handle = compile(selection_function);
                 call(handle, {tr}, {tx, ty});
                 return *(tr->get_data_ptr<char>());

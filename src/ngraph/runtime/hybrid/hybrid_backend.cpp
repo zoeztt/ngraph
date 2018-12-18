@@ -51,16 +51,16 @@ runtime::hybrid::HybridBackend::HybridBackend(
 {
 }
 
-shared_ptr<runtime::Tensor>
-    runtime::hybrid::HybridBackend::create_tensor(const Type& element_type,
-                                                  const Shape& shape)
+shared_ptr<runtime::Tensor> runtime::hybrid::HybridBackend::create_tensor(const Type& element_type,
+                                                                          const Shape& shape)
 {
     auto it = m_backend_list.begin();
     return it->second->create_tensor(element_type, shape);
 }
 
-shared_ptr<runtime::Tensor> runtime::hybrid::HybridBackend::create_tensor(
-    const Type& element_type, const Shape& shape, void* memory_pointer)
+shared_ptr<runtime::Tensor> runtime::hybrid::HybridBackend::create_tensor(const Type& element_type,
+                                                                          const Shape& shape,
+                                                                          void* memory_pointer)
 {
     auto it = m_backend_list.begin();
     return it->second->create_tensor(element_type, shape, memory_pointer);

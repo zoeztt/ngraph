@@ -141,9 +141,7 @@ namespace ngraph
                         else
                         {
                             m_map[LSTMInput::LSTM_INPUT_B] = common::make_constant_node<float>(
-                                f32,
-                                {num_directions, 2 * gates_count * hidden_size},
-                                {0.f});
+                                f32, {num_directions, 2 * gates_count * hidden_size}, {0.f});
                         }
                         // The lengths of the sequences in a batch. Shape [batch_size]
                         if (ng_inputs.size() >= 5)
@@ -187,9 +185,7 @@ namespace ngraph
                         else
                         {
                             m_map[LSTMInput::LSTM_INPUT_P] = common::make_constant_node<float>(
-                                f32,
-                                {num_directions, peepholes_count * hidden_size},
-                                {0.f});
+                                f32, {num_directions, peepholes_count * hidden_size}, {0.f});
                         }
                     }
 

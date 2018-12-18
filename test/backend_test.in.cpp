@@ -43,15 +43,15 @@ using namespace ngraph;
 static string s_manifest = "${MANIFEST}";
 
 static const vector<Type> s_known_element_types = {from<float>(),
-                                                            from<double>(),
-                                                            from<int8_t>(),
-                                                            from<int16_t>(),
-                                                            from<int32_t>(),
-                                                            from<int64_t>(),
-                                                            from<uint8_t>(),
-                                                            from<uint16_t>(),
-                                                            from<uint32_t>(),
-                                                            from<uint64_t>()};
+                                                   from<double>(),
+                                                   from<int8_t>(),
+                                                   from<int16_t>(),
+                                                   from<int32_t>(),
+                                                   from<int64_t>(),
+                                                   from<uint8_t>(),
+                                                   from<uint16_t>(),
+                                                   from<uint32_t>(),
+                                                   from<uint64_t>()};
 
 class UnhandledOp : public ngraph::op::Op
 {
@@ -1414,8 +1414,7 @@ NGRAPH_TEST(${BACKEND_NAME}, convert_int32_bool)
 {
     Shape shape{2, 2};
     auto A = make_shared<op::Parameter>(i32, shape);
-    auto f =
-        make_shared<Function>(make_shared<op::Convert>(A, boolean), ParameterVector{A});
+    auto f = make_shared<Function>(make_shared<op::Convert>(A, boolean), ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
@@ -1432,8 +1431,7 @@ NGRAPH_TEST(${BACKEND_NAME}, convert_float32_bool)
 {
     Shape shape{2, 2};
     auto A = make_shared<op::Parameter>(f32, shape);
-    auto f =
-        make_shared<Function>(make_shared<op::Convert>(A, boolean), ParameterVector{A});
+    auto f = make_shared<Function>(make_shared<op::Convert>(A, boolean), ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 

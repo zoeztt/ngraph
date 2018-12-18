@@ -82,8 +82,7 @@ namespace ngraph
                     char output;
                     inputs.emplace_back(backend->create_tensor(f32, Shape{}, &x));
                     inputs.emplace_back(backend->create_tensor(f32, Shape{}, &y));
-                    outputs.emplace_back(
-                        backend->create_tensor(boolean, Shape{}, &output));
+                    outputs.emplace_back(backend->create_tensor(boolean, Shape{}, &output));
                     select_external_function->make_call_frame()->call(outputs, inputs);
                     return output;
                 };

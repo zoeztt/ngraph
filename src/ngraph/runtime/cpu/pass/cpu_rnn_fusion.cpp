@@ -442,8 +442,7 @@ void ngraph::runtime::cpu::pass::RNNFusion::construct_rnn_lstm_fprop()
         CHECK_RANK(rnn_weights_iter, 2);
         CHECK_RANK(rnn_bias, 1);
 
-        if (rnn_src_layer->get_element_type() != f32 ||
-            rnn_src_iter->get_element_type() != f32)
+        if (rnn_src_layer->get_element_type() != f32 || rnn_src_iter->get_element_type() != f32)
         {
             NGRAPH_DEBUG << "input tensor type and input recurrent state tensor are not float32";
             return false;

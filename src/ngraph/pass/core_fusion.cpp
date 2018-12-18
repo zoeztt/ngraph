@@ -540,8 +540,7 @@ void pass::CoreFusion::construct_optimized_strided_conv()
     auto broadcast_w1_label = std::make_shared<pattern::op::Label>(conv_stride1_label, is_bc);
     auto add_w1 = std::make_shared<op::Add>(conv_stride1_label, broadcast_w1_label);
 
-    auto eltwise_arg_label =
-        std::make_shared<pattern::op::Label>(f32, conv_stride1->get_shape());
+    auto eltwise_arg_label = std::make_shared<pattern::op::Label>(f32, conv_stride1->get_shape());
     auto add_two_convs = std::make_shared<op::Add>(add_w1, eltwise_arg_label);
 
     auto relu_two_convs = std::make_shared<op::Relu>(add_two_convs);

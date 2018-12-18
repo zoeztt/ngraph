@@ -77,8 +77,7 @@ namespace ngraph
                 bool use_mkldnn_kernel(const ngraph::Node* node);
                 void assign_mkldnn_kernel(Node* node);
 
-                std::map<Type, const mkldnn::memory::data_type>&
-                    get_mkldnn_data_type_map();
+                std::map<Type, const mkldnn::memory::data_type>& get_mkldnn_data_type_map();
                 std::map<Type, const std::string>& get_mkldnn_data_type_string_map();
                 std::map<mkldnn::memory::format, const std::string>& get_mkldnn_format_string_map();
                 std::set<mkldnn::memory::format>& get_filter_formats();

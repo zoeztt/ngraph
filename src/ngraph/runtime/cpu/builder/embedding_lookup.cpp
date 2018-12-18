@@ -40,8 +40,7 @@ namespace ngraph
                 auto& arg0_tensor = tensor_data[args[0].get_name()];
                 auto& arg1_tensor = tensor_data[args[1].get_name()];
                 auto& out_tensor = tensor_data[out[0].get_name()];
-                if (out[0].get_element_type() != f32 &&
-                    out[0].get_element_type() != f64)
+                if (out[0].get_element_type() != f32 && out[0].get_element_type() != f64)
                 {
                     throw ngraph_error("Unsupported output element type");
                 }

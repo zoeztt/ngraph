@@ -104,14 +104,15 @@ runtime::gpu::GPU_Backend::BackendContext::~BackendContext()
     delete m_runtime_context->compiled_kernel_pool;
 }
 
-shared_ptr<runtime::Tensor>
-    runtime::gpu::GPU_Backend::create_tensor(const Type& element_type, const Shape& shape)
+shared_ptr<runtime::Tensor> runtime::gpu::GPU_Backend::create_tensor(const Type& element_type,
+                                                                     const Shape& shape)
 {
     return make_shared<runtime::gpu::GPUTensor>(element_type, shape);
 }
 
-shared_ptr<runtime::Tensor> runtime::gpu::GPU_Backend::create_tensor(
-    const Type& element_type, const Shape& shape, void* memory_pointer)
+shared_ptr<runtime::Tensor> runtime::gpu::GPU_Backend::create_tensor(const Type& element_type,
+                                                                     const Shape& shape,
+                                                                     void* memory_pointer)
 {
     return make_shared<runtime::gpu::GPUTensor>(element_type, shape, memory_pointer);
 }

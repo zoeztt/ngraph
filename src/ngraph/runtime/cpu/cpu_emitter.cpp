@@ -893,8 +893,7 @@ namespace ngraph
                 // Specialized handling of rank 3 tensor multiply rank 2 tensor where
                 // each of the
                 else if ((arg0_shape.size() == 3) && (arg1_shape.size() == 2) &&
-                         dot->get_reduction_axes_count() == 1 &&
-                         args[0].get_element_type() == f32)
+                         dot->get_reduction_axes_count() == 1 && args[0].get_element_type() == f32)
                 {
                     auto mat_a = args[0];
                     auto mat_b = args[1];
@@ -1402,8 +1401,8 @@ namespace ngraph
                            << "{" << join(out[0].get_shape()) << "}"
                            << ",  0);\n";
                 }
-                else if (args[0].get_element_type() == f32 &&
-                         args[0].get_shape().size() == 4 && out[0].get_shape().size() == 4)
+                else if (args[0].get_element_type() == f32 && args[0].get_shape().size() == 4 &&
+                         out[0].get_shape().size() == 4)
                 {
                     writer << "cpu::kernel::reshape_4d_4d_float32(" << args[0].get_name() << ", "
                            << out[0].get_name() << ", "
@@ -1604,8 +1603,8 @@ namespace ngraph
                            << "{" << join(out[0].get_shape()) << "}"
                            << ", 0);\n";
                 }
-                else if (args[0].get_element_type() == f32 &&
-                         args[0].get_shape().size() == 2 && sum->get_reduction_axes().size() == 2)
+                else if (args[0].get_element_type() == f32 && args[0].get_shape().size() == 2 &&
+                         sum->get_reduction_axes().size() == 2)
                 {
                     writer << "cpu::kernel::reduce_sum_all_2d_float32(" << args[0].get_name()
                            << ", " << out[0].get_name() << ", "
@@ -1613,8 +1612,8 @@ namespace ngraph
                            << "{" << join(out[0].get_shape()) << "}"
                            << ", 0);\n";
                 }
-                else if (args[0].get_element_type() == f32 &&
-                         args[0].get_shape().size() == 2 && sum->get_reduction_axes().size() == 1)
+                else if (args[0].get_element_type() == f32 && args[0].get_shape().size() == 2 &&
+                         sum->get_reduction_axes().size() == 1)
                 {
                     writer << "cpu::kernel::reduce_sum_2d_1rd_float32(" << args[0].get_name()
                            << ", " << out[0].get_name() << ", "
@@ -1623,8 +1622,8 @@ namespace ngraph
                            << "{" << join(sum->get_reduction_axes()) << "}"
                            << ", 0);\n";
                 }
-                else if (args[0].get_element_type() == f32 &&
-                         args[0].get_shape().size() == 4 && sum->get_reduction_axes().size() == 2)
+                else if (args[0].get_element_type() == f32 && args[0].get_shape().size() == 4 &&
+                         sum->get_reduction_axes().size() == 2)
                 {
                     writer << "cpu::kernel::reduce_sum_4d_2rd_float32(" << args[0].get_name()
                            << ", " << out[0].get_name() << ", "
@@ -1633,8 +1632,8 @@ namespace ngraph
                            << "{" << join(sum->get_reduction_axes()) << "}"
                            << ", 0);\n";
                 }
-                else if (args[0].get_element_type() == f32 &&
-                         args[0].get_shape().size() == 4 && sum->get_reduction_axes().size() == 4)
+                else if (args[0].get_element_type() == f32 && args[0].get_shape().size() == 4 &&
+                         sum->get_reduction_axes().size() == 4)
                 {
                     writer << "cpu::kernel::reduce_sum_all_4d_float32(" << args[0].get_name()
                            << ", " << out[0].get_name() << ", "
@@ -1803,8 +1802,7 @@ namespace ngraph
                                          const char* kernel_name,
                                          codegen::CodeWriter& writer)
             {
-                if (out[0].get_element_type() != i64 &&
-                    out[0].get_element_type() != i32)
+                if (out[0].get_element_type() != i64 && out[0].get_element_type() != i32)
                 {
                     throw ngraph_error("Unsupported index element type");
                 }
@@ -1838,8 +1836,7 @@ namespace ngraph
             void CPU_Emitter::EMITTER_DECL(ngraph::op::TopK)
             {
                 auto topk = static_cast<const ngraph::op::TopK*>(node);
-                if (out[0].get_element_type() != i64 &&
-                    out[0].get_element_type() != i32)
+                if (out[0].get_element_type() != i64 && out[0].get_element_type() != i32)
                 {
                     throw ngraph_error("Unsupported index element type");
                 }

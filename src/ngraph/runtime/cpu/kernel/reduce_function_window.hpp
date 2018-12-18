@@ -50,12 +50,12 @@ namespace ngraph
                         ElementType q __attribute__((aligned(NGRAPH_CPU_ALIGNMENT))) = b;
                         ElementType r __attribute__((aligned(NGRAPH_CPU_ALIGNMENT)));
 
-                        inputs.emplace_back(backend->create_tensor(
-                            ngraph::from<ElementType>(), Shape{}, &p));
-                        inputs.emplace_back(backend->create_tensor(
-                            ngraph::from<ElementType>(), Shape{}, &q));
-                        outputs.emplace_back(backend->create_tensor(
-                            ngraph::from<ElementType>(), Shape{}, &r));
+                        inputs.emplace_back(
+                            backend->create_tensor(ngraph::from<ElementType>(), Shape{}, &p));
+                        inputs.emplace_back(
+                            backend->create_tensor(ngraph::from<ElementType>(), Shape{}, &q));
+                        outputs.emplace_back(
+                            backend->create_tensor(ngraph::from<ElementType>(), Shape{}, &r));
 
                         auto call_frame = external_function->make_call_frame();
                         call_frame->call(outputs, inputs);

@@ -142,8 +142,7 @@ namespace ngraph
                 // Replacing f32 from eq 1 in eq 3.
                 // 5. s8 = s32 * std::pow(2, -24) * max_abs32 / max_abs8;
 
-                return make_constant(
-                           type, shape, std::pow(2, (output_type == i8) ? -24 : -23)) *
+                return make_constant(type, shape, std::pow(2, (output_type == i8) ? -24 : -23)) *
                        (max_abs32 / max_abs8);
             }
 

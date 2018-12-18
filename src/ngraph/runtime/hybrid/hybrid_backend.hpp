@@ -40,14 +40,12 @@ public:
     HybridBackend(
         const std::vector<std::pair<std::string, std::shared_ptr<runtime::Backend>>>& backend_list);
 
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::Type& element_type,
-                      const ngraph::Shape& shape) override;
+    std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::Type& element_type,
+                                                           const ngraph::Shape& shape) override;
 
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::Type& element_type,
-                      const ngraph::Shape& shape,
-                      void* memory_pointer) override;
+    std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::Type& element_type,
+                                                           const ngraph::Shape& shape,
+                                                           void* memory_pointer) override;
 
     Handle compile(std::shared_ptr<ngraph::Function> func) override;
 

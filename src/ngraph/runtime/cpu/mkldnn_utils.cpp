@@ -61,8 +61,7 @@ std::map<Type, const mkldnn::memory::data_type>&
     return s_mkldnn_data_type_map;
 }
 
-std::map<Type, const std::string>&
-    runtime::cpu::mkldnn_utils::get_mkldnn_data_type_string_map()
+std::map<Type, const std::string>& runtime::cpu::mkldnn_utils::get_mkldnn_data_type_string_map()
 {
     static std::map<Type, const std::string> s_mkldnn_data_type_string_map{
         {boolean, "mkldnn::memory::data_type::s8"},
@@ -215,8 +214,7 @@ mkldnn::memory::format runtime::cpu::mkldnn_utils::CreateNativeDataFormat(const 
     }
 }
 
-const std::string&
-    runtime::cpu::mkldnn_utils::get_mkldnn_data_type_string(const ngraph::Type& type)
+const std::string& runtime::cpu::mkldnn_utils::get_mkldnn_data_type_string(const ngraph::Type& type)
 {
     auto it = get_mkldnn_data_type_string_map().find(type);
     if (it == get_mkldnn_data_type_string_map().end() || it->second.empty())
@@ -227,8 +225,7 @@ const std::string&
     return it->second;
 }
 
-mkldnn::memory::data_type
-    runtime::cpu::mkldnn_utils::get_mkldnn_data_type(const ngraph::Type& type)
+mkldnn::memory::data_type runtime::cpu::mkldnn_utils::get_mkldnn_data_type(const ngraph::Type& type)
 {
     auto it = get_mkldnn_data_type_map().find(type);
     if (it == get_mkldnn_data_type_map().end())
@@ -324,8 +321,9 @@ bool runtime::cpu::mkldnn_utils::is_perm_sorted(const Strides& a, const AxisVect
     return true;
 }
 
-mkldnn::memory::desc runtime::cpu::mkldnn_utils::create_blocked_mkldnn_md(
-    const Shape& dims, const Strides& strides, const ngraph::Type type)
+mkldnn::memory::desc runtime::cpu::mkldnn_utils::create_blocked_mkldnn_md(const Shape& dims,
+                                                                          const Strides& strides,
+                                                                          const ngraph::Type type)
 {
     if (dims.size() > TENSOR_MAX_DIMS || strides.size() > TENSOR_MAX_DIMS)
     {

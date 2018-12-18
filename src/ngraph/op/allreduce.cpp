@@ -29,8 +29,7 @@ void op::AllReduce::validate_and_infer_types()
 {
     NODE_VALIDATION_ASSERT(this,
                            get_input_element_type(0).is_dynamic() ||
-                               get_input_element_type(0) == f32 ||
-                               get_input_element_type(0) == f64)
+                               get_input_element_type(0) == f32 || get_input_element_type(0) == f64)
         << "Only element types f32 and f64 are supported (argument element type: "
         << get_input_element_type(0) << ").";
 

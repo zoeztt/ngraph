@@ -1659,11 +1659,9 @@ TEST(type_prop, concat_partial_all_rank_dynamic)
 
 TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_dynamic_consistent)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
-    auto param2 =
-        make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
 
     ASSERT_TRUE(
@@ -1672,11 +1670,9 @@ TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_dynamic_cons
 
 TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_dynamic_rank_inconsistent)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
-    auto param2 =
-        make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic(), 4});
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic(), 4});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
@@ -1699,11 +1695,9 @@ TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_dynamic_rank
 
 TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_dynamic_dims_inconsistent)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
-    auto param2 =
-        make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
@@ -1727,13 +1721,11 @@ TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_dynamic_dims
 TEST(type_prop,
      concat_partial_some_rank_dynamic_others_rank_static_dynamic_dims_intransitively_inconsistent)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param2 = make_shared<op::Parameter>(
         f32, PartialShape{Dimension::dynamic(), 3, Dimension::dynamic()});
-    auto param3 =
-        make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
+    auto param3 = make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2, param3}, 1);
@@ -1758,8 +1750,7 @@ TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_with_concat_
 {
     auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, 2, 3});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
-    auto param2 =
-        make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
 
     ASSERT_TRUE(
@@ -1771,8 +1762,7 @@ TEST(type_prop,
 {
     auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, 2, 3});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
-    auto param2 =
-        make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
 
     try
     {
@@ -1797,10 +1787,8 @@ TEST(type_prop,
 TEST(type_prop, concat_partial_all_static_with_concat_axis_static_compatible_result_static)
 {
     auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, 2, 3});
-    auto param1 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 4, 3});
-    auto param2 =
-        make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 4, 3});
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
 
     ASSERT_EQ(c->get_shape(), (Shape{2, 9, 3}));
@@ -1808,12 +1796,10 @@ TEST(type_prop, concat_partial_all_static_with_concat_axis_static_compatible_res
 
 TEST(type_prop, concat_partial_all_static_with_concat_axis_static_compatible_result_dynamic)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{2, 2, Dimension::dynamic()});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, 2, Dimension::dynamic()});
     auto param1 = make_shared<op::Parameter>(
         f32, PartialShape{Dimension::dynamic(), 4, Dimension::dynamic()});
-    auto param2 =
-        make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
 
     ASSERT_TRUE(
@@ -1823,10 +1809,8 @@ TEST(type_prop, concat_partial_all_static_with_concat_axis_static_compatible_res
 TEST(type_prop, concat_partial_all_static_with_concat_axis_static_dims_incompatible)
 {
     auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, 2, 3});
-    auto param1 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 4, 3});
-    auto param2 =
-        make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 4, 3});
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
@@ -1993,8 +1977,7 @@ TEST(type_prop, dot_partial_both_rank_dynamic_axis_count_explicit)
 TEST(type_prop, dot_partial_left_rank_dynamic_right_rank_static_dynamic_axis_count_implicit)
 {
     auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
-    auto param1 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     auto d = make_shared<op::Dot>(param0, param1);
 
     ASSERT_TRUE(d->get_output_partial_shape(0).rank().is_dynamic());
@@ -2003,8 +1986,7 @@ TEST(type_prop, dot_partial_left_rank_dynamic_right_rank_static_dynamic_axis_cou
 TEST(type_prop, dot_partial_left_rank_dynamic_right_rank_static_dynamic_axis_count_explicit_ok)
 {
     auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
-    auto param1 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/3);
 
     ASSERT_TRUE(d->get_output_partial_shape(0).rank().is_dynamic());
@@ -2014,8 +1996,7 @@ TEST(type_prop,
      dot_partial_left_rank_dynamic_right_rank_static_dynamic_axis_count_explicit_too_many)
 {
     auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
-    auto param1 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     try
     {
         auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/4);
@@ -2034,8 +2015,7 @@ TEST(type_prop,
 
 TEST(type_prop, dot_partial_left_rank_static_dynamic_right_rank_dynamic_axis_count_implicit)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto d = make_shared<op::Dot>(param0, param1);
 
@@ -2044,8 +2024,7 @@ TEST(type_prop, dot_partial_left_rank_static_dynamic_right_rank_dynamic_axis_cou
 
 TEST(type_prop, dot_partial_left_rank_static_dynamic_right_rank_dynamic_axis_count_explicit_ok)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/3);
 
@@ -2055,8 +2034,7 @@ TEST(type_prop, dot_partial_left_rank_static_dynamic_right_rank_dynamic_axis_cou
 TEST(type_prop,
      dot_partial_left_rank_static_dynamic_right_rank_dynamic_axis_count_explicit_too_many)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     try
     {
@@ -2077,8 +2055,7 @@ TEST(type_prop,
 TEST(type_prop,
      dot_partial_left_rank_static_dynamic_right_rank_static_dynamic_axis_count_implicit_1_ok)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 2});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 2});
     auto param1 = make_shared<op::Parameter>(
         f32, PartialShape{2, Dimension::dynamic(), 4, Dimension::dynamic(), 5});
     auto d = make_shared<op::Dot>(param0, param1);
@@ -2103,10 +2080,8 @@ TEST(
     type_prop,
     dot_partial_left_rank_static_dynamic_right_rank_static_dynamic_axis_count_explicit_too_many_for_left)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
-    auto param1 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3, 5, 6});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3, 5, 6});
     try
     {
         auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/4);
@@ -2127,10 +2102,8 @@ TEST(
     type_prop,
     dot_partial_left_rank_static_dynamic_right_rank_static_dynamic_axis_count_explicit_too_many_for_right)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3, 5, 6});
-    auto param1 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3, 5, 6});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     try
     {
         auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/4);
@@ -2151,10 +2124,8 @@ TEST(
     type_prop,
     dot_partial_left_rank_static_dynamic_right_rank_static_dynamic_axis_count_explicit_too_many_for_both)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
-    auto param1 =
-        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     try
     {
         auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/4);
@@ -2684,8 +2655,7 @@ TEST(type_prop, select_partial_all_rank_dynamic_arg0_arg1_arg2_et_dynamic)
 
 TEST(type_prop, select_partial_arg0_rank_dynamic_static_arg1_arg2_rank_dynamic_ok)
 {
-    auto param0 =
-        make_shared<op::Parameter>(boolean, PartialShape{2, Dimension::dynamic(), 3});
+    auto param0 = make_shared<op::Parameter>(boolean, PartialShape{2, Dimension::dynamic(), 3});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param2 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
@@ -2699,8 +2669,7 @@ TEST(type_prop, select_partial_arg0_rank_dynamic_static_arg1_arg2_rank_dynamic_o
 TEST(type_prop, select_partial_arg1_rank_dynamic_static_arg0_arg2_rank_dynamic_ok)
 {
     auto param0 = make_shared<op::Parameter>(boolean, PartialShape::dynamic());
-    auto param1 =
-        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
     auto param2 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     auto sel = make_shared<op::Select>(param0, param1, param2);
@@ -2714,8 +2683,7 @@ TEST(type_prop, select_partial_arg2_rank_dynamic_static_arg0_arg1_rank_dynamic_o
 {
     auto param0 = make_shared<op::Parameter>(boolean, PartialShape::dynamic());
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
-    auto param2 =
-        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
 
     auto sel = make_shared<op::Select>(param0, param1, param2);
 
@@ -2746,8 +2714,7 @@ TEST(type_prop, select_partial_all_rank_static_intransitive_incompatibility)
         boolean, PartialShape{2, Dimension::dynamic(), Dimension::dynamic()});
     auto param1 = make_shared<op::Parameter>(
         f32, PartialShape{Dimension::dynamic(), 8, Dimension::dynamic()});
-    auto param2 =
-        make_shared<op::Parameter>(f32, PartialShape{3, Dimension::dynamic(), 3});
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape{3, Dimension::dynamic(), 3});
 
     try
     {
@@ -8423,8 +8390,7 @@ TEST(type_prop,
 TEST(type_prop, reverse_sequence_partial_both_rank_static_dynamic_right_seq_length_dynamic)
 {
     auto data = make_shared<op::Parameter>(
-        f32,
-        PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()});
+        f32, PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()});
     auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic()});
     size_t batch_axis = 2;
     size_t seq_axis = 1;
@@ -8439,8 +8405,7 @@ TEST(type_prop,
      reverse_sequence_partial_left_rank_static_dynamic_right_static_left_seq_length_static)
 {
     auto data = make_shared<op::Parameter>(
-        f32,
-        PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()});
+        f32, PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()});
     auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape{3});
     size_t batch_axis = 2;
     size_t seq_axis = 1;
@@ -8456,8 +8421,7 @@ TEST(
     reverse_sequence_partial_left_rank_static_dynamic_right_static_left_seq_length_static_inconsistent)
 {
     auto data = make_shared<op::Parameter>(
-        f32,
-        PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()});
+        f32, PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()});
     auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape{4});
     size_t batch_axis = 2;
     size_t seq_axis = 1;
@@ -11055,8 +11019,7 @@ TEST(type_prop, pad_partial_data_rank_dynamic_padding_rank_dynamic_attribs_rank_
 TEST(type_prop, pad_partial_data_rank_static_dynamic_padding_rank_dynamic_ok)
 {
     auto param0 = make_shared<op::Parameter>(
-        f32,
-        PartialShape{Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()});
+        f32, PartialShape{Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     Shape padding_below{2, 4, 6};
@@ -11072,8 +11035,7 @@ TEST(type_prop, pad_partial_data_rank_static_dynamic_padding_rank_dynamic_ok)
 
 TEST(type_prop, pad_partial_data_rank_static_dynamic_some_dims_known_padding_rank_dynamic_ok)
 {
-    auto param0 =
-        make_shared<op::Parameter>(f32, PartialShape{3, 5, Dimension::dynamic()});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{3, 5, Dimension::dynamic()});
     auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     Shape padding_below{2, 4, 6};
@@ -11211,8 +11173,7 @@ TEST(type_prop, sum_partial_rank_dynamic)
 
 TEST(type_prop, sum_partial_rank_static_dynamic_ok_result_static)
 {
-    auto param =
-        make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic(), 4, 5});
+    auto param = make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic(), 4, 5});
     auto summation_axes = AxisSet{2, 3};
     auto sum = make_shared<op::Sum>(param, summation_axes);
 
@@ -11401,8 +11362,7 @@ TEST(type_prop, index_reduction_partial_rank_static_dynamic_ok)
 
 TEST(type_prop, index_reduction_partial_et_dynamic_rank_static_dynamic_ok)
 {
-    auto a =
-        make_shared<op::Parameter>(dynamic, PartialShape{Dimension::dynamic(), 2, 3, 4});
+    auto a = make_shared<op::Parameter>(dynamic, PartialShape{Dimension::dynamic(), 2, 3, 4});
     size_t axis = 2;
     auto output_et = i32;
 
@@ -12085,15 +12045,11 @@ TEST(type_prop, logic_arith_compare_partial_et)
     ASSERT_ANY_THROW({ test_compare(i32, boolean); });
     ASSERT_EQ(test_compare(i32, dynamic)->get_element_type(), boolean);
     ASSERT_ANY_THROW({ test_compare(boolean, i32); });
-    ASSERT_EQ(test_compare(boolean, boolean)->get_element_type(),
-              boolean);
-    ASSERT_EQ(test_compare(boolean, dynamic)->get_element_type(),
-              boolean);
+    ASSERT_EQ(test_compare(boolean, boolean)->get_element_type(), boolean);
+    ASSERT_EQ(test_compare(boolean, dynamic)->get_element_type(), boolean);
     ASSERT_EQ(test_compare(dynamic, i32)->get_element_type(), boolean);
-    ASSERT_EQ(test_compare(dynamic, boolean)->get_element_type(),
-              boolean);
-    ASSERT_EQ(test_compare(dynamic, dynamic)->get_element_type(),
-              boolean);
+    ASSERT_EQ(test_compare(dynamic, boolean)->get_element_type(), boolean);
+    ASSERT_EQ(test_compare(dynamic, dynamic)->get_element_type(), boolean);
 
     // Logical negation op:
     //
@@ -13752,8 +13708,8 @@ TEST(type_prop, any_partial_rank_dynamic)
 
 TEST(type_prop, any_partial_rank_static_dynamic_ok_result_static)
 {
-    auto param = make_shared<op::Parameter>(boolean,
-                                            PartialShape{1, 2, Dimension::dynamic(), 4, 5});
+    auto param =
+        make_shared<op::Parameter>(boolean, PartialShape{1, 2, Dimension::dynamic(), 4, 5});
     auto axes = AxisSet{2, 3};
     auto any = make_shared<op::Any>(param, axes);
 
@@ -13889,8 +13845,8 @@ TEST(type_prop, all_partial_rank_dynamic)
 
 TEST(type_prop, all_partial_rank_static_dynamic_ok_result_static)
 {
-    auto param = make_shared<op::Parameter>(boolean,
-                                            PartialShape{1, 2, Dimension::dynamic(), 4, 5});
+    auto param =
+        make_shared<op::Parameter>(boolean, PartialShape{1, 2, Dimension::dynamic(), 4, 5});
     auto axes = AxisSet{2, 3};
     auto all = make_shared<op::All>(param, axes);
 

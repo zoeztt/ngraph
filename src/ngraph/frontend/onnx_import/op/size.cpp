@@ -39,9 +39,7 @@ namespace ngraph
                         static_cast<std::int64_t>(shape_size(data->get_shape()))};
 
                     return {std::make_shared<ngraph::op::Constant>(
-                        ngraph::i64,
-                        Shape{},
-                        std::vector<std::int64_t>{tensor_elements_count})};
+                        ngraph::i64, Shape{}, std::vector<std::int64_t>{tensor_elements_count})};
                 }
 
             } // namespace set_1

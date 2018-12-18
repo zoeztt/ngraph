@@ -39,13 +39,12 @@ class ngraph::runtime::intelgpu::IntelGPUBackend : public runtime::Backend
 {
 public:
     IntelGPUBackend();
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::Type& element_type,
-                      const Shape& shape,
-                      void* memory_pointer) override;
+    std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::Type& element_type,
+                                                           const Shape& shape,
+                                                           void* memory_pointer) override;
 
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::Type& element_type, const Shape& shape) override;
+    std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::Type& element_type,
+                                                           const Shape& shape) override;
 
     Handle compile(std::shared_ptr<Function> func) override;
 

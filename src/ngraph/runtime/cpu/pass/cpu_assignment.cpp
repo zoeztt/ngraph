@@ -571,8 +571,7 @@ namespace ngraph
                     auto result_shape = node->get_output_shape(0);
 
                     if ((arg0_rank == 4 || arg0_rank == 2) &&
-                        node->get_input_element_type(0) == f32 &&
-                        softmax->get_axes().size() == 1)
+                        node->get_input_element_type(0) == f32 && softmax->get_axes().size() == 1)
                     {
                         runtime::cpu::mkldnn_utils::assign_mkldnn_kernel(node);
                     }

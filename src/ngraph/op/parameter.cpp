@@ -21,9 +21,7 @@
 using namespace std;
 using namespace ngraph;
 
-op::Parameter::Parameter(const Type& element_type,
-                         const PartialShape& pshape,
-                         const bool cacheable)
+op::Parameter::Parameter(const Type& element_type, const PartialShape& pshape, const bool cacheable)
     : Op("Parameter", {})
     , m_cacheable(cacheable)
     , m_partial_shape(pshape)

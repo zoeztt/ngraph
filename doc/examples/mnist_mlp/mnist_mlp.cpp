@@ -128,20 +128,18 @@ int main(int argc, const char* argv[])
         f32, Shape{batch_size, input_size});
 
     // Layer 0
-    auto W0 = std::make_shared<op::Parameter>(f32,
-                                              Shape{input_size, l0_size});
-    auto b0 =
-        std::make_shared<op::Parameter>(f32, Shape{l0_size});
+    auto W0 =
+        std::make_shared<op::Parameter>(f32, Shape{input_size, l0_size});
+    auto b0 = std::make_shared<op::Parameter>(f32, Shape{l0_size});
     auto l0_dot = std::make_shared<op::Dot>(X, W0, 1);
     auto b0_broadcast = std::make_shared<op::Broadcast>(
         b0, Shape{batch_size, l0_size}, AxisSet{0});
     auto l0 = std::make_shared<op::Relu>(l0_dot + b0_broadcast);
 
     // Layer 1
-    auto W1 = std::make_shared<op::Parameter>(f32,
-                                              Shape{l0_size, l1_size});
-    auto b1 =
-        std::make_shared<op::Parameter>(f32, Shape{l1_size});
+    auto W1 =
+        std::make_shared<op::Parameter>(f32, Shape{l0_size, l1_size});
+    auto b1 = std::make_shared<op::Parameter>(f32, Shape{l1_size});
     auto l1_dot = std::make_shared<op::Dot>(l0, W1, 1);
     auto b1_broadcast = std::make_shared<op::Broadcast>(
         b1, Shape{batch_size, l1_size}, AxisSet{0});
@@ -151,8 +149,7 @@ int main(int argc, const char* argv[])
     auto softmax = std::make_shared<op::Softmax>(l1, AxisSet{1});
 
     // Loss computation
-    auto Y =
-        std::make_shared<op::Parameter>(f32, Shape{batch_size});
+    auto Y = std::make_shared<op::Parameter>(f32, Shape{batch_size});
     auto labels =
         std::make_shared<op::OneHot>(Y, Shape{batch_size, output_size}, 1);
     auto softmax_clip_value = std::make_shared<op::Constant>(
@@ -169,8 +166,7 @@ int main(int argc, const char* argv[])
 
     // Backprop
     // Each of W0, b0, W1, and b1
-    auto learning_rate =
-        std::make_shared<op::Parameter>(f32, Shape{});
+    auto learning_rate = std::make_shared<op::Parameter>(f32, Shape{});
     auto delta = -learning_rate * loss;
 
     // Updates

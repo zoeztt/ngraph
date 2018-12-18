@@ -127,8 +127,7 @@ namespace ngraph
                     Shape{output_shape});
 
                 // WORKAROUND FOR PROBLEMS WITH RESHAPE ON i64 @TODO: remove
-                auto reconvert_node =
-                    std::make_shared<ngraph::op::Convert>(reshape_node, i64);
+                auto reconvert_node = std::make_shared<ngraph::op::Convert>(reshape_node, i64);
 
                 return reconvert_node;
             }

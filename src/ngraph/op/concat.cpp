@@ -57,8 +57,8 @@ void op::Concat::validate_and_infer_types()
                 << "equal dimension everywhere except on the concatenation axis (axis "
                 << m_concatenation_axis << ").";
 
-            NODE_VALIDATION_ASSERT(
-                this, Type::merge(inputs_et, inputs_et, get_input_element_type(i)))
+            NODE_VALIDATION_ASSERT(this,
+                                   Type::merge(inputs_et, inputs_et, get_input_element_type(i)))
                 << "Argument element types are inconsistent.";
         }
         else

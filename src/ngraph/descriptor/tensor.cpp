@@ -31,8 +31,7 @@ descriptor::Tensor::Tensor(const Type& element_type,
 {
 }
 
-void descriptor::Tensor::set_tensor_type(const Type& element_type,
-                                         const PartialShape& pshape)
+void descriptor::Tensor::set_tensor_type(const Type& element_type, const PartialShape& pshape)
 {
     if (pshape.is_static())
     {

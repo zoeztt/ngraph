@@ -55,14 +55,15 @@ shared_ptr<runtime::cpu::CPU_CallFrame> runtime::cpu::CPU_Backend::make_call_fra
     return external_function->make_call_frame();
 }
 
-shared_ptr<runtime::Tensor>
-    runtime::cpu::CPU_Backend::create_tensor(const Type& element_type, const Shape& shape)
+shared_ptr<runtime::Tensor> runtime::cpu::CPU_Backend::create_tensor(const Type& element_type,
+                                                                     const Shape& shape)
 {
     return make_shared<runtime::cpu::CPUTensorView>(element_type, shape);
 }
 
-shared_ptr<runtime::Tensor> runtime::cpu::CPU_Backend::create_tensor(
-    const Type& element_type, const Shape& shape, void* memory_pointer)
+shared_ptr<runtime::Tensor> runtime::cpu::CPU_Backend::create_tensor(const Type& element_type,
+                                                                     const Shape& shape,
+                                                                     void* memory_pointer)
 {
     return make_shared<runtime::cpu::CPUTensorView>(element_type, shape, memory_pointer);
 }

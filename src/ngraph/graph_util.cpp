@@ -444,9 +444,8 @@ std::shared_ptr<Node> ngraph::make_zero(const Type& element_type, const Shape& s
     return zero;
 }
 
-std::shared_ptr<Node> ngraph::make_constant_from_string(std::string val,
-                                                        const Type& element_type,
-                                                        const Shape& shape)
+std::shared_ptr<Node>
+    ngraph::make_constant_from_string(std::string val, const Type& element_type, const Shape& shape)
 {
     auto cvals = std::vector<std::string>(shape_size(shape), val);
     return std::make_shared<op::Constant>(element_type, shape, cvals);

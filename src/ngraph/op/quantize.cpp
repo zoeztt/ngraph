@@ -51,10 +51,9 @@ void op::Quantize::validate_and_infer_types()
 
     Type unquantized_type;
 
-    NODE_VALIDATION_ASSERT(this,
-                           Type::merge(unquantized_type,
-                                                get_input_element_type(INPUT),
-                                                get_input_element_type(SCALE)))
+    NODE_VALIDATION_ASSERT(
+        this,
+        Type::merge(unquantized_type, get_input_element_type(INPUT), get_input_element_type(SCALE)))
         << "Scale element type (" << get_input_element_type(SCALE)
         << ") must match input element type (" << get_input_element_type(INPUT) << ")";
 
@@ -63,8 +62,8 @@ void op::Quantize::validate_and_infer_types()
 
     Type quantized_type;
 
-    NODE_VALIDATION_ASSERT(
-        this, Type::merge(quantized_type, get_input_element_type(OFFSET), m_type))
+    NODE_VALIDATION_ASSERT(this,
+                           Type::merge(quantized_type, get_input_element_type(OFFSET), m_type))
         << "Offset element type (" << get_input_element_type(OFFSET)
         << ") must match output element type (" << m_type << ")";
 

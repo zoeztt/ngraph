@@ -215,8 +215,8 @@ void ngraph::op::BatchNormTrainingBackprop::validate_and_infer_types()
 
     NODE_VALIDATION_ASSERT(this,
                            Type::merge(input_and_delta_et,
-                                                get_input_element_type(INPUT_DATA),
-                                                get_input_element_type(INPUT_DELTA)))
+                                       get_input_element_type(INPUT_DATA),
+                                       get_input_element_type(INPUT_DELTA)))
         << "Element type for input (" << get_input_element_type(INPUT_DATA)
         << ") does not match element type for delta (" << get_input_element_type(INPUT_DATA)
         << ").";

@@ -375,8 +375,8 @@ void ngraph::runtime::gpu::pass::RNNFusion::construct_rnn_lstm_fprop()
 {
     auto xt = std::make_shared<pattern::op::Label>(f32, Shape{32, 100});
     auto ht_1 = std::make_shared<pattern::op::Label>(f32, Shape{32, 100});
-    auto params_label = std::make_shared<pattern::op::Label>(
-        f32, Shape{400 * 100 + 400 * 100 + 400 + 400});
+    auto params_label =
+        std::make_shared<pattern::op::Label>(f32, Shape{400 * 100 + 400 * 100 + 400 + 400});
     auto rpattern_ct_1 = std::make_shared<pattern::op::Label>(f32, Shape{32, 100});
 
     auto lstm = std::make_shared<op::gpu::Rnn>(xt,
@@ -487,8 +487,7 @@ void ngraph::runtime::gpu::pass::RNNFusion::construct_rnn_lstm_fprop()
         auto src_iter_rank = src_iter->get_shape().size();
         RETURN_IF_FALSE(src_layer_rank == 2 && src_iter_rank == 2,
                         "Pattern matcher error src_layer, src_iter, have rank 2 for RNN op");
-        RETURN_IF_FALSE(src_layer->get_element_type() == f32 &&
-                            src_iter->get_element_type() == f32,
+        RETURN_IF_FALSE(src_layer->get_element_type() == f32 && src_iter->get_element_type() == f32,
                         "input tensor type and input recurrent state tensor type for RNN op should "
                         "be float32");
 
@@ -655,8 +654,8 @@ void ngraph::runtime::gpu::pass::MultiLayerRNNFusion::construct_multi_layer_rnn_
         std::make_shared<pattern::op::Skip>(src_layer_label, pattern::has_class<op::Slice>());
 
     auto src_iter_label = std::make_shared<pattern::op::Label>(f32, Shape{20, 100});
-    auto params_label = std::make_shared<pattern::op::Label>(
-        f32, Shape{400 * 100 + 400 * 100 + 400 + 400});
+    auto params_label =
+        std::make_shared<pattern::op::Label>(f32, Shape{400 * 100 + 400 * 100 + 400 + 400});
     auto state_iter_label = std::make_shared<pattern::op::Label>(f32, Shape{20, 100});
 
     size_t ref_number_of_timesteps = 3;

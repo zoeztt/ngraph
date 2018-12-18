@@ -42,9 +42,7 @@ namespace ngraph
             Tensor& operator=(const Tensor&) = delete;
 
         public:
-            Tensor(const Type& element_type,
-                   const PartialShape& pshape,
-                   const std::string& name);
+            Tensor(const Type& element_type, const PartialShape& pshape, const std::string& name);
 
             const std::string& get_name() const { return m_name; }
             void set_tensor_type(const Type& element_type, const PartialShape& pshape);

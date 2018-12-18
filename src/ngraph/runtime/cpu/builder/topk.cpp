@@ -39,8 +39,7 @@ namespace ngraph
                 auto& arg_tensor = external_function->get_tensor_data(args[0].get_name());
                 auto& out_indices_tensor = external_function->get_tensor_data(out[0].get_name());
                 auto& out_values_tensor = external_function->get_tensor_data(out[1].get_name());
-                if (out[0].get_element_type() != i64 &&
-                    out[0].get_element_type() != i32)
+                if (out[0].get_element_type() != i64 && out[0].get_element_type() != i32)
                 {
                     throw ngraph_error("Unsupported index element type");
                 }

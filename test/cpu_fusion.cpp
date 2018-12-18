@@ -1284,12 +1284,9 @@ std::vector<shared_ptr<runtime::Tensor>> rnn_matrix_fusion_eval(const size_t tim
 
     auto backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> data_tensor =
-        backend->create_tensor(f32, data->get_shape());
-    shared_ptr<runtime::Tensor> weights_tensor =
-        backend->create_tensor(f32, weights->get_shape());
-    shared_ptr<runtime::Tensor> bias_tensor =
-        backend->create_tensor(f32, bias->get_shape());
+    shared_ptr<runtime::Tensor> data_tensor = backend->create_tensor(f32, data->get_shape());
+    shared_ptr<runtime::Tensor> weights_tensor = backend->create_tensor(f32, weights->get_shape());
+    shared_ptr<runtime::Tensor> bias_tensor = backend->create_tensor(f32, bias->get_shape());
 
     std::vector<shared_ptr<runtime::Tensor>> result_tensors;
     for (auto r : results)
@@ -2142,10 +2139,8 @@ TEST(cpu_fusion, group_convolution)
     auto c_ = backend->create_tensor(f32, shape_c, av.data()); // lower data
     auto d_ = backend->create_tensor(f32, shape_d, bv.data()); // upper data
 
-    auto e_ =
-        backend->create_tensor(f32, shape_c, av.data() + av.size() / 2); // lower weights
-    auto f_ =
-        backend->create_tensor(f32, shape_d, bv.data() + bv.size() / 2); // upper weights
+    auto e_ = backend->create_tensor(f32, shape_c, av.data() + av.size() / 2); // lower weights
+    auto f_ = backend->create_tensor(f32, shape_d, bv.data() + bv.size() / 2); // upper weights
 
     Shape shape_ur{1, 1, 2, 2};
     // allocate a contigious storage for both lower and upper halves.
@@ -2191,16 +2186,13 @@ TEST(cpu_fusion, rnn_fprop_1_lstm_cell)
         ParameterVector{src_layer, src_iter, weights_layer, weights_iter, biases});
     auto backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> src_layer_t =
-        backend->create_tensor(f32, src_layer->get_shape());
-    shared_ptr<runtime::Tensor> src_iter_t =
-        backend->create_tensor(f32, src_iter->get_shape());
+    shared_ptr<runtime::Tensor> src_layer_t = backend->create_tensor(f32, src_layer->get_shape());
+    shared_ptr<runtime::Tensor> src_iter_t = backend->create_tensor(f32, src_iter->get_shape());
     shared_ptr<runtime::Tensor> weights_layer_t =
         backend->create_tensor(f32, weights_layer->get_shape());
     shared_ptr<runtime::Tensor> weights_iter_t =
         backend->create_tensor(f32, weights_iter->get_shape());
-    shared_ptr<runtime::Tensor> biases_t =
-        backend->create_tensor(f32, biases->get_shape());
+    shared_ptr<runtime::Tensor> biases_t = backend->create_tensor(f32, biases->get_shape());
     shared_ptr<runtime::Tensor> result_ht = backend->create_tensor(f32, {10, 100});
     shared_ptr<runtime::Tensor> result_ct = backend->create_tensor(f32, Shape{20, 100});
 
@@ -2767,10 +2759,8 @@ void sigmoid_multiply_fusion_backward_compute(runtime::Backend* backend,
     back_params.push_back(delta_param);
     input_tensors.push_back(delta_tensor);
 
-    shared_ptr<runtime::Tensor> d_input_0_tensor =
-        backend->create_tensor(f32, d_input_0_shape);
-    shared_ptr<runtime::Tensor> d_input_1_tensor =
-        backend->create_tensor(f32, d_input_1_shape);
+    shared_ptr<runtime::Tensor> d_input_0_tensor = backend->create_tensor(f32, d_input_0_shape);
+    shared_ptr<runtime::Tensor> d_input_1_tensor = backend->create_tensor(f32, d_input_1_shape);
 
     using FunctionType = op::SigmoidMultiply::FunctionType;
     auto input_0_type = op::SigmoidMultiply::identify_node_type(input_0_node);
@@ -3052,8 +3042,8 @@ static void check_bounded_relu(Shape param_shape, float constant_val)
     auto make_function = [](Shape input_shape, float alpha_val) {
         auto relu_input = std::make_shared<op::Parameter>(f32, input_shape);
         auto relu = std::make_shared<op::Relu>(relu_input);
-        auto alpha = op::Constant::create<float>(
-            f32, input_shape, std::vector<float>(1.0f, alpha_val));
+        auto alpha =
+            op::Constant::create<float>(f32, input_shape, std::vector<float>(1.0f, alpha_val));
         auto min = std::make_shared<op::Minimum>(relu, alpha);
         auto f = make_shared<Function>(NodeVector{min}, ParameterVector{relu_input});
         return f;
@@ -3356,9 +3346,8 @@ static std::shared_ptr<Function>
     ParameterVector params{W, bias};
     auto create_graph = [&]() -> std::shared_ptr<Node> {
 
-        auto data_param = (data_is_4d)
-                              ? std::make_shared<op::Parameter>(f32, Shape{2, 5, 1, 50})
-                              : std::make_shared<op::Parameter>(f32, Shape{10, 1, 50});
+        auto data_param = (data_is_4d) ? std::make_shared<op::Parameter>(f32, Shape{2, 5, 1, 50})
+                                       : std::make_shared<op::Parameter>(f32, Shape{10, 1, 50});
         params.push_back(data_param);
         auto reshape_axis_order = data_is_4d ? AxisVector{0, 1, 2, 3} : AxisVector{0, 1, 2};
         auto data_param_reshape =

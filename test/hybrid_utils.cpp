@@ -31,15 +31,13 @@ TestBackend::TestBackend(const vector<shared_ptr<runtime::Backend>>& backend_lis
     }
 }
 
-shared_ptr<runtime::Tensor> TestBackend::create_tensor(const Type& element_type,
-                                                       const Shape& shape)
+shared_ptr<runtime::Tensor> TestBackend::create_tensor(const Type& element_type, const Shape& shape)
 {
     return m_backend_list[0]->create_tensor(element_type, shape);
 }
 
-shared_ptr<runtime::Tensor> TestBackend::create_tensor(const Type& element_type,
-                                                       const Shape& shape,
-                                                       void* memory_pointer)
+shared_ptr<runtime::Tensor>
+    TestBackend::create_tensor(const Type& element_type, const Shape& shape, void* memory_pointer)
 {
     return m_backend_list[0]->create_tensor(element_type, shape, memory_pointer);
 }

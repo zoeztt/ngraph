@@ -25,8 +25,7 @@ namespace ngraph
     namespace builder
     {
         template <class T>
-        std::shared_ptr<Node>
-            make_constant(const Type& type, const Shape& shape, const T& num)
+        std::shared_ptr<Node> make_constant(const Type& type, const Shape& shape, const T& num)
         {
             std::shared_ptr<Node> val = nullptr;
 

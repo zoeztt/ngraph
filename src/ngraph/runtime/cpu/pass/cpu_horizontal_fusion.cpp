@@ -86,8 +86,8 @@ void ngraph::runtime::cpu::pass::CPUHorizontalFusion::cpu_conv_horizontal_fusion
         return inputs.size() > 1;
     };
 
-    auto data_conv = std::make_shared<pattern::op::Label>(
-        f32, Shape{1, 256, 35, 35}, has_multiple_users);
+    auto data_conv =
+        std::make_shared<pattern::op::Label>(f32, Shape{1, 256, 35, 35}, has_multiple_users);
     auto filters = std::make_shared<pattern::op::Label>(f32, Shape{64, 256, 1, 1});
     auto bias = std::make_shared<pattern::op::Label>(f32, Shape{64});
 

@@ -91,20 +91,20 @@ bool runtime::cpu::pass::CPURnnMatFusion::run_on_function(std::shared_ptr<Functi
 
     //--------------------------------------------------------
     // Construct pattern version_1 for RNN input linear transformation
-    auto data_slice = std::make_shared<pattern::op::Label>(
-        f32, Shape{1, 2, 4}, pattern::has_class<op::Slice>());
+    auto data_slice =
+        std::make_shared<pattern::op::Label>(f32, Shape{1, 2, 4}, pattern::has_class<op::Slice>());
     auto data_pattern = construct_data_pattern(data_slice);
 
-    auto weights_reshape = std::make_shared<pattern::op::Label>(
-        f32, Shape{4, 1}, pattern::has_class<op::Reshape>());
+    auto weights_reshape =
+        std::make_shared<pattern::op::Label>(f32, Shape{4, 1}, pattern::has_class<op::Reshape>());
     auto weights_pattern = construct_weights_pattern(weights_reshape);
 
     // we don't really need a broadcast node but
     // labelling a Broadcast allows us to extract
     // params from all 3 labels in the same fashion
     //(i.e. via get_argument(0))
-    auto bias_broadcast = std::make_shared<pattern::op::Label>(
-        f32, Shape{2, 1}, pattern::has_class<op::Broadcast>());
+    auto bias_broadcast =
+        std::make_shared<pattern::op::Label>(f32, Shape{2, 1}, pattern::has_class<op::Broadcast>());
     auto bias_pattern = construct_bias_pattern(bias_broadcast);
 
     const size_t NUM_MMB_ARGS = 3;

@@ -51,8 +51,7 @@ bool runtime::intelgpu::IntelGPULayout::
     return (cldnn_layout == p_other->cldnn_layout);
 }
 
-cldnn::data_types
-    runtime::intelgpu::IntelGPULayout::get_cldnn_type(const Type& element_type)
+cldnn::data_types runtime::intelgpu::IntelGPULayout::get_cldnn_type(const Type& element_type)
 {
     if ((element_type == ngraph::i8) || (element_type == ngraph::boolean))
     {
@@ -124,8 +123,9 @@ cldnn::tensor runtime::intelgpu::IntelGPULayout::create_cldnn_offset(const Shape
     return input_offset;
 }
 
-cldnn::layout runtime::intelgpu::IntelGPULayout::create_cldnn_layout(
-    const ngraph::Type& element_type, const Shape& element_shape)
+cldnn::layout
+    runtime::intelgpu::IntelGPULayout::create_cldnn_layout(const ngraph::Type& element_type,
+                                                           const Shape& element_shape)
 {
     const cldnn::format::type format = cldnn::format::bfyx;
     const cldnn::tensor tensor = create_cldnn_tensor(element_shape);

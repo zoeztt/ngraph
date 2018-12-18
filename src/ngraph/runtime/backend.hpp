@@ -56,8 +56,8 @@ public:
     /// \param element_type The type of the tensor element
     /// \param shape The shape of the tensor
     /// \returns shared_ptr to a new backend-specific tensor
-    virtual std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::Type& element_type, const Shape& shape) = 0;
+    virtual std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::Type& element_type,
+                                                                   const Shape& shape) = 0;
 
     /// \brief Create a tensor specific to this backend
     /// \param element_type The type of the tensor element
@@ -66,8 +66,9 @@ public:
     ///     must be sufficient to contain the tensor. The lifetime of the buffer is the
     ///     responsibility of the caller.
     /// \returns shared_ptr to a new backend-specific tensor
-    virtual std::shared_ptr<ngraph::runtime::Tensor> create_tensor(
-        const ngraph::Type& element_type, const Shape& shape, void* memory_pointer) = 0;
+    virtual std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::Type& element_type,
+                                                                   const Shape& shape,
+                                                                   void* memory_pointer) = 0;
 
     /// \brief Create a tensor of C type T specific to this backend
     /// \param shape The shape of the tensor

@@ -36,9 +36,8 @@ op::Select::Select(const shared_ptr<Node>& arg0,
 
 void op::Select::validate_and_infer_types()
 {
-    NODE_VALIDATION_ASSERT(this,
-                           get_input_element_type(0).is_dynamic() ||
-                               get_input_element_type(0) == boolean)
+    NODE_VALIDATION_ASSERT(
+        this, get_input_element_type(0).is_dynamic() || get_input_element_type(0) == boolean)
         << "Argument 0 does not have boolean element type (element type: "
         << get_input_element_type(0) << ").";
 

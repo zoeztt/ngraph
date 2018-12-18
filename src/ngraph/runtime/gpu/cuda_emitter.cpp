@@ -1992,13 +1992,12 @@ size_t runtime::gpu::CUDAEmitter::build_reduce_to_scalar(const std::vector<Type>
     return this->m_primitive_emitter->register_primitive(reduce, hash);
 }
 
-size_t
-    runtime::gpu::CUDAEmitter::build_reduce_to_scalar_acc(const std::vector<Type>& dtypes,
-                                                          NVShape input_shape,
-                                                          NVShape output_shape,
-                                                          uint32_t block_size_x,
-                                                          const char* op,
-                                                          const char* kernel)
+size_t runtime::gpu::CUDAEmitter::build_reduce_to_scalar_acc(const std::vector<Type>& dtypes,
+                                                             NVShape input_shape,
+                                                             NVShape output_shape,
+                                                             uint32_t block_size_x,
+                                                             const char* op,
+                                                             const char* kernel)
 {
     std::vector<std::string> dtypes_str = get_string_vector(dtypes);
     // assumes NC{d1,...,dn} format

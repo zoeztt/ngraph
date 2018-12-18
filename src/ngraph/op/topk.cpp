@@ -46,8 +46,7 @@ void op::TopK::validate_and_infer_types()
     NODE_VALIDATION_ASSERT(this, !m_index_element_type.is_dynamic())
         << "Argument element type must not be dynamic.";
 
-    NODE_VALIDATION_ASSERT(
-        this, m_index_element_type == i32 || m_index_element_type == i64)
+    NODE_VALIDATION_ASSERT(this, m_index_element_type == i32 || m_index_element_type == i64)
         << "Argument element type must be i64 or i32 (got " << m_index_element_type << ").";
 
     NODE_VALIDATION_ASSERT(this, input_rank.is_dynamic() || static_cast<size_t>(input_rank) > 0)

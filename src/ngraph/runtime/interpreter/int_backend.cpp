@@ -43,14 +43,15 @@ extern "C" runtime::Backend* new_backend(const char* configuration_string)
     return new runtime::interpreter::INTBackend();
 }
 
-shared_ptr<runtime::Tensor>
-    runtime::interpreter::INTBackend::create_tensor(const Type& type, const Shape& shape)
+shared_ptr<runtime::Tensor> runtime::interpreter::INTBackend::create_tensor(const Type& type,
+                                                                            const Shape& shape)
 {
     return make_shared<runtime::HostTensor>(type, shape, "external");
 }
 
-shared_ptr<runtime::Tensor> runtime::interpreter::INTBackend::create_tensor(
-    const Type& type, const Shape& shape, void* memory_pointer)
+shared_ptr<runtime::Tensor> runtime::interpreter::INTBackend::create_tensor(const Type& type,
+                                                                            const Shape& shape,
+                                                                            void* memory_pointer)
 {
     return make_shared<runtime::HostTensor>(type, shape, memory_pointer, "external");
 }
