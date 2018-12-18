@@ -43,8 +43,8 @@ public:
     Strides get_strides() const override { return strides; }
     bool operator==(const TensorLayout& other) const override;
 
-    static cldnn::data_types get_cldnn_type(const ngraph::element::Type& element_type);
-    static cldnn::layout create_cldnn_layout(const ngraph::element::Type& element_type,
+    static cldnn::data_types get_cldnn_type(const ngraph::Type& element_type);
+    static cldnn::layout create_cldnn_layout(const ngraph::Type& element_type,
                                              const Shape& element_shape);
     static cldnn::tensor create_cldnn_tensor(const Shape& element_shape);
     static cldnn::tensor create_cldnn_offset(const Shape& pad_below);

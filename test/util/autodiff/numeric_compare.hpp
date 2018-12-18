@@ -45,7 +45,7 @@ template <typename T>
             interpreter_backend->create_tensor(arg->get_element_type(), arg->get_shape());
 
         // TODO: copy_data should not require T. Quick fix here for bool used in `Select`
-        if (arg->get_element_type() == ngraph::element::boolean)
+        if (arg->get_element_type() == ngraph::boolean)
         {
             copy_data(interpreter_arg, read_vector<char>(arg));
         }
@@ -67,7 +67,7 @@ template <typename T>
     for (auto result : results_sym)
     {
         auto interpreter_result =
-            interpreter_backend->create_tensor(ngraph::element::from<T>(), result->get_shape());
+            interpreter_backend->create_tensor(ngraph::from<T>(), result->get_shape());
         copy_data(interpreter_result, read_vector<T>(result));
         interpreter_results_sym.push_back(interpreter_result);
     }
@@ -119,7 +119,7 @@ template <typename T>
             interpreter_backend->create_tensor(arg->get_element_type(), arg->get_shape());
 
         // TODO: copy_data should not require T. Quick fix here for bool used in `Select`
-        if (arg->get_element_type() == ngraph::element::boolean)
+        if (arg->get_element_type() == ngraph::boolean)
         {
             copy_data(interpreter_arg, read_vector<char>(arg));
         }
@@ -153,7 +153,7 @@ template <typename T>
     for (auto result : results_sym)
     {
         auto interpreter_result =
-            interpreter_backend->create_tensor(ngraph::element::from<T>(), result->get_shape());
+            interpreter_backend->create_tensor(ngraph::from<T>(), result->get_shape());
         copy_data(interpreter_result, read_vector<T>(result));
         interpreter_results_sym.push_back(interpreter_result);
     }

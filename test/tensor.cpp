@@ -37,7 +37,7 @@ TEST(tensor, size)
     pass_manager.register_pass<pass::Liveness>();
 
     {
-        auto arg0 = make_shared<op::Parameter>(element::f32, Shape{2, 3});
+        auto arg0 = make_shared<op::Parameter>(f32, Shape{2, 3});
         auto add = make_shared<op::Add>(arg0, arg0);
         auto f0 = make_shared<Function>(add, ParameterVector{arg0});
 
@@ -50,7 +50,7 @@ TEST(tensor, size)
     }
 
     {
-        auto arg0 = make_shared<op::Parameter>(element::f32, Shape{});
+        auto arg0 = make_shared<op::Parameter>(f32, Shape{});
         auto add = make_shared<op::Add>(arg0, arg0);
         auto f0 = make_shared<Function>(add, ParameterVector{arg0});
 
@@ -63,7 +63,7 @@ TEST(tensor, size)
     }
 
     {
-        auto arg0 = make_shared<op::Parameter>(element::f32, Shape{1});
+        auto arg0 = make_shared<op::Parameter>(f32, Shape{1});
         auto add = make_shared<op::Add>(arg0, arg0);
         auto f0 = make_shared<Function>(add, ParameterVector{arg0});
 
@@ -81,7 +81,7 @@ void test_read_write(const vector<T>& x)
 {
     auto backend = runtime::Backend::create("INTERPRETER");
 
-    auto a = backend->create_tensor(element::from<T>(), Shape{2, x.size()});
+    auto a = backend->create_tensor(from<T>(), Shape{2, x.size()});
 
     vector<T> result(2 * x.size());
 
@@ -114,7 +114,7 @@ TEST(tensor, output_flag)
     pass::Manager pass_manager;
     pass_manager.register_pass<pass::Liveness>();
 
-    auto arg0 = make_shared<op::Parameter>(element::f32, Shape{1});
+    auto arg0 = make_shared<op::Parameter>(f32, Shape{1});
     auto add = make_shared<op::Add>(arg0, arg0);
     auto f0 = make_shared<Function>(add, ParameterVector{arg0});
 

@@ -46,7 +46,7 @@ op::QuantizedConvolution::QuantizedConvolution(const shared_ptr<Node>& data_batc
     auto& filters_shape = filters->get_shape();
 
     set_output_type(0,
-                    element::i8,
+                    i8,
                     util::infer_convolution_output_shape(this,
                                                          data_batch_shape,
                                                          filters_shape,

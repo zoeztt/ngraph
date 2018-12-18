@@ -44,13 +44,13 @@ extern "C" runtime::Backend* new_backend(const char* configuration_string)
 }
 
 shared_ptr<runtime::Tensor>
-    runtime::interpreter::INTBackend::create_tensor(const element::Type& type, const Shape& shape)
+    runtime::interpreter::INTBackend::create_tensor(const Type& type, const Shape& shape)
 {
     return make_shared<runtime::HostTensor>(type, shape, "external");
 }
 
 shared_ptr<runtime::Tensor> runtime::interpreter::INTBackend::create_tensor(
-    const element::Type& type, const Shape& shape, void* memory_pointer)
+    const Type& type, const Shape& shape, void* memory_pointer)
 {
     return make_shared<runtime::HostTensor>(type, shape, memory_pointer, "external");
 }
@@ -187,7 +187,7 @@ bool runtime::interpreter::INTBackend::call(shared_ptr<Function> function,
         }
 
         // get op type
-        element::Type type;
+        Type type;
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wswitch-enum"
         switch (type_id)
@@ -231,53 +231,53 @@ bool runtime::interpreter::INTBackend::call(shared_ptr<Function> function,
     return true;
 }
 
-void runtime::interpreter::INTBackend::generate_calls(const element::Type& type,
+void runtime::interpreter::INTBackend::generate_calls(const Type& type,
                                                       const NodeWrapper& op,
                                                       const vector<void*>& outputs,
                                                       const vector<const void*>& inputs,
                                                       FunctionInstance& instance)
 {
-    if (type == element::boolean)
+    if (type == boolean)
     {
         op_engine<char>(op, outputs, inputs, instance);
     }
-    else if (type == element::f32)
+    else if (type == f32)
     {
         op_engine<float>(op, outputs, inputs, instance);
     }
-    else if (type == element::f64)
+    else if (type == f64)
     {
         op_engine<double>(op, outputs, inputs, instance);
     }
-    else if (type == element::i8)
+    else if (type == i8)
     {
         op_engine<int8_t>(op, outputs, inputs, instance);
     }
-    else if (type == element::i16)
+    else if (type == i16)
     {
         op_engine<int16_t>(op, outputs, inputs, instance);
     }
-    else if (type == element::i32)
+    else if (type == i32)
     {
         op_engine<int32_t>(op, outputs, inputs, instance);
     }
-    else if (type == element::i64)
+    else if (type == i64)
     {
         op_engine<int64_t>(op, outputs, inputs, instance);
     }
-    else if (type == element::u8)
+    else if (type == u8)
     {
         op_engine<uint8_t>(op, outputs, inputs, instance);
     }
-    else if (type == element::u16)
+    else if (type == u16)
     {
         op_engine<uint16_t>(op, outputs, inputs, instance);
     }
-    else if (type == element::u32)
+    else if (type == u32)
     {
         op_engine<uint32_t>(op, outputs, inputs, instance);
     }
-    else if (type == element::u64)
+    else if (type == u64)
     {
         op_engine<uint64_t>(op, outputs, inputs, instance);
     }
@@ -322,8 +322,8 @@ void runtime::interpreter::INTBackend::perform_nan_check(
     size_t arg_number = 1;
     for (const shared_ptr<HostTensor>& tensor : tensors)
     {
-        const element::Type& type = tensor->get_element_type();
-        if (type == element::f32)
+        const Type& type = tensor->get_element_type();
+        if (type == f32)
         {
             const float* data = tensor->get_data_ptr<float>();
             for (size_t i = 0; i < tensor->get_element_count(); i++)
@@ -342,7 +342,7 @@ void runtime::interpreter::INTBackend::perform_nan_check(
                 }
             }
         }
-        else if (type == element::f64)
+        else if (type == f64)
         {
             const double* data = tensor->get_data_ptr<double>();
             for (size_t i = 0; i < tensor->get_element_count(); i++)

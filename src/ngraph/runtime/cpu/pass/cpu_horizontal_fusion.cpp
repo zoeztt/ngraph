@@ -87,9 +87,9 @@ void ngraph::runtime::cpu::pass::CPUHorizontalFusion::cpu_conv_horizontal_fusion
     };
 
     auto data_conv = std::make_shared<pattern::op::Label>(
-        element::f32, Shape{1, 256, 35, 35}, has_multiple_users);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, Shape{64, 256, 1, 1});
-    auto bias = std::make_shared<pattern::op::Label>(element::f32, Shape{64});
+        f32, Shape{1, 256, 35, 35}, has_multiple_users);
+    auto filters = std::make_shared<pattern::op::Label>(f32, Shape{64, 256, 1, 1});
+    auto bias = std::make_shared<pattern::op::Label>(f32, Shape{64});
 
     auto conv_bias = std::make_shared<ngraph::op::ConvolutionBias>(data_conv,
                                                                    filters,

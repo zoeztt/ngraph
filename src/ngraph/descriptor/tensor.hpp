@@ -42,14 +42,14 @@ namespace ngraph
             Tensor& operator=(const Tensor&) = delete;
 
         public:
-            Tensor(const element::Type& element_type,
+            Tensor(const Type& element_type,
                    const PartialShape& pshape,
                    const std::string& name);
 
             const std::string& get_name() const { return m_name; }
-            void set_tensor_type(const element::Type& element_type, const PartialShape& pshape);
+            void set_tensor_type(const Type& element_type, const PartialShape& pshape);
 
-            const element::Type& get_element_type() const { return m_element_type; }
+            const Type& get_element_type() const { return m_element_type; }
             const Shape& get_shape() const;
             const PartialShape& get_partial_shape() const { return m_partial_shape; }
             const std::shared_ptr<layout::TensorLayout>& get_tensor_layout() const
@@ -65,7 +65,7 @@ namespace ngraph
             size_t size() const;
 
         protected:
-            element::Type m_element_type;
+            Type m_element_type;
 
             // TODO(amprocte): For now we are maintaining both m_shape and m_partial_shape fields,
             //    with m_shape possibly being invalid (get_shape will throw an exception if it

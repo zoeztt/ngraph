@@ -33,14 +33,14 @@ namespace ngraph
         std::shared_ptr<Node> ScaledQuantize(std::shared_ptr<Node> input,
                                              std::shared_ptr<Node> min,
                                              std::shared_ptr<Node> max,
-                                             const ngraph::element::Type& type,
+                                             const ngraph::Type& type,
                                              const ngraph::AxisSet& axes,
                                              op::Quantize::RoundMode round_mode);
 
         std::shared_ptr<Node> ScaledDequantize(std::shared_ptr<Node> input,
                                                std::shared_ptr<Node> min,
                                                std::shared_ptr<Node> max,
-                                               const ngraph::element::Type& type,
+                                               const ngraph::Type& type,
                                                const ngraph::AxisSet& axes);
 
         std::shared_ptr<Node> ScaledQuantizedAvgPool(std::shared_ptr<Node> input,

@@ -38,8 +38,8 @@ namespace ngraph
                 mkldnn::memory::format
                     CreateNativeDataFormat(const ngraph::runtime::cpu::LayoutDescriptor& layout);
                 mkldnn::memory::format CreateNativeDataFormat(const Shape& shape);
-                const std::string& get_mkldnn_data_type_string(const ngraph::element::Type& type);
-                mkldnn::memory::data_type get_mkldnn_data_type(const ngraph::element::Type& type);
+                const std::string& get_mkldnn_data_type_string(const ngraph::Type& type);
+                mkldnn::memory::data_type get_mkldnn_data_type(const ngraph::Type& type);
                 const std::string& get_mkldnn_format_string(mkldnn::memory::format fmt);
 
                 const mkldnn::memory::desc& get_input_mkldnn_md(const Node* node, size_t index);
@@ -52,10 +52,10 @@ namespace ngraph
                 bool is_perm_sorted(const Strides& a, const AxisVector& perm);
                 bool can_create_mkldnn_md(const Shape& dims,
                                           const Strides& strides,
-                                          const ngraph::element::Type type);
+                                          const ngraph::Type type);
                 mkldnn::memory::desc create_blocked_mkldnn_md(const Shape& dims,
                                                               const Strides& strides,
-                                                              const ngraph::element::Type type);
+                                                              const ngraph::Type type);
                 mkldnn::memory::desc try_get_named_md(const mkldnn_memory_desc_t& md);
                 mkldnn::memory::desc rotate_blocked_md(const mkldnn::memory::desc& in,
                                                        const AxisVector& axis_order);
@@ -77,9 +77,9 @@ namespace ngraph
                 bool use_mkldnn_kernel(const ngraph::Node* node);
                 void assign_mkldnn_kernel(Node* node);
 
-                std::map<element::Type, const mkldnn::memory::data_type>&
+                std::map<Type, const mkldnn::memory::data_type>&
                     get_mkldnn_data_type_map();
-                std::map<element::Type, const std::string>& get_mkldnn_data_type_string_map();
+                std::map<Type, const std::string>& get_mkldnn_data_type_string_map();
                 std::map<mkldnn::memory::format, const std::string>& get_mkldnn_format_string_map();
                 std::set<mkldnn::memory::format>& get_filter_formats();
 
@@ -98,7 +98,7 @@ namespace ngraph
                     {
                         return false;
                     }
-                    if (node->get_input_element_type(0) != element::f32)
+                    if (node->get_input_element_type(0) != f32)
                     {
                         return false;
                     }

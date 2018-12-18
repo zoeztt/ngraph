@@ -63,25 +63,25 @@ static std::shared_ptr<Node> construct_data_pattern(std::shared_ptr<pattern::op:
 {
     auto reshape_slice =
         std::make_shared<op::Reshape>(data_slice, AxisVector{0, 1, 2}, Shape{2, 4});
-    auto W = std::make_shared<pattern::op::Label>(element::f32, Shape{4, 1});
+    auto W = std::make_shared<pattern::op::Label>(f32, Shape{4, 1});
     auto dot = std::make_shared<op::Dot>(reshape_slice, W);
-    auto broadcast = std::make_shared<pattern::op::Label>(element::f32, dot->get_shape());
+    auto broadcast = std::make_shared<pattern::op::Label>(f32, dot->get_shape());
     return dot + broadcast;
 }
 
 static std::shared_ptr<Node>
     construct_weights_pattern(std::shared_ptr<pattern::op::Label> weights_reshape)
 {
-    auto X = std::make_shared<pattern::op::Label>(element::f32, Shape{2, 4});
+    auto X = std::make_shared<pattern::op::Label>(f32, Shape{2, 4});
     auto dot = std::make_shared<op::Dot>(X, weights_reshape);
-    auto broadcast = std::make_shared<pattern::op::Label>(element::f32, dot->get_shape());
+    auto broadcast = std::make_shared<pattern::op::Label>(f32, dot->get_shape());
     return dot + broadcast;
 }
 
 static std::shared_ptr<Node>
     construct_bias_pattern(std::shared_ptr<pattern::op::Label> bias_broadcast)
 {
-    auto dot_label = std::make_shared<pattern::op::Label>(element::f32, Shape{2, 1});
+    auto dot_label = std::make_shared<pattern::op::Label>(f32, Shape{2, 1});
     return dot_label + bias_broadcast;
 }
 
@@ -92,11 +92,11 @@ bool runtime::cpu::pass::CPURnnMatFusion::run_on_function(std::shared_ptr<Functi
     //--------------------------------------------------------
     // Construct pattern version_1 for RNN input linear transformation
     auto data_slice = std::make_shared<pattern::op::Label>(
-        element::f32, Shape{1, 2, 4}, pattern::has_class<op::Slice>());
+        f32, Shape{1, 2, 4}, pattern::has_class<op::Slice>());
     auto data_pattern = construct_data_pattern(data_slice);
 
     auto weights_reshape = std::make_shared<pattern::op::Label>(
-        element::f32, Shape{4, 1}, pattern::has_class<op::Reshape>());
+        f32, Shape{4, 1}, pattern::has_class<op::Reshape>());
     auto weights_pattern = construct_weights_pattern(weights_reshape);
 
     // we don't really need a broadcast node but
@@ -104,7 +104,7 @@ bool runtime::cpu::pass::CPURnnMatFusion::run_on_function(std::shared_ptr<Functi
     // params from all 3 labels in the same fashion
     //(i.e. via get_argument(0))
     auto bias_broadcast = std::make_shared<pattern::op::Label>(
-        element::f32, Shape{2, 1}, pattern::has_class<op::Broadcast>());
+        f32, Shape{2, 1}, pattern::has_class<op::Broadcast>());
     auto bias_pattern = construct_bias_pattern(bias_broadcast);
 
     const size_t NUM_MMB_ARGS = 3;
@@ -123,11 +123,11 @@ bool runtime::cpu::pass::CPURnnMatFusion::run_on_function(std::shared_ptr<Functi
     //--------------------------------------------------------
     // Construct pattern version_2 for RNN input linear transformation
     auto input_data = std::make_shared<pattern::op::Label>(
-        element::f32, Shape{10, 50}, pattern::has_class<op::Parameter>());
+        f32, Shape{10, 50}, pattern::has_class<op::Parameter>());
     auto W = std::make_shared<pattern::op::Label>(
-        element::f32, Shape{50, 400}, pattern::has_class<op::Reshape>());
+        f32, Shape{50, 400}, pattern::has_class<op::Reshape>());
     auto b = std::make_shared<pattern::op::Label>(
-        element::f32, Shape{10, 400}, pattern::has_class<op::Broadcast>());
+        f32, Shape{10, 400}, pattern::has_class<op::Broadcast>());
     std::shared_ptr<pattern::op::Label> labels_v2[] = {input_data, W, b};
     auto matcher_v2 = construct_rnn_input_linear_transformation(labels_v2);
 
@@ -385,8 +385,8 @@ static bool is_trivial_convolution(std::shared_ptr<op::Convolution> conv)
 std::shared_ptr<Node> fuse_group_convolution(const std::shared_ptr<Node>& n)
 {
     Shape win_size_1{1, 1, 1, 1};
-    auto data_label = std::make_shared<pattern::op::Label>(element::f32, Shape{1, 4, 9});
-    auto weights_label = std::make_shared<pattern::op::Label>(element::f32, Shape{4, 2, 3});
+    auto data_label = std::make_shared<pattern::op::Label>(f32, Shape{1, 4, 9});
+    auto weights_label = std::make_shared<pattern::op::Label>(f32, Shape{4, 2, 3});
 
     auto slice_data = std::make_shared<op::Slice>(
         data_label, Coordinate{0, 0, 0}, Coordinate{1, 2, 9}, Strides{1, 1, 1});
@@ -487,7 +487,7 @@ std::shared_ptr<Node> fuse_batch_dot(const std::shared_ptr<Node>& n)
     std::shared_ptr<op::Reshape> reshape[num_op_branches];
     for (int i = 0; i < num_op_branches; ++i)
     {
-        input[i] = std::make_shared<pattern::op::Label>(element::f32, Shape{3, 2, 2});
+        input[i] = std::make_shared<pattern::op::Label>(f32, Shape{3, 2, 2});
         auto slice =
             std::make_shared<op::Slice>(input[i], Coordinate{0, 0, 0}, Coordinate{1, 2, 2});
         auto skip = std::make_shared<pattern::op::Skip>(slice, pattern::has_class<op::Reshape>());

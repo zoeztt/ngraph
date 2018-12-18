@@ -92,9 +92,9 @@ shared_ptr<op::Constant> make_constant_pad(shared_ptr<op::Constant> constant,
 void ngraph::pass::ConstantFolding::construct_constant_pad()
 {
     auto is_constant = pattern::has_class<op::Constant>();
-    auto constant_label = make_shared<pattern::op::Label>(element::f32, Shape{6}, is_constant);
+    auto constant_label = make_shared<pattern::op::Label>(f32, Shape{6}, is_constant);
 
-    auto pad_value_label = make_shared<pattern::op::Label>(element::f32, Shape{}, is_constant);
+    auto pad_value_label = make_shared<pattern::op::Label>(f32, Shape{}, is_constant);
 
     Shape padding_below{0};
     Shape padding_above{0};
@@ -113,22 +113,22 @@ void ngraph::pass::ConstantFolding::construct_constant_pad()
         auto pad_match = static_pointer_cast<op::Pad>(m.get_match_root());
 
         auto type = constant_match->get_element_type();
-        if (type == element::i32)
+        if (type == i32)
         {
             replace_node(m.get_match_root(), make_constant_pad<int>(constant_match, pad_match));
             return true;
         }
-        else if (type == element::i8)
+        else if (type == i8)
         {
             replace_node(m.get_match_root(), make_constant_pad<int8_t>(constant_match, pad_match));
             return true;
         }
-        else if (type == element::f32)
+        else if (type == f32)
         {
             replace_node(m.get_match_root(), make_constant_pad<float>(constant_match, pad_match));
             return true;
         }
-        else if (type == element::f64)
+        else if (type == f64)
         {
             replace_node(m.get_match_root(), make_constant_pad<double>(constant_match, pad_match));
             return true;
@@ -145,7 +145,7 @@ void ngraph::pass::ConstantFolding::construct_constant_pad()
 void ngraph::pass::ConstantFolding::construct_constant_reshape()
 {
     auto constant_label = make_shared<pattern::op::Label>(
-        element::f32, Shape{2, 4}, pattern::has_class<op::Constant>());
+        f32, Shape{2, 4}, pattern::has_class<op::Constant>());
     auto reshape = make_shared<op::Reshape>(constant_label, AxisVector{0, 1}, Shape{2, 4, 1});
 
     auto constant_reshape_callback = [constant_label](pattern::Matcher& m) {
@@ -158,25 +158,25 @@ void ngraph::pass::ConstantFolding::construct_constant_reshape()
         auto reshape_match = static_pointer_cast<op::Reshape>(m.get_match_root());
 
         auto type = constant_match->get_element_type();
-        if (type == element::i32)
+        if (type == i32)
         {
             replace_node(m.get_match_root(),
                          make_constant_reshape<int>(constant_match, reshape_match));
             return true;
         }
-        else if (type == element::i8)
+        else if (type == i8)
         {
             replace_node(m.get_match_root(),
                          make_constant_reshape<int8_t>(constant_match, reshape_match));
             return true;
         }
-        else if (type == element::f32)
+        else if (type == f32)
         {
             replace_node(m.get_match_root(),
                          make_constant_reshape<float>(constant_match, reshape_match));
             return true;
         }
-        else if (type == element::f64)
+        else if (type == f64)
         {
             replace_node(m.get_match_root(),
                          make_constant_reshape<double>(constant_match, reshape_match));
@@ -210,7 +210,7 @@ shared_ptr<op::Constant> make_constant_broadcast(shared_ptr<op::Constant> consta
 void ngraph::pass::ConstantFolding::construct_constant_broadcast()
 {
     auto constant_label =
-        make_shared<pattern::op::Label>(element::f32, Shape{2}, pattern::has_class<op::Constant>());
+        make_shared<pattern::op::Label>(f32, Shape{2}, pattern::has_class<op::Constant>());
 
     auto broadcast = make_shared<op::Broadcast>(constant_label, Shape{2, 4}, AxisSet{1});
 
@@ -224,25 +224,25 @@ void ngraph::pass::ConstantFolding::construct_constant_broadcast()
         auto broadcast_match = static_pointer_cast<op::Broadcast>(m.get_match_root());
 
         auto type = constant_match->get_element_type();
-        if (type == element::i32)
+        if (type == i32)
         {
             replace_node(m.get_match_root(),
                          make_constant_broadcast<int>(constant_match, broadcast_match));
             return true;
         }
-        else if (type == element::i8)
+        else if (type == i8)
         {
             replace_node(m.get_match_root(),
                          make_constant_broadcast<int8_t>(constant_match, broadcast_match));
             return true;
         }
-        else if (type == element::f32)
+        else if (type == f32)
         {
             replace_node(m.get_match_root(),
                          make_constant_broadcast<float>(constant_match, broadcast_match));
             return true;
         }
-        else if (type == element::f64)
+        else if (type == f64)
         {
             replace_node(m.get_match_root(),
                          make_constant_broadcast<double>(constant_match, broadcast_match));
@@ -327,9 +327,9 @@ bool is_supported_binary_op(std::shared_ptr<Node> n)
 void ngraph::pass::ConstantFolding::construct_constant_binary()
 {
     auto a = make_shared<pattern::op::Label>(
-        element::f32, Shape{2, 4}, pattern::has_class<op::Constant>());
+        f32, Shape{2, 4}, pattern::has_class<op::Constant>());
     auto b = make_shared<pattern::op::Label>(
-        element::f32, Shape{2, 4}, pattern::has_class<op::Constant>());
+        f32, Shape{2, 4}, pattern::has_class<op::Constant>());
     auto is_bea = pattern::has_class<op::util::BinaryElementwiseArithmetic>();
     auto bea = std::make_shared<pattern::op::Any>(a, is_bea, NodeVector{a, b});
 
@@ -349,25 +349,25 @@ void ngraph::pass::ConstantFolding::construct_constant_binary()
         }
 
         auto type = a_match->get_element_type();
-        if (type == element::i32)
+        if (type == i32)
         {
             replace_node(m.get_match_root(),
                          make_constant_binary<int>(a_match, b_match, binary_match));
             return true;
         }
-        else if (type == element::i8)
+        else if (type == i8)
         {
             replace_node(m.get_match_root(),
                          make_constant_binary<int8_t>(a_match, b_match, binary_match));
             return true;
         }
-        else if (type == element::f32)
+        else if (type == f32)
         {
             replace_node(m.get_match_root(),
                          make_constant_binary<float>(a_match, b_match, binary_match));
             return true;
         }
-        else if (type == element::f64)
+        else if (type == f64)
         {
             replace_node(m.get_match_root(),
                          make_constant_binary<double>(a_match, b_match, binary_match));
@@ -421,7 +421,7 @@ shared_ptr<op::Constant> make_constant_unary(shared_ptr<op::Constant> constant,
 void ngraph::pass::ConstantFolding::construct_constant_unary()
 {
     auto constant_label = make_shared<pattern::op::Label>(
-        element::f32, Shape{2, 4}, pattern::has_class<op::Constant>());
+        f32, Shape{2, 4}, pattern::has_class<op::Constant>());
     auto is_uea = pattern::has_class<op::util::UnaryElementwiseArithmetic>();
     auto uea =
         std::make_shared<pattern::op::Any>(constant_label, is_uea, NodeVector{constant_label});
@@ -441,24 +441,24 @@ void ngraph::pass::ConstantFolding::construct_constant_unary()
         }
 
         auto type = constant_match->get_element_type();
-        if (type == element::i32)
+        if (type == i32)
         {
             replace_node(m.get_match_root(), make_constant_unary<int>(constant_match, unary_match));
             return true;
         }
-        else if (type == element::i8)
+        else if (type == i8)
         {
             replace_node(m.get_match_root(),
                          make_constant_unary<int8_t>(constant_match, unary_match));
             return true;
         }
-        else if (type == element::f32)
+        else if (type == f32)
         {
             replace_node(m.get_match_root(),
                          make_constant_unary<float>(constant_match, unary_match));
             return true;
         }
-        else if (type == element::f64)
+        else if (type == f64)
         {
             replace_node(m.get_match_root(),
                          make_constant_unary<double>(constant_match, unary_match));
@@ -496,11 +496,11 @@ shared_ptr<op::Constant> make_constant_dequantize(shared_ptr<op::Constant> const
 void ngraph::pass::ConstantFolding::construct_constant_dequantize()
 {
     auto constant_label =
-        make_shared<pattern::op::Label>(element::u8, Shape{2}, pattern::has_class<op::Constant>());
-    auto dq_scale = op::Constant::create(element::f32, Shape{}, {1});
-    auto dq_offset = op::Constant::create(element::u8, Shape{}, {1});
+        make_shared<pattern::op::Label>(u8, Shape{2}, pattern::has_class<op::Constant>());
+    auto dq_scale = op::Constant::create(f32, Shape{}, {1});
+    auto dq_offset = op::Constant::create(u8, Shape{}, {1});
     auto dequant_op =
-        make_shared<op::Dequantize>(constant_label, dq_scale, dq_offset, element::f32, AxisSet{});
+        make_shared<op::Dequantize>(constant_label, dq_scale, dq_offset, f32, AxisSet{});
     auto dequant = make_shared<pattern::op::Label>(dequant_op, nullptr, NodeVector{dequant_op});
 
     auto constant_dequantize_callback = [constant_label, dequant](pattern::Matcher& m) {
@@ -518,19 +518,19 @@ void ngraph::pass::ConstantFolding::construct_constant_dequantize()
 
         auto type = constant_match->get_element_type();
 
-        if (dequant_match->get_element_type() != element::f32)
+        if (dequant_match->get_element_type() != f32)
         {
             return false;
         }
 
-        if (type == element::u8)
+        if (type == u8)
         {
             replace_node(m.get_match_root(),
                          make_constant_dequantize<uint8_t, float>(
                              constant_match, dequantize_op, scale, offset));
             return true;
         }
-        else if (type == element::i8)
+        else if (type == i8)
         {
             replace_node(m.get_match_root(),
                          make_constant_dequantize<int8_t, float>(
@@ -570,12 +570,12 @@ shared_ptr<op::Constant> make_constant_quantize(shared_ptr<op::Constant> constan
 void ngraph::pass::ConstantFolding::construct_constant_quantize()
 {
     auto constant_label =
-        make_shared<pattern::op::Label>(element::f32, Shape{2}, pattern::has_class<op::Constant>());
-    auto q_scale = op::Constant::create(element::f32, Shape{}, {1});
-    auto q_offset = op::Constant::create(element::i8, Shape{}, {0});
+        make_shared<pattern::op::Label>(f32, Shape{2}, pattern::has_class<op::Constant>());
+    auto q_scale = op::Constant::create(f32, Shape{}, {1});
+    auto q_offset = op::Constant::create(i8, Shape{}, {0});
     auto mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
     auto quant_op =
-        make_shared<op::Quantize>(constant_label, q_scale, q_offset, element::i8, AxisSet{}, mode);
+        make_shared<op::Quantize>(constant_label, q_scale, q_offset, i8, AxisSet{}, mode);
     auto quant = make_shared<pattern::op::Label>(quant_op, nullptr, NodeVector{quant_op});
 
     auto constant_quantize_callback = [constant_label, quant](pattern::Matcher& m) {
@@ -593,19 +593,19 @@ void ngraph::pass::ConstantFolding::construct_constant_quantize()
 
         auto type = quant_match->get_element_type();
 
-        if (constant_match->get_element_type() != element::f32)
+        if (constant_match->get_element_type() != f32)
         {
             return false;
         }
 
-        if (type == element::u8)
+        if (type == u8)
         {
             replace_node(
                 m.get_match_root(),
                 make_constant_quantize<float, uint8_t>(constant_match, quantize_op, scale, offset));
             return true;
         }
-        else if (type == element::i8)
+        else if (type == i8)
         {
             replace_node(
                 m.get_match_root(),

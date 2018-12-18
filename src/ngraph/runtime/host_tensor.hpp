@@ -34,10 +34,10 @@ namespace ngraph
 class ngraph::runtime::HostTensor : public ngraph::runtime::Tensor
 {
 public:
-    HostTensor(const ngraph::element::Type& element_type,
+    HostTensor(const ngraph::Type& element_type,
                const Shape& shape,
                const std::string& name = "external");
-    HostTensor(const ngraph::element::Type& element_type,
+    HostTensor(const ngraph::Type& element_type,
                const Shape& shape,
                void* memory_pointer,
                const std::string& name = "external");

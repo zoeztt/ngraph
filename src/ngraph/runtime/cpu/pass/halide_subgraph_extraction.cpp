@@ -66,7 +66,7 @@ bool runtime::cpu::pass::HalideSubgraphExtraction::run_on_function(
         return false;
     }
 
-    if (function->get_result()->get_element_type() != element::f32)
+    if (function->get_result()->get_element_type() != f32)
     {
         return false;
     }

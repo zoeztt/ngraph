@@ -44,7 +44,7 @@ namespace ngraph
                 auto index = external_function->add_state(
                     ngraph::RNGState::create_rng_state(gm->get_seed(), gm->get_probability()));
 
-                if (args[0].get_element_type() == element::f32)
+                if (args[0].get_element_type() == f32)
                 {
                     functor = [&, index, element_count](CPURuntimeContext* ctx,
                                                         CPUExecutionContext* ectx) {
@@ -55,7 +55,7 @@ namespace ngraph
                                                  training);
                     };
                 }
-                else if (args[0].get_element_type() == element::f64)
+                else if (args[0].get_element_type() == f64)
                 {
                     functor = [&, index, element_count](CPURuntimeContext* ctx,
                                                         CPUExecutionContext* ectx) {

@@ -39,7 +39,7 @@ namespace ngraph
             /// \param compute_max Compute top k max or top k min?
             TopK(const std::shared_ptr<Node>& arg,
                  size_t top_k_axis,
-                 const element::Type& index_element_type,
+                 const Type& index_element_type,
                  size_t k = 0,
                  bool compute_max = true);
 
@@ -49,12 +49,12 @@ namespace ngraph
                 copy_with_new_args(const NodeVector& new_args) const override;
 
             size_t get_top_k_axis() const { return m_top_k_axis; }
-            element::Type get_index_element_type() const { return m_index_element_type; }
+            Type get_index_element_type() const { return m_index_element_type; }
             size_t get_k() const { return m_k; }
             bool get_compute_max() const { return m_compute_max; }
         protected:
             size_t m_top_k_axis;
-            element::Type m_index_element_type;
+            Type m_index_element_type;
             size_t m_k;
             bool m_compute_max;
             virtual void generate_adjoints(autodiff::Adjoints& adjoints,

@@ -35,7 +35,7 @@ namespace ngraph
                                      const Shape& input1_shape,
                                      const std::string& output_name,
                                      const Shape& output_shape,
-                                     const element::Type& output_type,
+                                     const Type& output_type,
                                      const AxisSet& axis,
                                      std::vector<std::shared_ptr<Function>>& func);
         }

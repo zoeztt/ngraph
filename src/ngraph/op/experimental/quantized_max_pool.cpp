@@ -35,7 +35,7 @@ op::QuantizedMaxPool::QuantizedMaxPool(const shared_ptr<Node>& arg,
 {
     constructor_validate_and_infer_types();
 
-    if (arg->get_element_type() != element::u8 && arg->get_element_type() != element::i8)
+    if (arg->get_element_type() != u8 && arg->get_element_type() != i8)
     {
         throw ngraph_error("QuantizedMaxPool supported only for i8/u8!");
     }

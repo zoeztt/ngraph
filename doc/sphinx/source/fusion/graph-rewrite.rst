@@ -21,7 +21,7 @@ examples:
 
 .. code-block:: cpp 
 
-    auto a = make_shared<op::Parameter>(element::i32, shape);
+    auto a = make_shared<op::Parameter>(i32, shape);
     auto absn = make_shared<op::Abs>(a);
     auto neg1 = make_shared<op::Negative>(absn);
     auto neg2 = make_shared<op::Negative>(neg1);
@@ -32,8 +32,8 @@ examples:
 	
 .. code-block:: cpp 
 
-    auto a = make_shared<op::Parameter>(element::i32, shape);
-    auto b = make_shared<op::Parameter>(element::i32, shape);
+    auto a = make_shared<op::Parameter>(i32, shape);
+    auto b = make_shared<op::Parameter>(i32, shape);
     auto c = a + b;
     auto absn = make_shared<op::Abs>(c);
     auto neg1 = make_shared<op::Negative>(absn);
@@ -46,13 +46,13 @@ Label AKA ``.`` in regexes
 
 |image5|
 
-For the code below, ``element::f32`` will still match integer Graph1 and 
+For the code below, ``f32`` will still match integer Graph1 and 
 Graph2 
 
 .. code-block:: cpp
 
-    //note element::f32, will still match integer Graph1 and Graph2 
-    auto lbl = std::make_shared<pattern::op::Label>(element::f32, Shape{});  
+    //note f32, will still match integer Graph1 and Graph2 
+    auto lbl = std::make_shared<pattern::op::Label>(f32, Shape{});  
     auto neg1 = make_shared<op::Negative>(lbl);
     auto neg2 = make_shared<op::Negative>(neg1);
 
@@ -71,7 +71,7 @@ Double Negative w/ Addition
 
 .. code-block:: cpp
 
-    auto a = make_shared<op::Parameter>(element::i32, shape);
+    auto a = make_shared<op::Parameter>(i32, shape);
     //`lbl` borrows the type and shape information from `a`
     auto lbl = std::make_shared<pattern::op::Label>(a);  
     auto neg1 = make_shared<op::Negative>(a);
@@ -95,7 +95,7 @@ Predicates are of type ``std::function<bool(std::shared_ptr<Node>)>``
     };
 
     auto lbl = std::make_shared<pattern::op::Label>(
-        element::f32, 
+        f32, 
         Shape{}, 
         add_or_sub
     );  

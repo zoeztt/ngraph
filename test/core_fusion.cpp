@@ -50,8 +50,8 @@ using namespace std;
 TEST(core_fusion, core_fusion_pass_basic)
 {
     auto shape_a = Shape{1, 5};
-    auto A = op::Constant::create(element::f32, shape_a, {0, 0, 0, 0, 0});
-    auto B = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = op::Constant::create(f32, shape_a, {0, 0, 0, 0, 0});
+    auto B = make_shared<op::Parameter>(f32, shape_a);
     auto max = make_shared<op::Maximum>(A, B);
     auto graph = make_shared<op::Abs>(max);
     pass::Manager pass_manager;
@@ -77,12 +77,12 @@ TEST(core_fusion, sigmoid_fprop_fusion)
 TEST(core_fusion, sigmoid_fprop_fusion_no_broadcast)
 {
     auto make_function = []() {
-        auto input = std::make_shared<op::Parameter>(element::f32, Shape{3, 4});
+        auto input = std::make_shared<op::Parameter>(f32, Shape{3, 4});
         auto neg_input = std::make_shared<op::Negative>(input);
         auto exp_neg_input = std::make_shared<op::Exp>(neg_input);
 
         auto constant =
-            op::Constant::create(element::f32, Shape{3, 4}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1});
+            op::Constant::create(f32, Shape{3, 4}, {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1});
 
         auto add_exp = std::make_shared<op::Add>(exp_neg_input, constant);
         auto divide_1_over_exp = std::make_shared<op::Divide>(constant, add_exp);
@@ -101,12 +101,12 @@ TEST(core_fusion, sigmoid_fprop_fusion_no_broadcast)
 TEST(core_fusion, sigmoid_fprop_fusion_no_broadcast2)
 {
     auto make_function = []() {
-        auto input = std::make_shared<op::Parameter>(element::f32, Shape{3, 4});
+        auto input = std::make_shared<op::Parameter>(f32, Shape{3, 4});
         auto neg_input = std::make_shared<op::Negative>(input);
         auto exp_neg_input = std::make_shared<op::Exp>(neg_input);
 
         auto constant =
-            op::Constant::create(element::f32, Shape{3, 4}, {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1});
+            op::Constant::create(f32, Shape{3, 4}, {1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1});
 
         auto add_exp = std::make_shared<op::Add>(exp_neg_input, constant);
         auto divide_1_over_exp = std::make_shared<op::Divide>(constant, add_exp);
@@ -137,7 +137,7 @@ TEST(core_fusion, sigmoid_bprop_fusion)
 TEST(core_fusion, reshape_broadcast)
 {
     auto generate_func = []() {
-        auto input = make_shared<op::Parameter>(element::f32, Shape{10});
+        auto input = make_shared<op::Parameter>(f32, Shape{10});
         auto reshape1 = make_shared<op::Reshape>(input, AxisVector{0}, Shape{1, 10, 1});
         auto broadcast =
             make_shared<op::Broadcast>(reshape1, Shape{1, 5, 10, 8, 1, 20}, AxisSet{1, 3, 5});
@@ -167,7 +167,7 @@ TEST(core_fusion, reshape_broadcast)
 
 TEST(core_fusion, reshape_broadcast_graph_optimized)
 {
-    auto input = make_shared<op::Parameter>(element::f32, Shape{10});
+    auto input = make_shared<op::Parameter>(f32, Shape{10});
     auto reshape1 = make_shared<op::Reshape>(input, AxisVector{0}, Shape{1, 10, 1});
     auto broadcast =
         make_shared<op::Broadcast>(reshape1, Shape{1, 5, 10, 8, 1, 20}, AxisSet{1, 3, 5});
@@ -185,7 +185,7 @@ TEST(core_fusion, reshape_broadcast_graph_optimized)
 
 TEST(core_fusion, reshape_broadcast_adds_one)
 {
-    auto input = make_shared<op::Parameter>(element::f32, Shape{10});
+    auto input = make_shared<op::Parameter>(f32, Shape{10});
     auto reshape1 = make_shared<op::Reshape>(input, AxisVector{0}, Shape{1, 10, 1});
     auto broadcast =
         make_shared<op::Broadcast>(reshape1, Shape{1, 5, 10, 8, 1, 20, 1}, AxisSet{1, 3, 5, 6});
@@ -203,7 +203,7 @@ TEST(core_fusion, reshape_broadcast_adds_one)
 
 TEST(core_fusion, reshape_broadcast_wrong_reshape)
 {
-    auto input = make_shared<op::Parameter>(element::f32, Shape{10});
+    auto input = make_shared<op::Parameter>(f32, Shape{10});
     auto reshape1 = make_shared<op::Reshape>(input, AxisVector{0}, Shape{1, 5, 2});
     auto broadcast =
         make_shared<op::Broadcast>(reshape1, Shape{1, 5, 5, 8, 2, 20}, AxisSet{1, 3, 5});
@@ -227,29 +227,29 @@ TEST(core_fusion, sparsity_opt_56x56)
     Strides stride_1{1, 1};
     CoordinateDiff pad_0{0, 0};
     CoordinateDiff pad_1{1, 1};
-    auto data_stride3 = std::make_shared<op::Parameter>(element::f32, Shape{1, 64, 56, 56});
-    auto weights_stride3 = std::make_shared<op::Parameter>(element::f32, Shape{64, 64, 3, 3});
+    auto data_stride3 = std::make_shared<op::Parameter>(f32, Shape{1, 64, 56, 56});
+    auto weights_stride3 = std::make_shared<op::Parameter>(f32, Shape{64, 64, 3, 3});
 
     auto conv_stride3 = std::make_shared<op::Convolution>(
         data_stride3, weights_stride3, stride_1, stride_1, pad_1, pad_1);
-    auto param_broadcast_w3 = std::make_shared<op::Parameter>(element::f32, Shape{64});
+    auto param_broadcast_w3 = std::make_shared<op::Parameter>(f32, Shape{64});
     auto broadcast_w3 =
         std::make_shared<op::Broadcast>(param_broadcast_w3, Shape{1, 64, 56, 56}, AxisSet{0, 2, 3});
     auto add_w3 = std::make_shared<op::Add>(conv_stride3, broadcast_w3);
     auto relu_w3 = std::make_shared<op::Relu>(add_w3);
     ///
-    auto weights_stride1 = std::make_shared<op::Parameter>(element::f32, Shape{256, 64, 1, 1});
+    auto weights_stride1 = std::make_shared<op::Parameter>(f32, Shape{256, 64, 1, 1});
     auto conv_stride1 = std::make_shared<op::Convolution>(relu_w3, weights_stride1);
-    auto param_broadcast_w1 = std::make_shared<op::Parameter>(element::f32, Shape{256});
+    auto param_broadcast_w1 = std::make_shared<op::Parameter>(f32, Shape{256});
     auto broadcast_w1 = std::make_shared<op::Broadcast>(
         param_broadcast_w1, Shape{1, 256, 56, 56}, AxisSet{0, 2, 3});
     auto add_w1 = std::make_shared<op::Add>(conv_stride1, broadcast_w1);
     ////
-    auto other_arg = std::make_shared<op::Parameter>(element::f32, Shape{1, 256, 56, 56});
+    auto other_arg = std::make_shared<op::Parameter>(f32, Shape{1, 256, 56, 56});
     auto add_two_convs = std::make_shared<op::Add>(add_w1, other_arg);
     auto relu_two_convs = std::make_shared<op::Relu>(add_two_convs);
     ///
-    auto weights_conv_s2 = std::make_shared<op::Parameter>(element::f32, Shape{512, 256, 1, 1});
+    auto weights_conv_s2 = std::make_shared<op::Parameter>(f32, Shape{512, 256, 1, 1});
     auto conv_s2_1 = std::make_shared<op::Convolution>(relu_two_convs, weights_conv_s2, stride_2);
     auto conv_s2_2 = std::make_shared<op::Convolution>(relu_two_convs, weights_conv_s2, stride_2);
 
@@ -281,7 +281,7 @@ static std::shared_ptr<Function> generate_reshape_softmax_reshape()
     Shape shape_nhwc{10, 30, 40, 20};
     AxisVector to_nhwc{0, 2, 3, 1};
     AxisVector to_nchw{0, 3, 1, 2};
-    auto input = make_shared<op::Parameter>(element::f32, shape_nchw);
+    auto input = make_shared<op::Parameter>(f32, shape_nchw);
     auto reshape1 = make_shared<op::Reshape>(input, to_nhwc, shape_nhwc);
     auto softmax = make_shared<op::Softmax>(reshape1, AxisSet{1, 2, 3});
     auto reshape2 = make_shared<op::Reshape>(softmax, to_nchw, shape_nchw);

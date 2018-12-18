@@ -116,7 +116,7 @@ namespace ngraph
             /// \return     The Ngraph node representing Constant data.
             ///
             template <typename T>
-            std::shared_ptr<ngraph::Node> make_constant_node(const ngraph::element::Type& type,
+            std::shared_ptr<ngraph::Node> make_constant_node(const ngraph::Type& type,
                                                              const ngraph::Shape& shape,
                                                              const std::vector<T>& data)
             {

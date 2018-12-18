@@ -61,12 +61,12 @@ using namespace ngraph;
 void ngraph::runtime::cpu::pass::LSTMFusion::construct_sigmoid()
 {
     // construct variance
-    auto input = std::make_shared<pattern::op::Label>(element::f32, Shape{3, 4});
+    auto input = std::make_shared<pattern::op::Label>(f32, Shape{3, 4});
     auto neg_input = std::make_shared<op::Negative>(input);
     auto exp_neg_input = std::make_shared<op::Exp>(neg_input);
 
     // broadcast input
-    auto constant = std::make_shared<pattern::op::Label>(element::f32, Shape{});
+    auto constant = std::make_shared<pattern::op::Label>(f32, Shape{});
     auto broadcast_constant = std::make_shared<op::Broadcast>(constant, Shape{3, 4}, AxisSet{0, 1});
 
     auto add_exp = std::make_shared<op::Add>(exp_neg_input, broadcast_constant);
@@ -78,7 +78,7 @@ void ngraph::runtime::cpu::pass::LSTMFusion::construct_sigmoid()
                      << m.get_match_root()->get_name();
         auto pattern_map = m.get_pattern_map();
 
-        if (m.get_match_root()->get_element_type() != element::f32)
+        if (m.get_match_root()->get_element_type() != f32)
         {
             NGRAPH_DEBUG << "mpattern = " << m.get_match_root()->get_name()
                          << " type is not float!";
@@ -134,13 +134,13 @@ void ngraph::runtime::cpu::pass::LSTMFusion::construct_lstm_fprop()
     // Inputs to the sub-graph
     // Assumes weights for all the 4 gates are fused in the order -
     //                      input (i), forget (f), block (g) and output (o)
-    auto w_i2h = std::make_shared<pattern::op::Label>(element::f32, Shape{100, 400});
-    auto bias_i2h = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 400});
-    auto w_h2h = std::make_shared<pattern::op::Label>(element::f32, Shape{50, 400});
-    auto bias_h2h = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 400});
-    auto xt = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 100});
-    auto ht_1 = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 50});
-    auto ct_1 = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 100});
+    auto w_i2h = std::make_shared<pattern::op::Label>(f32, Shape{100, 400});
+    auto bias_i2h = std::make_shared<pattern::op::Label>(f32, Shape{10, 400});
+    auto w_h2h = std::make_shared<pattern::op::Label>(f32, Shape{50, 400});
+    auto bias_h2h = std::make_shared<pattern::op::Label>(f32, Shape{10, 400});
+    auto xt = std::make_shared<pattern::op::Label>(f32, Shape{10, 100});
+    auto ht_1 = std::make_shared<pattern::op::Label>(f32, Shape{10, 50});
+    auto ct_1 = std::make_shared<pattern::op::Label>(f32, Shape{10, 100});
 
     auto broadcast_pred = [](std::shared_ptr<Node> n) {
         return ((std::dynamic_pointer_cast<op::Broadcast>(n) != nullptr) ||
@@ -185,7 +185,7 @@ void ngraph::runtime::cpu::pass::LSTMFusion::construct_lstm_fprop()
 
             auto pattern_map = m.get_pattern_map();
 
-            if (m.get_match_root()->get_element_type() != element::f32)
+            if (m.get_match_root()->get_element_type() != f32)
             {
                 NGRAPH_DEBUG << "mpattern = " << m.get_match_root()->get_name()
                              << " type is not float!";
@@ -320,30 +320,30 @@ void ngraph::runtime::cpu::pass::RNNFusion::construct_rnn_lstm_fprop()
 {
     // Captures multiple LSTM cells corresponding to the timesteps of a single RNN
     // Shared nodes across LSTM cells -
-    auto lstm_src_layer = std::make_shared<pattern::op::Label>(element::f32, Shape{30, 100});
+    auto lstm_src_layer = std::make_shared<pattern::op::Label>(f32, Shape{30, 100});
 
-    auto lstm_ht = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 100});
-    auto lstm_ct = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 100});
+    auto lstm_ht = std::make_shared<pattern::op::Label>(f32, Shape{10, 100});
+    auto lstm_ct = std::make_shared<pattern::op::Label>(f32, Shape{10, 100});
     auto lstm_src_iter = std::make_shared<op::Concat>(NodeVector{lstm_ht, lstm_ct}, 0);
     auto lstm_src_iter_label =
         std::make_shared<pattern::op::Label>(lstm_src_iter, nullptr, NodeVector{lstm_src_iter});
 
     auto lstm_weights_layer_shared = std::make_shared<pattern::op::Label>(
-        element::f32, Shape{400, 100}, pattern::has_class<op::Parameter>());
+        f32, Shape{400, 100}, pattern::has_class<op::Parameter>());
     auto lstm_weights_layer =
         std::make_shared<op::Reshape>(lstm_weights_layer_shared, AxisVector{1, 0}, Shape{100, 400});
     auto lstm_weights_layer_label = std::make_shared<pattern::op::Label>(
         lstm_weights_layer, nullptr, NodeVector{lstm_weights_layer});
 
     auto lstm_weights_iter_shared = std::make_shared<pattern::op::Label>(
-        element::f32, Shape{400, 100}, pattern::has_class<op::Parameter>());
+        f32, Shape{400, 100}, pattern::has_class<op::Parameter>());
     auto lstm_weights_iter =
         std::make_shared<op::Reshape>(lstm_weights_iter_shared, AxisVector{1, 0}, Shape{100, 400});
     auto lstm_weights_iter_label = std::make_shared<pattern::op::Label>(
         lstm_weights_iter, nullptr, NodeVector{lstm_weights_iter});
 
-    auto lstm_bias_layer_shared = std::make_shared<pattern::op::Label>(element::f32, Shape{400});
-    auto lstm_bias_iter_shared = std::make_shared<pattern::op::Label>(element::f32, Shape{400});
+    auto lstm_bias_layer_shared = std::make_shared<pattern::op::Label>(f32, Shape{400});
+    auto lstm_bias_iter_shared = std::make_shared<pattern::op::Label>(f32, Shape{400});
     auto lstm_bias = std::make_shared<op::Add>(lstm_bias_layer_shared, lstm_bias_iter_shared);
     auto lstm_bias_label =
         std::make_shared<pattern::op::Label>(lstm_bias, nullptr, NodeVector{lstm_bias});
@@ -442,8 +442,8 @@ void ngraph::runtime::cpu::pass::RNNFusion::construct_rnn_lstm_fprop()
         CHECK_RANK(rnn_weights_iter, 2);
         CHECK_RANK(rnn_bias, 1);
 
-        if (rnn_src_layer->get_element_type() != element::f32 ||
-            rnn_src_iter->get_element_type() != element::f32)
+        if (rnn_src_layer->get_element_type() != f32 ||
+            rnn_src_iter->get_element_type() != f32)
         {
             NGRAPH_DEBUG << "input tensor type and input recurrent state tensor are not float32";
             return false;
@@ -559,11 +559,11 @@ static std::shared_ptr<Node> stack_rnn_inputs(NodeVector rnn_input_nodes)
 
 void ngraph::runtime::cpu::pass::MultiLayerRNNFusion::construct_multi_layer_rnn_fusion_fprop()
 {
-    auto rnn_src_layer = std::make_shared<pattern::op::Label>(element::f32, Shape{30, 100});
-    auto rnn_src_iter = std::make_shared<pattern::op::Label>(element::f32, Shape{20, 100});
-    auto rnn_weights_layer = std::make_shared<pattern::op::Label>(element::f32, Shape{100, 400});
-    auto rnn_weights_iter = std::make_shared<pattern::op::Label>(element::f32, Shape{100, 400});
-    auto rnn_bias = std::make_shared<pattern::op::Label>(element::f32, Shape{400});
+    auto rnn_src_layer = std::make_shared<pattern::op::Label>(f32, Shape{30, 100});
+    auto rnn_src_iter = std::make_shared<pattern::op::Label>(f32, Shape{20, 100});
+    auto rnn_weights_layer = std::make_shared<pattern::op::Label>(f32, Shape{100, 400});
+    auto rnn_weights_iter = std::make_shared<pattern::op::Label>(f32, Shape{100, 400});
+    auto rnn_bias = std::make_shared<pattern::op::Label>(f32, Shape{400});
 
     const size_t ref_number_of_timesteps = 3;
     const size_t ref_number_of_gates_per_cell = 4;

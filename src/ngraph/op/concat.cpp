@@ -35,7 +35,7 @@ void op::Concat::validate_and_infer_types()
     NODE_VALIDATION_ASSERT(this, m_inputs.size() >= 1) << "At least one argument required.";
 
     PartialShape inputs_shape_scheme{PartialShape::dynamic()};
-    element::Type inputs_et{element::dynamic};
+    Type inputs_et{dynamic};
     Dimension concatenation_axis_output_dim{0};
 
     for (auto i = 0; i < get_inputs().size(); i++)
@@ -58,7 +58,7 @@ void op::Concat::validate_and_infer_types()
                 << m_concatenation_axis << ").";
 
             NODE_VALIDATION_ASSERT(
-                this, element::Type::merge(inputs_et, inputs_et, get_input_element_type(i)))
+                this, Type::merge(inputs_et, inputs_et, get_input_element_type(i)))
                 << "Argument element types are inconsistent.";
         }
         else

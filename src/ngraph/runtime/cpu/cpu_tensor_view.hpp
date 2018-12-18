@@ -33,10 +33,10 @@ namespace ngraph
             class CPUTensorView : public ngraph::runtime::Tensor
             {
             public:
-                CPUTensorView(const ngraph::element::Type& element_type,
+                CPUTensorView(const ngraph::Type& element_type,
                               const Shape& shape,
                               const std::string& name = "external");
-                CPUTensorView(const ngraph::element::Type& element_type,
+                CPUTensorView(const ngraph::Type& element_type,
                               const Shape& shape,
                               void* memory_pointer,
                               const std::string& name = "external");

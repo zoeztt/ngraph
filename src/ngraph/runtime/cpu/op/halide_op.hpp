@@ -34,7 +34,7 @@ namespace ngraph
                 public:
                     HalideOp(const NodeVector& args,
                              const std::list<std::shared_ptr<Node>>& ops,
-                             const element::Type& out_type,
+                             const Type& out_type,
                              const Shape& out_shape);
 
                     virtual void validate_and_infer_types() override;
@@ -45,7 +45,7 @@ namespace ngraph
                     const std::list<std::shared_ptr<Node>>& get_ops() const { return m_ops; }
                 private:
                     std::list<std::shared_ptr<Node>> m_ops;
-                    element::Type m_output_type;
+                    Type m_output_type;
                     Shape m_output_shape;
                 };
             }

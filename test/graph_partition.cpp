@@ -65,7 +65,7 @@ public:
     }
 
     ~HybridBackend() {}
-    shared_ptr<runtime::Tensor> create_tensor(const element::Type& element_type, const Shape& shape)
+    shared_ptr<runtime::Tensor> create_tensor(const Type& element_type, const Shape& shape)
     {
         return get_cached_backend(Placement::INTERPRETER)->create_tensor(element_type, shape);
     }
@@ -204,9 +204,9 @@ protected:
 TEST(graph_partition, placement_all_cpu_policy)
 {
     Shape shape = Shape{2, 2};
-    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> C = make_shared<op::Parameter>(element::f32, shape);
+    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> C = make_shared<op::Parameter>(f32, shape);
     shared_ptr<Node> AplusB = A + B;
     shared_ptr<Node> AplusBtimesC = AplusB * C;
     shared_ptr<Function> f = make_shared<Function>(AplusBtimesC, ParameterVector{A, B, C});
@@ -231,9 +231,9 @@ TEST(graph_partition, placement_all_cpu_policy)
 TEST(graph_partition, placement_int_with_cpu_mul_policy)
 {
     Shape shape = Shape{2, 2};
-    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> C = make_shared<op::Parameter>(element::f32, shape);
+    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> C = make_shared<op::Parameter>(f32, shape);
     shared_ptr<Node> AplusB = A + B;
     shared_ptr<Node> AplusBtimesC = AplusB * C;
     shared_ptr<Function> f = make_shared<Function>(AplusBtimesC, ParameterVector{A, B, C});
@@ -280,9 +280,9 @@ TEST(graph_partition, hybrid_abc_manual)
     //                  R     f2(INT)
     //             ------------------
     Shape shape = Shape{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
-    auto B = make_shared<op::Parameter>(element::f32, shape);
-    auto C = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
+    auto B = make_shared<op::Parameter>(f32, shape);
+    auto C = make_shared<op::Parameter>(f32, shape);
     auto D = A + B;
     auto E = D * C;
     auto R = make_shared<op::Result>(E);
@@ -308,11 +308,11 @@ TEST(graph_partition, hybrid_abc_manual)
     auto cpu_backend = runtime::Backend::create(placement_to_string(Placement::CPU));
 
     // f0 on INT
-    auto a = int_backend->create_tensor(element::f32, shape);
-    auto b = int_backend->create_tensor(element::f32, shape);
-    auto c = int_backend->create_tensor(element::f32, shape);
-    auto r0 = int_backend->create_tensor(element::f32, shape);
-    auto r1 = int_backend->create_tensor(element::f32, shape);
+    auto a = int_backend->create_tensor(f32, shape);
+    auto b = int_backend->create_tensor(f32, shape);
+    auto c = int_backend->create_tensor(f32, shape);
+    auto r0 = int_backend->create_tensor(f32, shape);
+    auto r1 = int_backend->create_tensor(f32, shape);
     copy_data(a, test::NDArray<float, 2>({{1, 2}, {3, 4}}).get_vector());
     copy_data(b, test::NDArray<float, 2>({{5, 6}, {7, 8}}).get_vector());
     copy_data(c, test::NDArray<float, 2>({{9, 10}, {11, 12}}).get_vector());
@@ -322,9 +322,9 @@ TEST(graph_partition, hybrid_abc_manual)
     int_backend->call_with_validate(f0, {r0, r1}, {a, b, c});
 
     // f1 on CPU
-    auto p0 = cpu_backend->create_tensor(element::f32, shape);
-    auto p1 = cpu_backend->create_tensor(element::f32, shape);
-    auto r2 = cpu_backend->create_tensor(element::f32, shape);
+    auto p0 = cpu_backend->create_tensor(f32, shape);
+    auto p1 = cpu_backend->create_tensor(f32, shape);
+    auto r2 = cpu_backend->create_tensor(f32, shape);
     copy_data(p0, read_vector<float>(r0));
     copy_data(p1, read_vector<float>(r1));
 
@@ -333,8 +333,8 @@ TEST(graph_partition, hybrid_abc_manual)
     cpu_backend->call_with_validate(f1, {r2}, {p0, p1});
 
     // f2 on INT
-    auto p2 = int_backend->create_tensor(element::f32, shape);
-    auto r = int_backend->create_tensor(element::f32, shape);
+    auto p2 = int_backend->create_tensor(f32, shape);
+    auto r = int_backend->create_tensor(f32, shape);
     copy_data(p2, read_vector<float>(r2));
 
     auto f2 = make_shared<Function>(ResultVector{R}, ParameterVector{P2});
@@ -367,19 +367,19 @@ TEST(graph_partition, hybrid_abc)
     //                  R     f2(INT)
     //             ------------------
     Shape shape = Shape{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
-    auto B = make_shared<op::Parameter>(element::f32, shape);
-    auto C = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
+    auto B = make_shared<op::Parameter>(f32, shape);
+    auto C = make_shared<op::Parameter>(f32, shape);
     auto D = A + B;
     auto E = D * C;
     auto R = make_shared<op::Result>(E);
     auto f = make_shared<Function>(ResultVector{R}, ParameterVector{A, B, C});
 
     auto backend = make_shared<HybridBackend>(int_with_cpu_mul_policy);
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> c = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> r = backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> c = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> r = backend->create_tensor(f32, shape);
 
     copy_data(a, test::NDArray<float, 2>({{1, 2}, {3, 4}}).get_vector());
     copy_data(b, test::NDArray<float, 2>({{5, 6}, {7, 8}}).get_vector());
@@ -400,10 +400,10 @@ TEST(graph_partition, hybrid_abcd)
     //    \ /
     //    H+
     Shape shape = Shape{2, 2};
-    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> C = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> D = make_shared<op::Parameter>(element::f32, shape);
+    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> C = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> D = make_shared<op::Parameter>(f32, shape);
     shared_ptr<Node> E = A * B;
     shared_ptr<Node> F = C + E;
     shared_ptr<Node> G = E + D;
@@ -413,11 +413,11 @@ TEST(graph_partition, hybrid_abcd)
     auto backend = make_shared<HybridBackend>(int_with_cpu_mul_policy);
     backend->compile(f);
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> c = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> d = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> r = backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> c = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> d = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> r = backend->create_tensor(f32, shape);
 
     copy_data(a, test::NDArray<float, 2>({{1, 2}, {3, 4}}).get_vector());
     copy_data(b, test::NDArray<float, 2>({{5, 6}, {7, 8}}).get_vector());
@@ -438,9 +438,9 @@ TEST(graph_partition, hybrid_back_and_forth)
     //      \ /
     //      F*
     Shape shape = Shape{2, 2};
-    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> C = make_shared<op::Parameter>(element::f32, shape);
+    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> C = make_shared<op::Parameter>(f32, shape);
     shared_ptr<Node> D = A * B;
     shared_ptr<Node> E = D + B;
     shared_ptr<Node> F = E * C;
@@ -449,10 +449,10 @@ TEST(graph_partition, hybrid_back_and_forth)
     auto backend = make_shared<HybridBackend>(int_with_cpu_mul_policy);
     backend->compile(f);
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> c = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> r = backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> c = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> r = backend->create_tensor(f32, shape);
 
     copy_data(a, test::NDArray<float, 2>({{1, 2}, {3, 4}}).get_vector());
     copy_data(b, test::NDArray<float, 2>({{5, 6}, {7, 8}}).get_vector());
@@ -473,9 +473,9 @@ TEST(graph_partition, hybrid_multi_middle_nodes)
     //      \ /
     //      H+
     Shape shape = Shape{2, 2};
-    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> C = make_shared<op::Parameter>(element::f32, shape);
+    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> C = make_shared<op::Parameter>(f32, shape);
     shared_ptr<Node> D = A + B;
     shared_ptr<Node> E = B + C;
     shared_ptr<Node> F = D * E;
@@ -486,10 +486,10 @@ TEST(graph_partition, hybrid_multi_middle_nodes)
     auto backend = make_shared<HybridBackend>(int_with_cpu_mul_policy);
     backend->compile(f);
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> c = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> r = backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> c = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> r = backend->create_tensor(f32, shape);
 
     copy_data(a, test::NDArray<float, 2>({{1, 2}, {3, 4}}).get_vector());
     copy_data(b, test::NDArray<float, 2>({{5, 6}, {7, 8}}).get_vector());
@@ -506,17 +506,17 @@ TEST(graph_partition, hybrid_no_split)
     //  \ /
     //   +
     Shape shape = Shape{2, 2};
-    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(element::f32, shape);
-    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(element::f32, shape);
+    shared_ptr<op::Parameter> A = make_shared<op::Parameter>(f32, shape);
+    shared_ptr<op::Parameter> B = make_shared<op::Parameter>(f32, shape);
     shared_ptr<Node> C = A + B;
     shared_ptr<Function> f = make_shared<Function>(C, ParameterVector{A, B});
 
     auto backend = make_shared<HybridBackend>(int_with_cpu_mul_policy);
     backend->compile(f);
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> c = backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> c = backend->create_tensor(f32, shape);
 
     copy_data(a, test::NDArray<float, 2>({{1, 2}, {3, 4}}).get_vector());
     copy_data(b, test::NDArray<float, 2>({{5, 6}, {7, 8}}).get_vector());

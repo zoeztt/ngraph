@@ -75,7 +75,7 @@ void Node::set_output_size(size_t n)
     for (size_t i = m_outputs.size(); i < n; ++i)
     {
         auto tensor_descriptor = make_shared<descriptor::Tensor>(
-            element::dynamic, PartialShape::dynamic(), get_name() + "_" + to_string(i));
+            dynamic, PartialShape::dynamic(), get_name() + "_" + to_string(i));
         m_outputs.emplace_back(this, i, tensor_descriptor);
     }
 }
@@ -84,7 +84,7 @@ void Node::validate_and_infer_types()
 {
 }
 
-void Node::set_output_type(size_t i, const element::Type& element_type, const PartialShape& pshape)
+void Node::set_output_type(size_t i, const Type& element_type, const PartialShape& pshape)
 {
     m_outputs.at(i).get_tensor_ptr()->set_tensor_type(element_type, pshape);
 }
@@ -218,7 +218,7 @@ std::ostream& Node::write_short_description(std::ostream& out) const
     return out << get_name();
 }
 
-static std::string pretty_element_type(const element::Type& et)
+static std::string pretty_element_type(const Type& et)
 {
     if (et.is_dynamic())
     {
@@ -251,12 +251,12 @@ size_t Node::get_output_size() const
     return m_outputs.size();
 }
 
-const element::Type& Node::get_output_element_type(size_t i) const
+const Type& Node::get_output_element_type(size_t i) const
 {
     return m_outputs.at(i).get_element_type();
 }
 
-const element::Type& Node::get_element_type() const
+const Type& Node::get_element_type() const
 {
     if (get_output_size() != 1)
     {
@@ -326,7 +326,7 @@ size_t Node::get_input_size() const
     return m_inputs.size();
 }
 
-const element::Type& Node::get_input_element_type(size_t i) const
+const Type& Node::get_input_element_type(size_t i) const
 {
     return m_inputs.at(i).get_element_type();
 }
@@ -438,9 +438,9 @@ const NodeVector& ngraph::check_single_output_args(const NodeVector& args)
     return args;
 }
 
-std::tuple<element::Type, PartialShape> Node::validate_and_infer_elementwise_args()
+std::tuple<Type, PartialShape> Node::validate_and_infer_elementwise_args()
 {
-    element::Type element_type = get_input_element_type(0);
+    Type element_type = get_input_element_type(0);
     PartialShape pshape = get_input_partial_shape(0);
 
     if (get_input_size() > 1)
@@ -448,7 +448,7 @@ std::tuple<element::Type, PartialShape> Node::validate_and_infer_elementwise_arg
         for (size_t i = 1; i < get_input_size(); ++i)
         {
             NODE_VALIDATION_ASSERT(
-                this, element::Type::merge(element_type, element_type, get_input_element_type(i)))
+                this, Type::merge(element_type, element_type, get_input_element_type(i)))
                 << "Argument element types are inconsistent.";
 
             NODE_VALIDATION_ASSERT(this,
@@ -463,10 +463,10 @@ std::tuple<element::Type, PartialShape> Node::validate_and_infer_elementwise_arg
 void Node::validate_and_infer_elementwise_arithmetic()
 {
     auto args_et_pshape = validate_and_infer_elementwise_args();
-    element::Type& args_et = std::get<0>(args_et_pshape);
+    Type& args_et = std::get<0>(args_et_pshape);
     PartialShape& args_pshape = std::get<1>(args_et_pshape);
 
-    NODE_VALIDATION_ASSERT(this, args_et.is_dynamic() || args_et != element::boolean)
+    NODE_VALIDATION_ASSERT(this, args_et.is_dynamic() || args_et != boolean)
         << "Arguments cannot have boolean element type (argument element type: " << args_et << ").";
 
     set_output_type(0, args_et, args_pshape);
@@ -475,14 +475,14 @@ void Node::validate_and_infer_elementwise_arithmetic()
 void Node::validate_and_infer_elementwise_logical()
 {
     auto args_et_pshape = validate_and_infer_elementwise_args();
-    element::Type& args_et = std::get<0>(args_et_pshape);
+    Type& args_et = std::get<0>(args_et_pshape);
     PartialShape& args_pshape = std::get<1>(args_et_pshape);
 
-    NODE_VALIDATION_ASSERT(this, args_et.is_dynamic() || args_et == element::boolean)
+    NODE_VALIDATION_ASSERT(this, args_et.is_dynamic() || args_et == boolean)
         << "Operands for logical operators must have boolean element type but have element type "
         << args_et << ".";
 
-    set_output_type(0, element::boolean, args_pshape);
+    set_output_type(0, boolean, args_pshape);
 }
 
 bool Node::validate_punt_if_dynamic()
@@ -499,7 +499,7 @@ bool Node::validate_punt_if_dynamic()
     {
         for (size_t i = 0; i < get_output_size(); i++)
         {
-            set_output_type(i, element::dynamic, PartialShape::dynamic());
+            set_output_type(i, dynamic, PartialShape::dynamic());
         }
         return true;
     }

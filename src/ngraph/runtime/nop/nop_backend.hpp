@@ -40,9 +40,9 @@ class ngraph::runtime::nop::NOPBackend : public Backend
 {
 public:
     std::shared_ptr<Tensor>
-        create_tensor(const element::Type& type, const Shape& shape, void* memory_pointer) override;
+        create_tensor(const Type& type, const Shape& shape, void* memory_pointer) override;
 
-    std::shared_ptr<Tensor> create_tensor(const element::Type& type, const Shape& shape) override;
+    std::shared_ptr<Tensor> create_tensor(const Type& type, const Shape& shape) override;
 
     Handle compile(std::shared_ptr<Function> function) override;
 

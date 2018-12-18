@@ -21,7 +21,7 @@ using namespace ngraph;
 
 op::GenerateMask::GenerateMask(const std::shared_ptr<Node>& training,
                                const Shape& shape,
-                               const element::Type& element_type,
+                               const Type& element_type,
                                unsigned int seed,
                                double prob)
     : Op("GenerateMask", check_single_output_args({training}))

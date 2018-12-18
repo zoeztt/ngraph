@@ -29,5 +29,5 @@ void regclass_pyngraph_op_ArgMin(py::module m)
                ngraph::op::util::IndexReduction>
         add(m, "ArgMin");
     add.doc() = "ngraph.impl.op.ArgMin wraps ngraph::op::ArgMin";
-    add.def(py::init<const std::shared_ptr<ngraph::Node>&, size_t, const ngraph::element::Type&>());
+    add.def(py::init<const std::shared_ptr<ngraph::Node>&, size_t, const ngraph::Type&>());
 }

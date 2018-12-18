@@ -23,7 +23,7 @@ using namespace ngraph;
 op::Dequantize::Dequantize(shared_ptr<Node> input,
                            shared_ptr<Node> scale,
                            shared_ptr<Node> offset,
-                           const element::Type& type,
+                           const Type& type,
                            const AxisSet& axes)
 
     : Op("Dequantize", check_single_output_args({input, scale, offset}))
@@ -47,10 +47,10 @@ void op::Dequantize::validate_and_infer_types()
     NODE_VALIDATION_ASSERT(this, m_type.is_real()) << "Output element type (" << m_type
                                                    << ") must be a floating point type";
 
-    element::Type quantized_type;
+    Type quantized_type;
 
     NODE_VALIDATION_ASSERT(this,
-                           element::Type::merge(quantized_type,
+                           Type::merge(quantized_type,
                                                 get_input_element_type(INPUT),
                                                 get_input_element_type(OFFSET)))
         << "Offset element type (" << get_input_element_type(OFFSET)
@@ -59,10 +59,10 @@ void op::Dequantize::validate_and_infer_types()
     NODE_VALIDATION_ASSERT(this, quantized_type.is_dynamic() || quantized_type.is_quantized())
         << "Offset/input element type (" << quantized_type << ") must be a quantized type";
 
-    element::Type unquantized_type;
+    Type unquantized_type;
 
     NODE_VALIDATION_ASSERT(
-        this, element::Type::merge(unquantized_type, get_input_element_type(SCALE), m_type))
+        this, Type::merge(unquantized_type, get_input_element_type(SCALE), m_type))
         << "Scale element type (" << get_input_element_type(SCALE)
         << ") must match output element type (" << m_type << ")";
 

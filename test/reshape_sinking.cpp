@@ -53,7 +53,7 @@ TEST(reshape_sinking, edge_splitting)
     //checks if Reshapes are pushed through op::Abs, but stopped by Sum
     Shape shape_nhwc{16, 28, 28, 1};
     Shape shape_nchw{16, 1, 28, 28};
-    auto a = make_shared<op::Parameter>(element::i32, shape_nhwc);
+    auto a = make_shared<op::Parameter>(i32, shape_nhwc);
     auto reshape = make_shared<op::Reshape>(a, AxisVector{0, 3, 1, 2}, shape_nchw);
     auto absn = make_shared<op::Abs>(reshape);
     auto absn2 = make_shared<op::Abs>(absn);
@@ -85,14 +85,14 @@ TEST(reshape_sinking, broadcast_swimming)
     AxisVector to_nchw{0, 3, 1, 2};
 
     size_t channel = 16;
-    auto bias = make_shared<op::Parameter>(element::i32, Shape{channel});
+    auto bias = make_shared<op::Parameter>(i32, Shape{channel});
     auto bias_reshape = make_shared<op::Reshape>(bias, AxisVector{0}, Shape{1, channel});
     auto bias_broadcast = make_shared<op::Broadcast>(bias_reshape, conv_nhwc, AxisSet{1, 2});
 
-    auto input = make_shared<op::Parameter>(element::i32, shape_nhwc);
+    auto input = make_shared<op::Parameter>(i32, shape_nhwc);
     auto reshape_input = make_shared<op::Reshape>(input, to_nchw, shape_nchw);
 
-    auto weights = make_shared<op::Parameter>(element::i32, shape_weights);
+    auto weights = make_shared<op::Parameter>(i32, shape_weights);
     auto conv = make_shared<op::Convolution>(reshape_input, weights);
     auto conv_reshape = make_shared<op::Reshape>(conv, to_nhwc, conv_nhwc);
     auto add = bias_broadcast + conv_reshape;
@@ -135,8 +135,8 @@ TEST(reshape_sinking, nasnet_pooladd)
 {
     Shape input_shape{1, 3, 3, 1};
 
-    auto input_type = element::f32;
-    auto output_type = element::f32;
+    auto input_type = f32;
+    auto output_type = f32;
 
     auto X = make_shared<op::Parameter>(input_type, input_shape);
     auto c_weights = op::Constant::create(input_type, Shape{1, 1, 1, 1}, {3});

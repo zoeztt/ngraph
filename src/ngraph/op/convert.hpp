@@ -30,16 +30,16 @@ namespace ngraph
             ///
             /// \param arg          Node that produces the input tensor.
             /// \param element_type Element type for the output tensor.
-            Convert(const std::shared_ptr<Node>& arg, const ngraph::element::Type& element_type);
+            Convert(const std::shared_ptr<Node>& arg, const ngraph::Type& element_type);
 
             void validate_and_infer_types() override;
 
             virtual std::shared_ptr<Node>
                 copy_with_new_args(const NodeVector& new_args) const override;
 
-            const element::Type& get_convert_element_type() const { return m_element_type; }
+            const Type& get_convert_element_type() const { return m_element_type; }
         protected:
-            const ngraph::element::Type m_element_type;
+            const ngraph::Type m_element_type;
             virtual void generate_adjoints(autodiff::Adjoints& adjoints,
                                            const NodeVector& deltas) override;
         };

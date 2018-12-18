@@ -33,7 +33,7 @@ namespace ngraph
             /// probability and training/inference mode
             GenerateMask(const std::shared_ptr<Node>& training,
                          const Shape& shape,
-                         const element::Type& element_type,
+                         const Type& element_type,
                          unsigned int seed,
                          double prob);
 
@@ -52,7 +52,7 @@ namespace ngraph
 
             void validate_and_infer_types() override;
             Shape m_shape;
-            element::Type m_element_type;
+            Type m_element_type;
             unsigned int m_seed;
             double m_probability;
         };

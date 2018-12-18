@@ -93,7 +93,7 @@ void runtime::intelgpu::do_reduce_func_call(cldnn::topology& topology,
                                             const Shape& input1_shape,
                                             const string& output_name,
                                             const Shape& output_shape,
-                                            const element::Type& output_type,
+                                            const Type& output_type,
                                             const AxisSet& axis,
                                             vector<shared_ptr<Function>>& func)
 {

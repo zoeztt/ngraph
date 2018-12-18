@@ -64,11 +64,11 @@ void op::ReplaceSlice::validate_and_infer_types()
         << "Argument ranks do not match (arg0 shape: " << arg0_shape
         << ", arg1 shape: " << arg1_shape << ").";
 
-    element::Type arg0_et = get_input_element_type(0);
-    element::Type arg1_et = get_input_element_type(1);
-    element::Type merged_args_et;
+    Type arg0_et = get_input_element_type(0);
+    Type arg1_et = get_input_element_type(1);
+    Type merged_args_et;
 
-    NODE_VALIDATION_ASSERT(this, element::Type::merge(merged_args_et, arg0_et, arg1_et))
+    NODE_VALIDATION_ASSERT(this, Type::merge(merged_args_et, arg0_et, arg1_et))
         << "Argument element types do not match (arg0 element type: " << arg0_et
         << ", arg1 element type: " << arg1_et << ").";
 

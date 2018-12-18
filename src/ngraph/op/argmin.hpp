@@ -35,7 +35,7 @@ namespace ngraph
             /// \param index_element_type produce indices. Currently, only int64 or int32 are supported
             ArgMin(const std::shared_ptr<Node>& arg,
                    size_t axis,
-                   const element::Type& index_element_type)
+                   const Type& index_element_type)
                 : IndexReduction("ArgMin", arg, axis, index_element_type)
             {
             }

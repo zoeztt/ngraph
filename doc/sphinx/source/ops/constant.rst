@@ -20,7 +20,7 @@ Attributes
 +-----------------+------------------------------+---------------------------------------+
 | Name            | Type                         | Notes                                 |
 +=================+==============================+=======================================+
-| ``type``        | ``ngraph::element::type``    | The element type of the value         |
+| ``type``        | ``ngraph::type``    | The element type of the value         |
 |                 |                              | in the computation                    |
 +-----------------+------------------------------+---------------------------------------+
 | ``shape``       | ``ngraph::Shape``            | The shape of the constant             |

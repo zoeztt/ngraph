@@ -733,7 +733,7 @@ using namespace ngraph::runtime;
             for (size_t i = 0; i < param->get_output_size(); ++i)
             {
                 shared_ptr<descriptor::Tensor> tv = param->get_output_tensor_ptr(i);
-                const element::Type& et = tv->get_element_type();
+                const Type& et = tv->get_element_type();
                 string type = et.c_type_string();
                 stringstream ss;
                 ss << "((" << type << "*)(inputs[" << arg_index << "]))";
@@ -916,8 +916,8 @@ using namespace ngraph::runtime;
             // skip multi-output nodes since they would be covered by GetOutputElement
             if (node->get_output_size() == 1 &&
                 // skip non-FP nodes
-                (node->get_element_type() == element::f32 ||
-                 node->get_element_type() == element::f64))
+                (node->get_element_type() == f32 ||
+                 node->get_element_type() == f64))
             {
                 // check inputs and constants?
                 if ((!node->is_parameter() && !node->is_constant()) ||

@@ -28,7 +28,7 @@ void regclass_pyngraph_op_TopK(py::module m)
     add.doc() = "ngraph.impl.op.TopK wraps ngraph::op::TopK";
     add.def(py::init<const std::shared_ptr<ngraph::Node>&,
                      size_t,
-                     const ngraph::element::Type&,
+                     const ngraph::Type&,
                      size_t,
                      bool>());
 }

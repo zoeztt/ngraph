@@ -223,8 +223,8 @@ NGRAPH_TEST (${BACKEND_NAME}, %s)
     Shape shape_b{%s};
     Shape shape_r{%s};
     auto make_graph = [shape_a, shape_b] {
-        auto A = make_shared<op::Parameter>(element::f32, shape_a);
-        auto B = make_shared<op::Parameter>(element::f32, shape_b);
+        auto A = make_shared<op::Parameter>(f32, shape_a);
+        auto B = make_shared<op::Parameter>(f32, shape_b);
         return make_shared<Function>(make_shared<op::Convolution>(A, B,
                                                                   Strides{%s},        // move_strides
                                                                   Strides{%s},        // filter_dilation
@@ -238,11 +238,11 @@ NGRAPH_TEST (${BACKEND_NAME}, %s)
     auto function = make_graph();
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{%s});
-    auto b = backend->create_tensor(element::f32, shape_b);
+    auto b = backend->create_tensor(f32, shape_b);
     copy_data(b, vector<float>{%s});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     vector<float> expected_result{%s};
 

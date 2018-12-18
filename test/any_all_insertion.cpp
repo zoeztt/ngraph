@@ -27,12 +27,12 @@ using namespace std;
 static std::shared_ptr<op::Reduce> make_any(std::shared_ptr<Node> arg,
                                             const AxisSet& reduction_axes)
 {
-    auto f_arg0 = std::make_shared<op::Parameter>(element::boolean, Shape{});
-    auto f_arg1 = std::make_shared<op::Parameter>(element::boolean, Shape{});
+    auto f_arg0 = std::make_shared<op::Parameter>(boolean, Shape{});
+    auto f_arg1 = std::make_shared<op::Parameter>(boolean, Shape{});
     auto f_or = std::make_shared<op::Or>(f_arg0, f_arg1);
     auto f = std::make_shared<Function>(f_or, ParameterVector{f_arg0, f_arg1});
 
-    auto k_false = op::Constant::create(element::boolean, Shape{}, std::vector<char>{0});
+    auto k_false = op::Constant::create(boolean, Shape{}, std::vector<char>{0});
 
     return std::make_shared<op::Reduce>(arg, k_false, f, reduction_axes);
 }
@@ -41,12 +41,12 @@ static std::shared_ptr<op::Reduce> make_any(std::shared_ptr<Node> arg,
 static std::shared_ptr<op::Reduce> make_all(std::shared_ptr<Node> arg,
                                             const AxisSet& reduction_axes)
 {
-    auto f_arg0 = std::make_shared<op::Parameter>(element::boolean, Shape{});
-    auto f_arg1 = std::make_shared<op::Parameter>(element::boolean, Shape{});
+    auto f_arg0 = std::make_shared<op::Parameter>(boolean, Shape{});
+    auto f_arg1 = std::make_shared<op::Parameter>(boolean, Shape{});
     auto f_and = std::make_shared<op::And>(f_arg0, f_arg1);
     auto f = std::make_shared<Function>(f_and, ParameterVector{f_arg0, f_arg1});
 
-    auto k_true = op::Constant::create(element::boolean, Shape{}, std::vector<char>{1});
+    auto k_true = op::Constant::create(boolean, Shape{}, std::vector<char>{1});
 
     return std::make_shared<op::Reduce>(arg, k_true, f, reduction_axes);
 }
@@ -71,7 +71,7 @@ static void
 
 TEST(any_all_insertion, any_simple)
 {
-    auto param = make_shared<op::Parameter>(element::boolean, Shape{2, 3, 4});
+    auto param = make_shared<op::Parameter>(boolean, Shape{2, 3, 4});
     auto any = make_any(param, AxisSet{1});
     auto f = make_shared<Function>(any, ParameterVector{param});
 
@@ -85,7 +85,7 @@ TEST(any_all_insertion, any_simple)
 
 TEST(any_all_insertion, any_chained)
 {
-    auto param = make_shared<op::Parameter>(element::boolean, Shape{2, 3, 4});
+    auto param = make_shared<op::Parameter>(boolean, Shape{2, 3, 4});
     auto any_0 = make_any(param, AxisSet{1});
     auto any_1 = make_any(any_0, AxisSet{1});
     auto f = make_shared<Function>(
@@ -105,7 +105,7 @@ TEST(any_all_insertion, any_chained)
 
 TEST(any_all_insertion, all_simple)
 {
-    auto param = make_shared<op::Parameter>(element::boolean, Shape{2, 3, 4});
+    auto param = make_shared<op::Parameter>(boolean, Shape{2, 3, 4});
     auto all = make_all(param, AxisSet{1});
     auto f = make_shared<Function>(all, ParameterVector{param});
 
@@ -119,7 +119,7 @@ TEST(any_all_insertion, all_simple)
 
 TEST(any_all_insertion, all_chained)
 {
-    auto param = make_shared<op::Parameter>(element::boolean, Shape{2, 3, 4});
+    auto param = make_shared<op::Parameter>(boolean, Shape{2, 3, 4});
     auto all_0 = make_all(param, AxisSet{1});
     auto all_1 = make_all(all_0, AxisSet{1});
     auto f = make_shared<Function>(

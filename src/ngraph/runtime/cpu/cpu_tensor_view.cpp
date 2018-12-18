@@ -32,7 +32,7 @@ using namespace std;
 // TODO(jmenon): Refactor all the alignment specifications into
 // a single place and allow lower or no alignment when possible
 
-runtime::cpu::CPUTensorView::CPUTensorView(const ngraph::element::Type& element_type,
+runtime::cpu::CPUTensorView::CPUTensorView(const ngraph::Type& element_type,
                                            const Shape& shape,
                                            void* memory_pointer,
                                            const string& name)
@@ -75,7 +75,7 @@ runtime::cpu::CPUTensorView::CPUTensorView(const ngraph::element::Type& element_
     }
 }
 
-runtime::cpu::CPUTensorView::CPUTensorView(const ngraph::element::Type& element_type,
+runtime::cpu::CPUTensorView::CPUTensorView(const ngraph::Type& element_type,
                                            const Shape& shape,
                                            const string& name)
     : CPUTensorView(element_type, shape, nullptr, name)

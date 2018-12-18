@@ -41,13 +41,13 @@ extern "C" runtime::Backend* new_backend(const char* configuration_string)
     return new runtime::nop::NOPBackend();
 }
 
-shared_ptr<runtime::Tensor> runtime::nop::NOPBackend::create_tensor(const element::Type& type,
+shared_ptr<runtime::Tensor> runtime::nop::NOPBackend::create_tensor(const Type& type,
                                                                     const Shape& shape)
 {
     return make_shared<runtime::HostTensor>(type, shape, "external");
 }
 
-shared_ptr<runtime::Tensor> runtime::nop::NOPBackend::create_tensor(const element::Type& type,
+shared_ptr<runtime::Tensor> runtime::nop::NOPBackend::create_tensor(const Type& type,
                                                                     const Shape& shape,
                                                                     void* memory_pointer)
 {

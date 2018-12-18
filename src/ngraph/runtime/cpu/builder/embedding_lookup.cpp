@@ -40,8 +40,8 @@ namespace ngraph
                 auto& arg0_tensor = tensor_data[args[0].get_name()];
                 auto& arg1_tensor = tensor_data[args[1].get_name()];
                 auto& out_tensor = tensor_data[out[0].get_name()];
-                if (out[0].get_element_type() != element::f32 &&
-                    out[0].get_element_type() != element::f64)
+                if (out[0].get_element_type() != f32 &&
+                    out[0].get_element_type() != f64)
                 {
                     throw ngraph_error("Unsupported output element type");
                 }
@@ -50,9 +50,9 @@ namespace ngraph
                 auto out_shape = out[0].get_shape();
                 auto element_type = out[0].get_element_type();
                 auto index_element_type = args[0].get_element_type();
-                if (element_type == element::f32)
+                if (element_type == f32)
                 {
-                    if (index_element_type == element::f32)
+                    if (index_element_type == f32)
                     {
                         functor = [&, in_shape, element_count](CPURuntimeContext* ctx,
                                                                CPUExecutionContext* ectx) {
@@ -65,7 +65,7 @@ namespace ngraph
                                 in_shape);
                         };
                     }
-                    else if (index_element_type == element::i32)
+                    else if (index_element_type == i32)
                     {
                         functor = [&, in_shape, element_count](CPURuntimeContext* ctx,
                                                                CPUExecutionContext* ectx) {
@@ -84,9 +84,9 @@ namespace ngraph
                             "Unsupported index type in CPU Builder for EmbeddingLookup");
                     }
                 }
-                else if (element_type == element::i32)
+                else if (element_type == i32)
                 {
-                    if (index_element_type == element::f32)
+                    if (index_element_type == f32)
                     {
                         functor = [&, in_shape, element_count](CPURuntimeContext* ctx,
                                                                CPUExecutionContext* ectx) {
@@ -99,7 +99,7 @@ namespace ngraph
                                 in_shape);
                         };
                     }
-                    else if (index_element_type == element::i32)
+                    else if (index_element_type == i32)
                     {
                         functor = [&, in_shape, element_count](CPURuntimeContext* ctx,
                                                                CPUExecutionContext* ectx) {

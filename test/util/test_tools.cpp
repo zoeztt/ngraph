@@ -26,9 +26,9 @@ using namespace ngraph;
 vector<float> read_float_vector(shared_ptr<runtime::Tensor> tv)
 {
     vector<float> float_vec;
-    element::Type element_type = tv->get_tensor_layout()->get_element_type();
+    Type element_type = tv->get_tensor_layout()->get_element_type();
 
-    if (element_type == element::boolean)
+    if (element_type == boolean)
     {
         vector<char> vec = read_vector<char>(tv);
         // Changed from vector ctor to explicit for loop to add static_cast
@@ -38,7 +38,7 @@ vector<float> read_float_vector(shared_ptr<runtime::Tensor> tv)
             float_vec.push_back(static_cast<float>(value));
         }
     }
-    else if (element_type == element::f32)
+    else if (element_type == f32)
     {
         vector<float> vec = read_vector<float>(tv);
         for (float value : vec)
@@ -46,7 +46,7 @@ vector<float> read_float_vector(shared_ptr<runtime::Tensor> tv)
             float_vec.push_back(static_cast<float>(value));
         }
     }
-    else if (element_type == element::f64)
+    else if (element_type == f64)
     {
         vector<double> vec = read_vector<double>(tv);
         for (double value : vec)
@@ -54,7 +54,7 @@ vector<float> read_float_vector(shared_ptr<runtime::Tensor> tv)
             float_vec.push_back(static_cast<float>(value));
         }
     }
-    else if (element_type == element::i8)
+    else if (element_type == i8)
     {
         vector<int8_t> vec = read_vector<int8_t>(tv);
         for (int8_t value : vec)
@@ -62,7 +62,7 @@ vector<float> read_float_vector(shared_ptr<runtime::Tensor> tv)
             float_vec.push_back(static_cast<float>(value));
         }
     }
-    else if (element_type == element::i16)
+    else if (element_type == i16)
     {
         vector<int16_t> vec = read_vector<int16_t>(tv);
         for (int16_t value : vec)
@@ -70,7 +70,7 @@ vector<float> read_float_vector(shared_ptr<runtime::Tensor> tv)
             float_vec.push_back(static_cast<float>(value));
         }
     }
-    else if (element_type == element::i32)
+    else if (element_type == i32)
     {
         vector<int32_t> vec = read_vector<int32_t>(tv);
         for (int32_t value : vec)
@@ -78,7 +78,7 @@ vector<float> read_float_vector(shared_ptr<runtime::Tensor> tv)
             float_vec.push_back(static_cast<float>(value));
         }
     }
-    else if (element_type == element::i64)
+    else if (element_type == i64)
     {
         vector<int64_t> vec = read_vector<int64_t>(tv);
         for (int64_t value : vec)
@@ -86,7 +86,7 @@ vector<float> read_float_vector(shared_ptr<runtime::Tensor> tv)
             float_vec.push_back(static_cast<float>(value));
         }
     }
-    else if (element_type == element::u8)
+    else if (element_type == u8)
     {
         vector<uint8_t> vec = read_vector<uint8_t>(tv);
         for (uint8_t value : vec)
@@ -94,7 +94,7 @@ vector<float> read_float_vector(shared_ptr<runtime::Tensor> tv)
             float_vec.push_back(static_cast<float>(value));
         }
     }
-    else if (element_type == element::u16)
+    else if (element_type == u16)
     {
         vector<uint16_t> vec = read_vector<uint16_t>(tv);
         for (uint16_t value : vec)
@@ -102,7 +102,7 @@ vector<float> read_float_vector(shared_ptr<runtime::Tensor> tv)
             float_vec.push_back(static_cast<float>(value));
         }
     }
-    else if (element_type == element::u32)
+    else if (element_type == u32)
     {
         vector<uint32_t> vec = read_vector<uint32_t>(tv);
         for (uint32_t value : vec)
@@ -110,7 +110,7 @@ vector<float> read_float_vector(shared_ptr<runtime::Tensor> tv)
             float_vec.push_back(static_cast<float>(value));
         }
     }
-    else if (element_type == element::u64)
+    else if (element_type == u64)
     {
         vector<uint64_t> vec = read_vector<uint64_t>(tv);
         for (uint64_t value : vec)
@@ -161,12 +161,12 @@ bool validate_list(const list<shared_ptr<Node>>& nodes)
 
 shared_ptr<Function> make_test_graph()
 {
-    auto arg_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto arg_1 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto arg_2 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto arg_3 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto arg_4 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto arg_5 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto arg_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto arg_1 = make_shared<op::Parameter>(f32, Shape{});
+    auto arg_2 = make_shared<op::Parameter>(f32, Shape{});
+    auto arg_3 = make_shared<op::Parameter>(f32, Shape{});
+    auto arg_4 = make_shared<op::Parameter>(f32, Shape{});
+    auto arg_5 = make_shared<op::Parameter>(f32, Shape{});
 
     auto t0 = make_shared<op::Add>(arg_0, arg_1);
     auto t1 = make_shared<op::Dot>(t0, arg_2);
@@ -232,48 +232,48 @@ void init_int_tv<uint8_t>(ngraph::runtime::Tensor* tv,
 
 void random_init(ngraph::runtime::Tensor* tv, std::default_random_engine& engine)
 {
-    element::Type et = tv->get_element_type();
-    if (et == element::boolean)
+    Type et = tv->get_element_type();
+    if (et == boolean)
     {
         init_int_tv<char>(tv, engine, 0, 1);
     }
-    else if (et == element::f32)
+    else if (et == f32)
     {
         init_real_tv<float>(tv, engine, numeric_limits<float>::min(), 1.0f);
     }
-    else if (et == element::f64)
+    else if (et == f64)
     {
         init_real_tv<double>(tv, engine, numeric_limits<float>::min(), 1.0f);
     }
-    else if (et == element::i8)
+    else if (et == i8)
     {
         init_int_tv<int8_t>(tv, engine, -1, 1);
     }
-    else if (et == element::i16)
+    else if (et == i16)
     {
         init_int_tv<int16_t>(tv, engine, -1, 1);
     }
-    else if (et == element::i32)
+    else if (et == i32)
     {
         init_int_tv<int32_t>(tv, engine, 0, 1);
     }
-    else if (et == element::i64)
+    else if (et == i64)
     {
         init_int_tv<int64_t>(tv, engine, 0, 1);
     }
-    else if (et == element::u8)
+    else if (et == u8)
     {
         init_int_tv<uint8_t>(tv, engine, 0, 1);
     }
-    else if (et == element::u16)
+    else if (et == u16)
     {
         init_int_tv<uint16_t>(tv, engine, 0, 1);
     }
-    else if (et == element::u32)
+    else if (et == u32)
     {
         init_int_tv<uint32_t>(tv, engine, 0, 1);
     }
-    else if (et == element::u64)
+    else if (et == u64)
     {
         init_int_tv<uint64_t>(tv, engine, 0, 1);
     }

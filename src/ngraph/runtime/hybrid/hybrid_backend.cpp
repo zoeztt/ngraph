@@ -34,7 +34,7 @@ void copy_data(std::shared_ptr<ngraph::runtime::Tensor> tv, const std::vector<T>
 template <typename T>
 std::vector<T> read_vector(std::shared_ptr<ngraph::runtime::Tensor> tv)
 {
-    if (ngraph::element::from<T>() != tv->get_tensor_layout()->get_element_type())
+    if (ngraph::from<T>() != tv->get_tensor_layout()->get_element_type())
     {
         throw std::invalid_argument("read_vector type must match Tensor type");
     }
@@ -52,7 +52,7 @@ runtime::hybrid::HybridBackend::HybridBackend(
 }
 
 shared_ptr<runtime::Tensor>
-    runtime::hybrid::HybridBackend::create_tensor(const element::Type& element_type,
+    runtime::hybrid::HybridBackend::create_tensor(const Type& element_type,
                                                   const Shape& shape)
 {
     auto it = m_backend_list.begin();
@@ -60,7 +60,7 @@ shared_ptr<runtime::Tensor>
 }
 
 shared_ptr<runtime::Tensor> runtime::hybrid::HybridBackend::create_tensor(
-    const element::Type& element_type, const Shape& shape, void* memory_pointer)
+    const Type& element_type, const Shape& shape, void* memory_pointer)
 {
     auto it = m_backend_list.begin();
     return it->second->create_tensor(element_type, shape, memory_pointer);

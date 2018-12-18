@@ -95,7 +95,7 @@ namespace ngraph
         // Called in constructors during transition
         void constructor_validate_and_infer_types();
 
-        std::tuple<element::Type, PartialShape> validate_and_infer_elementwise_args();
+        std::tuple<Type, PartialShape> validate_and_infer_elementwise_args();
         void validate_and_infer_elementwise_arithmetic();
         void validate_and_infer_elementwise_logical();
 
@@ -134,7 +134,7 @@ namespace ngraph
         }
 
         void set_output_type(size_t i,
-                             const element::Type& element_type,
+                             const Type& element_type,
                              const PartialShape& pshape);
 
         bool is_parameter() const;
@@ -172,10 +172,10 @@ namespace ngraph
         size_t get_output_size() const;
 
         /// Returns the element type for output i
-        const element::Type& get_output_element_type(size_t i) const;
+        const Type& get_output_element_type(size_t i) const;
 
         /// Checks that there is exactly one output and returns its element type
-        const element::Type& get_element_type() const;
+        const Type& get_element_type() const;
 
         /// Returns the shape for output i
         const Shape& get_output_shape(size_t i) const;
@@ -205,7 +205,7 @@ namespace ngraph
         size_t get_input_size() const;
 
         /// Returns the element type of input i
-        const element::Type& get_input_element_type(size_t i) const;
+        const Type& get_input_element_type(size_t i) const;
 
         /// Returns the shape of input i
         const Shape& get_input_shape(size_t i) const;

@@ -47,9 +47,9 @@ op::Convolution::Convolution(const shared_ptr<Node>& data_batch,
 void op::Convolution::validate_and_infer_types()
 {
     const PartialShape& data_batch_shape = get_input_partial_shape(0);
-    element::Type data_batch_et = get_input_element_type(0);
+    Type data_batch_et = get_input_element_type(0);
     const PartialShape& filters_shape = get_input_partial_shape(1);
-    element::Type filters_et = get_input_element_type(1);
+    Type filters_et = get_input_element_type(1);
 
     if (m_data_dilation_strides.size() == 0)
     {
@@ -76,7 +76,7 @@ void op::Convolution::validate_and_infer_types()
         m_padding_above = default_padding(this, data_batch_shape, filters_shape);
     }
 
-    element::Type result_et;
+    Type result_et;
     PartialShape result_shape;
 
     std::tie(result_et, result_shape) = infer_convolution_forward(this,
@@ -278,11 +278,11 @@ void op::ConvolutionBackpropData::validate_and_infer_types()
     // utility functions to do it.)
 
     const PartialShape& filters_shape = get_input_partial_shape(0);
-    element::Type filters_et = get_input_element_type(0);
+    Type filters_et = get_input_element_type(0);
     const PartialShape& delta_shape = get_input_partial_shape(1);
-    element::Type delta_et = get_input_element_type(1);
+    Type delta_et = get_input_element_type(1);
 
-    element::Type forward_result_et;
+    Type forward_result_et;
     PartialShape forward_result_shape;
 
     std::tie(forward_result_et, forward_result_shape) =
@@ -475,11 +475,11 @@ void op::ConvolutionBackpropFilters::validate_and_infer_types()
     // utility functions to do it.)
 
     const PartialShape& data_batch_shape = get_input_partial_shape(0);
-    element::Type data_batch_et = get_input_element_type(0);
+    Type data_batch_et = get_input_element_type(0);
     const PartialShape& delta_shape = get_input_partial_shape(1);
-    element::Type delta_et = get_input_element_type(1);
+    Type delta_et = get_input_element_type(1);
 
-    element::Type forward_result_et;
+    Type forward_result_et;
     PartialShape forward_result_shape;
 
     std::tie(forward_result_et, forward_result_shape) =

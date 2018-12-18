@@ -31,7 +31,7 @@ namespace ngraph
             // nGraph uses channels in this operation but clDNN uses full input data
             void do_batch_norm_operation(cldnn::topology& topology,
                                          const std::string& output_name,
-                                         const element::Type& output_type,
+                                         const Type& output_type,
                                          double eps,
                                          const std::string& input_name,
                                          const Shape& input_shape,
@@ -43,7 +43,7 @@ namespace ngraph
             // This creates mean of the input matrix by Channel axis
             void do_create_mean(cldnn::topology& topology,
                                 const std::string& output_name,
-                                const element::Type& output_type,
+                                const Type& output_type,
                                 const std::string& input_name,
                                 const Shape& input_shape,
                                 bool backward);
@@ -51,7 +51,7 @@ namespace ngraph
             // This creates variance of the input matrix by Channel axis
             void do_create_variance(cldnn::topology& topology,
                                     const std::string& output_name,
-                                    const element::Type& output_type,
+                                    const Type& output_type,
                                     const std::string& input_name,
                                     const Shape& input_shape,
                                     const std::string& mean_name);
@@ -59,7 +59,7 @@ namespace ngraph
             // This creates variance backprop of the input matrix by Channel axis
             void do_create_variance_back(cldnn::topology& topology,
                                          const std::string& output_name,
-                                         const element::Type& output_type,
+                                         const Type& output_type,
                                          double eps,
                                          const std::string& input_name,
                                          const Shape& input_shape,
@@ -72,7 +72,7 @@ namespace ngraph
             // Example: output[ 4, 3, 2, 8 ] means out_gamma[ 3 ]
             void do_batch_norm_backprop_operation(cldnn::topology& topology,
                                                   const Shape& shape,
-                                                  const element::Type& type,
+                                                  const Type& type,
                                                   const std::string& gamma_name,
                                                   const std::string& beta_name,
                                                   const std::string& input_name,

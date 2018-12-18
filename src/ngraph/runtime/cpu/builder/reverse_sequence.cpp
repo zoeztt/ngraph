@@ -45,7 +45,7 @@ namespace ngraph
 
                 std::function<decltype(runtime::cpu::kernel::reverse_sequence<int, int, 4>)> kernel;
 
-                if (args[1].get_element_type() == element::i32)
+                if (args[1].get_element_type() == i32)
                 {
                     SELECT_KERNEL_BY_RANK(kernel,
                                           args[0].get_element_type(),

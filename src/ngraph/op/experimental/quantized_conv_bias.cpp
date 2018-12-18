@@ -52,7 +52,7 @@ op::QuantizedConvolutionBias::QuantizedConvolutionBias(const shared_ptr<Node>& d
     // TODO: call ngraph util
     // util::validate_convbias_shapes(data_batch_shape, filters_shape, bias->get_shape());
 
-    auto output_et = with_relu ? element::u8 : element::i8;
+    auto output_et = with_relu ? u8 : i8;
     set_output_type(0,
                     output_et,
                     util::infer_convolution_output_shape(this,
@@ -120,7 +120,7 @@ op::QuantizedConvolutionBiasAdd::QuantizedConvolutionBiasAdd(const shared_ptr<No
     // TODO: call ngraph util
     // util::validate_convbias_shapes(data_batch_shape, filters_shape, bias->get_shape());
 
-    auto output_et = with_relu ? element::u8 : element::i8;
+    auto output_et = with_relu ? u8 : i8;
     set_output_type(0,
                     output_et,
                     util::infer_convolution_output_shape(this,
@@ -192,7 +192,7 @@ op::QuantizedConvolutionBiasSignedAdd::QuantizedConvolutionBiasSignedAdd(
     // TODO: call ngraph util
     // util::validate_convbias_shapes(data_batch_shape, filters_shape, bias->get_shape());
 
-    auto output_et = with_relu ? element::u8 : element::i8;
+    auto output_et = with_relu ? u8 : i8;
     set_output_type(0,
                     output_et,
                     util::infer_convolution_output_shape(this,

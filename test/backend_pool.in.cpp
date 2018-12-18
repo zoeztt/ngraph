@@ -39,17 +39,17 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_1d_1channel_1image)
 {
     Shape shape_a{1, 1, 14};
     Shape window_shape{3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 1, 12};
     auto f = make_shared<Function>(make_shared<op::MaxPool>(A, window_shape), ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 3>{{{0, 1, 0, 2, 1, 0, 3, 2, 0, 0, 2, 0, 0, 0}}}.get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((test::NDArray<float, 3>({{{1, 2, 2, 2, 3, 3, 3, 2, 2, 2, 2, 0}}}).get_vector()),
@@ -60,19 +60,19 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_1d_1channel_2image)
 {
     Shape shape_a{2, 1, 14};
     Shape window_shape{3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 12};
     auto f = make_shared<Function>(make_shared<op::MaxPool>(A, window_shape), ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 3>({{{0, 1, 0, 2, 1, 0, 3, 2, 0, 0, 2, 0, 0, 0}},
                                        {{0, 2, 1, 1, 0, 0, 0, 2, 0, 1, 0, 0, 1, 2}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((test::NDArray<float, 3>(
@@ -85,14 +85,14 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_1d_2channel_2image)
 {
     Shape shape_a{2, 2, 14};
     Shape window_shape{3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 2, 12};
     auto f = make_shared<Function>(make_shared<op::MaxPool>(A, window_shape), ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 3>({{{0, 1, 0, 2, 1, 0, 3, 2, 0, 0, 2, 0, 0, 0},
                                         {0, 0, 0, 2, 0, 0, 2, 3, 0, 1, 2, 0, 1, 0}},
@@ -100,7 +100,7 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_1d_2channel_2image)
                                        {{0, 2, 1, 1, 0, 0, 0, 2, 0, 1, 0, 0, 1, 2},
                                         {2, 1, 0, 0, 1, 0, 2, 0, 0, 0, 1, 1, 2, 0}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((test::NDArray<float, 3>(
@@ -115,14 +115,14 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_2d_2channel_2image)
 {
     Shape shape_a{2, 2, 5, 5};
     Shape window_shape{2, 3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 2, 4, 3};
     auto f = make_shared<Function>(make_shared<op::MaxPool>(A, window_shape), ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>({{{{0, 1, 0, 2, 1}, // img 0 chan 0
                                          {0, 3, 2, 0, 0},
@@ -148,7 +148,7 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_2d_2channel_2image)
                                          {1, 1, 1, 0, 1},
                                          {1, 0, 0, 0, 2}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((test::NDArray<float, 4>({{{{3, 3, 2}, // img 0 chan 0
@@ -183,7 +183,7 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_2d_2channel_2image_asym_pad)
     auto window_movement_strides = Strides{2, 2};
     Shape padding_below{0, 0};
     Shape padding_above{1, 1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 2, 2, 2};
     auto f = make_shared<Function>(
         make_shared<op::MaxPool>(
@@ -193,7 +193,7 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_2d_2channel_2image_asym_pad)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>({{{{0, 1, 0, 2}, // img 0 chan 0
                                          {0, 3, 2, 0},
@@ -215,7 +215,7 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_2d_2channel_2image_asym_pad)
                                          {1, 1, 2, 0},
                                          {1, 0, 0, 0}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((test::NDArray<float, 4>({{{{3, 2}, // img 0 chan 0
@@ -249,7 +249,7 @@ NGRAPH_TEST_F(${BACKEND_NAME}, MaxPool2D1ChannelTests, max_pool_2d_1channel_1ima
 {
     Shape padding_below{2, 0};
     Shape padding_above{1, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 1, 7, 5};
     auto f = make_shared<Function>(
         make_shared<op::MaxPool>(
@@ -259,7 +259,7 @@ NGRAPH_TEST_F(${BACKEND_NAME}, MaxPool2D1ChannelTests, max_pool_2d_1channel_1ima
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>({{{{0, 1, 0, 2, 1},
                                          {0, 3, 2, 0, 0},
@@ -267,7 +267,7 @@ NGRAPH_TEST_F(${BACKEND_NAME}, MaxPool2D1ChannelTests, max_pool_2d_1channel_1ima
                                          {2, 0, 1, 1, 2},
                                          {0, 2, 1, 0, 0}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     auto min = std::numeric_limits<float>::lowest();
@@ -286,7 +286,7 @@ NGRAPH_TEST_F(${BACKEND_NAME}, MaxPool2D1ChannelTests, max_pool_2d_1channel_1ima
 {
     Shape padding_below{1, 0};
     Shape padding_above{1, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 1, 6, 5};
     auto f = make_shared<Function>(
         make_shared<op::MaxPool>(
@@ -296,7 +296,7 @@ NGRAPH_TEST_F(${BACKEND_NAME}, MaxPool2D1ChannelTests, max_pool_2d_1channel_1ima
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>({{{{0, 1, 0, 2, 1},
                                          {0, 3, 2, 0, 0},
@@ -304,7 +304,7 @@ NGRAPH_TEST_F(${BACKEND_NAME}, MaxPool2D1ChannelTests, max_pool_2d_1channel_1ima
                                          {2, 0, 1, 1, 2},
                                          {0, 2, 1, 0, 0}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((test::NDArray<float, 4>({{{{1, 2, 2, 2, 1},
@@ -331,7 +331,7 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_2d_1channel_1image_padded_negative_values)
     auto window_movement_strides = Strides{1, 1};
     Shape padding_below{0, 1};
     Shape padding_above{0, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 1, 1, 15};
     auto f = make_shared<Function>(
         make_shared<op::MaxPool>(
@@ -341,11 +341,11 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_2d_1channel_1image_padded_negative_values)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>{{{{-1, -2, -3, -3, -2, -1, -3, -2, -2, -2, -2, -3, -4, -5}}}}
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ(
@@ -359,7 +359,7 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_2d_1channel_1image_strided)
     Shape shape_a{1, 1, 8, 8};
     Shape window_shape{2, 3};
     auto window_movement_strides = Strides{3, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 1, 3, 3};
     auto f = make_shared<Function>(
         make_shared<op::MaxPool>(A, window_shape, window_movement_strides), ParameterVector{A});
@@ -367,7 +367,7 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_2d_1channel_1image_strided)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>({{{{0, 1, 0, 2, 1, 2, 0, 0},
                                          {0, 3, 2, 0, 0, 0, 1, 0},
@@ -378,7 +378,7 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_2d_1channel_1image_strided)
                                          {1, 2, 0, 0, 0, 1, 2, 0},
                                          {1, 0, 2, 0, 0, 0, 1, 0}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((test::NDArray<float, 4>({{{{3, 2, 2}, {2, 2, 3}, {2, 2, 2}}}}).get_vector()),
@@ -392,8 +392,8 @@ NGRAPH_TEST(${BACKEND_NAME}, max_pool_3d)
     auto move_strides = Strides{2, 3, 4};
     Shape padding_below{5, 6, 4};
     Shape padding_above{6, 4, 5};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
-    auto B = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
+    auto B = make_shared<op::Parameter>(f32, shape_a);
 
     auto cpu_f = make_shared<Function>(
         make_shared<op::MaxPool>(A, window_shape, move_strides, padding_below, padding_above),
@@ -422,17 +422,17 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_1d_1channel_1image)
 {
     Shape shape_a{1, 1, 14};
     Shape window_shape{3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 1, 12};
     auto f = make_shared<Function>(make_shared<op::AvgPool>(A, window_shape), ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 3>{{{0, 1, 0, 2, 1, 0, 3, 2, 0, 0, 2, 0, 0, 0}}}.get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     float denom = 3.0;
 
@@ -457,19 +457,19 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_1d_1channel_2image)
 {
     Shape shape_a{2, 1, 14};
     Shape window_shape{3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 12};
     auto f = make_shared<Function>(make_shared<op::AvgPool>(A, window_shape), ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 3>({{{0, 1, 0, 2, 1, 0, 3, 2, 0, 0, 2, 0, 0, 0}},
                                        {{0, 2, 1, 1, 0, 0, 0, 2, 0, 1, 0, 0, 1, 2}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     float denom = 3.0;
 
@@ -506,14 +506,14 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_1d_2channel_2image)
 {
     Shape shape_a{2, 2, 14};
     Shape window_shape{3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 2, 12};
     auto f = make_shared<Function>(make_shared<op::AvgPool>(A, window_shape), ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 3>({{{0, 1, 0, 2, 1, 0, 3, 2, 0, 0, 2, 0, 0, 0},
                                         {0, 0, 0, 2, 0, 0, 2, 3, 0, 1, 2, 0, 1, 0}},
@@ -521,7 +521,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_1d_2channel_2image)
                                        {{0, 2, 1, 1, 0, 0, 0, 2, 0, 1, 0, 0, 1, 2},
                                         {2, 1, 0, 0, 1, 0, 2, 0, 0, 0, 1, 1, 2, 0}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     float denom = 3.0;
 
@@ -583,14 +583,14 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image)
 {
     Shape shape_a{2, 2, 5, 5};
     Shape window_shape{2, 3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 2, 4, 3};
     auto f = make_shared<Function>(make_shared<op::AvgPool>(A, window_shape), ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>({{{{0, 1, 0, 2, 1}, // img 0 chan 0
                                          {0, 3, 2, 0, 0},
@@ -616,7 +616,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image)
                                          {1, 1, 1, 0, 1},
                                          {1, 0, 0, 0, 2}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     float denom = 2 * 3;
 
@@ -651,7 +651,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_1channel_1image_strided)
     Shape shape_a{1, 1, 8, 8};
     Shape window_shape{2, 3};
     auto window_movement_strides = Strides{3, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 1, 3, 3};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(A, window_shape, window_movement_strides), ParameterVector{A});
@@ -659,7 +659,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_1channel_1image_strided)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>({{{{0, 1, 0, 2, 1, 2, 0, 0},
                                          {0, 3, 2, 0, 0, 0, 1, 0},
@@ -670,7 +670,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_1channel_1image_strided)
                                          {1, 2, 0, 0, 0, 1, 2, 0},
                                          {1, 0, 2, 0, 0, 0, 1, 0}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     float denom = 2 * 3;
 
@@ -689,7 +689,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_1channel_1image_padded_do_not_include_i
     auto window_movement_strides = Strides{1, 1};
     Shape padding_below{1, 1};
     Shape padding_above{1, 1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 1, 4, 4};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -699,9 +699,9 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_1channel_1image_padded_do_not_include_i
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, test::NDArray<float, 4>({{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}}}).get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(
@@ -720,7 +720,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_1channel_1image_padded_include_in_compu
     auto window_movement_strides = Strides{1, 1};
     Shape padding_below{1, 1};
     Shape padding_above{1, 1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 1, 4, 4};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -730,9 +730,9 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_1channel_1image_padded_include_in_compu
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, test::NDArray<float, 4>({{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}}}).get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(
@@ -751,7 +751,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_padded_do_not_include_i
     auto window_movement_strides = Strides{1, 1};
     Shape padding_below{1, 1};
     Shape padding_above{1, 1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 4, 4};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -761,12 +761,12 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_padded_do_not_include_i
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(
@@ -789,7 +789,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_padded_include_in_compu
     auto window_movement_strides = Strides{1, 1};
     Shape padding_below{1, 1};
     Shape padding_above{1, 1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 4, 4};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -799,12 +799,12 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_padded_include_in_compu
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(
@@ -828,7 +828,7 @@ NGRAPH_TEST(${BACKEND_NAME},
     auto window_movement_strides = Strides{1, 1};
     Shape padding_below{1, 1};
     Shape padding_above{0, 0};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 3, 3};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -838,12 +838,12 @@ NGRAPH_TEST(${BACKEND_NAME},
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(test::all_close(test::NDArray<float, 4>({{{{0.0f / 1, 1.0f / 2, 1.0f / 2},
@@ -863,7 +863,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_padded_only_below_inclu
     auto window_movement_strides = Strides{1, 1};
     Shape padding_below{1, 1};
     Shape padding_above{0, 0};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 3, 3};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -873,12 +873,12 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_padded_only_below_inclu
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(test::all_close(test::NDArray<float, 4>({{{{0.0f / 4, 1.0f / 4, 1.0f / 4},
@@ -899,7 +899,7 @@ NGRAPH_TEST(${BACKEND_NAME},
     auto window_movement_strides = Strides{1, 1};
     Shape padding_below{0, 0};
     Shape padding_above{1, 1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 3, 3};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -909,12 +909,12 @@ NGRAPH_TEST(${BACKEND_NAME},
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(test::all_close(test::NDArray<float, 4>({{{{4.0f / 4, 6.0f / 4, 2.0f / 2},
@@ -934,7 +934,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_padded_only_above_inclu
     auto window_movement_strides = Strides{1, 1};
     Shape padding_below{0, 0};
     Shape padding_above{1, 1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 3, 3};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -944,12 +944,12 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_padded_only_above_inclu
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(test::all_close(test::NDArray<float, 4>({{{{4.0f / 4, 6.0f / 4, 2.0f / 4},
@@ -969,7 +969,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_3x3_padded_do_not_inclu
     auto window_movement_strides = Strides{1, 1};
     Shape padding_below{2, 2};
     Shape padding_above{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 5, 5};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -979,12 +979,12 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_3x3_padded_do_not_inclu
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(test::all_close_f(
@@ -1009,7 +1009,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_3x3_padded_include_in_c
     auto window_movement_strides = Strides{1, 1};
     Shape padding_below{2, 2};
     Shape padding_above{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 5, 5};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -1019,12 +1019,12 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_3x3_padded_include_in_c
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(test::all_close_f(
@@ -1050,7 +1050,7 @@ NGRAPH_TEST(${BACKEND_NAME},
     auto window_movement_strides = Strides{2, 2};
     Shape padding_below{2, 2};
     Shape padding_above{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 3, 3};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -1060,12 +1060,12 @@ NGRAPH_TEST(${BACKEND_NAME},
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(test::all_close_f(test::NDArray<float, 4>({{{{0.0f / 1, 1.0f / 3, 0.0f / 1},
@@ -1085,7 +1085,7 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_3x3_strided_padded_incl
     auto window_movement_strides = Strides{2, 2};
     Shape padding_below{2, 2};
     Shape padding_above{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 3, 3};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -1095,12 +1095,12 @@ NGRAPH_TEST(${BACKEND_NAME}, avg_pool_2d_2channel_2image_3x3_strided_padded_incl
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(test::all_close_f(test::NDArray<float, 4>({{{{0.0f / 9, 1.0f / 9, 0.0f / 9},
@@ -1121,7 +1121,7 @@ NGRAPH_TEST(${BACKEND_NAME},
     auto window_movement_strides = Strides{2, 3};
     Shape padding_below{2, 2};
     Shape padding_above{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 3, 2};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -1131,12 +1131,12 @@ NGRAPH_TEST(${BACKEND_NAME},
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(test::all_close_f(
@@ -1155,7 +1155,7 @@ NGRAPH_TEST(${BACKEND_NAME},
     auto window_movement_strides = Strides{2, 3};
     Shape padding_below{2, 2};
     Shape padding_above{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 1, 3, 2};
     auto f = make_shared<Function>(
         make_shared<op::AvgPool>(
@@ -1165,12 +1165,12 @@ NGRAPH_TEST(${BACKEND_NAME},
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a,
               test::NDArray<float, 4>(
                   {{{{0, 1, 0}, {0, 3, 2}, {2, 0, 0}}, {{3, 5, 2}, {2, 0, 9}, {3, 6, 5}}}})
                   .get_vector());
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_TRUE(test::all_close_f(
@@ -1197,8 +1197,8 @@ NGRAPH_TEST_P(${BACKEND_NAME}, avg_pool_3d_params, avg_pool_3d_uneven_strided_pa
     auto move_strides = Strides{2, 3, 4};
     Shape padding_below{2, 3, 1};
     Shape padding_above{3, 1, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
-    auto B = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
+    auto B = make_shared<op::Parameter>(f32, shape_a);
 
     auto cpu_f = make_shared<Function>(
         make_shared<op::AvgPool>(

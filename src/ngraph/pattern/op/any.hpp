@@ -30,7 +30,7 @@ namespace ngraph
             {
             public:
                 /// \brief creates a Any node containing a sub-pattern described by \sa type and \sa shape.
-                Any(const element::Type& type,
+                Any(const Type& type,
                     const PartialShape& s,
                     Predicate pred,
                     const NodeVector& wrapped_nodes)

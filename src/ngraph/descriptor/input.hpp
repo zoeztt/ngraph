@@ -74,7 +74,7 @@ namespace ngraph
             const PartialShape& get_partial_shape() const;
 
             /// \return the element type of the connected output
-            const element::Type& get_element_type() const;
+            const Type& get_element_type() const;
 
         protected:
             // owner of an argument node (in lieu of m_arguments)

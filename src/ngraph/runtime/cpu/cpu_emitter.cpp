@@ -202,14 +202,14 @@ namespace ngraph
             template <>
             void CPU_Emitter::EMITTER_DECL(ngraph::op::AllReduce)
             {
-                const element::Type& element_type = args[0].get_element_type();
+                const Type& element_type = args[0].get_element_type();
                 auto data_type = "MLSL::DT_FLOAT";
 
-                if (element_type == element::f32)
+                if (element_type == f32)
                 {
                     data_type = "MLSL::DT_FLOAT";
                 }
-                else if (element_type == element::f64)
+                else if (element_type == f64)
                 {
                     data_type = "MLSL::DT_DOUBLE";
                 }
@@ -866,7 +866,7 @@ namespace ngraph
                          dot->get_reduction_axes_count() == 1)
                 {
                     // Emit an MKL SGEMM call if possible
-                    if (args[0].get_element_type() == element::f32)
+                    if (args[0].get_element_type() == f32)
                     {
                         writer.block_begin();
                         writer << "cblas::cblas_sgemm("
@@ -894,7 +894,7 @@ namespace ngraph
                 // each of the
                 else if ((arg0_shape.size() == 3) && (arg1_shape.size() == 2) &&
                          dot->get_reduction_axes_count() == 1 &&
-                         args[0].get_element_type() == element::f32)
+                         args[0].get_element_type() == f32)
                 {
                     auto mat_a = args[0];
                     auto mat_b = args[1];
@@ -1392,7 +1392,7 @@ namespace ngraph
                 }
 
                 writer.block_begin();
-                if (args[0].get_element_type() == element::f32 && args[0].get_shape().size() == 3 &&
+                if (args[0].get_element_type() == f32 && args[0].get_shape().size() == 3 &&
                     out[0].get_shape().size() == 3)
                 {
                     writer << "cpu::kernel::reshape_3d_3d_float32(" << args[0].get_name() << ", "
@@ -1402,7 +1402,7 @@ namespace ngraph
                            << "{" << join(out[0].get_shape()) << "}"
                            << ",  0);\n";
                 }
-                else if (args[0].get_element_type() == element::f32 &&
+                else if (args[0].get_element_type() == f32 &&
                          args[0].get_shape().size() == 4 && out[0].get_shape().size() == 4)
                 {
                     writer << "cpu::kernel::reshape_4d_4d_float32(" << args[0].get_name() << ", "
@@ -1595,7 +1595,7 @@ namespace ngraph
             {
                 const ngraph::op::Sum* sum = static_cast<const ngraph::op::Sum*>(node);
                 writer.block_begin();
-                if (args[0].get_element_type() == element::f32 && args[0].get_shape().size() == 1 &&
+                if (args[0].get_element_type() == f32 && args[0].get_shape().size() == 1 &&
                     sum->get_reduction_axes().size() == 1)
                 {
                     writer << "cpu::kernel::reduce_sum_all_1d_float32(" << args[0].get_name()
@@ -1604,7 +1604,7 @@ namespace ngraph
                            << "{" << join(out[0].get_shape()) << "}"
                            << ", 0);\n";
                 }
-                else if (args[0].get_element_type() == element::f32 &&
+                else if (args[0].get_element_type() == f32 &&
                          args[0].get_shape().size() == 2 && sum->get_reduction_axes().size() == 2)
                 {
                     writer << "cpu::kernel::reduce_sum_all_2d_float32(" << args[0].get_name()
@@ -1613,7 +1613,7 @@ namespace ngraph
                            << "{" << join(out[0].get_shape()) << "}"
                            << ", 0);\n";
                 }
-                else if (args[0].get_element_type() == element::f32 &&
+                else if (args[0].get_element_type() == f32 &&
                          args[0].get_shape().size() == 2 && sum->get_reduction_axes().size() == 1)
                 {
                     writer << "cpu::kernel::reduce_sum_2d_1rd_float32(" << args[0].get_name()
@@ -1623,7 +1623,7 @@ namespace ngraph
                            << "{" << join(sum->get_reduction_axes()) << "}"
                            << ", 0);\n";
                 }
-                else if (args[0].get_element_type() == element::f32 &&
+                else if (args[0].get_element_type() == f32 &&
                          args[0].get_shape().size() == 4 && sum->get_reduction_axes().size() == 2)
                 {
                     writer << "cpu::kernel::reduce_sum_4d_2rd_float32(" << args[0].get_name()
@@ -1633,7 +1633,7 @@ namespace ngraph
                            << "{" << join(sum->get_reduction_axes()) << "}"
                            << ", 0);\n";
                 }
-                else if (args[0].get_element_type() == element::f32 &&
+                else if (args[0].get_element_type() == f32 &&
                          args[0].get_shape().size() == 4 && sum->get_reduction_axes().size() == 4)
                 {
                     writer << "cpu::kernel::reduce_sum_all_4d_float32(" << args[0].get_name()
@@ -1803,8 +1803,8 @@ namespace ngraph
                                          const char* kernel_name,
                                          codegen::CodeWriter& writer)
             {
-                if (out[0].get_element_type() != element::i64 &&
-                    out[0].get_element_type() != element::i32)
+                if (out[0].get_element_type() != i64 &&
+                    out[0].get_element_type() != i32)
                 {
                     throw ngraph_error("Unsupported index element type");
                 }
@@ -1838,8 +1838,8 @@ namespace ngraph
             void CPU_Emitter::EMITTER_DECL(ngraph::op::TopK)
             {
                 auto topk = static_cast<const ngraph::op::TopK*>(node);
-                if (out[0].get_element_type() != element::i64 &&
-                    out[0].get_element_type() != element::i32)
+                if (out[0].get_element_type() != i64 &&
+                    out[0].get_element_type() != i32)
                 {
                     throw ngraph_error("Unsupported index element type");
                 }
@@ -3005,7 +3005,7 @@ namespace ngraph
                 auto arg0_shape = args[0].get_shape();
                 auto result_shape = out[0].get_shape();
 
-                if (arg0_shape.size() == 4 && args[0].get_element_type() == element::f32 &&
+                if (arg0_shape.size() == 4 && args[0].get_element_type() == f32 &&
                     pad->get_padding_interior() == Shape(arg0_shape.size()))
                 {
                     writer << "cpu::kernel::pad_4d_float32(" << args[0].get_name() << ",\n"
@@ -3208,7 +3208,7 @@ namespace ngraph
             {
                 const ngraph::op::Max* max = static_cast<const ngraph::op::Max*>(node);
                 writer.block_begin();
-                if (args[0].get_element_type() == element::f32 && args[0].get_shape().size() == 2 &&
+                if (args[0].get_element_type() == f32 && args[0].get_shape().size() == 2 &&
                     max->get_reduction_axes().size() == 1)
                 {
                     writer << "cpu::kernel::reduce_max_2d_1rd_float32(" << args[0].get_name()
@@ -4181,7 +4181,7 @@ std::string runtime::cpu::CPU_Emitter::emit_vector(const runtime::cpu::TensorVie
 {
     stringstream ss;
 
-    const element::Type& et = tvi.get_element_type();
+    const Type& et = tvi.get_element_type();
     ss << "EigenVector<" << et.c_type_string() << ">" << format_name(name) << "(" << tvi.get_name()
        << ", " << eigen_vector_format(tvi) << ")";
     return ss.str();
@@ -4192,7 +4192,7 @@ string runtime::cpu::CPU_Emitter::emit_array1d(const runtime::cpu::TensorViewWra
 {
     stringstream ss;
 
-    const element::Type& et = tvi.get_element_type();
+    const Type& et = tvi.get_element_type();
     ss << "EigenArray1d<" << et.c_type_string() << ">" << format_name(name) << "(" << tvi.get_name()
        << ", " << eigen_vector_format(tvi) << ")";
     return ss.str();
@@ -4203,7 +4203,7 @@ string runtime::cpu::CPU_Emitter::emit_matrix(const runtime::cpu::TensorViewWrap
 {
     stringstream ss;
 
-    const element::Type& et = tvi.get_element_type();
+    const Type& et = tvi.get_element_type();
     ss << "EigenMatrix<" << et.c_type_string() << ">" << format_name(name) << "(" << tvi.get_name()
        << ", " << eigen_matrix_format(tvi.get_shape(), tvi.get_strides()) << ")";
     return ss.str();

@@ -26,7 +26,7 @@ shared_ptr<Node> runtime::cpu::op::HalideOp::copy_with_new_args(const NodeVector
 
 runtime::cpu::op::HalideOp::HalideOp(const NodeVector& args,
                                      const std::list<std::shared_ptr<Node>>& ops,
-                                     const element::Type& out_type,
+                                     const Type& out_type,
                                      const Shape& out_shape)
     : Op("HalideOp", check_single_output_args(args))
     , m_ops(ops)

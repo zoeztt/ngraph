@@ -47,7 +47,7 @@ static void
 
 TEST(any_all_replacement, any_simple)
 {
-    auto param = make_shared<op::Parameter>(element::boolean, Shape{2, 3, 4});
+    auto param = make_shared<op::Parameter>(boolean, Shape{2, 3, 4});
     auto any = make_shared<op::Any>(param, AxisSet{1});
     auto f = make_shared<Function>(any, ParameterVector{param});
 
@@ -61,7 +61,7 @@ TEST(any_all_replacement, any_simple)
 
 TEST(any_all_replacement, any_chained)
 {
-    auto param = make_shared<op::Parameter>(element::boolean, Shape{2, 3, 4});
+    auto param = make_shared<op::Parameter>(boolean, Shape{2, 3, 4});
     auto any_0 = make_shared<op::Any>(param, AxisSet{1});
     auto any_1 = make_shared<op::Any>(any_0, AxisSet{1});
     auto f = make_shared<Function>(
@@ -81,7 +81,7 @@ TEST(any_all_replacement, any_chained)
 
 TEST(any_all_replacement, all_simple)
 {
-    auto param = make_shared<op::Parameter>(element::boolean, Shape{2, 3, 4});
+    auto param = make_shared<op::Parameter>(boolean, Shape{2, 3, 4});
     auto all = make_shared<op::All>(param, AxisSet{1});
     auto f = make_shared<Function>(all, ParameterVector{param});
 
@@ -95,7 +95,7 @@ TEST(any_all_replacement, all_simple)
 
 TEST(any_all_replacement, all_chained)
 {
-    auto param = make_shared<op::Parameter>(element::boolean, Shape{2, 3, 4});
+    auto param = make_shared<op::Parameter>(boolean, Shape{2, 3, 4});
     auto all_0 = make_shared<op::All>(param, AxisSet{1});
     auto all_1 = make_shared<op::All>(all_0, AxisSet{1});
     auto f = make_shared<Function>(

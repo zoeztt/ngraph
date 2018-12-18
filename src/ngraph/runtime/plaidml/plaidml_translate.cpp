@@ -19,7 +19,7 @@
 
 namespace vp = vertexai::plaidml;
 
-vp::datatype ngraph::runtime::plaidml::to_plaidml(const ngraph::element::Type& element_type,
+vp::datatype ngraph::runtime::plaidml::to_plaidml(const ngraph::Type& element_type,
                                                   ConversionUse use)
 {
     switch (element_type.bitwidth())
@@ -27,7 +27,7 @@ vp::datatype ngraph::runtime::plaidml::to_plaidml(const ngraph::element::Type& e
     case 8:
         if (element_type.is_signed())
         {
-            // TODO: Extend nGraph's element::Type to distinguish between boolean and i8.
+            // TODO: Extend nGraph's Type to distinguish between boolean and i8.
             if (element_type.c_type_string() == "char" && use == ConversionUse::FOR_DATA)
             {
                 return PLAIDML_DATA_BOOLEAN;
@@ -78,7 +78,7 @@ vp::datatype ngraph::runtime::plaidml::to_plaidml(const ngraph::element::Type& e
 }
 
 vp::shape<char> ngraph::runtime::plaidml::to_plaidml(std::shared_ptr<vertexai::ctx>& ctx,
-                                                     const ngraph::element::Type& element_type,
+                                                     const ngraph::Type& element_type,
                                                      const ngraph::Shape& shape,
                                                      ConversionUse use)
 {
@@ -122,7 +122,7 @@ std::string ngraph::runtime::plaidml::tile_converter(const std::string& tensor_n
 }
 
 std::string ngraph::runtime::plaidml::tile_converter(const std::string& tensor_name,
-                                                     const ngraph::element::Type& element_type)
+                                                     const ngraph::Type& element_type)
 {
     if (!element_type.bitwidth())
     {

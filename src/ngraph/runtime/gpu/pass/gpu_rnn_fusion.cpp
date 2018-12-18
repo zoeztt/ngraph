@@ -58,12 +58,12 @@ using namespace ngraph;
 void ngraph::runtime::gpu::pass::LSTMFusion::construct_sigmoid()
 {
     //construct variance
-    auto input = std::make_shared<pattern::op::Label>(element::f32, Shape{3, 4});
+    auto input = std::make_shared<pattern::op::Label>(f32, Shape{3, 4});
     auto neg_input = std::make_shared<op::Negative>(input);
     auto exp_neg_input = std::make_shared<op::Exp>(neg_input);
 
     // broadcast input
-    auto constant = std::make_shared<pattern::op::Label>(element::f32, Shape{});
+    auto constant = std::make_shared<pattern::op::Label>(f32, Shape{});
     auto broadcast_constant = std::make_shared<op::Broadcast>(constant, Shape{3, 4}, AxisSet{0, 1});
 
     auto add_exp = std::make_shared<op::Add>(exp_neg_input, broadcast_constant);
@@ -75,7 +75,7 @@ void ngraph::runtime::gpu::pass::LSTMFusion::construct_sigmoid()
                      << m.get_match_root()->get_name();
         auto pattern_map = m.get_pattern_map();
 
-        if (m.get_match_root()->get_element_type() != element::f32)
+        if (m.get_match_root()->get_element_type() != f32)
         {
             NGRAPH_DEBUG << "mpattern = " << m.get_match_root()->get_name()
                          << " type is not float!";
@@ -128,23 +128,23 @@ static std::shared_ptr<Node> compute_lstm_params(const std::shared_ptr<Node>& w_
 
 void ngraph::runtime::gpu::pass::LSTMFusion::construct_lstm_fprop()
 {
-    auto input_xt = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 100});
-    auto weights_i2h = std::make_shared<pattern::op::Label>(element::f32, Shape{400, 100});
+    auto input_xt = std::make_shared<pattern::op::Label>(f32, Shape{10, 100});
+    auto weights_i2h = std::make_shared<pattern::op::Label>(f32, Shape{400, 100});
     auto weights_i2h_reshape =
         std::make_shared<op::Reshape>(weights_i2h, AxisVector{1, 0}, Shape{100, 400});
     auto dot_1 = std::make_shared<op::Dot>(input_xt, weights_i2h_reshape);
 
-    auto bias_i2h = std::make_shared<pattern::op::Label>(element::f32, Shape{400});
+    auto bias_i2h = std::make_shared<pattern::op::Label>(f32, Shape{400});
     auto broadcast_bias_i2h = std::make_shared<op::Broadcast>(bias_i2h, Shape{10, 400}, AxisSet{0});
     auto add_1 = std::make_shared<op::Add>(dot_1, broadcast_bias_i2h);
 
-    auto hidden_ht = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 50});
-    auto weights_h2h = std::make_shared<pattern::op::Label>(element::f32, Shape{400, 50});
+    auto hidden_ht = std::make_shared<pattern::op::Label>(f32, Shape{10, 50});
+    auto weights_h2h = std::make_shared<pattern::op::Label>(f32, Shape{400, 50});
     auto param2_2_reshape =
         std::make_shared<op::Reshape>(weights_h2h, AxisVector{1, 0}, Shape{50, 400});
     auto dot_2 = std::make_shared<op::Dot>(hidden_ht, param2_2_reshape);
 
-    auto bias_h2h = std::make_shared<pattern::op::Label>(element::f32, Shape{400});
+    auto bias_h2h = std::make_shared<pattern::op::Label>(f32, Shape{400});
     auto broadcast_bias_h2h = std::make_shared<op::Broadcast>(bias_h2h, Shape{10, 400}, AxisSet{0});
     auto add_2 = std::make_shared<op::Add>(dot_2, broadcast_bias_h2h);
 
@@ -154,7 +154,7 @@ void ngraph::runtime::gpu::pass::LSTMFusion::construct_lstm_fprop()
     auto forget_gate = std::make_shared<op::Sigmoid>(input_slice_0);
 
     //ct-1 -> cell state
-    auto ct_1 = std::make_shared<pattern::op::Label>(element::f32, Shape{10, 100});
+    auto ct_1 = std::make_shared<pattern::op::Label>(f32, Shape{10, 100});
     auto multiply_forget_gate_ct_1 = std::make_shared<op::Multiply>(forget_gate, ct_1);
 
     // construct input gate
@@ -191,7 +191,7 @@ void ngraph::runtime::gpu::pass::LSTMFusion::construct_lstm_fprop()
         auto pattern_map = m.get_pattern_map();
         NGRAPH_DEBUG << "In Lstm fprop call back";
 
-        if (m.get_match_root()->get_element_type() != element::f32)
+        if (m.get_match_root()->get_element_type() != f32)
         {
             NGRAPH_DEBUG << "mpattern = " << m.get_match_root()->get_name()
                          << " type is not float!";
@@ -373,11 +373,11 @@ static std::shared_ptr<ngraph::Node>
 
 void ngraph::runtime::gpu::pass::RNNFusion::construct_rnn_lstm_fprop()
 {
-    auto xt = std::make_shared<pattern::op::Label>(element::f32, Shape{32, 100});
-    auto ht_1 = std::make_shared<pattern::op::Label>(element::f32, Shape{32, 100});
+    auto xt = std::make_shared<pattern::op::Label>(f32, Shape{32, 100});
+    auto ht_1 = std::make_shared<pattern::op::Label>(f32, Shape{32, 100});
     auto params_label = std::make_shared<pattern::op::Label>(
-        element::f32, Shape{400 * 100 + 400 * 100 + 400 + 400});
-    auto rpattern_ct_1 = std::make_shared<pattern::op::Label>(element::f32, Shape{32, 100});
+        f32, Shape{400 * 100 + 400 * 100 + 400 + 400});
+    auto rpattern_ct_1 = std::make_shared<pattern::op::Label>(f32, Shape{32, 100});
 
     auto lstm = std::make_shared<op::gpu::Rnn>(xt,
                                                ht_1,
@@ -487,8 +487,8 @@ void ngraph::runtime::gpu::pass::RNNFusion::construct_rnn_lstm_fprop()
         auto src_iter_rank = src_iter->get_shape().size();
         RETURN_IF_FALSE(src_layer_rank == 2 && src_iter_rank == 2,
                         "Pattern matcher error src_layer, src_iter, have rank 2 for RNN op");
-        RETURN_IF_FALSE(src_layer->get_element_type() == element::f32 &&
-                            src_iter->get_element_type() == element::f32,
+        RETURN_IF_FALSE(src_layer->get_element_type() == f32 &&
+                            src_iter->get_element_type() == f32,
                         "input tensor type and input recurrent state tensor type for RNN op should "
                         "be float32");
 
@@ -649,15 +649,15 @@ static std::shared_ptr<Node>
 
 void ngraph::runtime::gpu::pass::MultiLayerRNNFusion::construct_multi_layer_rnn_fusion_fprop()
 {
-    auto src_layer_label = std::make_shared<pattern::op::Label>(element::f32, Shape{30, 100});
+    auto src_layer_label = std::make_shared<pattern::op::Label>(f32, Shape{30, 100});
 
     auto src_slice =
         std::make_shared<pattern::op::Skip>(src_layer_label, pattern::has_class<op::Slice>());
 
-    auto src_iter_label = std::make_shared<pattern::op::Label>(element::f32, Shape{20, 100});
+    auto src_iter_label = std::make_shared<pattern::op::Label>(f32, Shape{20, 100});
     auto params_label = std::make_shared<pattern::op::Label>(
-        element::f32, Shape{400 * 100 + 400 * 100 + 400 + 400});
-    auto state_iter_label = std::make_shared<pattern::op::Label>(element::f32, Shape{20, 100});
+        f32, Shape{400 * 100 + 400 * 100 + 400 + 400});
+    auto state_iter_label = std::make_shared<pattern::op::Label>(f32, Shape{20, 100});
 
     size_t ref_number_of_timesteps = 3;
     size_t ref_number_of_gates_per_cell = 4;

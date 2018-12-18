@@ -33,10 +33,10 @@ namespace ngraph
             void do_bcast_sum_operation(cldnn::topology& topology,
                                         const std::string& input_name,
                                         const Shape& input_shape,
-                                        const element::Type& input_type,
+                                        const Type& input_type,
                                         const std::string& output_name,
                                         const Shape& output_shape,
-                                        const element::Type& output_type,
+                                        const Type& output_type,
                                         const AxisSet& axis,
                                         bool is_bcast);
 
@@ -46,7 +46,7 @@ namespace ngraph
                                       const Shape& input_shape,
                                       const std::string& output_name,
                                       const Shape& output_shape,
-                                      const element::Type& output_type,
+                                      const Type& output_type,
                                       const AxisSet& axis,
                                       bool is_min);
 
@@ -56,7 +56,7 @@ namespace ngraph
                                       const Shape& input_shape,
                                       const std::string& output_name,
                                       const Shape& output_shape,
-                                      const element::Type& output_type,
+                                      const Type& output_type,
                                       const AxisSet& axis);
         }
     }

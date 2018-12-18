@@ -157,9 +157,9 @@ class ngraph::runtime::interpreter::INTBackend : public Backend
 {
 public:
     std::shared_ptr<Tensor>
-        create_tensor(const element::Type& type, const Shape& shape, void* memory_pointer) override;
+        create_tensor(const Type& type, const Shape& shape, void* memory_pointer) override;
 
-    std::shared_ptr<Tensor> create_tensor(const element::Type& type, const Shape& shape) override;
+    std::shared_ptr<Tensor> create_tensor(const Type& type, const Shape& shape) override;
 
     Handle compile(std::shared_ptr<Function> function) override;
 
@@ -194,7 +194,7 @@ private:
     static void perform_nan_check(const std::vector<std::shared_ptr<HostTensor>>&,
                                   const Node* op = nullptr);
 
-    void generate_calls(const element::Type& type,
+    void generate_calls(const Type& type,
                         const NodeWrapper& op,
                         const std::vector<void*>& outputs,
                         const std::vector<const void*>& inputs,
@@ -283,7 +283,7 @@ private:
         {
             const op::ArgMin* argmin = static_cast<const op::ArgMin*>(&node);
             auto element_type = node.get_output_element_type(0);
-            if (element_type == element::i64)
+            if (element_type == i64)
             {
                 reference::argmin<T, int64_t>(static_cast<const T*>(args[0]),
                                               static_cast<int64_t*>(out[0]),
@@ -291,7 +291,7 @@ private:
                                               node.get_output_shape(0),
                                               argmin->get_reduction_axis());
             }
-            else if (element_type == element::i32)
+            else if (element_type == i32)
             {
                 reference::argmin<T, int32_t>(static_cast<const T*>(args[0]),
                                               static_cast<int32_t*>(out[0]),
@@ -309,7 +309,7 @@ private:
         {
             const op::ArgMax* argmax = static_cast<const op::ArgMax*>(&node);
             auto element_type = node.get_output_element_type(0);
-            if (element_type == element::i64)
+            if (element_type == i64)
             {
                 reference::argmax<T, int64_t>(static_cast<const T*>(args[0]),
                                               static_cast<int64_t*>(out[0]),
@@ -317,7 +317,7 @@ private:
                                               node.get_output_shape(0),
                                               argmax->get_reduction_axis());
             }
-            else if (element_type == element::i32)
+            else if (element_type == i32)
             {
                 reference::argmax<T, int32_t>(static_cast<const T*>(args[0]),
                                               static_cast<int32_t*>(out[0]),
@@ -492,59 +492,59 @@ private:
         case OP_TYPEID::Convert:
         {
             // const op::Convert* c = static_cast<const op::Convert*>(&node);
-            element::Type type = node.get_element_type();
+            Type type = node.get_element_type();
             size_t element_count = shape_size(node.get_output_shape(0));
-            if (type == element::boolean)
+            if (type == boolean)
             {
                 reference::convert<T>(
                     static_cast<const T*>(args[0]), static_cast<char*>(out[0]), element_count);
             }
-            else if (type == element::f32)
+            else if (type == f32)
             {
                 reference::convert<T>(
                     static_cast<const T*>(args[0]), static_cast<float*>(out[0]), element_count);
             }
-            else if (type == element::f64)
+            else if (type == f64)
             {
                 reference::convert<T>(
                     static_cast<const T*>(args[0]), static_cast<double*>(out[0]), element_count);
             }
-            else if (type == element::i8)
+            else if (type == i8)
             {
                 reference::convert<T>(
                     static_cast<const T*>(args[0]), static_cast<int8_t*>(out[0]), element_count);
             }
-            else if (type == element::i16)
+            else if (type == i16)
             {
                 reference::convert<T>(
                     static_cast<const T*>(args[0]), static_cast<int16_t*>(out[0]), element_count);
             }
-            else if (type == element::i32)
+            else if (type == i32)
             {
                 reference::convert<T>(
                     static_cast<const T*>(args[0]), static_cast<int32_t*>(out[0]), element_count);
             }
-            else if (type == element::i64)
+            else if (type == i64)
             {
                 reference::convert<T>(
                     static_cast<const T*>(args[0]), static_cast<int64_t*>(out[0]), element_count);
             }
-            else if (type == element::u8)
+            else if (type == u8)
             {
                 reference::convert<T>(
                     static_cast<const T*>(args[0]), static_cast<uint8_t*>(out[0]), element_count);
             }
-            else if (type == element::u16)
+            else if (type == u16)
             {
                 reference::convert<T>(
                     static_cast<const T*>(args[0]), static_cast<uint16_t*>(out[0]), element_count);
             }
-            else if (type == element::u32)
+            else if (type == u32)
             {
                 reference::convert<T>(
                     static_cast<const T*>(args[0]), static_cast<uint32_t*>(out[0]), element_count);
             }
-            else if (type == element::u64)
+            else if (type == u64)
             {
                 reference::convert<T>(
                     static_cast<const T*>(args[0]), static_cast<uint64_t*>(out[0]), element_count);
@@ -648,7 +648,7 @@ private:
             const op::Dequantize* dequantize = static_cast<const op::Dequantize*>(&node);
             auto type = dequantize->get_element_type();
 
-            if (type == element::f32)
+            if (type == f32)
             {
                 reference::dequantize<T>(static_cast<const T*>(args[0]),
                                          static_cast<const float*>(args[1]),
@@ -658,7 +658,7 @@ private:
                                          node.get_input_shape(1),
                                          dequantize->get_axes());
             }
-            else if (type == element::f64)
+            else if (type == f64)
             {
                 reference::dequantize<T>(static_cast<const T*>(args[0]),
                                          static_cast<const double*>(args[1]),
@@ -705,7 +705,7 @@ private:
             auto type = embed->get_argument(0)->get_element_type();
             size_t element_count = shape_size(embed->get_argument(0)->get_shape());
 
-            if (type == element::f32)
+            if (type == f32)
             {
                 reference::embedding<T, float>(static_cast<const float*>(args[0]),
                                                static_cast<const T*>(args[1]),
@@ -713,7 +713,7 @@ private:
                                                element_count,
                                                embed->get_shape());
             }
-            else if (type == element::f64)
+            else if (type == f64)
             {
                 reference::embedding<T, double>(static_cast<const double*>(args[0]),
                                                 static_cast<const T*>(args[1]),
@@ -721,7 +721,7 @@ private:
                                                 element_count,
                                                 embed->get_shape());
             }
-            else if (type == element::i32)
+            else if (type == i32)
             {
                 reference::embedding<T, int>(static_cast<const int*>(args[0]),
                                              static_cast<const T*>(args[1]),
@@ -729,7 +729,7 @@ private:
                                              element_count,
                                              embed->get_shape());
             }
-            else if (type == element::i64)
+            else if (type == i64)
             {
                 reference::embedding<T, int64_t>(static_cast<const int64_t*>(args[0]),
                                                  static_cast<const T*>(args[1]),
@@ -774,7 +774,7 @@ private:
             std::vector<std::shared_ptr<runtime::Tensor>> outputs;
             for (size_t i = 0; i < function->get_output_size(); i++)
             {
-                element::Type et = function->get_output_element_type(i);
+                Type et = function->get_output_element_type(i);
                 Shape shape = function->get_output_shape(i);
                 auto host_tensor = std::make_shared<HostTensor>(et, shape, out[i]);
                 outputs.push_back(std::static_pointer_cast<runtime::Tensor>(host_tensor));
@@ -785,7 +785,7 @@ private:
             for (size_t i = 0; i < parameters.size(); i++)
             {
                 auto parameter = parameters[i];
-                element::Type et = parameter->get_element_type();
+                Type et = parameter->get_element_type();
                 Shape shape = parameter->get_shape();
                 auto host_tensor =
                     std::make_shared<HostTensor>(et, shape, const_cast<void*>(args[i]));
@@ -1009,7 +1009,7 @@ private:
             const op::Quantize* quantize = static_cast<const op::Quantize*>(&node);
             auto type = quantize->get_element_type();
 
-            if (type == element::u8)
+            if (type == u8)
             {
                 reference::quantize<T>(static_cast<const T*>(args[0]),
                                        static_cast<const T*>(args[1]),
@@ -1020,7 +1020,7 @@ private:
                                        quantize->get_axes(),
                                        quantize->get_round_mode());
             }
-            else if (type == element::i8)
+            else if (type == i8)
             {
                 reference::quantize<T>(static_cast<const T*>(args[0]),
                                        static_cast<const T*>(args[1]),
@@ -1031,7 +1031,7 @@ private:
                                        quantize->get_axes(),
                                        quantize->get_round_mode());
             }
-            else if (type == element::i32)
+            else if (type == i32)
             {
                 reference::quantize<T>(static_cast<const T*>(args[0]),
                                        static_cast<const T*>(args[1]),
@@ -1169,7 +1169,7 @@ private:
         {
             const op::ReverseSequence* reverse = static_cast<const op::ReverseSequence*>(&node);
 
-            if (node.get_input_element_type(1) == element::i32)
+            if (node.get_input_element_type(1) == i32)
             {
                 reference::reverse_sequence<T, int32_t>(static_cast<const T*>(args[0]),
                                                         static_cast<T*>(out[0]),
@@ -1208,7 +1208,7 @@ private:
                 auto ty = std::make_shared<runtime::HostTensor>(
                     node.get_inputs().at(1).get_element_type(), Shape{}, &y, "selection_temp_y");
                 auto tr = std::make_shared<runtime::HostTensor>(
-                    element::boolean, Shape{}, "selection_temp_r");
+                    boolean, Shape{}, "selection_temp_r");
                 auto handle = compile(selection_function);
                 call(handle, {tr}, {tx, ty});
                 return *(tr->get_data_ptr<char>());
@@ -1349,7 +1349,7 @@ private:
         case OP_TYPEID::TopK:
         {
             const op::TopK* topk = static_cast<const op::TopK*>(&node);
-            if (node.get_output_element_type(0) == element::i64)
+            if (node.get_output_element_type(0) == i64)
             {
                 reference::topk<T, int64_t>(static_cast<const T*>(args[0]),
                                             static_cast<int64_t*>(out[0]),
@@ -1360,7 +1360,7 @@ private:
                                             topk->get_k(),
                                             topk->get_compute_max());
             }
-            else if (node.get_output_element_type(0) == element::i32)
+            else if (node.get_output_element_type(0) == i32)
             {
                 reference::topk<T, int32_t>(static_cast<const T*>(args[0]),
                                             static_cast<int32_t*>(out[0]),

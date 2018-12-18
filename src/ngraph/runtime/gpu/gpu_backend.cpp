@@ -105,13 +105,13 @@ runtime::gpu::GPU_Backend::BackendContext::~BackendContext()
 }
 
 shared_ptr<runtime::Tensor>
-    runtime::gpu::GPU_Backend::create_tensor(const element::Type& element_type, const Shape& shape)
+    runtime::gpu::GPU_Backend::create_tensor(const Type& element_type, const Shape& shape)
 {
     return make_shared<runtime::gpu::GPUTensor>(element_type, shape);
 }
 
 shared_ptr<runtime::Tensor> runtime::gpu::GPU_Backend::create_tensor(
-    const element::Type& element_type, const Shape& shape, void* memory_pointer)
+    const Type& element_type, const Shape& shape, void* memory_pointer)
 {
     return make_shared<runtime::gpu::GPUTensor>(element_type, shape, memory_pointer);
 }
@@ -227,7 +227,7 @@ bool runtime::gpu::GPU_Backend::is_supported(const Node& node) const
     bool rc = true;
 
     // get op type
-    element::Type type;
+    Type type;
     if (node.description() == "Select")
     {
         type = node.get_input_element_type(1);
@@ -245,7 +245,7 @@ bool runtime::gpu::GPU_Backend::is_supported(const Node& node) const
         type = node.get_input_element_type(0);
     }
 
-    if (type != element::f32)
+    if (type != f32)
     {
         rc = false;
     }

@@ -164,7 +164,7 @@ op::MaxPoolWithIndices::MaxPoolWithIndices(const shared_ptr<Node>& arg,
     // to span the entire kernel, u8 is picked.
     // We conservatively always use s32
     // to simplify MaxPoolWithIndices c-tor.
-    set_output_type(1, element::i32, result_shape);
+    set_output_type(1, i32, result_shape);
 }
 
 shared_ptr<Node> op::MaxPoolWithIndices::copy_with_new_args(const NodeVector& new_args) const

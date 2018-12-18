@@ -80,7 +80,7 @@ static void compare_backends(std::shared_ptr<Function>& f1,
 
 TEST(cpu_test, unhandled_op)
 {
-    auto A = make_shared<op::Parameter>(element::f32, Shape{});
+    auto A = make_shared<op::Parameter>(f32, Shape{});
     auto unhandled = make_shared<UnhandledOp>(A);
     auto f = make_shared<Function>(unhandled, ParameterVector{A});
     auto backend = runtime::Backend::create("CPU");
@@ -89,8 +89,8 @@ TEST(cpu_test, unhandled_op)
 
 TEST(cpu_test, trivial_in_place_relu)
 {
-    auto A = make_shared<op::Parameter>(element::f32, Shape{16, 1});
-    auto B = make_shared<op::Parameter>(element::f32, Shape{16, 1});
+    auto A = make_shared<op::Parameter>(f32, Shape{16, 1});
+    auto B = make_shared<op::Parameter>(f32, Shape{16, 1});
     auto add = A + B;
     auto relu = make_shared<op::Relu>(add);
     auto f = make_shared<Function>(relu, ParameterVector{A, B});
@@ -103,8 +103,8 @@ TEST(cpu_test, trivial_in_place_relu)
 #ifndef NGRAPH_HALIDE
 TEST(cpu_test, trivial_in_place_relu_fail)
 {
-    auto A = make_shared<op::Parameter>(element::f32, Shape{16, 1});
-    auto B = make_shared<op::Parameter>(element::f32, Shape{16, 1});
+    auto A = make_shared<op::Parameter>(f32, Shape{16, 1});
+    auto B = make_shared<op::Parameter>(f32, Shape{16, 1});
     auto add = A + B;
     auto relu = make_shared<op::Relu>(add);
     auto add2 = relu + add;
@@ -128,18 +128,18 @@ TEST(cpu_test, abc_tbb)
     }
 
     Shape shape{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
-    auto B = make_shared<op::Parameter>(element::f32, shape);
-    auto C = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
+    auto B = make_shared<op::Parameter>(f32, shape);
+    auto C = make_shared<op::Parameter>(f32, shape);
     auto f = make_shared<Function>((A + B) * C, ParameterVector{A, B, C});
 
     auto backend = runtime::Backend::create("CPU");
 
     // Create some tensors for input/output
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> c = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> c = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(f32, shape);
 
     copy_data(a, test::NDArray<float, 2>({{1, 2}, {3, 4}}).get_vector());
     copy_data(b, test::NDArray<float, 2>({{5, 6}, {7, 8}}).get_vector());
@@ -167,9 +167,9 @@ TEST(cpu_test, abc_tbb)
 TEST(cpu_test, mkldnn_layouts)
 {
     Shape shape_a{1, 16, 2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_b{32, 16, 1, 1};
-    auto B = make_shared<op::Parameter>(element::f32, shape_b);
+    auto B = make_shared<op::Parameter>(f32, shape_b);
     Shape shape_r{1, 32, 2, 2};
     auto conv1 = make_shared<op::Convolution>(A,
                                               B,
@@ -199,9 +199,9 @@ TEST(cpu_test, mkldnn_layouts)
         weights.push_back(1.0f);
     }
 
-    auto a = backend->create_tensor(element::f32, shape_a, input.data());
-    auto b = backend->create_tensor(element::f32, shape_b, weights.data());
-    auto result = backend->create_tensor(element::f32, shape_r, rv.data());
+    auto a = backend->create_tensor(f32, shape_a, input.data());
+    auto b = backend->create_tensor(f32, shape_b, weights.data());
+    auto result = backend->create_tensor(f32, shape_r, rv.data());
 
     vector<float> expected_result;
     for (int i = 0; i < 32; i++)
@@ -222,8 +222,8 @@ TEST(cpu_test, reshape_layout_optimizations1)
 {
     // Squeeze outermost dimension
     auto make_function = []() -> std::shared_ptr<Function> {
-        auto A = make_shared<op::Parameter>(element::f32, Shape{1, 16, 2, 2});
-        auto B = make_shared<op::Parameter>(element::f32, Shape{32, 16, 1, 1});
+        auto A = make_shared<op::Parameter>(f32, Shape{1, 16, 2, 2});
+        auto B = make_shared<op::Parameter>(f32, Shape{32, 16, 1, 1});
         auto conv = make_shared<op::Convolution>(A,
                                                  B,
                                                  Strides{1, 1},
@@ -261,8 +261,8 @@ TEST(cpu_test, reshape_layout_optimizations2)
 {
     // ExpandDims - inner most and internal dims
     auto make_function = []() -> std::shared_ptr<Function> {
-        auto A = make_shared<op::Parameter>(element::f32, Shape{1, 16, 2, 2});
-        auto B = make_shared<op::Parameter>(element::f32, Shape{32, 16, 1, 1});
+        auto A = make_shared<op::Parameter>(f32, Shape{1, 16, 2, 2});
+        auto B = make_shared<op::Parameter>(f32, Shape{32, 16, 1, 1});
         auto conv = make_shared<op::Convolution>(A,
                                                  B,
                                                  Strides{1, 1},
@@ -300,8 +300,8 @@ TEST(cpu_test, reshape_layout_optimizations3)
 {
     // Squeeze padded dimension
     auto make_function = []() -> std::shared_ptr<Function> {
-        auto A = make_shared<op::Parameter>(element::f32, Shape{1, 16, 2, 2});
-        auto B = make_shared<op::Parameter>(element::f32, Shape{1, 16, 1, 1});
+        auto A = make_shared<op::Parameter>(f32, Shape{1, 16, 2, 2});
+        auto B = make_shared<op::Parameter>(f32, Shape{1, 16, 1, 1});
         auto conv = make_shared<op::Convolution>(A,
                                                  B,
                                                  Strides{1, 1},
@@ -340,8 +340,8 @@ TEST(cpu_test, reshape_layout_optimizations4)
 {
     // Squeeze and expand dimensions. Ensure no extra conversions downstream
     auto make_function = []() -> std::shared_ptr<Function> {
-        auto A = make_shared<op::Parameter>(element::f32, Shape{1, 16, 1, 8});
-        auto B1 = make_shared<op::Parameter>(element::f32, Shape{32, 16, 1, 1});
+        auto A = make_shared<op::Parameter>(f32, Shape{1, 16, 1, 8});
+        auto B1 = make_shared<op::Parameter>(f32, Shape{32, 16, 1, 1});
         auto conv1 = make_shared<op::Convolution>(A,
                                                   B1,
                                                   Strides{1, 1},
@@ -352,7 +352,7 @@ TEST(cpu_test, reshape_layout_optimizations4)
         auto squeeze = make_shared<op::Reshape>(conv1, AxisVector{0, 1, 2, 3}, Shape{32, 1, 8});
         auto relu = make_shared<op::Relu>(squeeze);
         auto expand = make_shared<op::Reshape>(relu, AxisVector{0, 1, 2}, Shape{1, 32, 1, 8});
-        auto B2 = make_shared<op::Parameter>(element::f32, Shape{8, 32, 1, 1});
+        auto B2 = make_shared<op::Parameter>(f32, Shape{8, 32, 1, 1});
         auto conv2 = make_shared<op::Convolution>(expand,
                                                   B2,
                                                   Strides{1, 1},
@@ -388,8 +388,8 @@ TEST(cpu_test, reshape_layout_optimizations4)
 TEST(cpu_test, reshape_layout_optimizations5)
 {
     auto make_function = []() -> std::shared_ptr<Function> {
-        auto A = make_shared<op::Parameter>(element::f32, Shape{1, 16, 1, 8});
-        auto B1 = make_shared<op::Parameter>(element::f32, Shape{32, 16, 1, 1});
+        auto A = make_shared<op::Parameter>(f32, Shape{1, 16, 1, 8});
+        auto B1 = make_shared<op::Parameter>(f32, Shape{32, 16, 1, 1});
         auto conv1 = make_shared<op::Convolution>(A,
                                                   B1,
                                                   Strides{1, 1},
@@ -402,7 +402,7 @@ TEST(cpu_test, reshape_layout_optimizations5)
         auto relu = make_shared<op::Relu>(expand);
         auto squeeze =
             make_shared<op::Reshape>(relu, AxisVector{0, 1, 2, 3, 4}, Shape{1, 32, 1, 8});
-        auto B2 = make_shared<op::Parameter>(element::f32, Shape{8, 32, 1, 1});
+        auto B2 = make_shared<op::Parameter>(f32, Shape{8, 32, 1, 1});
         auto conv2 = make_shared<op::Convolution>(squeeze,
                                                   B2,
                                                   Strides{1, 1},
@@ -439,7 +439,7 @@ TEST(cpu_test, reshape_layout_optimizations6)
 {
     // Squeeze and expand dimensions. Ensure no extra conversions downstream
     auto make_function = []() -> std::shared_ptr<Function> {
-        auto A = make_shared<op::Parameter>(element::f32, Shape{2, 4, 3, 2});
+        auto A = make_shared<op::Parameter>(f32, Shape{2, 4, 3, 2});
         auto mul = make_shared<op::Multiply>(A, A);
         auto sum = make_shared<op::Sum>(mul, AxisVector{0});
         auto reshape = make_shared<op::Reshape>(sum, AxisVector{0, 1, 2}, Shape{1, 4, 3, 2});
@@ -473,7 +473,7 @@ TEST(cpu_test, reshape_layout_optimizations7)
 {
     // Expand multiple dimensions. Ensure no extra conversions downstream
     auto make_function = []() -> std::shared_ptr<Function> {
-        auto A = make_shared<op::Parameter>(element::f32, Shape{1, 4, 10, 6, 10});
+        auto A = make_shared<op::Parameter>(f32, Shape{1, 4, 10, 6, 10});
         auto mul = make_shared<op::Multiply>(A, A);
         auto sum = make_shared<op::Sum>(mul, AxisVector{0, 1});
         auto reshape = make_shared<op::Reshape>(sum, AxisVector{0, 1, 2}, Shape{1, 1, 10, 6, 10});
@@ -506,7 +506,7 @@ TEST(cpu_test, DISABLED_collapse_dims1)
 {
     // Expand multiple dimensions. Ensure no extra conversions downstream
     auto make_function = []() -> std::shared_ptr<Function> {
-        auto A = make_shared<op::Parameter>(element::f32, Shape{1, 4, 10, 6, 10});
+        auto A = make_shared<op::Parameter>(f32, Shape{1, 4, 10, 6, 10});
         auto sum1 = make_shared<op::Sum>(A, AxisVector{1});    // Shape{1, 10, 6, 10}
         auto sum2 = make_shared<op::Sum>(sum1, AxisVector{0}); // Shape{10, 6, 10}
         return make_shared<Function>(NodeVector{sum2}, ParameterVector{A});
@@ -540,8 +540,8 @@ TEST(cpu_test, collapse_dims2)
 {
     // Collapse dims around a dot where one of the inputs is a scalar
     auto make_function = []() -> std::shared_ptr<Function> {
-        auto A = make_shared<op::Parameter>(element::f32, Shape{1, 3, 1, 1});
-        auto B = make_shared<op::Parameter>(element::f32, Shape{1, 1});
+        auto A = make_shared<op::Parameter>(f32, Shape{1, 3, 1, 1});
+        auto B = make_shared<op::Parameter>(f32, Shape{1, 1});
         auto dot = make_shared<op::Dot>(A, B, 1);
         return make_shared<Function>(NodeVector{dot}, ParameterVector{A, B});
     };
@@ -570,8 +570,8 @@ TEST(cpu_test, collapse_dims2)
 TEST(cpu_test, convert_layout)
 {
     auto make_function = []() -> std::shared_ptr<Function> {
-        auto W = std::make_shared<op::Parameter>(element::f32, Shape{10, 400});
-        auto X = std::make_shared<op::Parameter>(element::f32, Shape{400, 10});
+        auto W = std::make_shared<op::Parameter>(f32, Shape{10, 400});
+        auto X = std::make_shared<op::Parameter>(f32, Shape{400, 10});
         auto W_reshape = std::make_shared<op::Reshape>(W, AxisVector{1, 0}, Shape{400, 10});
 
         auto add1 = std::make_shared<op::Add>(X, W_reshape);
@@ -606,8 +606,8 @@ TEST(cpu_test, convert_layout)
 TEST(cpu_test, post_layout_reshape_convertlayout)
 {
     auto make_function = []() -> std::shared_ptr<Function> {
-        auto A = make_shared<op::Parameter>(element::f32, Shape{1, 2, 3, 4});
-        auto B = make_shared<op::Parameter>(element::f32, Shape{5, 2, 1, 1});
+        auto A = make_shared<op::Parameter>(f32, Shape{1, 2, 3, 4});
+        auto B = make_shared<op::Parameter>(f32, Shape{5, 2, 1, 1});
         auto conv = make_shared<op::Convolution>(A,
                                                  B,
                                                  Strides{1, 1},
@@ -630,8 +630,8 @@ TEST(cpu_test, mkldnn_layouts_eltwise)
     Shape filter_shape{5, 11, 2, 2};
 
     auto make_function = [&]() {
-        auto input = std::make_shared<op::Parameter>(element::f32, input_shape);
-        auto filter = std::make_shared<op::Parameter>(element::f32, filter_shape);
+        auto input = std::make_shared<op::Parameter>(f32, input_shape);
+        auto filter = std::make_shared<op::Parameter>(f32, filter_shape);
         auto conv = std::make_shared<op::Convolution>(input, filter, Strides{2, 2}, Strides{1, 1});
         auto sigmoid = std::make_shared<op::Sigmoid>(conv);
         auto f = make_shared<Function>(NodeVector{sigmoid}, ParameterVector{input, filter});
@@ -649,8 +649,8 @@ TEST(cpu_test, convolution_large_padding)
     Shape filter_shape{1, 1, 3, 3};
 
     auto make_function = [&]() {
-        auto input = std::make_shared<op::Parameter>(element::f32, input_shape);
-        auto filter = std::make_shared<op::Parameter>(element::f32, filter_shape);
+        auto input = std::make_shared<op::Parameter>(f32, input_shape);
+        auto filter = std::make_shared<op::Parameter>(f32, filter_shape);
         auto conv = std::make_shared<op::Convolution>(input,
                                                       filter,
                                                       Strides{1, 1},

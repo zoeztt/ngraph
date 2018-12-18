@@ -36,7 +36,7 @@ namespace ngraph
             {
             public:
                 /// \brief creates a AnyOf node containing a sub-pattern described by \sa type and \sa shape.
-                AnyOf(const element::Type& type,
+                AnyOf(const Type& type,
                       const PartialShape& s,
                       Predicate pred,
                       const NodeVector& wrapped_nodes)

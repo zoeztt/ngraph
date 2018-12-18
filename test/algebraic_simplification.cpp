@@ -57,7 +57,7 @@ using namespace std;
 TEST(algebraic_simplification, add_types_shapes)
 {
     Shape shapes[] = {Shape{}, Shape{2, 2}, Shape{3, 3, 3}};
-    element::Type types[] = {element::i32, element::f32, element::f64};
+    Type types[] = {i32, f32, f64};
     for (auto type : types)
     {
         for (auto shape : shapes)
@@ -95,10 +95,10 @@ TEST(algebraic_simplification, add_broadcast)
     pass::Manager pass_manager;
     pass_manager.register_pass<pass::AlgebraicSimplification>();
 
-    auto a = make_shared<op::Parameter>(element::i32, shape);
-    auto b = make_shared<op::Parameter>(element::i32, shape);
-    auto c = make_shared<op::Parameter>(element::i32, shape);
-    auto iconst0 = ngraph::make_zero(element::i32, Shape{});
+    auto a = make_shared<op::Parameter>(i32, shape);
+    auto b = make_shared<op::Parameter>(i32, shape);
+    auto c = make_shared<op::Parameter>(i32, shape);
+    auto iconst0 = ngraph::make_zero(i32, Shape{});
     auto const_broadcast = make_shared<op::Broadcast>(iconst0, shape, AxisSet{0, 1});
     auto add_a_0 = a + const_broadcast;
     auto add_a_0_0 = add_a_0 + const_broadcast;
@@ -124,10 +124,10 @@ TEST(algebraic_simplification, multiply_broadcast)
     pass::Manager pass_manager;
     pass_manager.register_pass<pass::AlgebraicSimplification>();
 
-    auto a = make_shared<op::Parameter>(element::i32, shape);
-    auto b = make_shared<op::Parameter>(element::i32, shape);
-    auto c = make_shared<op::Parameter>(element::i32, shape);
-    auto iconst0 = ngraph::make_zero(element::i32, Shape{});
+    auto a = make_shared<op::Parameter>(i32, shape);
+    auto b = make_shared<op::Parameter>(i32, shape);
+    auto c = make_shared<op::Parameter>(i32, shape);
+    auto iconst0 = ngraph::make_zero(i32, Shape{});
     auto const_broadcast = make_shared<op::Broadcast>(iconst0, shape, AxisSet{0, 1});
     auto mul_a_0 = a * const_broadcast;
     auto mul_a_0_0 = mul_a_0 * const_broadcast;
@@ -150,7 +150,7 @@ TEST(algebraic_simplification, multiply_broadcast)
 TEST(algebraic_simplification, zero_plus_zero_commutativity)
 {
     Shape shape{};
-    auto type = element::f32;
+    auto type = f32;
     pass::Manager pass_manager;
     pass_manager.register_pass<pass::AlgebraicSimplification>();
 
@@ -174,7 +174,7 @@ TEST(algebraic_simplification, zero_plus_zero_commutativity)
 TEST(algebraic_simplification, zero_multiply_zero_one)
 {
     Shape shape{};
-    auto type = element::f32;
+    auto type = f32;
     pass::Manager pass_manager;
     pass_manager.register_pass<pass::AlgebraicSimplification>();
 
@@ -197,7 +197,7 @@ TEST(algebraic_simplification, zero_multiply_zero_one)
 TEST(algebraic_simplification, add_negative_tests)
 {
     Shape shape{};
-    auto type = element::f32;
+    auto type = f32;
     pass::Manager pass_manager;
     pass_manager.register_pass<pass::AlgebraicSimplification>();
 
@@ -226,7 +226,7 @@ TEST(algebraic_simplification, add_negative_tests)
 TEST(algebraic_simplification, multiply_negative_tests)
 {
     Shape shape{};
-    auto type = element::f32;
+    auto type = f32;
     pass::Manager pass_manager;
     pass_manager.register_pass<pass::AlgebraicSimplification>();
 
@@ -254,7 +254,7 @@ TEST(algebraic_simplification, multiply_negative_tests)
 
 TEST(algebraic_simplification, multiply_prod_vector_one)
 {
-    auto fconst1 = ngraph::op::Constant::create(element::f64, Shape{}, {2.0});
+    auto fconst1 = ngraph::op::Constant::create(f64, Shape{}, {2.0});
     auto broadcast = std::make_shared<op::Broadcast>(fconst1, Shape{3, 5}, AxisSet{0, 1});
     auto prod_fconst1 = std::make_shared<op::Product>(broadcast, AxisSet{1});
 
@@ -274,7 +274,7 @@ TEST(algebraic_simplification, multiply_prod_vector_one)
 
 TEST(algebraic_simplification, multiply_prod_scalar_one)
 {
-    auto fconst1 = ngraph::op::Constant::create(element::f64, Shape{}, {2.0});
+    auto fconst1 = ngraph::op::Constant::create(f64, Shape{}, {2.0});
     auto broadcast = std::make_shared<op::Broadcast>(fconst1, Shape{3, 5}, AxisSet{0, 1});
     auto prod_fconst1 = std::make_shared<op::Product>(broadcast, AxisSet{0, 1});
 
@@ -293,7 +293,7 @@ TEST(algebraic_simplification, multiply_prod_scalar_one)
 
 TEST(algebraic_simplification, multiply_prod_negative)
 {
-    auto fconst1 = ngraph::op::Constant::create(element::f64, Shape{2}, {1.0, 1.0});
+    auto fconst1 = ngraph::op::Constant::create(f64, Shape{2}, {1.0, 1.0});
     auto broadcast = std::make_shared<op::Broadcast>(fconst1, Shape{2, 5}, AxisSet{1});
     auto prod_fconst1 = std::make_shared<op::Product>(broadcast, AxisSet{0, 1});
 
@@ -308,7 +308,7 @@ TEST(algebraic_simplification, multiply_prod_negative)
 
 TEST(algebraic_simplification, multiply_sum_scalar_one)
 {
-    auto fconst1 = ngraph::op::Constant::create(element::f64, Shape{}, {1.0});
+    auto fconst1 = ngraph::op::Constant::create(f64, Shape{}, {1.0});
     auto broadcast = std::make_shared<op::Broadcast>(fconst1, Shape{3, 5}, AxisSet{0, 1});
     auto sum_fconst1 = std::make_shared<op::Sum>(broadcast, AxisSet{0, 1});
 
@@ -327,7 +327,7 @@ TEST(algebraic_simplification, multiply_sum_scalar_one)
 
 TEST(algebraic_simplification, multiply_sum_vector_one)
 {
-    auto fconst1 = ngraph::op::Constant::create(element::f64, Shape{}, {1.0});
+    auto fconst1 = ngraph::op::Constant::create(f64, Shape{}, {1.0});
     auto broadcast = std::make_shared<op::Broadcast>(fconst1, Shape{3, 5}, AxisSet{0, 1});
     auto sum_fconst1 = std::make_shared<op::Sum>(broadcast, AxisSet{1});
 
@@ -347,7 +347,7 @@ TEST(algebraic_simplification, multiply_sum_vector_one)
 
 TEST(algebraic_simplification, multiply_sum_negative)
 {
-    auto fconst1 = ngraph::op::Constant::create(element::f64, Shape{2}, {1.0, 1.0});
+    auto fconst1 = ngraph::op::Constant::create(f64, Shape{2}, {1.0, 1.0});
     auto broadcast = std::make_shared<op::Broadcast>(fconst1, Shape{2, 5}, AxisSet{1});
     auto sum_fconst1 = std::make_shared<op::Sum>(broadcast, AxisSet{0, 1});
 
@@ -362,7 +362,7 @@ TEST(algebraic_simplification, multiply_sum_negative)
 
 TEST(algebraic_simplification, concat_reshape_slice)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{96, 100});
+    auto a = make_shared<op::Parameter>(f32, Shape{96, 100});
     auto goe = make_shared<op::GetOutputElement>(a, 0);
     auto slice1 = make_shared<op::Slice>(goe, Coordinate{0, 0}, Coordinate{32, 100}, Strides{1, 1});
     auto slice2 =
@@ -389,7 +389,7 @@ TEST(algebraic_simplification, concat_reshape_slice)
 
 TEST(algebraic_simplification, concat_slice)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{96, 100});
+    auto a = make_shared<op::Parameter>(f32, Shape{96, 100});
     auto goe = make_shared<op::GetOutputElement>(a, 0);
     auto slice1 = make_shared<op::Slice>(goe, Coordinate{0, 0}, Coordinate{32, 100}, Strides{1, 1});
     auto slice2 =
@@ -412,7 +412,7 @@ TEST(algebraic_simplification, concat_slice)
 
 TEST(algebraic_simplification, concat_parameter_slice)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{96, 100});
+    auto a = make_shared<op::Parameter>(f32, Shape{96, 100});
     auto slice1 = make_shared<op::Slice>(a, Coordinate{0, 0}, Coordinate{32, 100}, Strides{1, 1});
     auto slice2 = make_shared<op::Slice>(a, Coordinate{32, 0}, Coordinate{64, 100}, Strides{1, 1});
     auto slice3 = make_shared<op::Slice>(a, Coordinate{64, 0}, Coordinate{96, 100}, Strides{1, 1});
@@ -432,7 +432,7 @@ TEST(algebraic_simplification, concat_parameter_slice)
 
 TEST(algebraic_simplification, concat_parameter_slices_reversed)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{96, 100});
+    auto a = make_shared<op::Parameter>(f32, Shape{96, 100});
     auto slice1 = make_shared<op::Slice>(a, Coordinate{0, 0}, Coordinate{32, 100}, Strides{1, 1});
     auto slice2 = make_shared<op::Slice>(a, Coordinate{32, 0}, Coordinate{64, 100}, Strides{1, 1});
     auto slice3 = make_shared<op::Slice>(a, Coordinate{64, 0}, Coordinate{96, 100}, Strides{1, 1});
@@ -452,7 +452,7 @@ TEST(algebraic_simplification, concat_parameter_slices_reversed)
 
 TEST(algebraic_simplification, concat_parameter_slices_element_count)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{96, 100});
+    auto a = make_shared<op::Parameter>(f32, Shape{96, 100});
     //slicing 30 elements out of 96; should trigger a check that some elements are missing
     auto slice1 = make_shared<op::Slice>(a, Coordinate{0, 0}, Coordinate{10, 100}, Strides{1, 1});
     auto slice2 = make_shared<op::Slice>(a, Coordinate{10, 0}, Coordinate{20, 100}, Strides{1, 1});
@@ -473,7 +473,7 @@ TEST(algebraic_simplification, concat_parameter_slices_element_count)
 
 TEST(algebraic_simplification, concat_parameter_non_uniform_slices)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{96, 100});
+    auto a = make_shared<op::Parameter>(f32, Shape{96, 100});
     auto slice1 = make_shared<op::Slice>(a, Coordinate{0, 0}, Coordinate{38, 100}, Strides{1, 1});
     auto slice2 = make_shared<op::Slice>(a, Coordinate{38, 0}, Coordinate{64, 100}, Strides{1, 1});
     auto slice3 = make_shared<op::Slice>(a, Coordinate{64, 0}, Coordinate{96, 100}, Strides{1, 1});
@@ -493,7 +493,7 @@ TEST(algebraic_simplification, concat_parameter_non_uniform_slices)
 
 TEST(algebraic_simplification, concat_different_goes)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{96, 100});
+    auto a = make_shared<op::Parameter>(f32, Shape{96, 100});
     auto goe1 = make_shared<op::GetOutputElement>(a, 0);
     auto goe2 = make_shared<op::GetOutputElement>(a, 0);
     auto slice1 =
@@ -518,8 +518,8 @@ TEST(algebraic_simplification, concat_different_goes)
 
 TEST(algebraic_simplification, log_neg_neg)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{96, 100});
-    auto b = make_shared<op::Parameter>(element::f32, Shape{96, 100});
+    auto a = make_shared<op::Parameter>(f32, Shape{96, 100});
+    auto b = make_shared<op::Parameter>(f32, Shape{96, 100});
     auto exp_a = make_shared<op::Exp>(a);
     auto div = exp_a / b;
     auto log_div = make_shared<op::Log>(div);
@@ -544,8 +544,8 @@ TEST(algebraic_simplification, log_neg_neg)
 
 TEST(algebraic_simplification, log_no_exp)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{96, 100});
-    auto b = make_shared<op::Parameter>(element::f32, Shape{96, 100});
+    auto a = make_shared<op::Parameter>(f32, Shape{96, 100});
+    auto b = make_shared<op::Parameter>(f32, Shape{96, 100});
     auto abs_a = make_shared<op::Abs>(a);
     auto div = abs_a / b;
     auto log_div = make_shared<op::Log>(div);
@@ -565,8 +565,8 @@ TEST(algebraic_simplification, log_no_exp)
 
 TEST(algebraic_simplification, log_no_divide)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{96, 100});
-    auto b = make_shared<op::Parameter>(element::f32, Shape{96, 100});
+    auto a = make_shared<op::Parameter>(f32, Shape{96, 100});
+    auto b = make_shared<op::Parameter>(f32, Shape{96, 100});
     auto exp_a = make_shared<op::Exp>(a);
     auto mul = exp_a * b;
     auto log_mul = make_shared<op::Log>(mul);

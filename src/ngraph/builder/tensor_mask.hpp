@@ -85,7 +85,7 @@ namespace ngraph
 
             // create sequence constant
             auto sequence = std::make_shared<ngraph::op::Constant>(
-                element::u32, Shape{max_sequence_length}, sequence_data);
+                u32, Shape{max_sequence_length}, sequence_data);
 
             // convert sequence to input type
             auto convert_sequence = std::make_shared<ngraph::op::Convert>(

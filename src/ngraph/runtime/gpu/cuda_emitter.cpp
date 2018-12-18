@@ -214,11 +214,11 @@ size_t runtime::gpu::CUDAEmitter::build_concat(const std::string& dtype,
     return this->m_primitive_emitter->register_primitive(kernel_launch, hash.str());
 }
 
-size_t runtime::gpu::CUDAEmitter::build_topk(const std::vector<element::Type>& dtypes,
+size_t runtime::gpu::CUDAEmitter::build_topk(const std::vector<Type>& dtypes,
                                              const NVShape& input_shape,
                                              const size_t topk_axis,
                                              size_t topk_k,
-                                             const element::Type index_elem_type,
+                                             const Type index_elem_type,
                                              bool compute_max)
 {
     NGRAPH_ASSERT(dtypes[1] == index_elem_type)
@@ -1628,7 +1628,7 @@ size_t runtime::gpu::CUDAEmitter::build_primitive(const op::MaxPool* node)
     return this->m_primitive_emitter->register_primitive(kernel_launch, hash);
 }
 
-size_t runtime::gpu::CUDAEmitter::build_softmax(const std::vector<element::Type>& dtypes,
+size_t runtime::gpu::CUDAEmitter::build_softmax(const std::vector<Type>& dtypes,
                                                 NVShape input_shape,
                                                 NVShape reduce_axis)
 {
@@ -1810,7 +1810,7 @@ size_t runtime::gpu::CUDAEmitter::build_softmax(const std::vector<element::Type>
     }
 }
 
-size_t runtime::gpu::CUDAEmitter::build_reduce_to_nd(const std::vector<element::Type>& dtypes,
+size_t runtime::gpu::CUDAEmitter::build_reduce_to_nd(const std::vector<Type>& dtypes,
                                                      NVShape input_shape,
                                                      NVShape reduce_axis,
                                                      const char* op,
@@ -1918,7 +1918,7 @@ size_t runtime::gpu::CUDAEmitter::build_reduce_to_nd(const std::vector<element::
     return this->m_primitive_emitter->register_primitive(reduce, hash);
 }
 
-size_t runtime::gpu::CUDAEmitter::build_reduce_to_scalar(const std::vector<element::Type>& dtypes,
+size_t runtime::gpu::CUDAEmitter::build_reduce_to_scalar(const std::vector<Type>& dtypes,
                                                          NVShape input_shape,
                                                          const char* op,
                                                          const char* kernel)
@@ -1993,7 +1993,7 @@ size_t runtime::gpu::CUDAEmitter::build_reduce_to_scalar(const std::vector<eleme
 }
 
 size_t
-    runtime::gpu::CUDAEmitter::build_reduce_to_scalar_acc(const std::vector<element::Type>& dtypes,
+    runtime::gpu::CUDAEmitter::build_reduce_to_scalar_acc(const std::vector<Type>& dtypes,
                                                           NVShape input_shape,
                                                           NVShape output_shape,
                                                           uint32_t block_size_x,
@@ -2060,7 +2060,7 @@ size_t
     return this->m_primitive_emitter->register_primitive(reduce_acc, hash);
 }
 
-size_t runtime::gpu::CUDAEmitter::build_reduce(const std::vector<element::Type>& dtypes,
+size_t runtime::gpu::CUDAEmitter::build_reduce(const std::vector<Type>& dtypes,
                                                const NVShape& input_shape,
                                                const NVShape& output_shape,
                                                const NVShape& reduce_axis,
@@ -3178,7 +3178,7 @@ void* runtime::gpu::CUDAEmitter::get_init_reduce_val(std::string reduce_op, std:
 }
 
 std::vector<std::string>
-    runtime::gpu::CUDAEmitter::get_string_vector(const std::vector<element::Type>& dtypes)
+    runtime::gpu::CUDAEmitter::get_string_vector(const std::vector<Type>& dtypes)
 {
     std::vector<std::string> str;
     for (auto const& a : dtypes)

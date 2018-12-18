@@ -115,7 +115,7 @@ namespace ngraph
                     const algo_search find_algo = algo_search::NONE);
 
                 size_t build_reduce_forward(const cudnnReduceTensorOp_t& reduce_op,
-                                            const std::vector<element::Type>& dtypes,
+                                            const std::vector<Type>& dtypes,
                                             const Shape& input_shape,
                                             const AxisSet& reduction_axes,
                                             const ReductionMode& reduction_mode);
@@ -128,7 +128,7 @@ namespace ngraph
                                        const double beta);
 
                 size_t build_pooling(const cudnnPoolingMode_t& pool_op,
-                                     const element::Type& dtype,
+                                     const Type& dtype,
                                      const Prop& direction,
                                      const ngraph::Shape& input_shape,
                                      const ngraph::Shape& output_shape,
@@ -167,7 +167,7 @@ namespace ngraph
                 void* get_data_by_type(cudnnDataType_t data_type, double value);
 
                 cudnnDataType_t get_cudnn_datatype(std::string dtype);
-                cudnnDataType_t get_cudnn_datatype(const element::Type& dtype);
+                cudnnDataType_t get_cudnn_datatype(const Type& dtype);
 
                 cudnnTensorDescriptor_t&
                     tensor_descriptor_from_shape(const Shape& shape,

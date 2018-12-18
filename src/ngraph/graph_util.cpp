@@ -429,7 +429,7 @@ Placement ngraph::get_colocated_function_placement(shared_ptr<Function> func)
     return function_placement;
 }
 
-std::shared_ptr<Node> ngraph::make_zero(const element::Type& element_type, const Shape& shape)
+std::shared_ptr<Node> ngraph::make_zero(const Type& element_type, const Shape& shape)
 {
     std::shared_ptr<Node> zero = op::Constant::create(element_type, Shape{}, {0.0});
     if (shape.size() > 0)
@@ -445,7 +445,7 @@ std::shared_ptr<Node> ngraph::make_zero(const element::Type& element_type, const
 }
 
 std::shared_ptr<Node> ngraph::make_constant_from_string(std::string val,
-                                                        const element::Type& element_type,
+                                                        const Type& element_type,
                                                         const Shape& shape)
 {
     auto cvals = std::vector<std::string>(shape_size(shape), val);

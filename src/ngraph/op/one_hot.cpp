@@ -30,7 +30,7 @@ op::OneHot::OneHot(const shared_ptr<Node>& arg, const PartialShape& shape, size_
 
 void op::OneHot::validate_and_infer_types()
 {
-    element::Type arg_et = get_input_element_type(0);
+    Type arg_et = get_input_element_type(0);
     PartialShape arg_shape = get_input_partial_shape(0);
     Rank arg_rank = arg_shape.rank();
 

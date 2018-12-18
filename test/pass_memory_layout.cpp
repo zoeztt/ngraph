@@ -228,7 +228,7 @@ TEST(memory_layout, constant)
     pass_manager.register_pass<pass::DumpSorted>(dump_file);
 
     Shape shape{1};
-    auto c = op::Constant::create(element::i32, shape, {5});
+    auto c = op::Constant::create(i32, shape, {5});
     auto f = make_shared<Function>(make_shared<op::Negative>(c), ParameterVector{});
 
     pass_manager.run_passes(f);

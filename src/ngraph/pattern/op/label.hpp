@@ -38,9 +38,9 @@ namespace ngraph
                 /// Example:
                 /// \code{.cpp}
                 /// auto add = a + b; // a and b are op::Parameter in this example
-                /// auto label = std::make_shared<pattern::op::Label>(element::f32, Shape{2,2} , nullptr, NodeVector{add});
+                /// auto label = std::make_shared<pattern::op::Label>(f32, Shape{2,2} , nullptr, NodeVector{add});
                 /// \endcode
-                Label(const element::Type& type,
+                Label(const Type& type,
                       const PartialShape& s,
                       Predicate pred = nullptr,
                       const NodeVector& wrapped_nodes = NodeVector{})

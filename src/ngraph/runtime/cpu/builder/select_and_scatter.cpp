@@ -44,7 +44,7 @@ namespace ngraph
                 // Note: We bypass the completely broken ngraph "backend" API here
                 auto element_type = node->get_output_element_type(0);
 
-                if (element_type != element::f32)
+                if (element_type != f32)
                 {
                     throw ngraph_error(
                         "CPU direct execution mode does not support non-float inputs, use compiled "
@@ -80,10 +80,10 @@ namespace ngraph
                 auto select = [&, backend](float x, float y) {
                     TensorViewPtrs inputs, outputs;
                     char output;
-                    inputs.emplace_back(backend->create_tensor(element::f32, Shape{}, &x));
-                    inputs.emplace_back(backend->create_tensor(element::f32, Shape{}, &y));
+                    inputs.emplace_back(backend->create_tensor(f32, Shape{}, &x));
+                    inputs.emplace_back(backend->create_tensor(f32, Shape{}, &y));
                     outputs.emplace_back(
-                        backend->create_tensor(element::boolean, Shape{}, &output));
+                        backend->create_tensor(boolean, Shape{}, &output));
                     select_external_function->make_call_frame()->call(outputs, inputs);
                     return output;
                 };
@@ -91,9 +91,9 @@ namespace ngraph
                 auto scatter = [&, backend](float x, float y) {
                     TensorViewPtrs inputs, outputs;
                     float output;
-                    inputs.emplace_back(backend->create_tensor(element::f32, Shape{}, &x));
-                    inputs.emplace_back(backend->create_tensor(element::f32, Shape{}, &y));
-                    outputs.emplace_back(backend->create_tensor(element::f32, Shape{}, &output));
+                    inputs.emplace_back(backend->create_tensor(f32, Shape{}, &x));
+                    inputs.emplace_back(backend->create_tensor(f32, Shape{}, &y));
+                    outputs.emplace_back(backend->create_tensor(f32, Shape{}, &output));
                     scatter_external_function->make_call_frame()->call(outputs, inputs);
                     return output;
                 };

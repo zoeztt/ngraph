@@ -45,7 +45,7 @@ ngraph::op::BatchNormTraining::BatchNormTraining(double eps,
 
 void ngraph::op::BatchNormTraining::validate_and_infer_types()
 {
-    element::Type result_et;
+    Type result_et;
     PartialShape result_batch_shape;
     PartialShape result_channel_shape;
 
@@ -138,7 +138,7 @@ ngraph::op::BatchNormInference::BatchNormInference(double eps,
 
 void ngraph::op::BatchNormInference::validate_and_infer_types()
 {
-    element::Type result_et;
+    Type result_et;
     PartialShape result_batch_shape;
     PartialShape result_channel_shape; // unused here
 
@@ -211,17 +211,17 @@ void ngraph::op::BatchNormTrainingBackprop::validate_and_infer_types()
         << get_input_partial_shape(INPUT_DATA)
         << ", delta shape: " << get_input_partial_shape(INPUT_DELTA) << ").";
 
-    element::Type input_and_delta_et;
+    Type input_and_delta_et;
 
     NODE_VALIDATION_ASSERT(this,
-                           element::Type::merge(input_and_delta_et,
+                           Type::merge(input_and_delta_et,
                                                 get_input_element_type(INPUT_DATA),
                                                 get_input_element_type(INPUT_DELTA)))
         << "Element type for input (" << get_input_element_type(INPUT_DATA)
         << ") does not match element type for delta (" << get_input_element_type(INPUT_DATA)
         << ").";
 
-    element::Type result_et;
+    Type result_et;
     PartialShape result_batch_shape;
     PartialShape result_channel_shape;
 

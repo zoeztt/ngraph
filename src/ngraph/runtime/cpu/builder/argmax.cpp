@@ -40,18 +40,18 @@ namespace ngraph
 
                 auto& arg_tensor = tensor_data[args[0].get_name()];
                 auto& out_tensor = tensor_data[out[0].get_name()];
-                if (out[0].get_element_type() != element::i64 &&
-                    out[0].get_element_type() != element::i32)
+                if (out[0].get_element_type() != i64 &&
+                    out[0].get_element_type() != i32)
                 {
                     throw ngraph_error("Unsupported index element type");
                 }
-                bool is_int64 = out[0].get_element_type() == element::i64;
+                bool is_int64 = out[0].get_element_type() == i64;
                 auto axis = argmax->get_reduction_axis();
                 auto in_shape = args[0].get_shape();
                 auto out_shape = out[0].get_shape();
 
                 auto element_type = args[0].get_element_type();
-                if (element_type == element::f32)
+                if (element_type == f32)
                 {
                     if (is_int64)
                     {
@@ -79,7 +79,7 @@ namespace ngraph
                         };
                     }
                 }
-                else if (element_type == element::f64)
+                else if (element_type == f64)
                 {
                     if (is_int64)
                     {

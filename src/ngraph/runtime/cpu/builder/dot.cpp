@@ -154,7 +154,7 @@ namespace ngraph
                     return;
                 }
 
-                if (out[0].get_element_type() == element::f32 && (arg0_shape.size() == 2) &&
+                if (out[0].get_element_type() == f32 && (arg0_shape.size() == 2) &&
                     (arg1_shape.size() == 2) && reduction_axes_count == 1)
                 {
                     auto m = arg0_shape[0];

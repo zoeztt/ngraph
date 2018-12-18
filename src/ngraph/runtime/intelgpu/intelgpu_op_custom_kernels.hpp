@@ -38,7 +38,7 @@ namespace ngraph
                                   const std::string& scalar_name,
                                   const std::string& output_name,
                                   const Shape& output_shape,
-                                  const element::Type& output_type,
+                                  const Type& output_type,
                                   const Shape& pad_below,
                                   const Shape& pad_interior);
 
@@ -49,7 +49,7 @@ namespace ngraph
                                                 const Shape& delta_shape,
                                                 const std::string& output_name,
                                                 const Shape& output_shape,
-                                                const element::Type& output_type,
+                                                const Type& output_type,
                                                 const Shape& win_shape,
                                                 const Shape& win_stride,
                                                 const Shape& pad_below);
@@ -59,7 +59,7 @@ namespace ngraph
                                                 const Shape& delta_shape,
                                                 const std::string& output_name,
                                                 const Shape& output_shape,
-                                                const element::Type& output_type,
+                                                const Type& output_type,
                                                 const Shape& win_shape,
                                                 const Shape& win_stride,
                                                 const Shape& pad_below,
@@ -72,7 +72,7 @@ namespace ngraph
                                   const Shape& inputB_shape,
                                   const std::string& output_name,
                                   const Shape& output_shape,
-                                  const element::Type& output_type,
+                                  const Type& output_type,
                                   size_t reduction_axes_count);
 
             void do_slice_operation(cldnn::topology& topology,
@@ -80,7 +80,7 @@ namespace ngraph
                                     const Shape& input_shape,
                                     const std::string& output_name,
                                     const Shape& output_shape,
-                                    const element::Type& output_type,
+                                    const Type& output_type,
                                     const Coordinate& lower_bounds,
                                     const Coordinate& uppper_bounds,
                                     const Strides& strides);
@@ -94,28 +94,28 @@ namespace ngraph
                                      const Shape& input2_shape,
                                      const std::string& output_name,
                                      const Shape& output_shape,
-                                     const element::Type& output_type);
+                                     const Type& output_type);
 
             void do_logic_kernel(cldnn::topology& topology,
                                  const std::string& input0_name,
                                  const Shape& input0_shape,
-                                 const element::Type& input0_type,
+                                 const Type& input0_type,
                                  const std::string& input1_name,
                                  const Shape& input1_shape,
                                  const std::string& output_name,
                                  const Shape& output_shape,
-                                 const element::Type& output_type,
+                                 const Type& output_type,
                                  const std::string& operation);
 
             void do_eltwise_kernel(cldnn::topology& topology,
                                    const std::string& input0_name,
                                    const Shape& input0_shape,
-                                   const element::Type& input0_type,
+                                   const Type& input0_type,
                                    const std::string& input1_name,
                                    const Shape& input1_shape,
                                    const std::string& output_name,
                                    const Shape& output_shape,
-                                   const element::Type& output_type,
+                                   const Type& output_type,
                                    const std::string& operation);
 
             void do_reverse_operation(cldnn::topology& topology,
@@ -123,7 +123,7 @@ namespace ngraph
                                       const Shape& input_shape,
                                       const std::string& output_name,
                                       const Shape& output_shape,
-                                      const element::Type& output_type,
+                                      const Type& output_type,
                                       const AxisSet& reversed_axes);
 
             void do_not_operation(cldnn::topology& topology,
@@ -131,24 +131,24 @@ namespace ngraph
                                   const Shape& input_shape,
                                   const std::string& output_name,
                                   const Shape& output_shape,
-                                  const element::Type& output_type);
+                                  const Type& output_type);
 
             void do_one_hot_operation(cldnn::topology& topology,
                                       const std::string& input_name,
                                       const Shape& input_shape,
-                                      const element::Type& input_type,
+                                      const Type& input_type,
                                       const std::string& output_name,
                                       const Shape& output_shape,
-                                      const element::Type& output_type,
+                                      const Type& output_type,
                                       const size_t one_hot_axis);
 
             void do_convert_operation(cldnn::topology& topology,
                                       const std::string& input_name,
                                       const Shape& input_shape,
-                                      const element::Type& input_type,
+                                      const Type& input_type,
                                       const std::string& output_name,
                                       const Shape& output_shape,
-                                      const element::Type& output_type);
+                                      const Type& output_type);
 
             void do_sigmoid_backprop_operation(cldnn::topology& topology,
                                                const std::string& input_name,
@@ -157,7 +157,7 @@ namespace ngraph
                                                const Shape& delta_shape,
                                                const std::string& output_name,
                                                const Shape& output_shape,
-                                               const element::Type& output_type);
+                                               const Type& output_type);
 
             enum class CUSTOM_ELTWISE
             {
@@ -171,32 +171,32 @@ namespace ngraph
             void do_custom_eltwise_operation(cldnn::topology& topology,
                                              const std::string& input_name,
                                              const Shape& input_shape,
-                                             const element::Type& input_type,
+                                             const Type& input_type,
                                              const std::string& output_name,
                                              const Shape& output_shape,
-                                             const element::Type& output_type,
+                                             const Type& output_type,
                                              const CUSTOM_ELTWISE operation_name);
 
             void do_arg_max_min_operation(cldnn::topology& topology,
                                           const std::string& input_name,
                                           const Shape& input_shape,
-                                          const element::Type& input_type,
+                                          const Type& input_type,
                                           const std::string& output_name,
                                           const Shape& output_shape,
-                                          const element::Type& output_type,
+                                          const Type& output_type,
                                           const size_t reduction_axis,
                                           const bool is_max);
 
             void do_negative_operation(cldnn::topology& topology,
                                        const std::string& input_name,
                                        const Shape& input_shape,
-                                       const element::Type& input_type,
+                                       const Type& input_type,
                                        const std::string& output_name,
                                        const Shape& output_shape,
-                                       const element::Type& output_type);
+                                       const Type& output_type);
 
             // Helper functions used in cldnn::custom_gpu_primitive kernels
-            std::string get_opencl_type_name(const element::Type& ngraph_type);
+            std::string get_opencl_type_name(const Type& ngraph_type);
             std::vector<cldnn_arg> get_kernel_args(size_t input, size_t output);
             std::string array_dims(const Shape& dimentions, const AxisSet& axis = {});
             std::string access_dims(const Shape& dimentions,

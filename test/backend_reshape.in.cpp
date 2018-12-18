@@ -37,7 +37,7 @@ static string s_manifest = "${MANIFEST}";
 NGRAPH_TEST(${BACKEND_NAME}, reshape_t2v_012)
 {
     Shape shape_a{2, 2, 3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{12};
     auto r = make_shared<op::Reshape>(A, AxisVector{0, 1, 2}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -45,9 +45,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_t2v_012)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}), read_vector<float>(result));
@@ -56,7 +56,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_t2v_012)
 NGRAPH_TEST(${BACKEND_NAME}, reshape_t2s_012)
 {
     Shape shape_a{1, 1, 1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{};
     auto r = make_shared<op::Reshape>(A, AxisVector{0, 1, 2}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -64,9 +64,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_t2s_012)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{6});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{6}), read_vector<float>(result));
@@ -75,7 +75,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_t2s_012)
 NGRAPH_TEST(${BACKEND_NAME}, reshape_t2s_120)
 {
     Shape shape_a{1, 1, 1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{};
     auto r = make_shared<op::Reshape>(A, AxisVector{1, 2, 0}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -83,9 +83,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_t2s_120)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{6});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{6}), read_vector<float>(result));
@@ -94,7 +94,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_t2s_120)
 NGRAPH_TEST(${BACKEND_NAME}, reshape_s2t)
 {
     Shape shape_a{};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 1, 1, 1, 1, 1};
     auto r = make_shared<op::Reshape>(A, AxisVector{}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -102,9 +102,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_s2t)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{42});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{42}), read_vector<float>(result));
@@ -113,7 +113,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_s2t)
 NGRAPH_TEST(${BACKEND_NAME}, reshape_s2t1)
 {
     Shape shape_a{};
-    auto A = make_shared<op::Parameter>(element::boolean, shape_a);
+    auto A = make_shared<op::Parameter>(boolean, shape_a);
     Shape shape_r{1};
     auto r = make_shared<op::Reshape>(A, AxisVector{}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -121,9 +121,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_s2t1)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::boolean, shape_a);
+    auto a = backend->create_tensor(boolean, shape_a);
     copy_data(a, vector<char>{42});
-    auto result = backend->create_tensor(element::boolean, shape_r);
+    auto result = backend->create_tensor(boolean, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<char>{42}), read_vector<char>(result));
@@ -132,7 +132,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_s2t1)
 NGRAPH_TEST(${BACKEND_NAME}, reshape_v2m_col)
 {
     Shape shape_a{3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{3, 1};
     auto r = make_shared<op::Reshape>(A, AxisVector{0}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -140,9 +140,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_v2m_col)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{1, 2, 3});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1, 2, 3}), read_vector<float>(result));
@@ -151,7 +151,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_v2m_col)
 NGRAPH_TEST(${BACKEND_NAME}, reshape_v2m_row)
 {
     Shape shape_a{3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 3};
     auto r = make_shared<op::Reshape>(A, AxisVector{0}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -159,9 +159,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_v2m_row)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{1, 2, 3});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1, 2, 3}), read_vector<float>(result));
@@ -170,7 +170,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_v2m_row)
 NGRAPH_TEST(${BACKEND_NAME}, reshape_v2t_middle)
 {
     Shape shape_a{3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{1, 3, 1};
     auto r = make_shared<op::Reshape>(A, AxisVector{0}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -178,9 +178,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_v2t_middle)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{1, 2, 3});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1, 2, 3}), read_vector<float>(result));
@@ -189,7 +189,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_v2t_middle)
 NGRAPH_TEST(${BACKEND_NAME}, reshape_m2m_same)
 {
     Shape shape_a{3, 3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{3, 3};
     auto r = make_shared<op::Reshape>(A, AxisVector{0, 1}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -197,9 +197,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_m2m_same)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{1, 2, 3, 4, 5, 6, 7, 8, 9});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1, 2, 3, 4, 5, 6, 7, 8, 9}), read_vector<float>(result));
@@ -208,7 +208,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_m2m_same)
 NGRAPH_TEST(${BACKEND_NAME}, reshape_m2m_transpose)
 {
     Shape shape_a{3, 3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{3, 3};
     auto r = make_shared<op::Reshape>(A, AxisVector{1, 0}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -216,9 +216,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_m2m_transpose)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{1, 2, 3, 4, 5, 6, 7, 8, 9});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1, 4, 7, 2, 5, 8, 3, 6, 9}), read_vector<float>(result));
@@ -227,7 +227,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_m2m_transpose)
 NGRAPH_TEST(${BACKEND_NAME}, reshape_m2m_dim_change_transpose)
 {
     Shape shape_a{3, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{2, 3};
     auto r = make_shared<op::Reshape>(A, AxisVector{1, 0}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -235,9 +235,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_m2m_dim_change_transpose)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{1, 2, 3, 4, 5, 6});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1, 3, 5, 2, 4, 6}), read_vector<float>(result));
@@ -253,16 +253,16 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_3d_transpose_021)
 
     Shape shape_a{2, 3, 4};
     Shape shape_r{2, 4, 3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     auto r = make_shared<op::Reshape>(A, AxisVector{0, 2, 1}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, a_data);
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1,  5,  9,  2,  6,  10, 3,  7,  11, 4,  8,  12,
@@ -280,16 +280,16 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_3d_transpose_210)
 
     Shape shape_a{2, 3, 4};
     Shape shape_r{4, 3, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     auto r = make_shared<op::Reshape>(A, AxisVector{2, 1, 0}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, a_data);
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1, 13, 5, 17, 9,  21, 2, 14, 6, 18, 10, 22,
@@ -307,16 +307,16 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_3d_transpose_201)
 
     Shape shape_a{2, 3, 4};
     Shape shape_r{4, 2, 3};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     auto r = make_shared<op::Reshape>(A, AxisVector{2, 0, 1}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, a_data);
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1, 5, 9,  13, 17, 21, 2, 6, 10, 14, 18, 22,
@@ -334,16 +334,16 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_3d_transpose_102)
 
     Shape shape_a{2, 3, 4};
     Shape shape_r{3, 2, 4};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     auto r = make_shared<op::Reshape>(A, AxisVector{1, 0, 2}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, a_data);
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1,  2,  3,  4,  13, 14, 15, 16, 5,  6,  7,  8,
@@ -361,16 +361,16 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_3d_transpose_120)
 
     Shape shape_a{2, 3, 4};
     Shape shape_r{3, 4, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     auto r = make_shared<op::Reshape>(A, AxisVector{1, 2, 0}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, a_data);
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1, 13, 2, 14, 3, 15, 4,  16, 5,  17, 6,  18,
@@ -388,16 +388,16 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_4d_transpose)
 
     Shape shape_a{2, 2, 5, 5};
     Shape shape_r{2, 5, 5, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     auto r = make_shared<op::Reshape>(A, AxisVector{0, 2, 3, 1}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, a_data);
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ(
@@ -421,16 +421,16 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_4d_no_transpose)
 
     Shape shape_a{2, 2, 5, 5};
     Shape shape_r{2, 5, 5, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     auto r = make_shared<op::Reshape>(A, AxisVector{0, 1, 2, 3}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, a_data);
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ(a_data, read_vector<float>(result));
@@ -439,7 +439,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_4d_no_transpose)
 NGRAPH_TEST(${BACKEND_NAME}, reshape_transposed_shape_change)
 {
     Shape shape_a{2, 6};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{12};
     auto r = make_shared<op::Reshape>(A, AxisVector{1, 0}, shape_r);
     auto f = make_shared<Function>(r, ParameterVector{A});
@@ -447,9 +447,9 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_transposed_shape_change)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ((vector<float>{1, 7, 2, 8, 3, 9, 4, 10, 5, 11, 6, 12}), read_vector<float>(result));
@@ -505,7 +505,7 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_6d)
     }
 
     Shape shape_a{2, 2, 3, 3, 2, 4};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_r{3, 2, 2, 4, 3, 2};
 
     auto r = make_shared<op::Reshape>(A, AxisVector{2, 4, 0, 5, 3, 1}, shape_r);
@@ -514,10 +514,10 @@ NGRAPH_TEST(${BACKEND_NAME}, reshape_6d)
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, a_data);
 
-    auto result = backend->create_tensor(element::f32, shape_r);
+    auto result = backend->create_tensor(f32, shape_r);
 
     backend->call_with_validate(backend->compile(f), {result}, {a});
     EXPECT_EQ(

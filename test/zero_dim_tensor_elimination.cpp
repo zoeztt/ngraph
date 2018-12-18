@@ -40,11 +40,11 @@ using namespace std;
 TEST(zero_dim_tensor_elimination, zero_sum)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto A = std::make_shared<op::Parameter>(i32, zero_shape);
     auto sum = std::make_shared<op::Sum>(A, AxisSet{0});
     auto abs_node = std::make_shared<op::Abs>(A);
     auto sum_node = std::make_shared<op::Sum>(abs_node, AxisSet{0});
-    auto constant = std::make_shared<op::Constant>(element::i32, zero_shape, std::vector<string>{});
+    auto constant = std::make_shared<op::Constant>(i32, zero_shape, std::vector<string>{});
     auto f = std::make_shared<Function>(NodeVector{sum_node, constant}, ParameterVector{A});
     pass::Manager pass_manager;
 
@@ -58,12 +58,12 @@ TEST(zero_dim_tensor_elimination, zero_sum)
 TEST(zero_dim_tensor_elimination, zero_const_conv)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::f32, Shape{1, 1, 0});
-    auto weights = std::make_shared<op::Parameter>(element::f32, Shape{1, 1, 4});
+    auto A = std::make_shared<op::Parameter>(f32, Shape{1, 1, 0});
+    auto weights = std::make_shared<op::Parameter>(f32, Shape{1, 1, 4});
     auto convolution = std::make_shared<op::Convolution>(
         A, weights, Strides{1}, Strides{1}, CoordinateDiff{2}, CoordinateDiff{2});
     auto abs_node = std::make_shared<op::Abs>(convolution);
-    auto constant = std::make_shared<op::Constant>(element::i32, zero_shape, std::vector<string>{});
+    auto constant = std::make_shared<op::Constant>(i32, zero_shape, std::vector<string>{});
     auto f =
         std::make_shared<Function>(NodeVector{abs_node, constant}, ParameterVector{A, weights});
     pass::Manager pass_manager;
@@ -78,12 +78,12 @@ TEST(zero_dim_tensor_elimination, zero_const_conv)
 TEST(zero_dim_tensor_elimination, zero_const_avg_pool)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::f32, Shape{1, 1, 0});
+    auto A = std::make_shared<op::Parameter>(f32, Shape{1, 1, 0});
 
     auto avg_pool =
         std::make_shared<op::AvgPool>(A, Shape{1}, Strides{1}, Shape{2}, Shape{2}, true);
     auto abs_node = std::make_shared<op::Abs>(avg_pool);
-    auto constant = std::make_shared<op::Constant>(element::i32, zero_shape, std::vector<string>{});
+    auto constant = std::make_shared<op::Constant>(i32, zero_shape, std::vector<string>{});
     auto f = std::make_shared<Function>(NodeVector{abs_node, constant}, ParameterVector{A});
     pass::Manager pass_manager;
 
@@ -97,12 +97,12 @@ TEST(zero_dim_tensor_elimination, zero_const_avg_pool)
 TEST(zero_dim_tensor_elimination, zero_const_pad)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::f32, zero_shape);
-    auto B = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto A = std::make_shared<op::Parameter>(f32, zero_shape);
+    auto B = std::make_shared<op::Parameter>(f32, Shape{});
 
     auto pad = std::make_shared<op::Pad>(A, B, Shape{2}, Shape{2}, Shape{0});
     auto abs_node = std::make_shared<op::Abs>(pad);
-    auto constant = std::make_shared<op::Constant>(element::i32, zero_shape, std::vector<string>{});
+    auto constant = std::make_shared<op::Constant>(i32, zero_shape, std::vector<string>{});
     auto f = std::make_shared<Function>(NodeVector{abs_node, constant}, ParameterVector{A, B});
     pass::Manager pass_manager;
 
@@ -116,12 +116,12 @@ TEST(zero_dim_tensor_elimination, zero_const_pad)
 TEST(zero_dim_tensor_elimination, zero_const_slice)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::f32, zero_shape);
-    auto B = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto A = std::make_shared<op::Parameter>(f32, zero_shape);
+    auto B = std::make_shared<op::Parameter>(f32, Shape{});
     auto slice = make_shared<op::Slice>(A, Coordinate{0}, Coordinate{0});
     auto pad = std::make_shared<op::Pad>(A, B, Shape{2}, Shape{2}, Shape{0});
     auto abs_node = std::make_shared<op::Abs>(pad);
-    auto constant = std::make_shared<op::Constant>(element::i32, zero_shape, std::vector<string>{});
+    auto constant = std::make_shared<op::Constant>(i32, zero_shape, std::vector<string>{});
     auto f = std::make_shared<Function>(NodeVector{abs_node, constant}, ParameterVector{A, B});
     pass::Manager pass_manager;
 

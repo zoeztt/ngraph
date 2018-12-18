@@ -26,29 +26,29 @@
 using namespace std;
 using namespace ngraph;
 
-string runtime::intelgpu::get_opencl_type_name(const element::Type& ngraph_type)
+string runtime::intelgpu::get_opencl_type_name(const Type& ngraph_type)
 {
-    if (ngraph_type == ngraph::element::i64)
+    if (ngraph_type == ngraph::i64)
     {
         return "long";
     }
-    else if (ngraph_type == ngraph::element::i32)
+    else if (ngraph_type == ngraph::i32)
     {
         return "int";
     }
-    else if (ngraph_type == ngraph::element::i16)
+    else if (ngraph_type == ngraph::i16)
     {
         return "short";
     }
-    else if (ngraph_type == ngraph::element::u16)
+    else if (ngraph_type == ngraph::u16)
     {
         return "ushort";
     }
-    else if (ngraph_type == ngraph::element::i8)
+    else if (ngraph_type == ngraph::i8)
     {
         return "char";
     }
-    else if (ngraph_type == ngraph::element::u8)
+    else if (ngraph_type == ngraph::u8)
     {
         return "uchar";
     }
@@ -312,7 +312,7 @@ void runtime::intelgpu::do_pad_operation(cldnn::topology& topology,
                                          const string& scalar_name,
                                          const string& output_name,
                                          const Shape& output_shape,
-                                         const element::Type& output_type,
+                                         const Type& output_type,
                                          const Shape& pad_below,
                                          const Shape& pad_interior)
 {
@@ -456,7 +456,7 @@ void runtime::intelgpu::do_max_pool_backprop_operation(cldnn::topology& topology
                                                        const Shape& delta_shape,
                                                        const string& output_name,
                                                        const Shape& output_shape,
-                                                       const element::Type& output_type,
+                                                       const Type& output_type,
                                                        const Shape& win_shape,
                                                        const Shape& win_stride,
                                                        const Shape& pad_below)
@@ -602,7 +602,7 @@ void runtime::intelgpu::do_avg_pool_backprop_operation(cldnn::topology& topology
                                                        const Shape& delta_shape,
                                                        const string& output_name,
                                                        const Shape& output_shape,
-                                                       const element::Type& output_type,
+                                                       const Type& output_type,
                                                        const Shape& win_shape,
                                                        const Shape& win_stride,
                                                        const Shape& pad_below,
@@ -739,7 +739,7 @@ void runtime::intelgpu::do_dot_operation(cldnn::topology& topology,
                                          const Shape& input1_shape,
                                          const string& output_name,
                                          const Shape& output_shape,
-                                         const element::Type& output_type,
+                                         const Type& output_type,
                                          size_t reduction_axes_count)
 {
     const cldnn::layout layout = IntelGPULayout::create_cldnn_layout(output_type, output_shape);
@@ -858,7 +858,7 @@ void runtime::intelgpu::do_slice_operation(cldnn::topology& topology,
                                            const Shape& input_shape,
                                            const string& output_name,
                                            const Shape& output_shape,
-                                           const element::Type& output_type,
+                                           const Type& output_type,
                                            const Coordinate& lower_bounds,
                                            const Coordinate& uppper_bounds,
                                            const Strides& strides)
@@ -903,7 +903,7 @@ void runtime::intelgpu::do_select_operation(cldnn::topology& topology,
                                             const Shape& input2_shape,
                                             const string& output_name,
                                             const Shape& output_shape,
-                                            const element::Type& output_type)
+                                            const Type& output_type)
 {
     const cldnn::layout layout = IntelGPULayout::create_cldnn_layout(output_type, output_shape);
     const string entry_point_name = "select_" + output_name;
@@ -945,12 +945,12 @@ void runtime::intelgpu::do_select_operation(cldnn::topology& topology,
 void runtime::intelgpu::do_logic_kernel(cldnn::topology& topology,
                                         const string& input0_name,
                                         const Shape& input0_shape,
-                                        const element::Type& input0_type,
+                                        const Type& input0_type,
                                         const string& input1_name,
                                         const Shape& input1_shape,
                                         const string& output_name,
                                         const Shape& output_shape,
-                                        const element::Type& output_type,
+                                        const Type& output_type,
                                         const string& operation)
 {
     const cldnn::layout layout = IntelGPULayout::create_cldnn_layout(output_type, output_shape);
@@ -992,12 +992,12 @@ void runtime::intelgpu::do_logic_kernel(cldnn::topology& topology,
 void runtime::intelgpu::do_eltwise_kernel(cldnn::topology& topology,
                                           const string& input0_name,
                                           const Shape& input0_shape,
-                                          const element::Type& input0_type,
+                                          const Type& input0_type,
                                           const string& input1_name,
                                           const Shape& input1_shape,
                                           const string& output_name,
                                           const Shape& output_shape,
-                                          const element::Type& output_type,
+                                          const Type& output_type,
                                           const string& operation)
 {
     const cldnn::layout layout = IntelGPULayout::create_cldnn_layout(output_type, output_shape);
@@ -1041,7 +1041,7 @@ void runtime::intelgpu::do_reverse_operation(cldnn::topology& topology,
                                              const Shape& input_shape,
                                              const string& output_name,
                                              const Shape& output_shape,
-                                             const element::Type& output_type,
+                                             const Type& output_type,
                                              const AxisSet& reversed_axes)
 {
     const cldnn::layout layout = IntelGPULayout::create_cldnn_layout(output_type, output_shape);
@@ -1078,7 +1078,7 @@ void runtime::intelgpu::do_not_operation(cldnn::topology& topology,
                                          const Shape& input_shape,
                                          const string& output_name,
                                          const Shape& output_shape,
-                                         const element::Type& output_type)
+                                         const Type& output_type)
 {
     const cldnn::layout layout = IntelGPULayout::create_cldnn_layout(output_type, output_shape);
     const string entry_point_name = "logic_" + output_name;
@@ -1112,10 +1112,10 @@ void runtime::intelgpu::do_not_operation(cldnn::topology& topology,
 void runtime::intelgpu::do_one_hot_operation(cldnn::topology& topology,
                                              const std::string& input_name,
                                              const Shape& input_shape,
-                                             const element::Type& input_type,
+                                             const Type& input_type,
                                              const std::string& output_name,
                                              const Shape& output_shape,
-                                             const element::Type& output_type,
+                                             const Type& output_type,
                                              const size_t one_hot_axis)
 {
     const cldnn::layout layout = IntelGPULayout::create_cldnn_layout(output_type, output_shape);
@@ -1176,10 +1176,10 @@ void runtime::intelgpu::do_one_hot_operation(cldnn::topology& topology,
 void runtime::intelgpu::do_convert_operation(cldnn::topology& topology,
                                              const string& input_name,
                                              const Shape& input_shape,
-                                             const element::Type& input_type,
+                                             const Type& input_type,
                                              const string& output_name,
                                              const Shape& output_shape,
-                                             const element::Type& output_type)
+                                             const Type& output_type)
 {
     const cldnn::layout layout = IntelGPULayout::create_cldnn_layout(output_type, output_shape);
     const string entry_point_name = "convert_" + output_name;
@@ -1220,7 +1220,7 @@ void runtime::intelgpu::do_sigmoid_backprop_operation(cldnn::topology& topology,
                                                       const Shape& delta_shape,
                                                       const string& output_name,
                                                       const Shape& output_shape,
-                                                      const element::Type& output_type)
+                                                      const Type& output_type)
 {
     const string entry_point_name = "op_sigmoid_backprop_" + output_name;
     codegen::CodeWriter writer;
@@ -1257,10 +1257,10 @@ void runtime::intelgpu::do_sigmoid_backprop_operation(cldnn::topology& topology,
 void runtime::intelgpu::do_custom_eltwise_operation(cldnn::topology& topology,
                                                     const string& input_name,
                                                     const Shape& input_shape,
-                                                    const element::Type& input_type,
+                                                    const Type& input_type,
                                                     const string& output_name,
                                                     const Shape& output_shape,
-                                                    const element::Type& output_type,
+                                                    const Type& output_type,
                                                     const CUSTOM_ELTWISE operation_name)
 {
     const string entry_point_name = "op_custom_eltwise_" + output_name;
@@ -1325,10 +1325,10 @@ void runtime::intelgpu::do_custom_eltwise_operation(cldnn::topology& topology,
 void runtime::intelgpu::do_arg_max_min_operation(cldnn::topology& topology,
                                                  const string& input_name,
                                                  const Shape& input_shape,
-                                                 const element::Type& input_type,
+                                                 const Type& input_type,
                                                  const string& output_name,
                                                  const Shape& output_shape,
-                                                 const element::Type& output_type,
+                                                 const Type& output_type,
                                                  const size_t reduction_axis,
                                                  const bool is_max)
 {
@@ -1405,10 +1405,10 @@ void runtime::intelgpu::do_arg_max_min_operation(cldnn::topology& topology,
 void runtime::intelgpu::do_negative_operation(cldnn::topology& topology,
                                               const string& input_name,
                                               const Shape& input_shape,
-                                              const element::Type& input_type,
+                                              const Type& input_type,
                                               const string& output_name,
                                               const Shape& output_shape,
-                                              const element::Type& output_type)
+                                              const Type& output_type)
 {
     const cldnn::layout layout = IntelGPULayout::create_cldnn_layout(output_type, output_shape);
     const string entry_point_name = "negative_" + output_name;

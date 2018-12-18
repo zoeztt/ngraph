@@ -64,14 +64,14 @@ vector<string> op::Constant::get_value_strings() const
 {
     vector<string> rc;
 
-    if (m_element_type == element::boolean)
+    if (m_element_type == boolean)
     {
         for (int value : get_vector<char>())
         {
             rc.push_back(to_string(value));
         }
     }
-    else if (m_element_type == element::bf16)
+    else if (m_element_type == bf16)
     {
         float temp = 0;
         for (bfloat16 value : get_vector<bfloat16>())
@@ -80,70 +80,70 @@ vector<string> op::Constant::get_value_strings() const
             rc.push_back(to_cpp_string(temp));
         }
     }
-    else if (m_element_type == element::f32)
+    else if (m_element_type == f32)
     {
         for (float value : get_vector<float>())
         {
             rc.push_back(to_cpp_string(value));
         }
     }
-    else if (m_element_type == element::f64)
+    else if (m_element_type == f64)
     {
         for (double value : get_vector<double>())
         {
             rc.push_back(to_cpp_string(value));
         }
     }
-    else if (m_element_type == element::i8)
+    else if (m_element_type == i8)
     {
         for (int value : get_vector<int8_t>())
         {
             rc.push_back(to_string(value));
         }
     }
-    else if (m_element_type == element::i16)
+    else if (m_element_type == i16)
     {
         for (int value : get_vector<int16_t>())
         {
             rc.push_back(to_string(value));
         }
     }
-    else if (m_element_type == element::i32)
+    else if (m_element_type == i32)
     {
         for (int32_t value : get_vector<int32_t>())
         {
             rc.push_back(to_string(value));
         }
     }
-    else if (m_element_type == element::i64)
+    else if (m_element_type == i64)
     {
         for (int64_t value : get_vector<int64_t>())
         {
             rc.push_back(to_string(value));
         }
     }
-    else if (m_element_type == element::u8)
+    else if (m_element_type == u8)
     {
         for (uint32_t value : get_vector<uint8_t>())
         {
             rc.push_back(to_string(value));
         }
     }
-    else if (m_element_type == element::u16)
+    else if (m_element_type == u16)
     {
         for (uint32_t value : get_vector<uint16_t>())
         {
             rc.push_back(to_string(value));
         }
     }
-    else if (m_element_type == element::u32)
+    else if (m_element_type == u32)
     {
         for (uint32_t value : get_vector<uint32_t>())
         {
             rc.push_back(to_string(value));
         }
     }
-    else if (m_element_type == element::u64)
+    else if (m_element_type == u64)
     {
         for (uint64_t value : get_vector<uint64_t>())
         {
@@ -194,7 +194,7 @@ namespace ngraph
     namespace op
     {
         template <>
-        void Constant::write_to_buffer<string>(const element::Type& target_type,
+        void Constant::write_to_buffer<string>(const Type& target_type,
                                                const Shape& target_shape,
                                                const vector<string>& source,
                                                void* target,

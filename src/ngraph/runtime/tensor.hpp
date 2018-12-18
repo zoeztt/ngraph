@@ -56,8 +56,8 @@ namespace ngraph
             ngraph::Strides get_strides() const;
 
             /// \brief Get tensor element type
-            /// \return element::Type
-            const element::Type& get_element_type() const;
+            /// \return Type
+            const Type& get_element_type() const;
 
             /// \brief Get number of elements in the tensor
             /// \return number of elements in the tensor

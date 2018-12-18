@@ -21,38 +21,28 @@
 
 using namespace ngraph;
 
-NGRAPH_API const element::Type element::dynamic(0, false, false, false, "dynamic");
-NGRAPH_API const element::Type element::boolean(8, false, true, false, "char");
-NGRAPH_API const element::Type element::bf16(16, true, true, false, "bfloat16");
-NGRAPH_API const element::Type element::f32(32, true, true, false, "float");
-NGRAPH_API const element::Type element::f64(64, true, true, false, "double");
-NGRAPH_API const element::Type element::i8(8, false, true, true, "int8_t");
-NGRAPH_API const element::Type element::i16(16, false, true, false, "int16_t");
-NGRAPH_API const element::Type element::i32(32, false, true, true, "int32_t");
-NGRAPH_API const element::Type element::i64(64, false, true, false, "int64_t");
-NGRAPH_API const element::Type element::u8(8, false, false, true, "uint8_t");
-NGRAPH_API const element::Type element::u16(16, false, false, false, "uint16_t");
-NGRAPH_API const element::Type element::u32(32, false, false, false, "uint32_t");
-NGRAPH_API const element::Type element::u64(64, false, false, false, "uint64_t");
+NGRAPH_API const Type ngraph::dynamic(0, false, false, false, "dynamic");
+NGRAPH_API const Type ngraph::boolean(8, false, true, false, "char");
+NGRAPH_API const Type ngraph::bf16(16, true, true, false, "bfloat16");
+NGRAPH_API const Type ngraph::f32(32, true, true, false, "float");
+NGRAPH_API const Type ngraph::f64(64, true, true, false, "double");
+NGRAPH_API const Type ngraph::i8(8, false, true, true, "int8_t");
+NGRAPH_API const Type ngraph::i16(16, false, true, false, "int16_t");
+NGRAPH_API const Type ngraph::i32(32, false, true, true, "int32_t");
+NGRAPH_API const Type ngraph::i64(64, false, true, false, "int64_t");
+NGRAPH_API const Type ngraph::u8(8, false, false, true, "uint8_t");
+NGRAPH_API const Type ngraph::u16(16, false, false, false, "uint16_t");
+NGRAPH_API const Type ngraph::u32(32, false, false, false, "uint32_t");
+NGRAPH_API const Type ngraph::u64(64, false, false, false, "uint64_t");
 
-std::vector<const element::Type*> element::Type::get_known_types()
+std::vector<const Type*> Type::get_known_types()
 {
-    std::vector<const element::Type*> rc = {&element::boolean,
-                                            &element::bf16,
-                                            &element::f32,
-                                            &element::f64,
-                                            &element::i8,
-                                            &element::i16,
-                                            &element::i32,
-                                            &element::i64,
-                                            &element::u8,
-                                            &element::u16,
-                                            &element::u32,
-                                            &element::u64};
+    std::vector<const Type*> rc = {
+        &boolean, &bf16, &f32, &f64, &i8, &i16, &i32, &i64, &u8, &u16, &u32, &u64};
     return rc;
 }
 
-element::Type::Type(
+Type::Type(
     size_t bitwidth, bool is_real, bool is_signed, bool is_quantized, const std::string& cname)
     : m_bitwidth{bitwidth}
     , m_is_real{is_real}
@@ -62,7 +52,7 @@ element::Type::Type(
 {
 }
 
-element::Type& element::Type::operator=(const element::Type& t)
+Type& Type::operator=(const Type& t)
 {
     m_bitwidth = t.m_bitwidth;
     m_is_real = t.m_is_real;
@@ -72,19 +62,19 @@ element::Type& element::Type::operator=(const element::Type& t)
     return *this;
 }
 
-const std::string& element::Type::c_type_string() const
+const std::string& Type::c_type_string() const
 {
     return m_cname;
 }
 
-bool element::Type::operator==(const element::Type& other) const
+bool Type::operator==(const Type& other) const
 {
     return m_bitwidth == other.m_bitwidth && m_is_real == other.m_is_real &&
            m_is_signed == other.m_is_signed && m_is_quantized == other.m_is_quantized &&
            m_cname == other.m_cname;
 }
 
-bool element::Type::operator<(const Type& other) const
+bool Type::operator<(const Type& other) const
 {
     size_t v1 = m_bitwidth << 3;
     v1 |= static_cast<size_t>(m_is_real ? 4 : 0);
@@ -99,12 +89,12 @@ bool element::Type::operator<(const Type& other) const
     return v1 < v2;
 }
 
-size_t element::Type::size() const
+size_t Type::size() const
 {
     return std::ceil(static_cast<float>(m_bitwidth) / 8.0f);
 }
 
-size_t element::Type::hash() const
+size_t Type::hash() const
 {
     size_t h1 = std::hash<size_t>{}(m_bitwidth);
     size_t h2 = std::hash<bool>{}(m_is_real);
@@ -115,89 +105,86 @@ size_t element::Type::hash() const
 
 namespace ngraph
 {
-    namespace element
+    template <>
+    const Type& from<char>()
     {
-        template <>
-        const Type& from<char>()
-        {
-            return boolean;
-        }
-        template <>
-        const Type& from<bool>()
-        {
-            return boolean;
-        }
-        template <>
-        const Type& from<float>()
-        {
-            return f32;
-        }
-        template <>
-        const Type& from<double>()
-        {
-            return f64;
-        }
-        template <>
-        const Type& from<int8_t>()
-        {
-            return i8;
-        }
-        template <>
-        const Type& from<int16_t>()
-        {
-            return i16;
-        }
-        template <>
-        const Type& from<int32_t>()
-        {
-            return i32;
-        }
-        template <>
-        const Type& from<int64_t>()
-        {
-            return i64;
-        }
-        template <>
-        const Type& from<uint8_t>()
-        {
-            return u8;
-        }
-        template <>
-        const Type& from<uint16_t>()
-        {
-            return u16;
-        }
-        template <>
-        const Type& from<uint32_t>()
-        {
-            return u32;
-        }
-        template <>
-        const Type& from<uint64_t>()
-        {
-            return u64;
-        }
-        template <>
-        const Type& from<ngraph::bfloat16>()
-        {
-            return bf16;
-        }
+        return boolean;
+    }
+    template <>
+    const Type& from<bool>()
+    {
+        return boolean;
+    }
+    template <>
+    const Type& from<float>()
+    {
+        return f32;
+    }
+    template <>
+    const Type& from<double>()
+    {
+        return f64;
+    }
+    template <>
+    const Type& from<int8_t>()
+    {
+        return i8;
+    }
+    template <>
+    const Type& from<int16_t>()
+    {
+        return i16;
+    }
+    template <>
+    const Type& from<int32_t>()
+    {
+        return i32;
+    }
+    template <>
+    const Type& from<int64_t>()
+    {
+        return i64;
+    }
+    template <>
+    const Type& from<uint8_t>()
+    {
+        return u8;
+    }
+    template <>
+    const Type& from<uint16_t>()
+    {
+        return u16;
+    }
+    template <>
+    const Type& from<uint32_t>()
+    {
+        return u32;
+    }
+    template <>
+    const Type& from<uint64_t>()
+    {
+        return u64;
+    }
+    template <>
+    const Type& from<ngraph::bfloat16>()
+    {
+        return bf16;
     }
 }
 
-std::ostream& element::operator<<(std::ostream& out, const element::Type& obj)
+std::ostream& ngraph::operator<<(std::ostream& out, const Type& obj)
 {
-    out << "element::Type{" << obj.m_bitwidth << ", " << obj.m_is_real << ", " << obj.m_is_signed
-        << ", " << obj.m_is_quantized << ", \"" << obj.m_cname << "\"}";
+    out << "Type{" << obj.m_bitwidth << ", " << obj.m_is_real << ", " << obj.m_is_signed << ", "
+        << obj.m_is_quantized << ", \"" << obj.m_cname << "\"}";
     return out;
 }
 
-bool element::Type::compatible(element::Type t) const
+bool Type::compatible(Type t) const
 {
     return (is_dynamic() || t.is_dynamic() || *this == t);
 }
 
-bool element::Type::merge(element::Type& dst, const element::Type& t1, const element::Type& t2)
+bool Type::merge(Type& dst, const Type& t1, const Type& t2)
 {
     if (t1.is_dynamic())
     {
@@ -220,7 +207,7 @@ bool element::Type::merge(element::Type& dst, const element::Type& t1, const ele
     }
 }
 
-bool element::Type::is_static() const
+bool Type::is_static() const
 {
     return (*this != dynamic);
 }

@@ -38,7 +38,7 @@ void op::Select::validate_and_infer_types()
 {
     NODE_VALIDATION_ASSERT(this,
                            get_input_element_type(0).is_dynamic() ||
-                               get_input_element_type(0) == element::boolean)
+                               get_input_element_type(0) == boolean)
         << "Argument 0 does not have boolean element type (element type: "
         << get_input_element_type(0) << ").";
 
@@ -49,10 +49,10 @@ void op::Select::validate_and_infer_types()
     NODE_VALIDATION_ASSERT(this, PartialShape::merge_into(result_shape, get_input_partial_shape(2)))
         << "Argument shapes are inconsistent.";
 
-    element::Type result_et;
+    Type result_et;
 
     NODE_VALIDATION_ASSERT(
-        this, element::Type::merge(result_et, get_input_element_type(1), get_input_element_type(2)))
+        this, Type::merge(result_et, get_input_element_type(1), get_input_element_type(2)))
         << "Argument 1 and 2 element types are inconsistent.";
 
     set_output_type(0, result_et, result_shape);

@@ -87,8 +87,8 @@ TEST(reshape_elimination, dot_transpose_to_dot_w_transpose_args)
 {
     Shape shape_w{2, 4};
     Shape shape_x{4, 1};
-    auto W = make_shared<op::Parameter>(element::f32, shape_w);
-    auto x = make_shared<op::Parameter>(element::f32, shape_x);
+    auto W = make_shared<op::Parameter>(f32, shape_w);
+    auto x = make_shared<op::Parameter>(f32, shape_x);
 
     auto dot = make_shared<op::Dot>(W, x);
     auto reshape_dot = std::make_shared<op::Reshape>(dot, AxisVector{1, 0}, Shape{1, 2});

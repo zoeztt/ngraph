@@ -52,25 +52,25 @@ bool runtime::intelgpu::IntelGPULayout::
 }
 
 cldnn::data_types
-    runtime::intelgpu::IntelGPULayout::get_cldnn_type(const element::Type& element_type)
+    runtime::intelgpu::IntelGPULayout::get_cldnn_type(const Type& element_type)
 {
-    if ((element_type == ngraph::element::i8) || (element_type == ngraph::element::boolean))
+    if ((element_type == ngraph::i8) || (element_type == ngraph::boolean))
     {
         return cldnn::data_types::i8;
     }
-    else if (element_type == ngraph::element::u8)
+    else if (element_type == ngraph::u8)
     {
         return cldnn::data_types::u8;
     }
-    else if (element_type == ngraph::element::i32)
+    else if (element_type == ngraph::i32)
     {
         return cldnn::data_types::i32;
     }
-    else if (element_type == ngraph::element::i64)
+    else if (element_type == ngraph::i64)
     {
         return cldnn::data_types::i64;
     }
-    else if (element_type == ngraph::element::f32)
+    else if (element_type == ngraph::f32)
     {
         return cldnn::data_types::f32;
     }
@@ -125,13 +125,13 @@ cldnn::tensor runtime::intelgpu::IntelGPULayout::create_cldnn_offset(const Shape
 }
 
 cldnn::layout runtime::intelgpu::IntelGPULayout::create_cldnn_layout(
-    const ngraph::element::Type& element_type, const Shape& element_shape)
+    const ngraph::Type& element_type, const Shape& element_shape)
 {
     const cldnn::format::type format = cldnn::format::bfyx;
     const cldnn::tensor tensor = create_cldnn_tensor(element_shape);
     cldnn::data_types data_type;
 
-    if ((element_type == ngraph::element::i16) || (element_type == ngraph::element::u16))
+    if ((element_type == ngraph::i16) || (element_type == ngraph::u16))
     {
         data_type = cldnn::data_types::f16;
     }

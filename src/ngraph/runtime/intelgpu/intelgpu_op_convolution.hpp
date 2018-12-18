@@ -38,7 +38,7 @@ namespace ngraph
                                           const Shape& filter_shape,
                                           const std::string& output_name,
                                           const Shape& output_shape,
-                                          const element::Type& output_type,
+                                          const Type& output_type,
                                           const CoordinateDiff& pad_below,
                                           const Strides& win_stride,
                                           const Strides& win_dilation,

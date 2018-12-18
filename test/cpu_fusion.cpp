@@ -88,9 +88,9 @@ TEST(cpu_fusion, gemm_pattern)
     Shape shape_w{2, 4};
     Shape shape_x{4, 1};
     Shape shape_b{1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_w);
-    auto B = make_shared<op::Parameter>(element::f32, shape_x);
-    auto C = make_shared<op::Parameter>(element::f32, shape_b);
+    auto A = make_shared<op::Parameter>(f32, shape_w);
+    auto B = make_shared<op::Parameter>(f32, shape_x);
+    auto C = make_shared<op::Parameter>(f32, shape_b);
 
     auto dot = make_shared<op::Dot>(A, B);
     auto broadcast = make_shared<op::Broadcast>(C, dot->get_shape(), AxisSet{0});
@@ -135,10 +135,10 @@ TEST(cpu_fusion, gemm_cpu_broadcast_row)
     Shape shapeA{3, 2};
     Shape shapeB{2, 3};
     Shape shapeC{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shapeA);
-    auto B = make_shared<op::Parameter>(element::f32, shapeB);
+    auto A = make_shared<op::Parameter>(f32, shapeA);
+    auto B = make_shared<op::Parameter>(f32, shapeB);
 
-    auto bias = op::Constant::create<float>(element::f32, Shape{2}, std::vector<float>{2.0f, 3.0f});
+    auto bias = op::Constant::create<float>(f32, Shape{2}, std::vector<float>{2.0f, 3.0f});
 
     auto cg = make_shared<op::MatmulBias>(
         A, B, bias, A->get_shape(), B->get_shape(), true, true, AxisSet{0});
@@ -147,9 +147,9 @@ TEST(cpu_fusion, gemm_cpu_broadcast_row)
 
     auto backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shapeB);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::f32, shapeC);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shapeB);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(f32, shapeC);
 
     vector<float> dataA{1.0f, 4.0f, 1.0f, 4.0f, 1.0f, 4.0f};
     vector<float> dataB{3.0f, 3.0f, 3.0f, 9.0f, 9.0f, 9.0f};
@@ -166,10 +166,10 @@ TEST(cpu_fusion, gemm_cpu_broadcast_column)
     Shape shapeA{3, 2};
     Shape shapeB{2, 3};
     Shape shapeC{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shapeA);
-    auto B = make_shared<op::Parameter>(element::f32, shapeB);
+    auto A = make_shared<op::Parameter>(f32, shapeA);
+    auto B = make_shared<op::Parameter>(f32, shapeB);
 
-    auto bias = op::Constant::create<float>(element::f32, Shape{2}, std::vector<float>{2.0f, 3.0f});
+    auto bias = op::Constant::create<float>(f32, Shape{2}, std::vector<float>{2.0f, 3.0f});
 
     auto cg = make_shared<op::MatmulBias>(
         A, B, bias, A->get_shape(), B->get_shape(), true, true, AxisSet{1});
@@ -178,9 +178,9 @@ TEST(cpu_fusion, gemm_cpu_broadcast_column)
 
     auto backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shapeB);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::f32, shapeC);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shapeB);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(f32, shapeC);
 
     vector<float> dataA{1.0f, 4.0f, 1.0f, 4.0f, 1.0f, 4.0f};
     vector<float> dataB{3.0f, 3.0f, 3.0f, 9.0f, 9.0f, 9.0f};
@@ -197,13 +197,13 @@ TEST(cpu_fusion, gemm_cpu_broadcast_matrix)
     Shape shapeA{3, 2};
     Shape shapeB{2, 3};
     Shape shapeC{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shapeA);
-    auto B = make_shared<op::Parameter>(element::f32, shapeB);
+    auto A = make_shared<op::Parameter>(f32, shapeA);
+    auto B = make_shared<op::Parameter>(f32, shapeB);
 
     auto reshape_w = make_shared<op::Reshape>(A, AxisVector{1, 0}, Shape{2, 3});
     auto reshape_x = make_shared<op::Reshape>(B, AxisVector{1, 0}, Shape{3, 2});
 
-    auto one = op::Constant::create<float>(element::f32, Shape{}, std::vector<float>{1.0f});
+    auto one = op::Constant::create<float>(f32, Shape{}, std::vector<float>{1.0f});
 
     auto broadcast = make_shared<op::Broadcast>(one, shapeC, AxisSet{0, 1});
     auto cg = make_shared<op::MatmulBias>(
@@ -213,9 +213,9 @@ TEST(cpu_fusion, gemm_cpu_broadcast_matrix)
 
     auto backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shapeB);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::f32, shapeC);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shapeB);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(f32, shapeC);
 
     vector<float> dataA{1.0f, 4.0f, 1.0f, 4.0f, 1.0f, 4.0f};
     vector<float> dataB{3.0f, 3.0f, 3.0f, 9.0f, 9.0f, 9.0f};
@@ -232,8 +232,8 @@ TEST(cpu_fusion, gemm_cpu_no_bias)
     auto shapeA = Shape{3, 2};
     auto shapeB = Shape{2, 3};
     auto shapeC = Shape{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shapeA);
-    auto B = make_shared<op::Parameter>(element::f32, shapeB);
+    auto A = make_shared<op::Parameter>(f32, shapeA);
+    auto B = make_shared<op::Parameter>(f32, shapeB);
 
     auto reshape_w = make_shared<op::Reshape>(A, AxisVector{1, 0}, Shape{2, 3});
     auto reshape_x = make_shared<op::Reshape>(B, AxisVector{1, 0}, Shape{3, 2});
@@ -245,9 +245,9 @@ TEST(cpu_fusion, gemm_cpu_no_bias)
 
     auto backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shapeB);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::f32, shapeC);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shapeB);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(f32, shapeC);
 
     vector<float> dataA{1.0f, 4.0f, 1.0f, 4.0f, 1.0f, 4.0f};
     vector<float> dataB{3.0f, 3.0f, 3.0f, 9.0f, 9.0f, 9.0f};
@@ -265,9 +265,9 @@ TEST(cpu_fusion, cpu_fusion_pass_basic)
     Shape shape_w{2, 4};
     Shape shape_x{4, 1};
     Shape shape_b{1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_w);
-    auto B = make_shared<op::Parameter>(element::f32, shape_x);
-    auto C = make_shared<op::Parameter>(element::f32, shape_b);
+    auto A = make_shared<op::Parameter>(f32, shape_w);
+    auto B = make_shared<op::Parameter>(f32, shape_x);
+    auto C = make_shared<op::Parameter>(f32, shape_b);
 
     auto dot = make_shared<op::Dot>(A, B);
     auto broadcast = make_shared<op::Broadcast>(C, dot->get_shape(), AxisSet{0});
@@ -287,9 +287,9 @@ TEST(cpu_fusion, commutative_matmul_bias)
     Shape shape_w{2, 4};
     Shape shape_x{4, 1};
     Shape shape_b{1};
-    auto A = make_shared<op::Parameter>(element::f32, shape_w);
-    auto B = make_shared<op::Parameter>(element::f32, shape_x);
-    auto C = make_shared<op::Parameter>(element::f32, shape_b);
+    auto A = make_shared<op::Parameter>(f32, shape_w);
+    auto B = make_shared<op::Parameter>(f32, shape_x);
+    auto C = make_shared<op::Parameter>(f32, shape_b);
 
     auto dot = make_shared<op::Dot>(A, B);
     auto broadcast = make_shared<op::Broadcast>(C, dot->get_shape(), AxisSet{0});
@@ -308,9 +308,9 @@ TEST(cpu_fusion, cpu_fusion_pass_matmul_bias)
     Shape shape_w{2, 4};
     Shape shape_x{4, 1};
     Shape shape_b{1};
-    auto W = make_shared<op::Parameter>(element::f32, shape_w);
-    auto x = make_shared<op::Parameter>(element::f32, shape_x);
-    auto b = make_shared<op::Parameter>(element::f32, shape_b);
+    auto W = make_shared<op::Parameter>(f32, shape_w);
+    auto x = make_shared<op::Parameter>(f32, shape_x);
+    auto b = make_shared<op::Parameter>(f32, shape_b);
 
     auto mmb = std::make_shared<op::MatmulBias>(
         W, x, nullptr, W->get_shape(), x->get_shape(), false, false);
@@ -332,8 +332,8 @@ TEST(cpu_fusion, cpu_fusion_pass_matmul_no_bias)
 {
     Shape shape_w{4, 2};
     Shape shape_x{1, 4};
-    auto W = make_shared<op::Parameter>(element::f32, shape_w);
-    auto x = make_shared<op::Parameter>(element::f32, shape_x);
+    auto W = make_shared<op::Parameter>(f32, shape_w);
+    auto x = make_shared<op::Parameter>(f32, shape_x);
 
     auto reshape_w = std::make_shared<op::Reshape>(W, AxisVector{1, 0}, Shape{2, 4});
     auto reshape_x = std::make_shared<op::Reshape>(x, AxisVector{1, 0}, Shape{4, 1});
@@ -382,10 +382,10 @@ TEST(cpu_fusion, fuse_fprop_bn)
 
 TEST(cpu_fusion, zero_padded_reshaped_conv)
 {
-    auto X = make_shared<op::Parameter>(element::f32, Shape{1, 2, 2, 1});
-    auto F = make_shared<op::Parameter>(element::f32, Shape{1, 1, 1, 1});
+    auto X = make_shared<op::Parameter>(f32, Shape{1, 2, 2, 1});
+    auto F = make_shared<op::Parameter>(f32, Shape{1, 1, 1, 1});
 
-    auto pad_value = op::Constant::create<float>(element::f32, Shape{}, std::vector<float>{0.0f});
+    auto pad_value = op::Constant::create<float>(f32, Shape{}, std::vector<float>{0.0f});
 
     auto pad =
         make_shared<op::Pad>(X, pad_value, Shape{0, 1, 0, 0}, Shape{0, 0, 1, 0}, Shape{0, 0, 0, 0});
@@ -412,10 +412,10 @@ TEST(cpu_fusion, zero_padded_reshaped_conv)
 
 TEST(cpu_fusion, zero_padded_conv)
 {
-    auto X = make_shared<op::Parameter>(element::f32, Shape{1, 1, 2, 2});
-    auto F = make_shared<op::Parameter>(element::f32, Shape{1, 1, 1, 1});
+    auto X = make_shared<op::Parameter>(f32, Shape{1, 1, 2, 2});
+    auto F = make_shared<op::Parameter>(f32, Shape{1, 1, 1, 1});
 
-    auto pad_value = op::Constant::create<float>(element::f32, Shape{}, std::vector<float>{0.0f});
+    auto pad_value = op::Constant::create<float>(f32, Shape{}, std::vector<float>{0.0f});
 
     auto pad =
         make_shared<op::Pad>(X, pad_value, Shape{0, 0, 0, 1}, Shape{0, 0, 1, 0}, Shape{0, 0, 0, 0});
@@ -440,10 +440,10 @@ TEST(cpu_fusion, zero_padded_conv)
 
 TEST(cpu_fusion, non_zero_padded_conv)
 {
-    auto X = make_shared<op::Parameter>(element::f32, Shape{1, 1, 2, 2});
-    auto F = make_shared<op::Parameter>(element::f32, Shape{1, 1, 1, 1});
+    auto X = make_shared<op::Parameter>(f32, Shape{1, 1, 2, 2});
+    auto F = make_shared<op::Parameter>(f32, Shape{1, 1, 1, 1});
 
-    auto pad_value = op::Constant::create<float>(element::f32, Shape{}, std::vector<float>{1.0f});
+    auto pad_value = op::Constant::create<float>(f32, Shape{}, std::vector<float>{1.0f});
 
     auto pad =
         make_shared<op::Pad>(X, pad_value, Shape{0, 0, 0, 1}, Shape{0, 0, 1, 0}, Shape{0, 0, 0, 0});
@@ -468,10 +468,10 @@ TEST(cpu_fusion, non_zero_padded_conv)
 
 TEST(cpu_fusion, zero_padded_conv_backprop_filters)
 {
-    auto X = make_shared<op::Parameter>(element::f32, Shape{1, 1, 2, 2});
-    auto F = make_shared<op::Parameter>(element::f32, Shape{1, 1, 2, 2});
+    auto X = make_shared<op::Parameter>(f32, Shape{1, 1, 2, 2});
+    auto F = make_shared<op::Parameter>(f32, Shape{1, 1, 2, 2});
 
-    auto pad_value = op::Constant::create<float>(element::f32, Shape{}, std::vector<float>{0.0f});
+    auto pad_value = op::Constant::create<float>(f32, Shape{}, std::vector<float>{0.0f});
 
     auto pad =
         make_shared<op::Pad>(X, pad_value, Shape{0, 0, 0, 1}, Shape{0, 0, 1, 0}, Shape{0, 0, 0, 0});
@@ -550,14 +550,14 @@ struct ConvolutionBiasTestData
         h = w;
 
         data_shape = Shape{n, c, h, w};
-        data = make_shared<op::Parameter>(element::f32, data_shape);
+        data = make_shared<op::Parameter>(f32, data_shape);
         weights_shape = Shape{filter, c, kernel_size, kernel_size};
-        weights = make_shared<op::Parameter>(element::f32, weights_shape);
+        weights = make_shared<op::Parameter>(f32, weights_shape);
         bias_shape = Shape{filter};
-        bias = make_shared<op::Parameter>(element::f32, bias_shape);
+        bias = make_shared<op::Parameter>(f32, bias_shape);
         result_shape = Shape{n, filter, 1, 1};
 
-        data_val = backend->create_tensor(element::f32, data_shape);
+        data_val = backend->create_tensor(f32, data_shape);
         copy_data(data_val,
                   vector<float>{-0.67765152f,
                                 0.10073948f,
@@ -568,7 +568,7 @@ struct ConvolutionBiasTestData
                                 -0.80642909f,
                                 1.22033095f,
                                 2.23235631f});
-        weights_val = backend->create_tensor(element::f32, weights_shape);
+        weights_val = backend->create_tensor(f32, weights_shape);
         copy_data(weights_val,
                   vector<float>{0.20070229f,
                                 -0.54968649f,
@@ -579,23 +579,23 @@ struct ConvolutionBiasTestData
                                 0.14867957f,
                                 -0.49851316f,
                                 -0.84815776f});
-        bias_val = backend->create_tensor(element::f32, bias_shape);
+        bias_val = backend->create_tensor(f32, bias_shape);
         copy_data(bias_val, vector<float>{0.07811152f});
 
-        result_val = backend->create_tensor(element::f32, result_shape);
+        result_val = backend->create_tensor(f32, result_shape);
         copy_data(result_val, vector<float>{0});
 
-        delta = make_shared<op::Parameter>(element::f32, result_shape);
-        delta_val = backend->create_tensor(element::f32, result_shape);
+        delta = make_shared<op::Parameter>(f32, result_shape);
+        delta_val = backend->create_tensor(f32, result_shape);
         copy_data(delta_val, vector<float>{-2.58936238f});
 
-        d_data_val = backend->create_tensor(element::f32, data_shape);
+        d_data_val = backend->create_tensor(f32, data_shape);
         copy_data(d_data_val, vector<float>{0, 0, 0, 0, 0, 0, 0, 0, 0});
 
-        d_weights_val = backend->create_tensor(element::f32, weights_shape);
+        d_weights_val = backend->create_tensor(f32, weights_shape);
         copy_data(d_weights_val, vector<float>{0, 0, 0, 0, 0, 0, 0, 0, 0});
 
-        d_bias_val = backend->create_tensor(element::f32, bias_shape);
+        d_bias_val = backend->create_tensor(f32, bias_shape);
         copy_data(d_bias_val, vector<float>{0});
 
         expected_result_val = vector<float>{-2.58936238f};
@@ -681,10 +681,10 @@ TEST(cpu_fusion, conv_bias_bprop_n1c1h3w3)
 TEST(cpu_fusion, conv_bias_bprop)
 {
     Shape shape{2, 2, 1, 1};
-    auto data_batch = std::make_shared<op::Parameter>(element::f32, shape);
-    auto filters = std::make_shared<op::Parameter>(element::f32, shape);
-    auto delta = std::make_shared<op::Parameter>(element::f32, shape);
-    auto bias = make_shared<op::Parameter>(element::f32, Shape{shape[0]});
+    auto data_batch = std::make_shared<op::Parameter>(f32, shape);
+    auto filters = std::make_shared<op::Parameter>(f32, shape);
+    auto delta = std::make_shared<op::Parameter>(f32, shape);
+    auto bias = make_shared<op::Parameter>(f32, Shape{shape[0]});
     auto pbroadcast = std::make_shared<op::Broadcast>(bias, shape, AxisSet{1, 2, 3});
     auto conv = std::make_shared<op::Convolution>(data_batch, filters);
     auto conv_bias = std::make_shared<op::Add>(conv, pbroadcast);
@@ -711,13 +711,13 @@ TEST(cpu_fusion, conv_bias_bprop)
 TEST(cpu_fusion, batchnorm_fprop_relu_b1c2h2w2)
 {
     auto input_shape = Shape{1, 2, 2, 2};
-    auto input = make_shared<op::Parameter>(element::f32, input_shape);
+    auto input = make_shared<op::Parameter>(f32, input_shape);
     auto mean_shape = Shape{2};
     auto var_shape = Shape{2};
     auto gamma_shape = Shape{2};
-    auto gamma = make_shared<op::Parameter>(element::f32, gamma_shape);
+    auto gamma = make_shared<op::Parameter>(f32, gamma_shape);
     auto beta_shape = Shape{2};
-    auto beta = make_shared<op::Parameter>(element::f32, beta_shape);
+    auto beta = make_shared<op::Parameter>(f32, beta_shape);
     double eps = 0.001;
     auto shape_r = Shape{1, 2, 2, 2};
     auto bn = make_shared<op::BatchNormTraining>(input, gamma, beta, eps);
@@ -745,7 +745,7 @@ TEST(cpu_fusion, batchnorm_fprop_relu_b1c2h2w2)
     auto backend = runtime::Backend::create("CPU");
 
     // Create some tensors for input/output
-    auto input_t = backend->create_tensor(element::f32, Shape{1, 2, 2, 2});
+    auto input_t = backend->create_tensor(f32, Shape{1, 2, 2, 2});
 
     copy_data(input_t,
               vector<float>{0.54881352f,
@@ -756,17 +756,17 @@ TEST(cpu_fusion, batchnorm_fprop_relu_b1c2h2w2)
                             0.64589411f,
                             0.4375872f,
                             0.89177299f});
-    auto gamma_t = backend->create_tensor(element::f32, gamma_shape);
+    auto gamma_t = backend->create_tensor(f32, gamma_shape);
     copy_data(gamma_t, vector<float>{1.0f, 1.0f});
-    auto beta_t = backend->create_tensor(element::f32, beta_shape);
+    auto beta_t = backend->create_tensor(f32, beta_shape);
     copy_data(beta_t, vector<float>{0.0f, 0.0f});
-    auto bn_output = backend->create_tensor(element::f32, shape_r);
-    auto result_mean = backend->create_tensor(element::f32, mean_shape);
-    auto result_variance = backend->create_tensor(element::f32, var_shape);
+    auto bn_output = backend->create_tensor(f32, shape_r);
+    auto result_mean = backend->create_tensor(f32, mean_shape);
+    auto result_variance = backend->create_tensor(f32, var_shape);
 
-    auto bn_output_bnr = backend->create_tensor(element::f32, shape_r);
-    auto result_mean_bnr = backend->create_tensor(element::f32, mean_shape);
-    auto result_variance_bnr = backend->create_tensor(element::f32, var_shape);
+    auto bn_output_bnr = backend->create_tensor(f32, shape_r);
+    auto result_mean_bnr = backend->create_tensor(f32, mean_shape);
+    auto result_variance_bnr = backend->create_tensor(f32, var_shape);
 
     backend->call_with_validate(backend->compile(f),
                                 {bn_output,
@@ -788,13 +788,13 @@ static void test_batchnorm_fprop_relu(Shape input_shape)
 {
     auto make_bn_relu_function = [&]() {
         auto c_axis = input_shape[1];
-        auto input = make_shared<op::Parameter>(element::f32, input_shape);
+        auto input = make_shared<op::Parameter>(f32, input_shape);
         auto mean_shape = Shape{c_axis};
         auto var_shape = Shape{c_axis};
         auto gamma_shape = Shape{c_axis};
-        auto gamma = make_shared<op::Parameter>(element::f32, gamma_shape);
+        auto gamma = make_shared<op::Parameter>(f32, gamma_shape);
         auto beta_shape = Shape{c_axis};
-        auto beta = make_shared<op::Parameter>(element::f32, beta_shape);
+        auto beta = make_shared<op::Parameter>(f32, beta_shape);
         double eps = 0.001;
         auto shape_r = input_shape;
         auto bn = make_shared<op::BatchNormTraining>(eps, gamma, beta, input);
@@ -836,8 +836,8 @@ TEST(cpu_fusion, batchnorm_fprop_relu)
 
 TEST(cpu_fusion, fuse_conv_relu)
 {
-    auto A = std::make_shared<op::Parameter>(element::f32, Shape{2, 1, 2, 2});
-    auto weights = std::make_shared<op::Parameter>(element::f32, Shape{1, 1, 2, 2});
+    auto A = std::make_shared<op::Parameter>(f32, Shape{2, 1, 2, 2});
+    auto weights = std::make_shared<op::Parameter>(f32, Shape{1, 1, 2, 2});
     auto convolution = std::make_shared<op::Convolution>(A, weights, Strides{1, 1}, Strides{1, 1});
     auto relu = std::make_shared<op::Relu>(convolution);
     auto abs_node =
@@ -858,8 +858,8 @@ TEST(cpu_fusion, conv_relu_n2c1h2w2_2)
     Shape shape_weights{1, 1, 2, 2};
 
     auto make_int_function = [shape_a, shape_weights]() {
-        auto A = std::make_shared<op::Parameter>(element::f32, shape_a);
-        auto weights = std::make_shared<op::Parameter>(element::f32, shape_weights);
+        auto A = std::make_shared<op::Parameter>(f32, shape_a);
+        auto weights = std::make_shared<op::Parameter>(f32, shape_weights);
         auto conv = std::make_shared<op::Convolution>(A, weights, Strides{2, 2}, Strides{1, 1});
         auto relu = std::make_shared<op::Relu>(conv);
         auto f = make_shared<Function>(NodeVector{relu}, ParameterVector{A, weights});
@@ -869,8 +869,8 @@ TEST(cpu_fusion, conv_relu_n2c1h2w2_2)
     auto int_f = make_int_function();
 
     auto make_cpu_function = [shape_a, shape_weights]() {
-        auto A = std::make_shared<op::Parameter>(element::f32, shape_a);
-        auto weights = std::make_shared<op::Parameter>(element::f32, shape_weights);
+        auto A = std::make_shared<op::Parameter>(f32, shape_a);
+        auto weights = std::make_shared<op::Parameter>(f32, shape_weights);
         auto conv = std::make_shared<op::Convolution>(A, weights, Strides{2, 2}, Strides{1, 1});
         auto conv_relu = std::make_shared<op::ConvolutionRelu>(conv);
         auto f = make_shared<Function>(NodeVector{conv_relu}, ParameterVector{A, weights});
@@ -901,10 +901,10 @@ TEST(cpu_fusion, conv_bias_relu_n2c1h2w2_2)
     Shape shape_bias{1};
 
     auto make_int_function = [shape_a, shape_weights, shape_bias]() {
-        auto A = std::make_shared<op::Parameter>(element::f32, shape_a);
-        auto weights = std::make_shared<op::Parameter>(element::f32, shape_weights);
+        auto A = std::make_shared<op::Parameter>(f32, shape_a);
+        auto weights = std::make_shared<op::Parameter>(f32, shape_weights);
         auto conv = std::make_shared<op::Convolution>(A, weights, Strides{2, 2}, Strides{1, 1});
-        auto bias = std::make_shared<op::Parameter>(element::f32, shape_bias);
+        auto bias = std::make_shared<op::Parameter>(f32, shape_bias);
         auto conv_bias =
             conv + std::make_shared<op::Broadcast>(bias, conv->get_shape(), AxisSet{0, 2, 3});
         auto relu = std::make_shared<op::Relu>(conv_bias);
@@ -915,9 +915,9 @@ TEST(cpu_fusion, conv_bias_relu_n2c1h2w2_2)
     auto int_f = make_int_function();
 
     auto make_cpu_function = [shape_a, shape_weights, shape_bias]() {
-        auto A = std::make_shared<op::Parameter>(element::f32, shape_a);
-        auto weights = std::make_shared<op::Parameter>(element::f32, shape_weights);
-        auto bias = std::make_shared<op::Parameter>(element::f32, shape_bias);
+        auto A = std::make_shared<op::Parameter>(f32, shape_a);
+        auto weights = std::make_shared<op::Parameter>(f32, shape_weights);
+        auto bias = std::make_shared<op::Parameter>(f32, shape_bias);
         auto conv = std::make_shared<op::Convolution>(A, weights, Strides{2, 2}, Strides{1, 1});
         auto conv_bias_relu = std::make_shared<op::ConvolutionBias>(conv, bias, true);
         auto f =
@@ -950,17 +950,17 @@ TEST(cpu_fusion, conv_horizontal_fusion)
     Shape shape_bias{1};
 
     auto make_function = [shape_a, shape_weights, shape_bias]() {
-        auto A = std::make_shared<op::Parameter>(element::f32, shape_a);
-        auto weights1 = std::make_shared<op::Parameter>(element::f32, shape_weights);
+        auto A = std::make_shared<op::Parameter>(f32, shape_a);
+        auto weights1 = std::make_shared<op::Parameter>(f32, shape_weights);
         auto conv1 = std::make_shared<op::Convolution>(A, weights1, Strides{2, 2}, Strides{1, 1});
-        auto bias1 = std::make_shared<op::Parameter>(element::f32, shape_bias);
+        auto bias1 = std::make_shared<op::Parameter>(f32, shape_bias);
         auto conv_bias1 =
             conv1 + std::make_shared<op::Broadcast>(bias1, conv1->get_shape(), AxisSet{0, 2, 3});
         auto relu1 = std::make_shared<op::Relu>(conv_bias1);
 
-        auto weights2 = std::make_shared<op::Parameter>(element::f32, shape_weights);
+        auto weights2 = std::make_shared<op::Parameter>(f32, shape_weights);
         auto conv2 = std::make_shared<op::Convolution>(A, weights2, Strides{2, 2}, Strides{1, 1});
-        auto bias2 = std::make_shared<op::Parameter>(element::f32, shape_bias);
+        auto bias2 = std::make_shared<op::Parameter>(f32, shape_bias);
         auto conv_bias2 =
             conv2 + std::make_shared<op::Broadcast>(bias2, conv2->get_shape(), AxisSet{0, 2, 3});
         auto relu2 = std::make_shared<op::Relu>(conv_bias2);
@@ -998,13 +998,13 @@ TEST(cpu_fusion, conv_horizontal_fusion)
 // Need to ensure that it is fused only when in-place buffer allocation is feasible
 shared_ptr<Function> gen_conv_bias_add(bool param_input, bool result_output)
 {
-    auto A = make_shared<op::Parameter>(element::f32, Shape{2, 1, 2, 2});
-    auto weights = make_shared<op::Parameter>(element::f32, Shape{1, 1, 1, 1});
-    auto bias = make_shared<op::Parameter>(element::f32, Shape{1});
+    auto A = make_shared<op::Parameter>(f32, Shape{2, 1, 2, 2});
+    auto weights = make_shared<op::Parameter>(f32, Shape{1, 1, 1, 1});
+    auto bias = make_shared<op::Parameter>(f32, Shape{1});
     auto conv = make_shared<op::Convolution>(A, weights, Strides{1, 1}, Strides{1, 1});
     auto bias_broadcast = make_shared<op::Broadcast>(bias, conv->get_shape(), AxisSet{0, 2, 3});
     auto convbias = conv + bias_broadcast;
-    auto B = make_shared<op::Parameter>(element::f32, Shape{2, 1, 2, 2});
+    auto B = make_shared<op::Parameter>(f32, Shape{2, 1, 2, 2});
     auto abs_B = make_shared<op::Abs>(B);
     auto add =
         param_input ? make_shared<op::Add>(convbias, B) : make_shared<op::Add>(convbias, abs_B);
@@ -1051,10 +1051,10 @@ TEST(cpu_fusion, conv_bias_add)
 // Need to ensure that it is fused only when in-place buffer allocation is feasible
 shared_ptr<Function> gen_conv_add(bool param_input, bool result_output)
 {
-    auto A = make_shared<op::Parameter>(element::f32, Shape{2, 1, 2, 2});
-    auto weights = make_shared<op::Parameter>(element::f32, Shape{1, 1, 1, 1});
+    auto A = make_shared<op::Parameter>(f32, Shape{2, 1, 2, 2});
+    auto weights = make_shared<op::Parameter>(f32, Shape{1, 1, 1, 1});
     auto conv = make_shared<op::Convolution>(A, weights, Strides{1, 1}, Strides{1, 1});
-    auto B = make_shared<op::Parameter>(element::f32, Shape{2, 1, 2, 2});
+    auto B = make_shared<op::Parameter>(f32, Shape{2, 1, 2, 2});
     auto abs_B = make_shared<op::Abs>(B);
     auto add = param_input ? make_shared<op::Add>(conv, B) : make_shared<op::Add>(conv, abs_B);
     auto abs = make_shared<op::Abs>(add);
@@ -1109,8 +1109,8 @@ shared_ptr<Function> gen_groupconv_batchnorm(const bool add_goe,
                                              const Shape shape_out,
                                              const size_t groups)
 {
-    auto input = make_shared<op::Parameter>(element::f32, shape_in);
-    auto weights = make_shared<op::Parameter>(element::f32, shape_weights);
+    auto input = make_shared<op::Parameter>(f32, shape_in);
+    auto weights = make_shared<op::Parameter>(f32, shape_weights);
 
     unsigned long OC = shape_out.at(1);
     Shape shape_bn{OC};
@@ -1125,10 +1125,10 @@ shared_ptr<Function> gen_groupconv_batchnorm(const bool add_goe,
                                                         shape_out);
 
     double eps = 0.001;
-    auto gamma = std::make_shared<op::Parameter>(element::f32, shape_bn);
-    auto beta = std::make_shared<op::Parameter>(element::f32, shape_bn);
-    auto mean = std::make_shared<op::Parameter>(element::f32, shape_bn);
-    auto var = std::make_shared<op::Parameter>(element::f32, shape_bn);
+    auto gamma = std::make_shared<op::Parameter>(f32, shape_bn);
+    auto beta = std::make_shared<op::Parameter>(f32, shape_bn);
+    auto mean = std::make_shared<op::Parameter>(f32, shape_bn);
+    auto var = std::make_shared<op::Parameter>(f32, shape_bn);
 
     auto goe_bn = std::make_shared<op::GetOutputElement>(group_conv, 0);
 
@@ -1250,9 +1250,9 @@ std::vector<shared_ptr<runtime::Tensor>> rnn_matrix_fusion_eval(const size_t tim
                                                                 const vector<float>& bias_val,
                                                                 const bool enable_pass)
 {
-    auto data = make_shared<op::Parameter>(element::f32, data_shape);
-    auto weights = make_shared<op::Parameter>(element::f32, weights_shape);
-    auto bias = make_shared<op::Parameter>(element::f32, bias_shape);
+    auto data = make_shared<op::Parameter>(f32, data_shape);
+    auto weights = make_shared<op::Parameter>(f32, weights_shape);
+    auto bias = make_shared<op::Parameter>(f32, bias_shape);
 
     // results from each time step
     NodeVector results;
@@ -1285,16 +1285,16 @@ std::vector<shared_ptr<runtime::Tensor>> rnn_matrix_fusion_eval(const size_t tim
     auto backend = runtime::Backend::create("CPU");
 
     shared_ptr<runtime::Tensor> data_tensor =
-        backend->create_tensor(element::f32, data->get_shape());
+        backend->create_tensor(f32, data->get_shape());
     shared_ptr<runtime::Tensor> weights_tensor =
-        backend->create_tensor(element::f32, weights->get_shape());
+        backend->create_tensor(f32, weights->get_shape());
     shared_ptr<runtime::Tensor> bias_tensor =
-        backend->create_tensor(element::f32, bias->get_shape());
+        backend->create_tensor(f32, bias->get_shape());
 
     std::vector<shared_ptr<runtime::Tensor>> result_tensors;
     for (auto r : results)
     {
-        result_tensors.push_back(backend->create_tensor(element::f32, r->get_shape()));
+        result_tensors.push_back(backend->create_tensor(f32, r->get_shape()));
     }
 
     copy_data(data_tensor, data_val);
@@ -1357,10 +1357,10 @@ TEST(cpu_fusion, rnn_fusion_from_json_model)
 
 TEST(cpu_fusion, weight_fusion)
 {
-    auto param = std::make_shared<op::Parameter>(element::f32, Shape{64});
+    auto param = std::make_shared<op::Parameter>(f32, Shape{64});
     auto reshape_conv =
         std::make_shared<ngraph::op::Reshape>(param, AxisVector{0}, Shape{16, 4, 1, 1});
-    auto data_conv = std::make_shared<op::Parameter>(element::f32, Shape{16, 4, 7, 7});
+    auto data_conv = std::make_shared<op::Parameter>(f32, Shape{16, 4, 7, 7});
     auto tvt = reshape_conv->get_outputs().at(0).get_tensor_ptr().get();
     auto lt_desc = std::make_shared<runtime::cpu::LayoutDescriptor>(*tvt);
     auto cvt_lt_conv = std::make_shared<runtime::cpu::op::ConvertLayout>(reshape_conv, lt_desc);
@@ -1369,7 +1369,7 @@ TEST(cpu_fusion, weight_fusion)
 
     auto reshape_conv_bprop =
         std::make_shared<op::Reshape>(param, AxisVector{0}, Shape{16, 4, 1, 1});
-    auto dummy_arg_conv_bprop = std::make_shared<op::Parameter>(element::f32, Shape{1, 16, 7, 7});
+    auto dummy_arg_conv_bprop = std::make_shared<op::Parameter>(f32, Shape{1, 16, 7, 7});
     auto tvt_bprop = reshape_conv_bprop->get_outputs().at(0).get_tensor_ptr().get();
     auto lt_desc_bprop = std::make_shared<runtime::cpu::LayoutDescriptor>(*tvt_bprop);
     auto cvt_lt_conv_bprop =
@@ -1404,10 +1404,10 @@ TEST(cpu_fusion, weight_fusion)
 TEST(cpu_fusion, max_pool_with_indices)
 {
     Shape shape_a{10, 3, 28, 28};
-    auto input = std::make_shared<op::Parameter>(element::f32, shape_a);
+    auto input = std::make_shared<op::Parameter>(f32, shape_a);
     Shape window_shape{2, 2};
     auto max_pool = std::make_shared<op::MaxPool>(input, window_shape);
-    auto C = std::make_shared<op::Parameter>(element::f32, max_pool->get_shape());
+    auto C = std::make_shared<op::Parameter>(f32, max_pool->get_shape());
 
     ngraph::autodiff::Adjoints adjoints(NodeVector{max_pool}, NodeVector{C});
 
@@ -1453,18 +1453,18 @@ TEST(cpu_fusion, backwards_maxpool_with_indices_n4_c1_hw4_2x2_max)
 {
     Shape shape_a{1, 4, 4, 4};
     Shape maxpool_shape{1, 4, 3, 3};
-    auto A = std::make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = std::make_shared<op::Parameter>(f32, shape_a);
     Shape window_shape{2, 2};
     auto window_movement_strides = Strides{1, 1};
     auto maxpool = std::make_shared<op::MaxPool>(A, window_shape, window_movement_strides);
     auto f = std::make_shared<Function>(maxpool, ParameterVector{A});
 
     auto backend = runtime::Backend::create("CPU");
-    shared_ptr<runtime::Tensor> ep = backend->create_tensor(element::f32, maxpool_shape);
+    shared_ptr<runtime::Tensor> ep = backend->create_tensor(f32, maxpool_shape);
     vector<float> dataEp(shape_size(maxpool_shape), 4);
 
-    shared_ptr<runtime::Tensor> input = backend->create_tensor(element::f32, shape_a);
-    shared_ptr<runtime::Tensor> output = backend->create_tensor(element::f32, shape_a);
+    shared_ptr<runtime::Tensor> input = backend->create_tensor(f32, shape_a);
+    shared_ptr<runtime::Tensor> output = backend->create_tensor(f32, shape_a);
 
     vector<float> dataInput{11.f, 31.f, 40.f, 47.f, 13.f, 61.f, 48.f, 59.f, 17.f, 39.f, 64.f,
                             62.f, 45.f, 55.f, 36.f, 19.f, 65.f, 33.f, 49.f, 30.f, 56.f, 41.f,
@@ -1483,7 +1483,7 @@ TEST(cpu_fusion, backwards_maxpool_with_indices_n4_c1_hw4_2x2_max)
     copy_data(ep, dataEp);
     copy_data(input, dataInput);
 
-    auto C = std::make_shared<op::Parameter>(element::f32, maxpool_shape);
+    auto C = std::make_shared<op::Parameter>(f32, maxpool_shape);
     auto df = autodiff::backprop_function(f);
 
     {
@@ -1504,7 +1504,7 @@ TEST(cpu_fusion, backwards_maxpool_with_indices_n4_c1_hw4_2x2_max)
 TEST(cpu_fusion, loop_kernel_one_input_one_output_halide)
 {
     Shape shapeA{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shapeA);
+    auto A = make_shared<op::Parameter>(f32, shapeA);
     auto relu_a = make_shared<op::Relu>(A);
     auto relu_relu_a = make_shared<op::Relu>(relu_a);
     auto lk = make_shared<runtime::cpu::op::LoopKernel>(
@@ -1512,8 +1512,8 @@ TEST(cpu_fusion, loop_kernel_one_input_one_output_halide)
     auto f = make_shared<Function>(NodeVector{lk}, ParameterVector{A});
 
     auto backend = runtime::Backend::create("CPU");
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::f32, shapeA);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(f32, shapeA);
 
     vector<float> dataA{-1, 4, -1, 4};
     copy_data(a, dataA);
@@ -1527,8 +1527,8 @@ TEST(cpu_fusion, loop_kernel_one_input_one_output_halide)
 TEST(cpu_fusion, loop_kernel_two_input_two_output_halide)
 {
     Shape shapeA{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shapeA);
-    auto B = make_shared<op::Parameter>(element::f32, shapeA);
+    auto A = make_shared<op::Parameter>(f32, shapeA);
+    auto B = make_shared<op::Parameter>(f32, shapeA);
     auto relu_a = make_shared<op::Relu>(A);
     auto add_ab = make_shared<op::Add>(relu_a, B);
 
@@ -1540,10 +1540,10 @@ TEST(cpu_fusion, loop_kernel_two_input_two_output_halide)
     auto f = make_shared<Function>(NodeVector{goe1, goe2}, ParameterVector{A, B});
 
     auto backend = runtime::Backend::create("CPU");
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> result_relu = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> result_add = backend->create_tensor(element::f32, shapeA);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> result_relu = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> result_add = backend->create_tensor(f32, shapeA);
 
     vector<float> dataA{-1, 4, -1, 4};
     vector<float> dataB{0, 4, 0, 4};
@@ -1560,8 +1560,8 @@ TEST(cpu_fusion, loop_kernel_two_input_two_output_halide)
 TEST(cpu_fusion, loop_kernel_embedded_graph_halide)
 {
     Shape shapeA{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shapeA);
-    auto B = make_shared<op::Parameter>(element::f32, shapeA);
+    auto A = make_shared<op::Parameter>(f32, shapeA);
+    auto B = make_shared<op::Parameter>(f32, shapeA);
     auto neg_a = make_shared<op::Negative>(A);
     auto neg_b = make_shared<op::Negative>(B);
     auto add = neg_a + neg_b;
@@ -1570,9 +1570,9 @@ TEST(cpu_fusion, loop_kernel_embedded_graph_halide)
     auto f = make_shared<Function>(NodeVector{lk}, ParameterVector{A, B});
 
     auto backend = runtime::Backend::create("CPU");
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::f32, shapeA);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(f32, shapeA);
 
     vector<float> dataA{1, 4, 1, 4};
     copy_data(a, dataA);
@@ -1586,17 +1586,17 @@ TEST(cpu_fusion, loop_kernel_embedded_graph_halide)
 TEST(cpu_fusion, loop_kernel_two_inputs_one_output_halide)
 {
     Shape shapeA{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shapeA);
-    auto B = make_shared<op::Parameter>(element::f32, shapeA);
+    auto A = make_shared<op::Parameter>(f32, shapeA);
+    auto B = make_shared<op::Parameter>(f32, shapeA);
     auto add = A + B;
     auto lk = make_shared<runtime::cpu::op::LoopKernel>(
         NodeVector{add}, NodeVector{add}, NodeVector{A, B});
     auto f = make_shared<Function>(NodeVector{lk}, ParameterVector{A, B});
 
     auto backend = runtime::Backend::create("CPU");
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::f32, shapeA);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(f32, shapeA);
 
     vector<float> dataA{1, 4, 1, 4};
     copy_data(a, dataA);
@@ -1612,10 +1612,10 @@ TEST(cpu_fusion, loop_kernel_two_inputs_one_output_halide)
 TEST(cpu_fusion, loop_kernel_multiple_outputs_halide)
 {
     Shape shapeA{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shapeA);
-    auto B = make_shared<op::Parameter>(element::f32, shapeA);
-    auto C = make_shared<op::Parameter>(element::f32, shapeA);
-    auto D = make_shared<op::Parameter>(element::f32, shapeA);
+    auto A = make_shared<op::Parameter>(f32, shapeA);
+    auto B = make_shared<op::Parameter>(f32, shapeA);
+    auto C = make_shared<op::Parameter>(f32, shapeA);
+    auto D = make_shared<op::Parameter>(f32, shapeA);
 
     auto neg_a = make_shared<op::Negative>(A);
     auto neg_b = make_shared<op::Negative>(B);
@@ -1639,13 +1639,13 @@ TEST(cpu_fusion, loop_kernel_multiple_outputs_halide)
 
     auto backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> c = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> d = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> r1 = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> r2 = backend->create_tensor(element::f32, shapeA);
-    shared_ptr<runtime::Tensor> r3 = backend->create_tensor(element::f32, shapeA);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> c = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> d = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> r1 = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> r2 = backend->create_tensor(f32, shapeA);
+    shared_ptr<runtime::Tensor> r3 = backend->create_tensor(f32, shapeA);
 
     vector<float> dataA{1, 4, 1, 4};
     vector<float> dataB{3, 3, 3, 9};
@@ -1669,10 +1669,10 @@ TEST(cpu_fusion, loop_kernel_multiple_outputs_halide)
 TEST(cpu_fusion, loop_kernel_copy_with_new_args)
 {
     Shape shapeA{2, 2};
-    auto A = make_shared<op::Parameter>(element::i32, shapeA);
-    auto B = make_shared<op::Parameter>(element::i32, shapeA);
-    auto C = make_shared<op::Parameter>(element::i32, shapeA);
-    auto D = make_shared<op::Parameter>(element::i32, shapeA);
+    auto A = make_shared<op::Parameter>(i32, shapeA);
+    auto B = make_shared<op::Parameter>(i32, shapeA);
+    auto C = make_shared<op::Parameter>(i32, shapeA);
+    auto D = make_shared<op::Parameter>(i32, shapeA);
 
     auto neg_a = make_shared<op::Negative>(A);
     auto neg_b = make_shared<op::Negative>(B);
@@ -1698,16 +1698,16 @@ TEST(cpu_fusion, loop_kernel_copy_with_new_args)
 
     auto backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::i32, shapeA);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::i32, shapeA);
-    shared_ptr<runtime::Tensor> c = backend->create_tensor(element::i32, shapeA);
-    shared_ptr<runtime::Tensor> d = backend->create_tensor(element::i32, shapeA);
-    shared_ptr<runtime::Tensor> r1 = backend->create_tensor(element::i32, shapeA);
-    shared_ptr<runtime::Tensor> r2 = backend->create_tensor(element::i32, shapeA);
-    shared_ptr<runtime::Tensor> r3 = backend->create_tensor(element::i32, shapeA);
-    shared_ptr<runtime::Tensor> copy_r1 = backend->create_tensor(element::i32, shapeA);
-    shared_ptr<runtime::Tensor> copy_r2 = backend->create_tensor(element::i32, shapeA);
-    shared_ptr<runtime::Tensor> copy_r3 = backend->create_tensor(element::i32, shapeA);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(i32, shapeA);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(i32, shapeA);
+    shared_ptr<runtime::Tensor> c = backend->create_tensor(i32, shapeA);
+    shared_ptr<runtime::Tensor> d = backend->create_tensor(i32, shapeA);
+    shared_ptr<runtime::Tensor> r1 = backend->create_tensor(i32, shapeA);
+    shared_ptr<runtime::Tensor> r2 = backend->create_tensor(i32, shapeA);
+    shared_ptr<runtime::Tensor> r3 = backend->create_tensor(i32, shapeA);
+    shared_ptr<runtime::Tensor> copy_r1 = backend->create_tensor(i32, shapeA);
+    shared_ptr<runtime::Tensor> copy_r2 = backend->create_tensor(i32, shapeA);
+    shared_ptr<runtime::Tensor> copy_r3 = backend->create_tensor(i32, shapeA);
 
     vector<int> dataA{1, 4, 1, 4};
     vector<int> dataB{3, 3, 3, 9};
@@ -1732,7 +1732,7 @@ TEST(cpu_fusion, loop_kernel_copy_with_new_args)
 static std::shared_ptr<ngraph::Function> make_forward_function()
 {
     Shape shape_a{10, 3, 28, 28};
-    auto input = std::make_shared<op::Parameter>(element::f32, shape_a);
+    auto input = std::make_shared<op::Parameter>(f32, shape_a);
     Shape window_shape{2, 2};
     auto max_pool = std::make_shared<op::MaxPool>(input, window_shape);
     auto neg = std::make_shared<op::Negative>(max_pool);
@@ -1848,13 +1848,13 @@ TEST(cpu_fusion, conv_batch_norm_folding)
     Shape shape_norm{2};
 
     auto make_function = [shape_input, shape_weights, shape_norm]() {
-        auto input = std::make_shared<op::Parameter>(element::f32, shape_input);
-        auto weights = std::make_shared<op::Parameter>(element::f32, shape_weights);
+        auto input = std::make_shared<op::Parameter>(f32, shape_input);
+        auto weights = std::make_shared<op::Parameter>(f32, shape_weights);
         double eps = 0.001;
-        auto gamma = std::make_shared<op::Parameter>(element::f32, shape_norm);
-        auto beta = std::make_shared<op::Parameter>(element::f32, shape_norm);
-        auto mean = std::make_shared<op::Parameter>(element::f32, shape_norm);
-        auto var = std::make_shared<op::Parameter>(element::f32, shape_norm);
+        auto gamma = std::make_shared<op::Parameter>(f32, shape_norm);
+        auto beta = std::make_shared<op::Parameter>(f32, shape_norm);
+        auto mean = std::make_shared<op::Parameter>(f32, shape_norm);
+        auto var = std::make_shared<op::Parameter>(f32, shape_norm);
         auto conv = std::make_shared<op::Convolution>(input, weights, Strides{1, 1}, Strides{1, 1});
         auto bn = std::make_shared<op::BatchNormInference>(conv, gamma, beta, mean, var, eps);
         auto f = make_shared<Function>(NodeVector{bn},
@@ -1907,14 +1907,14 @@ TEST(cpu_fusion, convbias_batch_norm_folding)
     Shape shape_norm{2};
 
     auto make_function = [shape_input, shape_weights, shape_norm]() {
-        auto input = std::make_shared<op::Parameter>(element::f32, shape_input);
-        auto weights = std::make_shared<op::Parameter>(element::f32, shape_weights);
-        auto bias = std::make_shared<op::Parameter>(element::f32, Shape{2});
+        auto input = std::make_shared<op::Parameter>(f32, shape_input);
+        auto weights = std::make_shared<op::Parameter>(f32, shape_weights);
+        auto bias = std::make_shared<op::Parameter>(f32, Shape{2});
         double eps = 1.01;
-        auto gamma = std::make_shared<op::Parameter>(element::f32, shape_norm);
-        auto beta = std::make_shared<op::Parameter>(element::f32, shape_norm);
-        auto mean = std::make_shared<op::Parameter>(element::f32, shape_norm);
-        auto var = std::make_shared<op::Parameter>(element::f32, shape_norm);
+        auto gamma = std::make_shared<op::Parameter>(f32, shape_norm);
+        auto beta = std::make_shared<op::Parameter>(f32, shape_norm);
+        auto mean = std::make_shared<op::Parameter>(f32, shape_norm);
+        auto var = std::make_shared<op::Parameter>(f32, shape_norm);
         auto conv = std::make_shared<op::Convolution>(input, weights, Strides{1, 1}, Strides{1, 1});
         auto convbias =
             conv + std::make_shared<op::Broadcast>(bias, conv->get_shape(), AxisSet{0, 2, 3});
@@ -1948,11 +1948,11 @@ TEST(cpu_fusion, conv_affine_folding)
     Shape shape_norm{2};
 
     auto make_function = [shape_input, shape_weights, shape_norm]() {
-        auto input = std::make_shared<op::Parameter>(element::f32, shape_input);
-        auto weights = std::make_shared<op::Parameter>(element::f32, shape_weights);
+        auto input = std::make_shared<op::Parameter>(f32, shape_input);
+        auto weights = std::make_shared<op::Parameter>(f32, shape_weights);
 
-        auto a = std::make_shared<op::Parameter>(element::f32, shape_norm);
-        auto b = std::make_shared<op::Parameter>(element::f32, shape_norm);
+        auto a = std::make_shared<op::Parameter>(f32, shape_norm);
+        auto b = std::make_shared<op::Parameter>(f32, shape_norm);
         auto conv = std::make_shared<op::Convolution>(input, weights, Strides{1, 1}, Strides{1, 1});
         auto out = std::make_shared<op::Add>(
             std::make_shared<op::Multiply>(
@@ -2005,12 +2005,12 @@ TEST(cpu_fusion, convbias_affine_folding)
     Shape shape_norm{3};
 
     auto make_function = [shape_input, shape_weights, shape_norm]() {
-        auto input = std::make_shared<op::Parameter>(element::f32, shape_input);
-        auto weights = std::make_shared<op::Parameter>(element::f32, shape_weights);
-        auto bias = std::make_shared<op::Parameter>(element::f32, Shape{3});
+        auto input = std::make_shared<op::Parameter>(f32, shape_input);
+        auto weights = std::make_shared<op::Parameter>(f32, shape_weights);
+        auto bias = std::make_shared<op::Parameter>(f32, Shape{3});
 
-        auto a = std::make_shared<op::Parameter>(element::f32, shape_norm);
-        auto b = std::make_shared<op::Parameter>(element::f32, shape_norm);
+        auto a = std::make_shared<op::Parameter>(f32, shape_norm);
+        auto b = std::make_shared<op::Parameter>(f32, shape_norm);
         auto conv = std::make_shared<op::Convolution>(input, weights, Strides{1, 1}, Strides{1, 1});
         auto convbias =
             conv + std::make_shared<op::Broadcast>(bias, conv->get_shape(), AxisSet{0, 2, 3});
@@ -2043,9 +2043,9 @@ TEST(cpu_fusion, convbias_affine_folding)
 TEST(cpu_fusion, group_convolution_fusion)
 {
     Shape shape_a{1, 32, 2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_b{2, 16, 1, 1};
-    auto B = make_shared<op::Parameter>(element::f32, shape_b);
+    auto B = make_shared<op::Parameter>(f32, shape_b);
     Shape shape_r{1, 2, 2, 2};
 
     auto a_slice0 = std::make_shared<op::Slice>(A, Coordinate{0, 0, 0, 0}, Coordinate{1, 16, 2, 2});
@@ -2091,9 +2091,9 @@ TEST(cpu_fusion, group_convolution)
 
     const size_t GROUPS = 2;
     Shape shape_a{1, 32, 2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_b{2, 16, 1, 1};
-    auto B = make_shared<op::Parameter>(element::f32, shape_b);
+    auto B = make_shared<op::Parameter>(f32, shape_b);
     Shape shape_r{1, 2, 2, 2};
     auto group_conv = make_shared<op::GroupConvolution>(A,
                                                         B,
@@ -2106,9 +2106,9 @@ TEST(cpu_fusion, group_convolution)
                                                         shape_r);
 
     Shape shape_c{1, 16, 2, 2};
-    auto C = make_shared<op::Parameter>(element::f32, shape_c);
+    auto C = make_shared<op::Parameter>(f32, shape_c);
     Shape shape_d{1, 16, 1, 1};
-    auto D = make_shared<op::Parameter>(element::f32, shape_d);
+    auto D = make_shared<op::Parameter>(f32, shape_d);
     auto conv_lower = make_shared<op::Convolution>(C,
                                                    D,
                                                    Strides{1, 1},
@@ -2117,8 +2117,8 @@ TEST(cpu_fusion, group_convolution)
                                                    CoordinateDiff{0, 0},
                                                    Strides{1, 1});
 
-    auto E = make_shared<op::Parameter>(element::f32, shape_c);
-    auto F = make_shared<op::Parameter>(element::f32, shape_d);
+    auto E = make_shared<op::Parameter>(f32, shape_c);
+    auto F = make_shared<op::Parameter>(f32, shape_d);
     auto conv_upper = make_shared<op::Convolution>(E,
                                                    F,
                                                    Strides{1, 1},
@@ -2130,30 +2130,30 @@ TEST(cpu_fusion, group_convolution)
     auto f = make_shared<Function>(NodeVector{group_conv, conv_lower, conv_upper},
                                    ParameterVector{A, B, C, D, E, F});
 
-    auto a_ = rng.initialize(backend->create_tensor(element::f32, shape_a));
-    auto b_ = rng.initialize(backend->create_tensor(element::f32, shape_b));
+    auto a_ = rng.initialize(backend->create_tensor(f32, shape_a));
+    auto b_ = rng.initialize(backend->create_tensor(f32, shape_b));
 
     vector<float> rv(shape_size(shape_r), 0);
     auto group_result = std::dynamic_pointer_cast<ngraph::runtime::cpu::CPUTensorView>(
-        backend->create_tensor(element::f32, shape_r, rv.data()));
+        backend->create_tensor(f32, shape_r, rv.data()));
 
     auto av = read_vector<float>(a_);
     auto bv = read_vector<float>(b_);
-    auto c_ = backend->create_tensor(element::f32, shape_c, av.data()); // lower data
-    auto d_ = backend->create_tensor(element::f32, shape_d, bv.data()); // upper data
+    auto c_ = backend->create_tensor(f32, shape_c, av.data()); // lower data
+    auto d_ = backend->create_tensor(f32, shape_d, bv.data()); // upper data
 
     auto e_ =
-        backend->create_tensor(element::f32, shape_c, av.data() + av.size() / 2); // lower weights
+        backend->create_tensor(f32, shape_c, av.data() + av.size() / 2); // lower weights
     auto f_ =
-        backend->create_tensor(element::f32, shape_d, bv.data() + bv.size() / 2); // upper weights
+        backend->create_tensor(f32, shape_d, bv.data() + bv.size() / 2); // upper weights
 
     Shape shape_ur{1, 1, 2, 2};
     // allocate a contigious storage for both lower and upper halves.
     vector<float> erv(shape_size(shape_r), 0);
     auto lower_result = std::dynamic_pointer_cast<ngraph::runtime::cpu::CPUTensorView>(
-        backend->create_tensor(element::f32, shape_ur, erv.data()));
+        backend->create_tensor(f32, shape_ur, erv.data()));
     auto upper_result = std::dynamic_pointer_cast<ngraph::runtime::cpu::CPUTensorView>(
-        backend->create_tensor(element::f32, shape_ur, erv.data() + erv.size() / 2));
+        backend->create_tensor(f32, shape_ur, erv.data() + erv.size() / 2));
     backend->call_with_validate(
         backend->compile(f), {group_result, lower_result, upper_result}, {a_, b_, c_, d_, e_, f_});
     ASSERT_EQ(rv, erv);
@@ -2161,11 +2161,11 @@ TEST(cpu_fusion, group_convolution)
 
 TEST(cpu_fusion, rnn_fprop_1_lstm_cell)
 {
-    auto src_layer = make_shared<op::Parameter>(element::f32, Shape{10, 100});
-    auto src_iter = make_shared<op::Parameter>(element::f32, Shape{20, 100});
-    auto weights_layer = make_shared<op::Parameter>(element::f32, Shape{100, 400});
-    auto weights_iter = make_shared<op::Parameter>(element::f32, Shape{100, 400});
-    auto biases = make_shared<op::Parameter>(element::f32, Shape{400});
+    auto src_layer = make_shared<op::Parameter>(f32, Shape{10, 100});
+    auto src_iter = make_shared<op::Parameter>(f32, Shape{20, 100});
+    auto weights_layer = make_shared<op::Parameter>(f32, Shape{100, 400});
+    auto weights_iter = make_shared<op::Parameter>(f32, Shape{100, 400});
+    auto biases = make_shared<op::Parameter>(f32, Shape{400});
     const int number_of_timesteps = 1;
     const int number_of_gates_per_cell = 4;
     const int src_seq_length = 1;
@@ -2192,17 +2192,17 @@ TEST(cpu_fusion, rnn_fprop_1_lstm_cell)
     auto backend = runtime::Backend::create("CPU");
 
     shared_ptr<runtime::Tensor> src_layer_t =
-        backend->create_tensor(element::f32, src_layer->get_shape());
+        backend->create_tensor(f32, src_layer->get_shape());
     shared_ptr<runtime::Tensor> src_iter_t =
-        backend->create_tensor(element::f32, src_iter->get_shape());
+        backend->create_tensor(f32, src_iter->get_shape());
     shared_ptr<runtime::Tensor> weights_layer_t =
-        backend->create_tensor(element::f32, weights_layer->get_shape());
+        backend->create_tensor(f32, weights_layer->get_shape());
     shared_ptr<runtime::Tensor> weights_iter_t =
-        backend->create_tensor(element::f32, weights_iter->get_shape());
+        backend->create_tensor(f32, weights_iter->get_shape());
     shared_ptr<runtime::Tensor> biases_t =
-        backend->create_tensor(element::f32, biases->get_shape());
-    shared_ptr<runtime::Tensor> result_ht = backend->create_tensor(element::f32, {10, 100});
-    shared_ptr<runtime::Tensor> result_ct = backend->create_tensor(element::f32, Shape{20, 100});
+        backend->create_tensor(f32, biases->get_shape());
+    shared_ptr<runtime::Tensor> result_ht = backend->create_tensor(f32, {10, 100});
+    shared_ptr<runtime::Tensor> result_ct = backend->create_tensor(f32, Shape{20, 100});
 
     copy_data(src_layer_t, vector<float>(1000, 1));
     copy_data(src_iter_t, vector<float>(2000, 1));
@@ -2370,15 +2370,15 @@ TEST(cpu_fusion, loop_kernel_fusion_multiple_groups_pruned)
 {
     auto make_function = []() -> std::shared_ptr<Function> {
         Shape shape{};
-        auto a = make_shared<op::Parameter>(element::f32, shape);
-        auto b = make_shared<op::Parameter>(element::f32, shape);
-        auto c = make_shared<op::Parameter>(element::f32, shape);
+        auto a = make_shared<op::Parameter>(f32, shape);
+        auto b = make_shared<op::Parameter>(f32, shape);
+        auto c = make_shared<op::Parameter>(f32, shape);
         auto add_ab = a + b;
         auto add_abs = std::make_shared<op::Abs>(add_ab);
         auto abs_neg = std::make_shared<op::Negative>(add_abs);
         auto sub_c_neg = c - abs_neg;
 
-        auto d = make_shared<op::Parameter>(element::f32, shape);
+        auto d = make_shared<op::Parameter>(f32, shape);
         auto d_abs = std::make_shared<op::Abs>(d);
         auto add_d = d_abs + add_ab;
         auto neg_d = std::make_shared<op::Negative>(add_d);
@@ -2419,10 +2419,10 @@ TEST(cpu_fusion, loop_kernel_fusion_bounded_relu)
 {
     auto make_function = []() -> std::shared_ptr<Function> {
         Shape shape{};
-        auto a = make_shared<op::Parameter>(element::f32, shape);
+        auto a = make_shared<op::Parameter>(f32, shape);
         auto relu = make_shared<op::Relu>(a);
         auto upper_bound =
-            op::Constant::create<float>(element::f32, shape, std::vector<float>{6.0f});
+            op::Constant::create<float>(f32, shape, std::vector<float>{6.0f});
         auto minn = make_shared<op::Minimum>(relu, upper_bound);
         auto absn = make_shared<op::Abs>(minn);
         auto negn = std::make_shared<op::Negative>(absn);
@@ -2463,15 +2463,15 @@ TEST(cpu_fusion, loop_kernel_fusion_multiple_groups)
 {
     auto make_function = []() -> std::shared_ptr<Function> {
         Shape shape{};
-        auto a = make_shared<op::Parameter>(element::f32, shape);
-        auto b = make_shared<op::Parameter>(element::f32, shape);
-        auto c = make_shared<op::Parameter>(element::f32, shape);
+        auto a = make_shared<op::Parameter>(f32, shape);
+        auto b = make_shared<op::Parameter>(f32, shape);
+        auto c = make_shared<op::Parameter>(f32, shape);
         auto add_ab = a + b;
         auto add_abs = std::make_shared<op::Abs>(add_ab);
         auto abs_neg = std::make_shared<op::Negative>(add_abs);
         auto sub_c_neg = c - abs_neg;
 
-        auto d = make_shared<op::Parameter>(element::f32, shape);
+        auto d = make_shared<op::Parameter>(f32, shape);
         auto d_abs = std::make_shared<op::Abs>(d);
         auto add_d = d_abs + add_ab;
         auto neg_d = std::make_shared<op::Negative>(add_d);
@@ -2512,17 +2512,17 @@ TEST(cpu_fusion, loop_kernel_fusion_one_group)
 {
     auto make_function = []() -> std::shared_ptr<Function> {
         Shape shape{};
-        auto a = make_shared<op::Parameter>(element::f32, shape);
-        auto b = make_shared<op::Parameter>(element::f32, shape);
-        auto c = make_shared<op::Parameter>(element::f32, shape);
+        auto a = make_shared<op::Parameter>(f32, shape);
+        auto b = make_shared<op::Parameter>(f32, shape);
+        auto c = make_shared<op::Parameter>(f32, shape);
         auto add_ab = a + b;
         auto add_abs = std::make_shared<op::Abs>(add_ab);
         auto abs_neg = std::make_shared<op::Negative>(add_abs);
         auto sub_c_neg = c - abs_neg;
-        auto d = make_shared<op::Parameter>(element::f32, shape);
+        auto d = make_shared<op::Parameter>(f32, shape);
         auto add_d = sub_c_neg + d;
         auto abs_add_d = std::make_shared<op::Abs>(add_d);
-        auto e = make_shared<op::Parameter>(element::f32, shape);
+        auto e = make_shared<op::Parameter>(f32, shape);
         auto add_e = e + abs_add_d;
         auto neg_e = std::make_shared<op::Negative>(add_e);
 
@@ -2583,12 +2583,12 @@ void sigmoid_multiply_fusion_forward_compute(runtime::Backend* backend,
                                              shared_ptr<Node> input_1_node,
                                              const vector<float>& expected)
 {
-    shared_ptr<runtime::Tensor> result_tensor = backend->create_tensor(element::f32, result_shape);
+    shared_ptr<runtime::Tensor> result_tensor = backend->create_tensor(f32, result_shape);
 
     vector<shared_ptr<runtime::Tensor>> input_tensors;
     for (int i = 0; i < input_params.size(); ++i)
     {
-        input_tensors.push_back(backend->create_tensor(element::f32, input_shapes[i]));
+        input_tensors.push_back(backend->create_tensor(f32, input_shapes[i]));
         copy_data(input_tensors[i], input_data[i]);
     }
 
@@ -2609,9 +2609,9 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_forward)
     vector<float> input_1_data{1.2f, 2.3f, 3.5f, 4.7f};
     vector<float> const_data{1.2f};
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_2_param = make_shared<op::Parameter>(element::f32, data_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_2_param = make_shared<op::Parameter>(f32, data_shape);
         auto sigmoid_0 = make_shared<op::Sigmoid>(input_0_param);
         auto sigmoid_1 = make_shared<op::Add>(input_1_param, input_2_param);
         vector<float> expected{1.60833f, 3.78743f, 6.19173f, 8.54352f};
@@ -2628,8 +2628,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_forward)
                                                 expected);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, const_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, const_shape);
         auto sigmoid_0 = make_shared<op::Broadcast>(input_1_param, data_shape, AxisSet{1, 2, 3});
         auto sigmoid_1 = make_shared<op::Sigmoid>(input_0_param);
         vector<float> expected{0.87727f, 1.05696f, 1.14309f, 1.17842f};
@@ -2646,8 +2646,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_forward)
                                                 expected);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, const_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, const_shape);
         auto sigmoid_0 = make_shared<op::Sigmoid>(input_0_param);
         auto sigmoid_1 = make_shared<op::Broadcast>(input_1_param, data_shape, AxisSet{1, 2, 3});
         vector<float> expected{0.87727f, 1.05696f, 1.14309f, 1.17842f};
@@ -2664,8 +2664,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_forward)
                                                 expected);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, data_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, data_shape);
         auto sigmoid_0 = make_shared<op::Sigmoid>(input_0_param);
         auto sigmoid_1 = make_shared<op::Sigmoid>(input_1_param);
         vector<float> expected{0.561837f, 0.800536f, 0.924652f, 0.973163f};
@@ -2682,8 +2682,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_forward)
                                                 expected);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, data_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, data_shape);
         auto sigmoid_0 = make_shared<op::Sigmoid>(input_0_param);
         auto sigmoid_1 = make_shared<op::Tanh>(input_1_param);
         vector<float> expected{0.60945f, 0.863266f, 0.950838f, 0.981851f};
@@ -2700,8 +2700,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_forward)
                                                 expected);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, data_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, data_shape);
         auto sigmoid_0 = make_shared<op::Tanh>(input_0_param);
         auto sigmoid_1 = make_shared<op::Sigmoid>(input_1_param);
         vector<float> expected{0.585304f, 0.876182f, 0.965887f, 0.990322f};
@@ -2718,8 +2718,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_forward)
                                                 expected);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, data_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, data_shape);
         auto sigmoid_0 = make_shared<op::Tanh>(input_0_param);
         auto sigmoid_1 = make_shared<op::Tanh>(input_1_param);
         vector<float> expected{0.634907f, 0.94484f, 0.993242f, 0.999164f};
@@ -2755,12 +2755,12 @@ void sigmoid_multiply_fusion_backward_compute(runtime::Backend* backend,
     vector<shared_ptr<runtime::Tensor>> input_tensors;
     for (int i = 0; i < input_params.size(); ++i)
     {
-        input_tensors.push_back(backend->create_tensor(element::f32, input_shapes[i]));
+        input_tensors.push_back(backend->create_tensor(f32, input_shapes[i]));
         copy_data(input_tensors[i], input_data[i]);
     }
 
-    auto delta_param = make_shared<op::Parameter>(element::f32, delta_shape);
-    shared_ptr<runtime::Tensor> delta_tensor = backend->create_tensor(element::f32, delta_shape);
+    auto delta_param = make_shared<op::Parameter>(f32, delta_shape);
+    shared_ptr<runtime::Tensor> delta_tensor = backend->create_tensor(f32, delta_shape);
     copy_data(delta_tensor, delta_data);
 
     ParameterVector back_params(input_params);
@@ -2768,9 +2768,9 @@ void sigmoid_multiply_fusion_backward_compute(runtime::Backend* backend,
     input_tensors.push_back(delta_tensor);
 
     shared_ptr<runtime::Tensor> d_input_0_tensor =
-        backend->create_tensor(element::f32, d_input_0_shape);
+        backend->create_tensor(f32, d_input_0_shape);
     shared_ptr<runtime::Tensor> d_input_1_tensor =
-        backend->create_tensor(element::f32, d_input_1_shape);
+        backend->create_tensor(f32, d_input_1_shape);
 
     using FunctionType = op::SigmoidMultiply::FunctionType;
     auto input_0_type = op::SigmoidMultiply::identify_node_type(input_0_node);
@@ -2807,9 +2807,9 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_backward)
     vector<float> delta_data(shape_size(data_shape), 20.0f);
 
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_2_param = make_shared<op::Parameter>(element::f32, data_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_2_param = make_shared<op::Parameter>(f32, data_shape);
         auto sigmoid_0 = make_shared<op::Sigmoid>(input_0_param);
         auto sigmoid_1 = make_shared<op::Add>(input_1_param, input_2_param);
         vector<float> expected_0{8.65093f, 8.81946f, 5.60191f, 2.89668f};
@@ -2833,8 +2833,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_backward)
                                                  expected_1);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, const_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, const_shape);
         auto sigmoid_0 = make_shared<op::Broadcast>(input_1_param, data_shape, AxisSet{1, 2, 3});
         auto sigmoid_1 = make_shared<op::Tanh>(input_0_param);
         vector<float> expected_0{15.2319f, 19.2806f, 19.9011f, 19.9866f};
@@ -2858,8 +2858,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_backward)
                                                  expected_1);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, const_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, const_shape);
         auto sigmoid_0 = make_shared<op::Tanh>(input_0_param);
         auto sigmoid_1 = make_shared<op::Broadcast>(input_1_param, data_shape, AxisSet{1, 2, 3});
         vector<float> expected_0{10.0794f, 1.69562f, 0.236785f, 0.0321828f};
@@ -2883,8 +2883,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_backward)
                                                  expected_1);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, data_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, data_shape);
         auto sigmoid_0 = make_shared<op::Sigmoid>(input_0_param);
         auto sigmoid_1 = make_shared<op::Sigmoid>(input_1_param);
         vector<float> expected_0{3.02202f, 1.89041f, 0.868146f, 0.348035f};
@@ -2908,8 +2908,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_backward)
                                                  expected_1);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, data_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, data_shape);
         auto sigmoid_0 = make_shared<op::Sigmoid>(input_0_param);
         auto sigmoid_1 = make_shared<op::Tanh>(input_1_param);
         vector<float> expected_0{3.27813f, 2.04894f, 0.900536f, 0.353095f};
@@ -2933,8 +2933,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_backward)
                                                  expected_1);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, data_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, data_shape);
         auto sigmoid_0 = make_shared<op::Tanh>(input_0_param);
         auto sigmoid_1 = make_shared<op::Sigmoid>(input_1_param);
         vector<float> expected_0{6.45521f, 1.27207f, 0.189593f, 0.0264228f};
@@ -2958,8 +2958,8 @@ TEST(cpu_fusion, sigmoid_multiply_fusion_backward)
                                                  expected_1);
     }
     {
-        auto input_0_param = make_shared<op::Parameter>(element::f32, data_shape);
-        auto input_1_param = make_shared<op::Parameter>(element::f32, data_shape);
+        auto input_0_param = make_shared<op::Parameter>(f32, data_shape);
+        auto input_1_param = make_shared<op::Parameter>(f32, data_shape);
         auto sigmoid_0 = make_shared<op::Tanh>(input_0_param);
         auto sigmoid_1 = make_shared<op::Tanh>(input_1_param);
         vector<float> expected_0{7.00227f, 1.37874f, 0.196666f, 0.026807f};
@@ -3050,10 +3050,10 @@ TEST(cpu_fusion, fuse_rnn_across_layer_2layer_3timestep)
 static void check_bounded_relu(Shape param_shape, float constant_val)
 {
     auto make_function = [](Shape input_shape, float alpha_val) {
-        auto relu_input = std::make_shared<op::Parameter>(element::f32, input_shape);
+        auto relu_input = std::make_shared<op::Parameter>(f32, input_shape);
         auto relu = std::make_shared<op::Relu>(relu_input);
         auto alpha = op::Constant::create<float>(
-            element::f32, input_shape, std::vector<float>(1.0f, alpha_val));
+            f32, input_shape, std::vector<float>(1.0f, alpha_val));
         auto min = std::make_shared<op::Minimum>(relu, alpha);
         auto f = make_shared<Function>(NodeVector{min}, ParameterVector{relu_input});
         return f;
@@ -3087,8 +3087,8 @@ TEST(cpu_fusion, fuse_bounded_relu_inter_vs_cpu)
 TEST(cpu_fusion, fuse_leaky_relu)
 {
     auto make_function = [](Shape input_shape, vector<float> alpha_val) {
-        auto input = std::make_shared<op::Parameter>(element::f32, input_shape);
-        auto alpha = op::Constant::create<float>(element::f32, input_shape, alpha_val);
+        auto input = std::make_shared<op::Parameter>(f32, input_shape);
+        auto alpha = op::Constant::create<float>(f32, input_shape, alpha_val);
         auto out =
             std::make_shared<op::Maximum>(input, std::make_shared<op::Multiply>(input, alpha));
         auto f = make_shared<Function>(NodeVector{out}, ParameterVector{input});
@@ -3126,12 +3126,12 @@ TEST(cpu_fusion, fuse_leaky_relu)
 TEST(cpu_fusion, fuse_update_slice)
 {
     auto make_function = [](bool fuse = true) {
-        auto input = std::make_shared<op::Parameter>(element::f32, Shape{4, 32, 16});
+        auto input = std::make_shared<op::Parameter>(f32, Shape{4, 32, 16});
         Shape lower_bounds{1, 0, 0};
         Shape upper_bounds{2, 32, 16};
         auto slice = std::make_shared<op::Slice>(
             input, fuse ? lower_bounds : Shape{3, 0, 0}, fuse ? upper_bounds : Shape{4, 32, 16});
-        auto update = std::make_shared<op::Parameter>(element::f32, Shape{1, 32, 16});
+        auto update = std::make_shared<op::Parameter>(f32, Shape{1, 32, 16});
         auto add = std::make_shared<op::Add>(slice, update);
         auto out = std::make_shared<op::ReplaceSlice>(input, add, lower_bounds, upper_bounds);
         auto f = make_shared<Function>(NodeVector{out}, ParameterVector{input, update});
@@ -3170,12 +3170,12 @@ TEST(cpu_fusion, fuse_update_slice)
 TEST(cpu_fusion, fuse_update_slice_inplace)
 {
     auto make_function = [](bool fuse = true) {
-        auto input = std::make_shared<op::Parameter>(element::f32, Shape{4, 32, 16});
+        auto input = std::make_shared<op::Parameter>(f32, Shape{4, 32, 16});
         auto abs = std::make_shared<op::Abs>(input);
         Shape lower_bounds{1, 0, 0};
         Shape upper_bounds{2, 32, 16};
         auto slice = std::make_shared<op::Slice>(abs, lower_bounds, upper_bounds);
-        auto update = std::make_shared<op::Parameter>(element::f32, Shape{1, 32, 16});
+        auto update = std::make_shared<op::Parameter>(f32, Shape{1, 32, 16});
         auto add = std::make_shared<op::Add>(slice, update);
         auto rs = std::make_shared<op::ReplaceSlice>(abs, add, lower_bounds, upper_bounds);
         auto out = std::make_shared<op::Abs>(rs);
@@ -3221,7 +3221,7 @@ TEST(cpu_fusion, fuse_update_slice_inplace)
 TEST(cpu_fusion, fuse_update_slice_strided)
 {
     auto make_function = [](bool fuse = true) {
-        auto input = std::make_shared<op::Parameter>(element::f32, Shape{4, 32, 16});
+        auto input = std::make_shared<op::Parameter>(f32, Shape{4, 32, 16});
         Shape lower_bounds{1, 0, 0};
         Shape upper_bounds{2, 32, 16};
         Strides strides{1, 2, 2};
@@ -3229,7 +3229,7 @@ TEST(cpu_fusion, fuse_update_slice_strided)
                                                  fuse ? lower_bounds : Shape{3, 0, 0},
                                                  fuse ? upper_bounds : Shape{4, 32, 16},
                                                  strides);
-        auto update = std::make_shared<op::Parameter>(element::f32, Shape{1, 16, 8});
+        auto update = std::make_shared<op::Parameter>(f32, Shape{1, 16, 8});
         auto add = std::make_shared<op::Add>(slice, update);
         auto out =
             std::make_shared<op::ReplaceSlice>(input, add, lower_bounds, upper_bounds, strides);
@@ -3269,13 +3269,13 @@ TEST(cpu_fusion, fuse_update_slice_strided)
 TEST(cpu_fusion, fuse_update_slice_strided_inplace)
 {
     auto make_function = [](bool fuse = true) {
-        auto input = std::make_shared<op::Parameter>(element::f32, Shape{4, 32, 16});
+        auto input = std::make_shared<op::Parameter>(f32, Shape{4, 32, 16});
         auto abs = std::make_shared<op::Abs>(input);
         Shape lower_bounds{1, 0, 0};
         Shape upper_bounds{2, 32, 16};
         Strides strides{1, 4, 2};
         auto slice = std::make_shared<op::Slice>(abs, lower_bounds, upper_bounds, strides);
-        auto update = std::make_shared<op::Parameter>(element::f32, Shape{1, 8, 8});
+        auto update = std::make_shared<op::Parameter>(f32, Shape{1, 8, 8});
         auto add = std::make_shared<op::Add>(slice, update);
         auto rs = std::make_shared<op::ReplaceSlice>(abs, add, lower_bounds, upper_bounds, strides);
         auto out = std::make_shared<op::Abs>(rs);
@@ -3324,8 +3324,8 @@ TEST(cpu_fusion, dot_batch_forward)
     const Shape shape_b{2, 3};
 
     auto generate_func = [&shape_a, &shape_b]() -> shared_ptr<Function> {
-        auto a = make_shared<op::Parameter>(element::f32, shape_a);
-        auto b = make_shared<op::Parameter>(element::f32, shape_b);
+        auto a = make_shared<op::Parameter>(f32, shape_a);
+        auto b = make_shared<op::Parameter>(f32, shape_b);
         auto dot = make_shared<op::Dot>(a, b);
         return make_shared<Function>(dot, ParameterVector{a, b});
     };
@@ -3351,14 +3351,14 @@ TEST(cpu_fusion, dot_batch_forward)
 static std::shared_ptr<Function>
     create_rnn_input_linear_transformation_function(size_t num_timesteps, bool data_is_4d = false)
 {
-    auto W = std::make_shared<op::Parameter>(element::f32, Shape{400, 50});
-    auto bias = std::make_shared<op::Parameter>(element::f32, Shape{400});
+    auto W = std::make_shared<op::Parameter>(f32, Shape{400, 50});
+    auto bias = std::make_shared<op::Parameter>(f32, Shape{400});
     ParameterVector params{W, bias};
     auto create_graph = [&]() -> std::shared_ptr<Node> {
 
         auto data_param = (data_is_4d)
-                              ? std::make_shared<op::Parameter>(element::f32, Shape{2, 5, 1, 50})
-                              : std::make_shared<op::Parameter>(element::f32, Shape{10, 1, 50});
+                              ? std::make_shared<op::Parameter>(f32, Shape{2, 5, 1, 50})
+                              : std::make_shared<op::Parameter>(f32, Shape{10, 1, 50});
         params.push_back(data_param);
         auto reshape_axis_order = data_is_4d ? AxisVector{0, 1, 2, 3} : AxisVector{0, 1, 2};
         auto data_param_reshape =

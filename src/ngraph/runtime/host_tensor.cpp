@@ -23,7 +23,7 @@
 using namespace ngraph;
 using namespace std;
 
-runtime::HostTensor::HostTensor(const ngraph::element::Type& element_type,
+runtime::HostTensor::HostTensor(const ngraph::Type& element_type,
                                 const Shape& shape,
                                 void* memory_pointer,
                                 const string& name)
@@ -54,7 +54,7 @@ runtime::HostTensor::HostTensor(const ngraph::element::Type& element_type,
     }
 }
 
-runtime::HostTensor::HostTensor(const ngraph::element::Type& element_type,
+runtime::HostTensor::HostTensor(const ngraph::Type& element_type,
                                 const Shape& shape,
                                 const string& name)
     : HostTensor(element_type, shape, nullptr, name)

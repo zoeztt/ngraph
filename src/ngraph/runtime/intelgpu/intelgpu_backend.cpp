@@ -176,12 +176,12 @@ static const Shape& get_output_shape(const shared_ptr<Node>& op, size_t num = 0)
     return op->get_outputs().at(num).get_shape();
 }
 
-static const element::Type& get_input_type(const shared_ptr<Node>& op, size_t num = 0)
+static const Type& get_input_type(const shared_ptr<Node>& op, size_t num = 0)
 {
     return op->get_inputs().at(num).get_tensor().get_element_type();
 }
 
-static const element::Type& get_output_type(const shared_ptr<Node>& op, size_t num = 0)
+static const Type& get_output_type(const shared_ptr<Node>& op, size_t num = 0)
 {
     return op->get_outputs().at(num).get_tensor().get_element_type();
 }
@@ -192,7 +192,7 @@ static void do_eltwise_operation(cldnn::topology& topology,
 {
     arguments_check(op, 2, 1);
 
-    if ((get_input_type(op) == element::i32 || get_input_type(op) == element::i64) &&
+    if ((get_input_type(op) == i32 || get_input_type(op) == i64) &&
         (mode == cldnn::eltwise_mode::min || mode == cldnn::eltwise_mode::max))
     {
         string custom_op;
@@ -385,14 +385,14 @@ runtime::intelgpu::IntelGPUBackend::IntelGPUBackend()
 }
 
 shared_ptr<runtime::Tensor>
-    runtime::intelgpu::IntelGPUBackend::create_tensor(const element::Type& element_type,
+    runtime::intelgpu::IntelGPUBackend::create_tensor(const Type& element_type,
                                                       const Shape& shape)
 {
     return make_shared<runtime::intelgpu::IntelGPUTensorView>(element_type, shape, *ocl_engine);
 }
 
 shared_ptr<runtime::Tensor> runtime::intelgpu::IntelGPUBackend::create_tensor(
-    const element::Type& element_type, const Shape& shape, void* memory_pointer)
+    const Type& element_type, const Shape& shape, void* memory_pointer)
 {
     return make_shared<runtime::intelgpu::IntelGPUTensorView>(
         element_type, shape, *ocl_engine, memory_pointer);
@@ -701,8 +701,8 @@ runtime::Handle runtime::intelgpu::IntelGPUBackend::compile(shared_ptr<Function>
             const size_t input0_elem_count = shape_size(input0_shape);
             const size_t input1_elem_count = shape_size(input1_shape);
 
-            if (get_input_type(op) == element::f32 && get_input_type(op, 1) == element::f32 &&
-                get_output_type(op) == element::f32 && input0_elem_count && input1_elem_count &&
+            if (get_input_type(op) == f32 && get_input_type(op, 1) == f32 &&
+                get_output_type(op) == f32 && input0_elem_count && input1_elem_count &&
                 (axes_count < 2) && (input0_shape.size() < 3) && (input1_shape.size() < 3))
             {
                 bool transpose0 = false;
@@ -827,7 +827,7 @@ runtime::Handle runtime::intelgpu::IntelGPUBackend::compile(shared_ptr<Function>
             {
                 do_equal_propagation(topology, get_input_name(op), get_output_name(op));
             }
-            else if (get_input_type(op) != element::i32 && get_input_type(op) != element::i64 &&
+            else if (get_input_type(op) != i32 && get_input_type(op) != i64 &&
                      ((get_input_shape(op).size() == 1 && get_input_shape(op).at(0) == 1) ||
                       get_input_shape(op).empty()))
             {
@@ -938,7 +938,7 @@ runtime::Handle runtime::intelgpu::IntelGPUBackend::compile(shared_ptr<Function>
         }
         case OP_TYPEID::Negative:
         {
-            if (get_input_type(op) == ngraph::element::i32)
+            if (get_input_type(op) == ngraph::i32)
             {
                 // This is workaround to enable GNMT in training mode.
                 // clDNN doesn't support i32 data type for activation primitive.
@@ -1643,9 +1643,9 @@ runtime::Handle runtime::intelgpu::IntelGPUBackend::compile(shared_ptr<Function>
 
             const shared_ptr<op::ArgMax> arg_max_op = static_pointer_cast<op::ArgMax>(op);
             const size_t reduction_axis = arg_max_op->get_reduction_axis();
-            const element::Type& index_elem_type = arg_max_op->get_element_type();
+            const Type& index_elem_type = arg_max_op->get_element_type();
 
-            if (index_elem_type == element::i64 || index_elem_type == element::i32)
+            if (index_elem_type == i64 || index_elem_type == i32)
             {
                 do_arg_max_min_operation(topology,
                                          get_input_name(op),
@@ -1673,9 +1673,9 @@ runtime::Handle runtime::intelgpu::IntelGPUBackend::compile(shared_ptr<Function>
 
             const shared_ptr<op::ArgMin> arg_min_op = static_pointer_cast<op::ArgMin>(op);
             const size_t reduction_axis = arg_min_op->get_reduction_axis();
-            const element::Type& index_elem_type = arg_min_op->get_element_type();
+            const Type& index_elem_type = arg_min_op->get_element_type();
 
-            if (index_elem_type == element::i64 || index_elem_type == element::i32)
+            if (index_elem_type == i64 || index_elem_type == i32)
             {
                 do_arg_max_min_operation(topology,
                                          get_input_name(op),

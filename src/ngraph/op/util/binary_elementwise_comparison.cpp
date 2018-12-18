@@ -31,5 +31,5 @@ void op::util::BinaryElementwiseComparison::validate_and_infer_types()
     auto args_et_pshape = validate_and_infer_elementwise_args();
     PartialShape& args_pshape = std::get<1>(args_et_pshape);
 
-    set_output_type(0, element::boolean, args_pshape);
+    set_output_type(0, boolean, args_pshape);
 }

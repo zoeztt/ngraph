@@ -34,7 +34,7 @@ static bool is_boolean_scalar_constant_with_val(std::shared_ptr<ngraph::Node> no
         return false;
     }
 
-    if (k->get_element_type() != element::boolean)
+    if (k->get_element_type() != boolean)
     {
         return false;
     }

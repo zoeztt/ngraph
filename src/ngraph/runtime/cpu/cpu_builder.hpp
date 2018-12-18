@@ -31,47 +31,47 @@
 
 // Per-type kernel macro
 #define SELECT_KERNEL(KV, ET, K)                                                                   \
-    if (ET == element::boolean)                                                                    \
+    if (ET == boolean)                                                                    \
     {                                                                                              \
         KV = K<char>;                                                                              \
     }                                                                                              \
-    else if (ET == element::f32)                                                                   \
+    else if (ET == f32)                                                                   \
     {                                                                                              \
         KV = K<float>;                                                                             \
     }                                                                                              \
-    else if (ET == element::f64)                                                                   \
+    else if (ET == f64)                                                                   \
     {                                                                                              \
         KV = K<double>;                                                                            \
     }                                                                                              \
-    else if (ET == element::i8)                                                                    \
+    else if (ET == i8)                                                                    \
     {                                                                                              \
         KV = K<int8_t>;                                                                            \
     }                                                                                              \
-    else if (ET == element::i16)                                                                   \
+    else if (ET == i16)                                                                   \
     {                                                                                              \
         KV = K<int16_t>;                                                                           \
     }                                                                                              \
-    else if (ET == element::i32)                                                                   \
+    else if (ET == i32)                                                                   \
     {                                                                                              \
         KV = K<int32_t>;                                                                           \
     }                                                                                              \
-    else if (ET == element::i64)                                                                   \
+    else if (ET == i64)                                                                   \
     {                                                                                              \
         KV = K<int64_t>;                                                                           \
     }                                                                                              \
-    else if (ET == element::u8)                                                                    \
+    else if (ET == u8)                                                                    \
     {                                                                                              \
         KV = K<uint8_t>;                                                                           \
     }                                                                                              \
-    else if (ET == element::u16)                                                                   \
+    else if (ET == u16)                                                                   \
     {                                                                                              \
         KV = K<uint16_t>;                                                                          \
     }                                                                                              \
-    else if (ET == element::u32)                                                                   \
+    else if (ET == u32)                                                                   \
     {                                                                                              \
         KV = K<uint32_t>;                                                                          \
     }                                                                                              \
-    else if (ET == element::u64)                                                                   \
+    else if (ET == u64)                                                                   \
     {                                                                                              \
         KV = K<uint64_t>;                                                                          \
     }
@@ -109,47 +109,47 @@
 
 // Per-type and rank kernel macro
 #define SELECT_KERNEL_BY_RANK(KV, ET, R, K)                                                        \
-    if (ET == element::boolean)                                                                    \
+    if (ET == boolean)                                                                    \
     {                                                                                              \
         SELECT_RANK(KV, char, R, K);                                                               \
     }                                                                                              \
-    else if (ET == element::f32)                                                                   \
+    else if (ET == f32)                                                                   \
     {                                                                                              \
         SELECT_RANK(KV, float, R, K);                                                              \
     }                                                                                              \
-    else if (ET == element::f64)                                                                   \
+    else if (ET == f64)                                                                   \
     {                                                                                              \
         SELECT_RANK(KV, double, R, K);                                                             \
     }                                                                                              \
-    else if (ET == element::i8)                                                                    \
+    else if (ET == i8)                                                                    \
     {                                                                                              \
         SELECT_RANK(KV, int8_t, R, K);                                                             \
     }                                                                                              \
-    else if (ET == element::i16)                                                                   \
+    else if (ET == i16)                                                                   \
     {                                                                                              \
         SELECT_RANK(KV, int16_t, R, K);                                                            \
     }                                                                                              \
-    else if (ET == element::i32)                                                                   \
+    else if (ET == i32)                                                                   \
     {                                                                                              \
         SELECT_RANK(KV, int32_t, R, K);                                                            \
     }                                                                                              \
-    else if (ET == element::i64)                                                                   \
+    else if (ET == i64)                                                                   \
     {                                                                                              \
         SELECT_RANK(KV, int64_t, R, K);                                                            \
     }                                                                                              \
-    else if (ET == element::u8)                                                                    \
+    else if (ET == u8)                                                                    \
     {                                                                                              \
         SELECT_RANK(KV, uint8_t, R, K);                                                            \
     }                                                                                              \
-    else if (ET == element::u16)                                                                   \
+    else if (ET == u16)                                                                   \
     {                                                                                              \
         SELECT_RANK(KV, uint16_t, R, K);                                                           \
     }                                                                                              \
-    else if (ET == element::u32)                                                                   \
+    else if (ET == u32)                                                                   \
     {                                                                                              \
         SELECT_RANK(KV, uint32_t, R, K);                                                           \
     }                                                                                              \
-    else if (ET == element::u64)                                                                   \
+    else if (ET == u64)                                                                   \
     {                                                                                              \
         SELECT_RANK(KV, uint64_t, R, K);                                                           \
     }                                                                                              \
@@ -180,19 +180,19 @@
 
 // Partial per-type and rank kernel macro
 #define PARTIAL_SELECT_KERNEL_BY_RANK(KV, ET, R, K)                                                \
-    if (ET == element::f32)                                                                        \
+    if (ET == f32)                                                                        \
     {                                                                                              \
         PARTIAL_SELECT_RANK(KV, float, R, K);                                                      \
     }                                                                                              \
-    else if (ET == element::f64)                                                                   \
+    else if (ET == f64)                                                                   \
     {                                                                                              \
         PARTIAL_SELECT_RANK(KV, double, R, K);                                                     \
     }                                                                                              \
-    else if (ET == element::i8)                                                                    \
+    else if (ET == i8)                                                                    \
     {                                                                                              \
         PARTIAL_SELECT_RANK(KV, int8_t, R, K);                                                     \
     }                                                                                              \
-    else if (ET == element::u8)                                                                    \
+    else if (ET == u8)                                                                    \
     {                                                                                              \
         PARTIAL_SELECT_RANK(KV, uint8_t, R, K);                                                    \
     }                                                                                              \

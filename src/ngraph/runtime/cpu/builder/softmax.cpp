@@ -151,7 +151,7 @@ namespace ngraph
                         };
                         functors.emplace_back(functor);
                     }
-                    else if (softmax->get_element_type() == element::f32)
+                    else if (softmax->get_element_type() == f32)
                     {
                         NGRAPH_WARN << "Falling back to refernce kernel for softmax " << arg_shape
                                     << " over " << axes;

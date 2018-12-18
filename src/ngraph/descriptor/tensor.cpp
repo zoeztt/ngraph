@@ -21,7 +21,7 @@
 using namespace ngraph;
 using namespace std;
 
-descriptor::Tensor::Tensor(const element::Type& element_type,
+descriptor::Tensor::Tensor(const Type& element_type,
                            const PartialShape& pshape,
                            const std::string& name)
     : m_element_type(element_type)
@@ -31,7 +31,7 @@ descriptor::Tensor::Tensor(const element::Type& element_type,
 {
 }
 
-void descriptor::Tensor::set_tensor_type(const element::Type& element_type,
+void descriptor::Tensor::set_tensor_type(const Type& element_type,
                                          const PartialShape& pshape)
 {
     if (pshape.is_static())

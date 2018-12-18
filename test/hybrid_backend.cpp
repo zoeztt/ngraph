@@ -56,18 +56,18 @@ TEST(HYBRID, abc)
     runtime::BackendManager::register_backend(backend_name, hybrid1_creator);
 
     Shape shape{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
-    auto B = make_shared<op::Parameter>(element::f32, shape);
-    auto C = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
+    auto B = make_shared<op::Parameter>(f32, shape);
+    auto C = make_shared<op::Parameter>(f32, shape);
     auto f = make_shared<Function>((A + B) * C, ParameterVector{A, B, C});
 
     auto backend = runtime::Backend::create(backend_name);
 
     // Create some tensors for input/output
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> c = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> c = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(f32, shape);
 
     copy_data(a, test::NDArray<float, 2>({{1, 2}, {3, 4}}).get_vector());
     copy_data(b, test::NDArray<float, 2>({{5, 6}, {7, 8}}).get_vector());

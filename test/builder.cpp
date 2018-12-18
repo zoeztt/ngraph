@@ -26,14 +26,14 @@ shared_ptr<runtime::Tensor>
     make_reduce_result(function<shared_ptr<Node>(const shared_ptr<Node>&, const AxisSet&)> func)
 {
     Shape shape_a{3, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_rt{2};
     auto f = make_shared<Function>(func(A, {0}), ParameterVector{A});
     auto backend = runtime::Backend::create("INTERPRETER");
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{1, 2, 3, 4, 5, 6});
-    auto result = backend->create_tensor(element::f32, shape_rt);
+    auto result = backend->create_tensor(f32, shape_rt);
     backend->call_with_validate(backend->compile(f), {result}, {a});
 
     return result;
@@ -43,14 +43,14 @@ shared_ptr<runtime::Tensor> make_reduce_result_true(
     function<shared_ptr<Node>(const shared_ptr<Node>&, const AxisSet&, bool)> func)
 {
     Shape shape_a{3, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_rt{2};
     auto f = make_shared<Function>(func(A, {0}, true), ParameterVector{A});
     auto backend = runtime::Backend::create("INTERPRETER");
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{1, 2, 3, 4, 5, 6});
-    auto result = backend->create_tensor(element::f32, shape_rt);
+    auto result = backend->create_tensor(f32, shape_rt);
     backend->call_with_validate(backend->compile(f), {result}, {a});
 
     return result;
@@ -60,14 +60,14 @@ shared_ptr<runtime::Tensor> make_reduce_result_false(
     function<shared_ptr<Node>(const shared_ptr<Node>&, const AxisSet&, bool)> func)
 {
     Shape shape_a{3, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_rt{2};
     auto f = make_shared<Function>(func(A, {0}, false), ParameterVector{A});
     auto backend = runtime::Backend::create("INTERPRETER");
     // Create some tensors for input/output
-    auto a = backend->create_tensor(element::f32, shape_a);
+    auto a = backend->create_tensor(f32, shape_a);
     copy_data(a, vector<float>{1, 2, 3, 4, 5, 6});
-    auto result = backend->create_tensor(element::f32, shape_rt);
+    auto result = backend->create_tensor(f32, shape_rt);
     backend->call_with_validate(backend->compile(f), {result}, {a});
 
     return result;
@@ -108,19 +108,19 @@ TEST(builder, numpy_transpose)
 {
     // 2D Transpose
     Shape shape{2, 4};
-    auto param = make_shared<op::Parameter>(element::f32, shape);
+    auto param = make_shared<op::Parameter>(f32, shape);
     auto transposed = dynamic_pointer_cast<op::Reshape>(builder::numpy_transpose(param));
     EXPECT_EQ(Shape({4, 2}), transposed->get_output_shape());
 
     // Multidimensional Transpose
     shape = Shape{2, 4, 8};
-    param = make_shared<op::Parameter>(element::f32, shape);
+    param = make_shared<op::Parameter>(f32, shape);
     transposed = dynamic_pointer_cast<op::Reshape>(builder::numpy_transpose(param));
     EXPECT_EQ(Shape({8, 4, 2}), transposed->get_output_shape());
 
     // Dimshuffle
     shape = Shape{2, 4, 8};
-    param = make_shared<op::Parameter>(element::f32, shape);
+    param = make_shared<op::Parameter>(f32, shape);
     transposed =
         dynamic_pointer_cast<op::Reshape>(builder::numpy_transpose(param, AxisVector{2, 0, 1}));
     EXPECT_EQ(Shape({8, 2, 4}), transposed->get_output_shape());
@@ -135,7 +135,7 @@ TEST(builder, numpy_transpose)
 TEST(builder, tensor_mask)
 {
     Shape max_sequence_length{3};
-    auto sequence_lengths = make_shared<op::Parameter>(element::u32, max_sequence_length);
+    auto sequence_lengths = make_shared<op::Parameter>(u32, max_sequence_length);
 
     Shape mask_shape{3, 5};
     auto f =
@@ -144,9 +144,9 @@ TEST(builder, tensor_mask)
 
     auto backend = runtime::Backend::create("INTERPRETER");
 
-    auto sequence_lengths_data = backend->create_tensor(element::u32, max_sequence_length);
+    auto sequence_lengths_data = backend->create_tensor(u32, max_sequence_length);
     copy_data(sequence_lengths_data, vector<uint32_t>{1, 3, 2});
-    auto result = backend->create_tensor(element::boolean, mask_shape);
+    auto result = backend->create_tensor(boolean, mask_shape);
 
     backend->call_with_validate(backend->compile(f), {result}, {sequence_lengths_data});
     vector<char> expected{1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0};

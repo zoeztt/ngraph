@@ -31,10 +31,10 @@ using namespace ngraph;
 static void do_sum_to_scalar_operation(cldnn::topology& topology,
                                        const string& input_name,
                                        const Shape& input_shape,
-                                       const element::Type& input_type,
+                                       const Type& input_type,
                                        const string& output_name,
                                        const Shape& output_shape,
-                                       const element::Type& output_type,
+                                       const Type& output_type,
                                        const AxisSet& axis)
 {
     const string function_name = "sum_to_scalar_" + output_name;
@@ -104,10 +104,10 @@ static void do_sum_to_scalar_operation(cldnn::topology& topology,
 void runtime::intelgpu::do_bcast_sum_operation(cldnn::topology& topology,
                                                const string& input_name,
                                                const Shape& input_shape,
-                                               const element::Type& input_type,
+                                               const Type& input_type,
                                                const string& output_name,
                                                const Shape& output_shape,
-                                               const element::Type& output_type,
+                                               const Type& output_type,
                                                const AxisSet& axis,
                                                bool is_bcast)
 {
@@ -185,7 +185,7 @@ void runtime::intelgpu::do_max_min_operation(cldnn::topology& topology,
                                              const Shape& input_shape,
                                              const string& output_name,
                                              const Shape& output_shape,
-                                             const element::Type& output_type,
+                                             const Type& output_type,
                                              const AxisSet& axis,
                                              bool is_min)
 {
@@ -266,7 +266,7 @@ void runtime::intelgpu::do_product_operation(cldnn::topology& topology,
                                              const Shape& input_shape,
                                              const string& output_name,
                                              const Shape& output_shape,
-                                             const element::Type& output_type,
+                                             const Type& output_type,
                                              const AxisSet& axis)
 {
     const string function_name = "product_" + output_name;

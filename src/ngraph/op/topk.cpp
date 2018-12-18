@@ -25,7 +25,7 @@ using namespace ngraph;
 
 op::TopK::TopK(const shared_ptr<Node>& arg,
                size_t top_k_axis,
-               const element::Type& index_element_type,
+               const Type& index_element_type,
                size_t k,
                bool compute_max)
     : Op("TopK", check_single_output_args({arg}))
@@ -41,13 +41,13 @@ void op::TopK::validate_and_infer_types()
 {
     const PartialShape& input_shape = get_input_partial_shape(0);
     Rank input_rank = input_shape.rank();
-    element::Type input_element_type = get_input_element_type(0);
+    Type input_element_type = get_input_element_type(0);
 
     NODE_VALIDATION_ASSERT(this, !m_index_element_type.is_dynamic())
         << "Argument element type must not be dynamic.";
 
     NODE_VALIDATION_ASSERT(
-        this, m_index_element_type == element::i32 || m_index_element_type == element::i64)
+        this, m_index_element_type == i32 || m_index_element_type == i64)
         << "Argument element type must be i64 or i32 (got " << m_index_element_type << ").";
 
     NODE_VALIDATION_ASSERT(this, input_rank.is_dynamic() || static_cast<size_t>(input_rank) > 0)

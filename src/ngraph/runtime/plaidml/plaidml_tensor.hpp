@@ -36,7 +36,7 @@ class ngraph::runtime::plaidml::PlaidML_Tensor final : public ngraph::runtime::T
 {
 public:
     PlaidML_Tensor(Config* config,
-                   const ngraph::element::Type& element_type,
+                   const ngraph::Type& element_type,
                    const ngraph::Shape& shape,
                    const std::string& name,
                    void* memory);

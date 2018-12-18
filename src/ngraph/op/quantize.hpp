@@ -85,7 +85,7 @@ namespace ngraph
             Quantize(std::shared_ptr<Node> input,
                      std::shared_ptr<Node> scale,
                      std::shared_ptr<Node> offset,
-                     const ngraph::element::Type& type,
+                     const ngraph::Type& type,
                      const ngraph::AxisSet& axes,
                      RoundMode round_mode);
 
@@ -101,7 +101,7 @@ namespace ngraph
                                            const NodeVector& deltas) override;
 
         private:
-            ngraph::element::Type m_type;
+            ngraph::Type m_type;
             ngraph::AxisSet m_axes;
             RoundMode m_round_mode;
         };

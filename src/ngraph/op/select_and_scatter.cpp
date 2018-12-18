@@ -162,7 +162,7 @@ op::SelectAndScatter::SelectAndScatter(const shared_ptr<Node>& arg_selectee,
         throw ngraph_error("Single-output selection function was expected");
     }
 
-    if (m_selection_function->get_output_element_type(0) != element::boolean)
+    if (m_selection_function->get_output_element_type(0) != boolean)
     {
         throw ngraph_error("Return element type from selection function is not boolean");
     }

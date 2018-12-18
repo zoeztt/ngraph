@@ -43,10 +43,10 @@ using namespace std;
 
 void ngraph::runtime::cpu::pass::CPUPostLayoutOptimizations::construct_weight_fusion()
 {
-    auto param = std::make_shared<pattern::op::Label>(element::f32, Shape{64});
+    auto param = std::make_shared<pattern::op::Label>(f32, Shape{64});
     auto reshape_conv =
         std::make_shared<ngraph::op::Reshape>(param, AxisVector{0}, Shape{16, 4, 1, 1});
-    auto data_conv = std::make_shared<pattern::op::Label>(element::f32, Shape{16, 4, 7, 7});
+    auto data_conv = std::make_shared<pattern::op::Label>(f32, Shape{16, 4, 7, 7});
     auto tvt = reshape_conv->get_outputs().at(0).get_tensor_ptr().get();
     auto lt_desc = std::make_shared<runtime::cpu::LayoutDescriptor>(*tvt);
     auto cvt_lt_conv = std::make_shared<runtime::cpu::op::ConvertLayout>(reshape_conv, lt_desc);
@@ -123,7 +123,7 @@ void ngraph::runtime::cpu::pass::CPUPostLayoutOptimizations::construct_weight_fu
 
 void ngraph::runtime::cpu::pass::CPUPostLayoutOptimizations::construct_slice_convertLayout_fusion()
 {
-    auto param = std::make_shared<pattern::op::Label>(element::f32, Shape{1, 576, 17, 17});
+    auto param = std::make_shared<pattern::op::Label>(f32, Shape{1, 576, 17, 17});
     auto slice = std::make_shared<ngraph::op::Slice>(
         param, Coordinate{0, 0, 0, 0}, Coordinate{1, 192, 17, 17});
     auto tvt = slice->get_outputs().at(0).get_tensor_ptr().get();
@@ -186,7 +186,7 @@ void ngraph::runtime::cpu::pass::CPUPostLayoutOptimizations::construct_slice_con
 void ngraph::runtime::cpu::pass::CPUPostLayoutOptimizations::
     construct_reshape_convertLayout_fusion()
 {
-    auto input = std::make_shared<pattern::op::Label>(element::f32, Shape{1, 1, 1, 1});
+    auto input = std::make_shared<pattern::op::Label>(f32, Shape{1, 1, 1, 1});
     auto reshape =
         std::make_shared<ngraph::op::Reshape>(input, AxisVector{0, 1, 2, 3}, Shape{1, 1, 1, 1});
     auto lt_desc =

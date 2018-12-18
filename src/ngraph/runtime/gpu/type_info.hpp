@@ -35,7 +35,7 @@ namespace ngraph
             public:
                 virtual ~TypeInfo() = default;
                 // Helper functions to request information about the underlying c-type
-                // that is implicitly associated with the registed element::Type
+                // that is implicitly associated with the registed Type
                 virtual std::string lowest() const = 0;
                 virtual std::string min() const = 0;
                 virtual std::string max() const = 0;
@@ -44,7 +44,7 @@ namespace ngraph
                 virtual void* max_ptr() = 0;
 
                 using TypeDispatch = std::unordered_map<std::string, std::shared_ptr<TypeInfo>>;
-                static const std::shared_ptr<TypeInfo>& Get(const element::Type& type)
+                static const std::shared_ptr<TypeInfo>& Get(const Type& type)
                 {
                     return dispatcher.at(type.c_type_string());
                 }

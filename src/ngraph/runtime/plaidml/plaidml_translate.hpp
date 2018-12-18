@@ -33,11 +33,11 @@ namespace ngraph
                 FOR_IO = 1,
             };
 
-            vertexai::plaidml::datatype to_plaidml(const ngraph::element::Type& element_type,
+            vertexai::plaidml::datatype to_plaidml(const ngraph::Type& element_type,
                                                    ConversionUse use = ConversionUse::FOR_DATA);
 
             vertexai::plaidml::shape<char> to_plaidml(std::shared_ptr<vertexai::ctx>& ctx,
-                                                      const ngraph::element::Type& element_type,
+                                                      const ngraph::Type& element_type,
                                                       const ngraph::Shape& shape,
                                                       ConversionUse use = ConversionUse::FOR_DATA);
 
@@ -45,7 +45,7 @@ namespace ngraph
                                        vertexai::plaidml::datatype dt);
 
             std::string tile_converter(const std::string& tensor_name,
-                                       const ngraph::element::Type& element_type);
+                                       const ngraph::Type& element_type);
 
             vertexai::plaidml::variable plaidml_logical_to_data(vertexai::plaidml::variable var,
                                                                 bool debug);

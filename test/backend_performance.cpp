@@ -76,7 +76,7 @@ TEST(benchmark, concat_32x1x200_axis1_6)
         vector<std::shared_ptr<Node>> params_as_nodes(n_arrays);
         for (size_t i = 0; i < n_arrays; i++)
         {
-            auto param = make_shared<op::Parameter>(element::f32, shape_of_each_array);
+            auto param = make_shared<op::Parameter>(f32, shape_of_each_array);
             params[i] = param;
             params_as_nodes[i] = param;
         }
@@ -90,12 +90,12 @@ TEST(benchmark, concat_32x1x200_axis1_6)
 
         for (size_t i = 0; i < n_arrays; i++)
         {
-            auto tv = backend->create_tensor(element::f32, shape_of_each_array);
+            auto tv = backend->create_tensor(f32, shape_of_each_array);
             copy_data(tv, data_arrays[i]);
             input_vals.push_back(tv);
         }
 
-        auto result_tv = backend->create_tensor(element::f32, result_shape);
+        auto result_tv = backend->create_tensor(f32, result_shape);
         result_tvs.push_back(result_tv);
 
         std::function<void()> cb = [&]() {

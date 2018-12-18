@@ -109,7 +109,7 @@ namespace ngraph
                 auto keepdims = node.get_attribute_value<int64_t>("keepdims", 1);
                 auto input_node = node.get_ng_inputs().at(0);
 
-                auto op_node = std::make_shared<IndexReduction>(input_node, axis, element::i64);
+                auto op_node = std::make_shared<IndexReduction>(input_node, axis, i64);
 
                 if (keepdims == 0)
                 {
@@ -117,7 +117,7 @@ namespace ngraph
                 }
 
                 // WORKAROUND FOR PROBLEMS WITH RESHAPE ON i64 @TODO: remove
-                auto convert_node = std::make_shared<ngraph::op::Convert>(op_node, element::f32);
+                auto convert_node = std::make_shared<ngraph::op::Convert>(op_node, f32);
 
                 auto output_shape = input_node->get_shape();
                 output_shape.at(axis) = 1;
@@ -128,7 +128,7 @@ namespace ngraph
 
                 // WORKAROUND FOR PROBLEMS WITH RESHAPE ON i64 @TODO: remove
                 auto reconvert_node =
-                    std::make_shared<ngraph::op::Convert>(reshape_node, element::i64);
+                    std::make_shared<ngraph::op::Convert>(reshape_node, i64);
 
                 return reconvert_node;
             }

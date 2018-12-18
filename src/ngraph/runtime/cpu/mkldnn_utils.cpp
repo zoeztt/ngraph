@@ -41,41 +41,41 @@ using namespace mkldnn;
 using namespace ngraph;
 using namespace std;
 
-std::map<element::Type, const mkldnn::memory::data_type>&
+std::map<Type, const mkldnn::memory::data_type>&
     runtime::cpu::mkldnn_utils::get_mkldnn_data_type_map()
 {
     // Mapping from POD types to MKLDNN data types
-    static std::map<element::Type, const mkldnn::memory::data_type> s_mkldnn_data_type_map = {
-        {element::boolean, mkldnn::memory::data_type::s8},
-        {element::f32, mkldnn::memory::data_type::f32},
-        {element::f64, mkldnn::memory::data_type::data_undef},
-        {element::i8, mkldnn::memory::data_type::s8},
-        {element::i16, mkldnn::memory::data_type::s16},
-        {element::i32, mkldnn::memory::data_type::s32},
-        {element::i64, mkldnn::memory::data_type::data_undef},
-        {element::u8, mkldnn::memory::data_type::u8},
-        {element::u16, mkldnn::memory::data_type::data_undef},
-        {element::u32, mkldnn::memory::data_type::data_undef},
-        {element::u64, mkldnn::memory::data_type::data_undef},
+    static std::map<Type, const mkldnn::memory::data_type> s_mkldnn_data_type_map = {
+        {boolean, mkldnn::memory::data_type::s8},
+        {f32, mkldnn::memory::data_type::f32},
+        {f64, mkldnn::memory::data_type::data_undef},
+        {i8, mkldnn::memory::data_type::s8},
+        {i16, mkldnn::memory::data_type::s16},
+        {i32, mkldnn::memory::data_type::s32},
+        {i64, mkldnn::memory::data_type::data_undef},
+        {u8, mkldnn::memory::data_type::u8},
+        {u16, mkldnn::memory::data_type::data_undef},
+        {u32, mkldnn::memory::data_type::data_undef},
+        {u64, mkldnn::memory::data_type::data_undef},
     };
     return s_mkldnn_data_type_map;
 }
 
-std::map<element::Type, const std::string>&
+std::map<Type, const std::string>&
     runtime::cpu::mkldnn_utils::get_mkldnn_data_type_string_map()
 {
-    static std::map<element::Type, const std::string> s_mkldnn_data_type_string_map{
-        {element::boolean, "mkldnn::memory::data_type::s8"},
-        {element::f32, "mkldnn::memory::data_type::f32"},
-        {element::f64, "mkldnn::memory::data_type::data_undef"},
-        {element::i8, "mkldnn::memory::data_type::s8"},
-        {element::i16, "mkldnn::memory::data_type::s16"},
-        {element::i32, "mkldnn::memory::data_type::s32"},
-        {element::i64, "mkldnn::memory::data_type::data_undef"},
-        {element::u8, "mkldnn::memory::data_type::u8"},
-        {element::u16, "mkldnn::memory::data_type::data_undef"},
-        {element::u32, "mkldnn::memory::data_type::data_undef"},
-        {element::u64, "mkldnn::memory::data_type::data_undef"}};
+    static std::map<Type, const std::string> s_mkldnn_data_type_string_map{
+        {boolean, "mkldnn::memory::data_type::s8"},
+        {f32, "mkldnn::memory::data_type::f32"},
+        {f64, "mkldnn::memory::data_type::data_undef"},
+        {i8, "mkldnn::memory::data_type::s8"},
+        {i16, "mkldnn::memory::data_type::s16"},
+        {i32, "mkldnn::memory::data_type::s32"},
+        {i64, "mkldnn::memory::data_type::data_undef"},
+        {u8, "mkldnn::memory::data_type::u8"},
+        {u16, "mkldnn::memory::data_type::data_undef"},
+        {u32, "mkldnn::memory::data_type::data_undef"},
+        {u64, "mkldnn::memory::data_type::data_undef"}};
     return s_mkldnn_data_type_string_map;
 }
 
@@ -216,7 +216,7 @@ mkldnn::memory::format runtime::cpu::mkldnn_utils::CreateNativeDataFormat(const 
 }
 
 const std::string&
-    runtime::cpu::mkldnn_utils::get_mkldnn_data_type_string(const ngraph::element::Type& type)
+    runtime::cpu::mkldnn_utils::get_mkldnn_data_type_string(const ngraph::Type& type)
 {
     auto it = get_mkldnn_data_type_string_map().find(type);
     if (it == get_mkldnn_data_type_string_map().end() || it->second.empty())
@@ -228,7 +228,7 @@ const std::string&
 }
 
 mkldnn::memory::data_type
-    runtime::cpu::mkldnn_utils::get_mkldnn_data_type(const ngraph::element::Type& type)
+    runtime::cpu::mkldnn_utils::get_mkldnn_data_type(const ngraph::Type& type)
 {
     auto it = get_mkldnn_data_type_map().find(type);
     if (it == get_mkldnn_data_type_map().end())
@@ -291,7 +291,7 @@ mkldnn::memory::desc runtime::cpu::mkldnn_utils::create_default_mkldnn_md(
 
 bool runtime::cpu::mkldnn_utils::can_create_mkldnn_md(const Shape& dims,
                                                       const Strides& strides,
-                                                      const ngraph::element::Type type)
+                                                      const ngraph::Type type)
 {
     auto it = get_mkldnn_data_type_map().find(type);
     if (dims.size() == 0)
@@ -325,7 +325,7 @@ bool runtime::cpu::mkldnn_utils::is_perm_sorted(const Strides& a, const AxisVect
 }
 
 mkldnn::memory::desc runtime::cpu::mkldnn_utils::create_blocked_mkldnn_md(
-    const Shape& dims, const Strides& strides, const ngraph::element::Type type)
+    const Shape& dims, const Strides& strides, const ngraph::Type type)
 {
     if (dims.size() > TENSOR_MAX_DIMS || strides.size() > TENSOR_MAX_DIMS)
     {
@@ -672,7 +672,7 @@ bool runtime::cpu::mkldnn_utils::can_use_mkldnn_batchnorm_fprop(const ngraph::No
     auto input_rank = node->get_input_shape(2).size();
     auto input_element_type = node->get_input_element_type(2);
 
-    if (((input_rank == 4 || input_rank == 5) && input_element_type == element::f32))
+    if (((input_rank == 4 || input_rank == 5) && input_element_type == f32))
     {
         return true;
     }
@@ -690,7 +690,7 @@ bool runtime::cpu::mkldnn_utils::can_use_mkldnn_batchnorm_bprop(const ngraph::No
     auto delta_element_type = node->get_input_element_type(5);
 
     if (((input_rank == 4 && delta_rank == 4) || (input_rank == 5 && delta_rank == 5)) &&
-        (input_element_type == element::f32) && (delta_element_type == element::f32))
+        (input_element_type == f32) && (delta_element_type == f32))
     {
         return true;
     }

@@ -33,11 +33,11 @@ public:
     TestBackend(const std::vector<std::shared_ptr<ngraph::runtime::Backend>>& backend_list);
 
     std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::element::Type& element_type,
+        create_tensor(const ngraph::Type& element_type,
                       const ngraph::Shape& shape) override;
 
     std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::element::Type& element_type,
+        create_tensor(const ngraph::Type& element_type,
                       const ngraph::Shape& shape,
                       void* memory_pointer) override;
 
@@ -74,11 +74,11 @@ public:
                    const std::string& name);
 
     std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::element::Type& element_type,
+        create_tensor(const ngraph::Type& element_type,
                       const ngraph::Shape& shape) override;
 
     std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::element::Type& element_type,
+        create_tensor(const ngraph::Type& element_type,
                       const ngraph::Shape& shape,
                       void* memory_pointer) override;
 

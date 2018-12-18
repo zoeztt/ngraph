@@ -23,7 +23,7 @@ using namespace ngraph;
 op::Quantize::Quantize(shared_ptr<Node> input,
                        shared_ptr<Node> scale,
                        shared_ptr<Node> offset,
-                       const element::Type& type,
+                       const Type& type,
                        const AxisSet& axes,
                        RoundMode round_mode)
 
@@ -49,10 +49,10 @@ void op::Quantize::validate_and_infer_types()
     NODE_VALIDATION_ASSERT(this, m_type.is_quantized()) << "Output element type (" << m_type
                                                         << ") must be a quantized type";
 
-    element::Type unquantized_type;
+    Type unquantized_type;
 
     NODE_VALIDATION_ASSERT(this,
-                           element::Type::merge(unquantized_type,
+                           Type::merge(unquantized_type,
                                                 get_input_element_type(INPUT),
                                                 get_input_element_type(SCALE)))
         << "Scale element type (" << get_input_element_type(SCALE)
@@ -61,10 +61,10 @@ void op::Quantize::validate_and_infer_types()
     NODE_VALIDATION_ASSERT(this, unquantized_type.is_dynamic() || unquantized_type.is_real())
         << "Scale/input element type (" << unquantized_type << ") must be a floating point number";
 
-    element::Type quantized_type;
+    Type quantized_type;
 
     NODE_VALIDATION_ASSERT(
-        this, element::Type::merge(quantized_type, get_input_element_type(OFFSET), m_type))
+        this, Type::merge(quantized_type, get_input_element_type(OFFSET), m_type))
         << "Offset element type (" << get_input_element_type(OFFSET)
         << ") must match output element type (" << m_type << ")";
 

@@ -128,23 +128,23 @@ int main(int argc, char* argv[])
 
     // The data input
     auto X = std::make_shared<op::Parameter>(
-        element::f32, Shape{batch_size, input_size});
+        f32, Shape{batch_size, input_size});
 
     // Layer 0
-    auto W0 = std::make_shared<op::Parameter>(element::f32,
+    auto W0 = std::make_shared<op::Parameter>(f32,
                                               Shape{input_size, l0_size});
     auto b0 =
-        std::make_shared<op::Parameter>(element::f32, Shape{l0_size});
+        std::make_shared<op::Parameter>(f32, Shape{l0_size});
     auto l0_dot = std::make_shared<op::Dot>(X, W0, 1);
     auto b0_broadcast = std::make_shared<op::Broadcast>(
         b0, Shape{batch_size, l0_size}, AxisSet{0});
     auto l0 = std::make_shared<op::Relu>(l0_dot + b0_broadcast);
 
     // Layer 1
-    auto W1 = std::make_shared<op::Parameter>(element::f32,
+    auto W1 = std::make_shared<op::Parameter>(f32,
                                               Shape{l0_size, l1_size});
     auto b1 =
-        std::make_shared<op::Parameter>(element::f32, Shape{l1_size});
+        std::make_shared<op::Parameter>(f32, Shape{l1_size});
     auto l1_dot = std::make_shared<op::Dot>(l0, W1, 1);
     auto b1_broadcast = std::make_shared<op::Broadcast>(
         b1, Shape{batch_size, l1_size}, AxisSet{0});
@@ -155,25 +155,25 @@ int main(int argc, char* argv[])
 
     // Loss computation
     auto Y =
-        std::make_shared<op::Parameter>(element::f32, Shape{batch_size});
+        std::make_shared<op::Parameter>(f32, Shape{batch_size});
     auto labels =
         std::make_shared<op::OneHot>(Y, Shape{batch_size, output_size}, 1);
     auto softmax_clip_value = std::make_shared<op::Constant>(
-        element::f32, Shape{}, std::vector<float>{log_min});
+        f32, Shape{}, std::vector<float>{log_min});
     auto softmax_clip_broadcast = std::make_shared<op::Broadcast>(
         softmax_clip_value, Shape{batch_size, output_size}, AxisSet{0, 1});
     auto softmax_clip =
         std::make_shared<op::Maximum>(softmax, softmax_clip_broadcast);
     auto softmax_log = std::make_shared<op::Log>(softmax_clip);
     auto prod = std::make_shared<op::Multiply>(softmax_log, labels);
-    auto N = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto N = std::make_shared<op::Parameter>(f32, Shape{});
     auto loss = std::make_shared<op::Divide>(
         std::make_shared<op::Sum>(prod, AxisSet{0, 1}), N);
 
     // Backprop
     // Each of W0, b0, W1, and b1
     auto learning_rate =
-        std::make_shared<op::Parameter>(element::f32, Shape{});
+        std::make_shared<op::Parameter>(f32, Shape{});
     auto delta = -learning_rate * loss;
 
     // Updates

@@ -28,15 +28,15 @@ namespace ngraph
             {
             public:
                 size_t get_reduction_axis() const { return m_axis; }
-                element::Type get_index_element_type() const { return m_index_element_type; }
+                Type get_index_element_type() const { return m_index_element_type; }
                 IndexReduction(const std::string& node_type,
                                const std::shared_ptr<Node>& arg,
                                size_t axis,
-                               const element::Type& index_element_type);
+                               const Type& index_element_type);
 
             protected:
                 size_t m_axis;
-                element::Type m_index_element_type;
+                Type m_index_element_type;
 
                 void validate_and_infer_types() override;
                 virtual void generate_adjoints(autodiff::Adjoints& adjoints,

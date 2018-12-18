@@ -77,8 +77,8 @@ public:
             cout << "  output shape:      " << ref_data->get_shape() << endl;
             cout << "  output # elements: " << ref_data->get_element_count() << endl;
 
-            element::Type et = ref_data->get_element_type();
-            if (et == element::boolean)
+            Type et = ref_data->get_element_type();
+            if (et == boolean)
             {
                 vector<char> ref_data_vector = read_vector<char>(ref_data);
                 vector<char> bk_data_vector = read_vector<char>(bk_data);
@@ -92,7 +92,7 @@ public:
                     test::all_close<char>(ref_data_vector, bk_isolated_data_vector);
                 EXPECT_TRUE(all_close_graph && all_close_isolated);
             }
-            else if (et == element::f32)
+            else if (et == f32)
             {
                 vector<float> ref_data_vector = read_float_vector(ref_data);
                 vector<float> bk_data_vector = read_float_vector(bk_data);
@@ -106,7 +106,7 @@ public:
                     test::all_close_f(ref_data_vector, bk_isolated_data_vector);
                 EXPECT_TRUE(all_close_graph && all_close_isolated);
             }
-            else if (et == element::f64)
+            else if (et == f64)
             {
                 vector<double> ref_data_vector = read_vector<double>(ref_data);
                 vector<double> bk_data_vector = read_vector<double>(bk_data);
@@ -126,7 +126,7 @@ public:
                     test::all_close_f(ref_data_vector, bk_isolated_data_vector);
                 EXPECT_TRUE(all_close_graph && all_close_isolated);
             }
-            else if (et == element::i8)
+            else if (et == i8)
             {
                 vector<int8_t> ref_data_vector = read_vector<int8_t>(ref_data);
                 vector<int8_t> bk_data_vector = read_vector<int8_t>(bk_data);
@@ -140,7 +140,7 @@ public:
                     test::all_close<int8_t>(ref_data_vector, bk_isolated_data_vector);
                 EXPECT_TRUE(all_close_graph && all_close_isolated);
             }
-            else if (et == element::i16)
+            else if (et == i16)
             {
                 vector<int16_t> ref_data_vector = read_vector<int16_t>(ref_data);
                 vector<int16_t> bk_data_vector = read_vector<int16_t>(bk_data);
@@ -154,7 +154,7 @@ public:
                     test::all_close<int16_t>(ref_data_vector, bk_isolated_data_vector);
                 EXPECT_TRUE(all_close_graph && all_close_isolated);
             }
-            else if (et == element::i32)
+            else if (et == i32)
             {
                 vector<int32_t> ref_data_vector = read_vector<int32_t>(ref_data);
                 vector<int32_t> bk_data_vector = read_vector<int32_t>(bk_data);
@@ -168,7 +168,7 @@ public:
                     test::all_close<int32_t>(ref_data_vector, bk_isolated_data_vector);
                 EXPECT_TRUE(all_close_graph && all_close_isolated);
             }
-            else if (et == element::i64)
+            else if (et == i64)
             {
                 vector<int64_t> ref_data_vector = read_vector<int64_t>(ref_data);
                 vector<int64_t> bk_data_vector = read_vector<int64_t>(bk_data);
@@ -182,7 +182,7 @@ public:
                     test::all_close<int64_t>(ref_data_vector, bk_isolated_data_vector);
                 EXPECT_TRUE(all_close_graph && all_close_isolated);
             }
-            else if (et == element::u8)
+            else if (et == u8)
             {
                 vector<uint8_t> ref_data_vector = read_vector<uint8_t>(ref_data);
                 vector<uint8_t> bk_data_vector = read_vector<uint8_t>(bk_data);
@@ -196,7 +196,7 @@ public:
                     test::all_close<uint8_t>(ref_data_vector, bk_isolated_data_vector);
                 EXPECT_TRUE(all_close_graph && all_close_isolated);
             }
-            else if (et == element::u16)
+            else if (et == u16)
             {
                 vector<uint16_t> ref_data_vector = read_vector<uint16_t>(ref_data);
                 vector<uint16_t> bk_data_vector = read_vector<uint16_t>(bk_data);
@@ -210,7 +210,7 @@ public:
                     test::all_close<uint16_t>(ref_data_vector, bk_isolated_data_vector);
                 EXPECT_TRUE(all_close_graph && all_close_isolated);
             }
-            else if (et == element::u32)
+            else if (et == u32)
             {
                 vector<uint32_t> ref_data_vector = read_vector<uint32_t>(ref_data);
                 vector<uint32_t> bk_data_vector = read_vector<uint32_t>(bk_data);
@@ -224,7 +224,7 @@ public:
                     test::all_close<uint32_t>(ref_data_vector, bk_isolated_data_vector);
                 EXPECT_TRUE(all_close_graph && all_close_isolated);
             }
-            else if (et == element::u64)
+            else if (et == u64)
             {
                 vector<uint64_t> ref_data_vector = read_vector<uint64_t>(ref_data);
                 vector<uint64_t> bk_data_vector = read_vector<uint64_t>(bk_data);

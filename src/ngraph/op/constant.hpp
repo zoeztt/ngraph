@@ -40,7 +40,7 @@ namespace ngraph
             /// \param values A vector of literals for initializing the tensor constant. The size
             ///        of values must match the size of the shape.
             template <typename T>
-            Constant(const element::Type& type, Shape shape, const std::vector<T>& values)
+            Constant(const Type& type, Shape shape, const std::vector<T>& values)
                 : Node("Constant", {})
                 , m_element_type(type)
                 , m_shape(shape)
@@ -70,7 +70,7 @@ namespace ngraph
             /// \param type The element type of the tensor constant.
             /// \param shape The shape of the tensor constant.
             /// \param values A list of string values to use as the constant data.
-            Constant(const element::Type& type, Shape shape, const std::vector<std::string>& values)
+            Constant(const Type& type, Shape shape, const std::vector<std::string>& values)
                 : Node("Constant", {})
                 , m_element_type(type)
                 , m_shape(shape)
@@ -93,7 +93,7 @@ namespace ngraph
             /// \param type The element type of the tensor constant.
             /// \param shape The shape of the tensor constant.
             /// \param data A void* to constant data.
-            Constant(const element::Type& type, const Shape& shape, const void* data)
+            Constant(const Type& type, const Shape& shape, const void* data)
                 : Node("Constant", {})
                 , m_element_type(type)
                 , m_shape(shape)
@@ -120,7 +120,7 @@ namespace ngraph
             /// \param values A vector of values to use as the constant data.
             template <typename T>
             static std::shared_ptr<op::Constant>
-                create(const element::Type& type, Shape shape, const std::vector<T> values)
+                create(const Type& type, Shape shape, const std::vector<T> values)
             {
                 auto result = std::make_shared<op::Constant>(type, shape, values);
                 result->validate_and_infer_types();
@@ -134,7 +134,7 @@ namespace ngraph
             /// \param values An initializer_list of values to use as the constant data.
             template <typename T>
             static std::shared_ptr<op::Constant>
-                create(const element::Type& type, Shape shape, std::initializer_list<T> values)
+                create(const Type& type, Shape shape, std::initializer_list<T> values)
             {
                 auto result = std::make_shared<op::Constant>(type, shape, std::vector<T>{values});
                 result->validate_and_infer_types();
@@ -197,7 +197,7 @@ namespace ngraph
             }
 
             template <typename T>
-            void write_to_buffer(const element::Type& target_type,
+            void write_to_buffer(const Type& target_type,
                                  const Shape& target_shape,
                                  const std::vector<T>& source,
                                  void* target,
@@ -207,51 +207,51 @@ namespace ngraph
                 {
                     throw std::runtime_error("Constant initializer does not match shape");
                 }
-                if (target_type == element::boolean)
+                if (target_type == boolean)
                 {
                     write_buffer<char, T>(target, source, target_element_count);
                 }
-                else if (target_type == element::bf16)
+                else if (target_type == bf16)
                 {
                     write_buffer<bfloat16, T>(target, source, target_element_count);
                 }
-                else if (target_type == element::f32)
+                else if (target_type == f32)
                 {
                     write_buffer<float, T>(target, source, target_element_count);
                 }
-                else if (target_type == element::f64)
+                else if (target_type == f64)
                 {
                     write_buffer<double, T>(target, source, target_element_count);
                 }
-                else if (target_type == element::i8)
+                else if (target_type == i8)
                 {
                     write_buffer<int8_t, T>(target, source, target_element_count);
                 }
-                else if (target_type == element::i16)
+                else if (target_type == i16)
                 {
                     write_buffer<int16_t, T>(target, source, target_element_count);
                 }
-                else if (target_type == element::i32)
+                else if (target_type == i32)
                 {
                     write_buffer<int32_t, T>(target, source, target_element_count);
                 }
-                else if (target_type == element::i64)
+                else if (target_type == i64)
                 {
                     write_buffer<int64_t, T>(target, source, target_element_count);
                 }
-                else if (target_type == element::u8)
+                else if (target_type == u8)
                 {
                     write_buffer<uint8_t, T>(target, source, target_element_count);
                 }
-                else if (target_type == element::u16)
+                else if (target_type == u16)
                 {
                     write_buffer<uint16_t, T>(target, source, target_element_count);
                 }
-                else if (target_type == element::u32)
+                else if (target_type == u32)
                 {
                     write_buffer<uint32_t, T>(target, source, target_element_count);
                 }
-                else if (target_type == element::u64)
+                else if (target_type == u64)
                 {
                     write_buffer<uint64_t, T>(target, source, target_element_count);
                 }
@@ -261,7 +261,7 @@ namespace ngraph
                 }
             }
 
-            element::Type m_element_type;
+            Type m_element_type;
             Shape m_shape{};
             void* m_data{nullptr};
             Constant(const Constant&) = delete;

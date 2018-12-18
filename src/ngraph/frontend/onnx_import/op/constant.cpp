@@ -31,7 +31,7 @@ namespace ngraph
                 {
                     template <typename T>
                     inline std::shared_ptr<ngraph::op::Constant>
-                        __make_ng_constant(const element::Type& type, const Tensor& tensor)
+                        __make_ng_constant(const Type& type, const Tensor& tensor)
                     {
                         return std::make_shared<ngraph::op::Constant>(
                             type, tensor.get_shape(), tensor.get_data<T>());
@@ -48,49 +48,49 @@ namespace ngraph
                     inline std::shared_ptr<ngraph::op::Constant>
                         make_ng_constant<Tensor::Type::float16>(const Tensor& tensor)
                     {
-                        return __make_ng_constant<float>(element::f32, tensor);
+                        return __make_ng_constant<float>(f32, tensor);
                     }
 
                     template <>
                     inline std::shared_ptr<ngraph::op::Constant>
                         make_ng_constant<Tensor::Type::float32>(const Tensor& tensor)
                     {
-                        return __make_ng_constant<float>(element::f32, tensor);
+                        return __make_ng_constant<float>(f32, tensor);
                     }
 
                     template <>
                     inline std::shared_ptr<ngraph::op::Constant>
                         make_ng_constant<Tensor::Type::float64>(const Tensor& tensor)
                     {
-                        return __make_ng_constant<double>(element::f64, tensor);
+                        return __make_ng_constant<double>(f64, tensor);
                     }
 
                     template <>
                     inline std::shared_ptr<ngraph::op::Constant>
                         make_ng_constant<Tensor::Type::int32>(const Tensor& tensor)
                     {
-                        return __make_ng_constant<int32_t>(element::i32, tensor);
+                        return __make_ng_constant<int32_t>(i32, tensor);
                     }
 
                     template <>
                     inline std::shared_ptr<ngraph::op::Constant>
                         make_ng_constant<Tensor::Type::int64>(const Tensor& tensor)
                     {
-                        return __make_ng_constant<int64_t>(element::i64, tensor);
+                        return __make_ng_constant<int64_t>(i64, tensor);
                     }
 
                     template <>
                     inline std::shared_ptr<ngraph::op::Constant>
                         make_ng_constant<Tensor::Type::uint32>(const Tensor& tensor)
                     {
-                        return __make_ng_constant<uint32_t>(element::u32, tensor);
+                        return __make_ng_constant<uint32_t>(u32, tensor);
                     }
 
                     template <>
                     inline std::shared_ptr<ngraph::op::Constant>
                         make_ng_constant<Tensor::Type::uint64>(const Tensor& tensor)
                     {
-                        return __make_ng_constant<uint64_t>(element::u64, tensor);
+                        return __make_ng_constant<uint64_t>(u64, tensor);
                     }
 
                     inline std::shared_ptr<ngraph::op::Constant> make_constant(const Tensor& tensor)

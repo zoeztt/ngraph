@@ -437,7 +437,7 @@ void runtime::gpu::GPU_ExternalFunction::emit_functions()
                 for (size_t i = 0; i < param->get_output_size(); ++i)
                 {
                     shared_ptr<descriptor::Tensor> tv = param->get_output_tensor_ptr(i);
-                    const element::Type& et = tv->get_element_type();
+                    const Type& et = tv->get_element_type();
                     string type = et.c_type_string();
                     stringstream ss;
                     ss << "((" << type << "*)(inputs[" << arg_index << "]))";

@@ -40,7 +40,7 @@ using namespace std;
 TEST(CSE, abs_abs)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto A = std::make_shared<op::Parameter>(i32, zero_shape);
     auto abs1 = std::make_shared<op::Abs>(A);
     auto abs2 = std::make_shared<op::Abs>(A);
     auto f = std::make_shared<Function>(NodeVector{abs1, abs2}, ParameterVector{A});
@@ -54,8 +54,8 @@ TEST(CSE, abs_abs)
 TEST(CSE, abs_abs_negative)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::i32, zero_shape);
-    auto B = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto A = std::make_shared<op::Parameter>(i32, zero_shape);
+    auto B = std::make_shared<op::Parameter>(i32, zero_shape);
     auto abs1 = std::make_shared<op::Abs>(A);
     auto abs2 = std::make_shared<op::Abs>(B);
     auto f = std::make_shared<Function>(NodeVector{abs1, abs2}, ParameterVector{A, B});
@@ -70,8 +70,8 @@ TEST(CSE, abs_abs_negative)
 TEST(CSE, add_add)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::i32, zero_shape);
-    auto B = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto A = std::make_shared<op::Parameter>(i32, zero_shape);
+    auto B = std::make_shared<op::Parameter>(i32, zero_shape);
     auto add1 = std::make_shared<op::Add>(A, B);
     auto add2 = std::make_shared<op::Add>(A, B);
     auto f = std::make_shared<Function>(NodeVector{add1, add2}, ParameterVector{A, B});
@@ -85,8 +85,8 @@ TEST(CSE, add_add)
 TEST(CSE, add_add_commutative)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::i32, zero_shape);
-    auto B = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto A = std::make_shared<op::Parameter>(i32, zero_shape);
+    auto B = std::make_shared<op::Parameter>(i32, zero_shape);
     auto add1 = std::make_shared<op::Add>(A, B);
     auto add2 = std::make_shared<op::Add>(B, A);
     auto f = std::make_shared<Function>(NodeVector{add1, add2}, ParameterVector{A, B});
@@ -100,10 +100,10 @@ TEST(CSE, add_add_commutative)
 TEST(CSE, add_add_negative)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::i32, zero_shape);
-    auto B = std::make_shared<op::Parameter>(element::i32, zero_shape);
-    auto C = std::make_shared<op::Parameter>(element::i32, zero_shape);
-    auto D = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto A = std::make_shared<op::Parameter>(i32, zero_shape);
+    auto B = std::make_shared<op::Parameter>(i32, zero_shape);
+    auto C = std::make_shared<op::Parameter>(i32, zero_shape);
+    auto D = std::make_shared<op::Parameter>(i32, zero_shape);
     auto add1 = std::make_shared<op::Add>(A, B);
     auto add2 = std::make_shared<op::Add>(C, D);
     auto f = std::make_shared<Function>(NodeVector{add1, add2}, ParameterVector{A, B, C, D});
@@ -118,8 +118,8 @@ TEST(CSE, add_add_negative)
 TEST(CSE, abs_add)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::i32, zero_shape);
-    auto B = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto A = std::make_shared<op::Parameter>(i32, zero_shape);
+    auto B = std::make_shared<op::Parameter>(i32, zero_shape);
     auto abs_a1 = std::make_shared<op::Abs>(A);
     auto abs_b1 = std::make_shared<op::Abs>(B);
     auto abs_a2 = std::make_shared<op::Abs>(A);
@@ -137,8 +137,8 @@ TEST(CSE, abs_add)
 TEST(CSE, abs_add_reshape_broadcast)
 {
     Shape zero_shape{1};
-    auto A = std::make_shared<op::Parameter>(element::i32, zero_shape);
-    auto B = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto A = std::make_shared<op::Parameter>(i32, zero_shape);
+    auto B = std::make_shared<op::Parameter>(i32, zero_shape);
     auto abs_a1 = std::make_shared<op::Abs>(A);
     auto abs_b1 = std::make_shared<op::Abs>(B);
     auto abs_a2 = std::make_shared<op::Abs>(A);
@@ -187,8 +187,8 @@ TEST(CSE, abs_add_reshape_broadcast)
 TEST(CSE, abs_add_abs_add)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::i32, zero_shape);
-    auto B = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto A = std::make_shared<op::Parameter>(i32, zero_shape);
+    auto B = std::make_shared<op::Parameter>(i32, zero_shape);
     auto abs_a1 = std::make_shared<op::Abs>(A);
     auto abs_b1 = std::make_shared<op::Abs>(B);
     auto abs_a2 = std::make_shared<op::Abs>(A);
@@ -197,7 +197,7 @@ TEST(CSE, abs_add_abs_add)
     auto add2 = std::make_shared<op::Add>(abs_a2, abs_b2);
     auto abs_add1 = std::make_shared<op::Abs>(add1);
     auto abs_add2 = std::make_shared<op::Abs>(add2);
-    auto C = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto C = std::make_shared<op::Parameter>(i32, zero_shape);
     auto add3 = std::make_shared<op::Add>(abs_add1, C);
     auto add4 = std::make_shared<op::Add>(abs_add2, C);
     auto f = std::make_shared<Function>(NodeVector{add3, add4}, ParameterVector{A, B, C});
@@ -211,8 +211,8 @@ TEST(CSE, abs_add_abs_add)
 TEST(CSE, abs_add_abs_add_negative)
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::i32, zero_shape);
-    auto B = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto A = std::make_shared<op::Parameter>(i32, zero_shape);
+    auto B = std::make_shared<op::Parameter>(i32, zero_shape);
     auto abs_a1 = std::make_shared<op::Abs>(A);
     auto abs_b1 = std::make_shared<op::Abs>(B);
     auto abs_a2 = std::make_shared<op::Abs>(A);
@@ -221,8 +221,8 @@ TEST(CSE, abs_add_abs_add_negative)
     auto add2 = std::make_shared<op::Add>(abs_a2, abs_b2);
     auto abs_add1 = std::make_shared<op::Abs>(add1);
     auto abs_add2 = std::make_shared<op::Abs>(add2);
-    auto C = std::make_shared<op::Parameter>(element::i32, zero_shape);
-    auto D = std::make_shared<op::Parameter>(element::i32, zero_shape);
+    auto C = std::make_shared<op::Parameter>(i32, zero_shape);
+    auto D = std::make_shared<op::Parameter>(i32, zero_shape);
     auto add3 = std::make_shared<op::Add>(abs_add1, C);
     auto add4 = std::make_shared<op::Add>(abs_add2, D);
     auto f = std::make_shared<Function>(NodeVector{add3, add4}, ParameterVector{A, B, C, D});
@@ -243,13 +243,13 @@ template <typename T>
 static void execute_cse_reduction_test()
 {
     Shape zero_shape{0};
-    auto A = std::make_shared<op::Parameter>(element::i32, Shape{3, 5});
+    auto A = std::make_shared<op::Parameter>(i32, Shape{3, 5});
     auto a_reduction_op = std::make_shared<T>(A, AxisSet{0, 1});
     auto a_reduction_op2 = std::make_shared<T>(A, AxisSet{0, 1});
     auto a_reduction_op3 = std::make_shared<T>(A, AxisSet{0});
     auto sub_aa = a_reduction_op - a_reduction_op2;
 
-    auto B = std::make_shared<op::Parameter>(element::i32, Shape{3, 5});
+    auto B = std::make_shared<op::Parameter>(i32, Shape{3, 5});
     auto b_reduction_op = std::make_shared<T>(B, AxisSet{0, 1});
 
     auto sub_ab = a_reduction_op - b_reduction_op;
@@ -274,13 +274,13 @@ TEST(CSE, reduction_ops)
 TEST(CSE, constant)
 {
     Shape zero_shape{0};
-    auto iconst0 = op::Constant::create(element::i32, Shape{}, {0});
-    auto iconst0_1 = op::Constant::create(element::i32, Shape{}, {0});
-    auto iconst1 = op::Constant::create(element::i32, Shape{}, {1});
-    auto iconst1_1 = op::Constant::create(element::i32, Shape{}, {1});
-    auto fconst0 = op::Constant::create(element::f32, Shape{}, {0});
-    auto iconst111 = op::Constant::create(element::i32, Shape{3}, {1, 1, 1});
-    auto iconst112 = op::Constant::create(element::i32, Shape{3}, {1, 1, 2});
+    auto iconst0 = op::Constant::create(i32, Shape{}, {0});
+    auto iconst0_1 = op::Constant::create(i32, Shape{}, {0});
+    auto iconst1 = op::Constant::create(i32, Shape{}, {1});
+    auto iconst1_1 = op::Constant::create(i32, Shape{}, {1});
+    auto fconst0 = op::Constant::create(f32, Shape{}, {0});
+    auto iconst111 = op::Constant::create(i32, Shape{3}, {1, 1, 1});
+    auto iconst112 = op::Constant::create(i32, Shape{3}, {1, 1, 2});
 
     auto abs0 = std::make_shared<op::Abs>(iconst0);
     auto abs0_1 = std::make_shared<op::Abs>(iconst0_1);

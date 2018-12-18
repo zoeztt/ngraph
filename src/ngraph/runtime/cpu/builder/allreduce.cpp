@@ -39,11 +39,11 @@ namespace ngraph
                 auto count = static_cast<int>(out[0].get_size());
                 auto data_type = MLSL::DT_FLOAT;
 
-                if (args[0].get_element_type() == element::f32)
+                if (args[0].get_element_type() == f32)
                 {
                     data_type = MLSL::DT_FLOAT;
                 }
-                else if (args[0].get_element_type() == element::f64)
+                else if (args[0].get_element_type() == f64)
                 {
                     data_type = MLSL::DT_DOUBLE;
                 }

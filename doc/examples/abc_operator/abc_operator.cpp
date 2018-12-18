@@ -24,9 +24,9 @@ int main()
 {
     // Build the graph
     Shape s{2, 3};
-    auto a = std::make_shared<op::Parameter>(element::f32, s);
-    auto b = std::make_shared<op::Parameter>(element::f32, s);
-    auto c = std::make_shared<op::Parameter>(element::f32, s);
+    auto a = std::make_shared<op::Parameter>(f32, s);
+    auto b = std::make_shared<op::Parameter>(f32, s);
+    auto c = std::make_shared<op::Parameter>(f32, s);
 
     auto t1 = (a + b) * c;
 
@@ -38,11 +38,11 @@ int main()
     auto backend = runtime::Backend::create("CPU");
 
     // Allocate tensors for arguments a, b, c
-    auto t_a = backend->create_tensor(element::f32, s);
-    auto t_b = backend->create_tensor(element::f32, s);
-    auto t_c = backend->create_tensor(element::f32, s);
+    auto t_a = backend->create_tensor(f32, s);
+    auto t_b = backend->create_tensor(f32, s);
+    auto t_c = backend->create_tensor(f32, s);
     // Allocate tensor for the result
-    auto t_result = backend->create_tensor(element::f32, s);
+    auto t_result = backend->create_tensor(f32, s);
 
     // Initialize tensors
     float v_a[2][3] = {{1, 2, 3}, {4, 5, 6}};

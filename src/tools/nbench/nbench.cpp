@@ -162,9 +162,9 @@ void print_results(vector<PerfShape> perf_data, bool timing_detail)
     }
 }
 
-element::Type get_op_element_type(const Node& op)
+Type get_op_element_type(const Node& op)
 {
-    element::Type type;
+    Type type;
     if (op.description() == "Convert")
     {
         type = op.get_input_element_type(0);

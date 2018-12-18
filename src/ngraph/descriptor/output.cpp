@@ -59,7 +59,7 @@ const PartialShape& descriptor::Output::get_partial_shape() const
     return m_tensor->get_partial_shape();
 }
 
-const element::Type& descriptor::Output::get_element_type() const
+const Type& descriptor::Output::get_element_type() const
 {
     return m_tensor->get_element_type();
 }

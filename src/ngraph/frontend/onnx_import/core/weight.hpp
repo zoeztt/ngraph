@@ -39,7 +39,7 @@ namespace ngraph
             Weight(Weight&&) = default;
             Weight& operator=(Weight&&) = delete;
 
-            Weight(const element::Type& type, const Shape& shape, std::vector<char> data)
+            Weight(const Type& type, const Shape& shape, std::vector<char> data)
                 : m_shape{shape}
                 , m_type{type}
                 , m_data{std::move(data)}
@@ -52,7 +52,7 @@ namespace ngraph
 
             const Shape& shape() const { return m_shape; }
             std::size_t size() const { return m_size; }
-            const element::Type& type() const { return m_type; }
+            const Type& type() const { return m_type; }
             std::shared_ptr<runtime::Tensor> to_tensor(runtime::Backend& backend)
             {
                 return backend.create_tensor(
@@ -62,7 +62,7 @@ namespace ngraph
             const void* data() const { return reinterpret_cast<const void*>(m_data.data()); }
         private:
             Shape m_shape{};
-            const element::Type& m_type;
+            const Type& m_type;
             std::size_t m_size{1};
             std::vector<char> m_data{};
         };

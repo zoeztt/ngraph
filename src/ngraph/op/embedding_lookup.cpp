@@ -21,7 +21,7 @@ using namespace ngraph;
 
 void op::EmbeddingLookup::validate_and_infer_types()
 {
-    element::Type result_et = get_input_element_type(1);
+    Type result_et = get_input_element_type(1);
 
     const PartialShape& arg0_shape = get_input_partial_shape(0);
     const PartialShape& arg1_shape = get_input_partial_shape(1);

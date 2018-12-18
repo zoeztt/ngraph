@@ -41,7 +41,7 @@ namespace ngraph
                 // Note: We bypass the completely broken ngraph "backend" API here
                 vector<reference_wrapper<void *>> arg_tensors, out_tensors;
                 vector<Shape> arg_shapes, out_shapes;
-                vector<element::Type> arg_types, out_types;
+                vector<Type> arg_types, out_types;
 
                 for (const auto& arg : args)
                 {

@@ -130,12 +130,12 @@ op::MaxPoolBackprop::MaxPoolBackprop(const shared_ptr<Node>& arg_forward,
 
 void op::MaxPoolBackprop::validate_and_infer_types()
 {
-    element::Type forward_arg_et = get_input_element_type(0);
-    element::Type delta_et = get_input_element_type(1);
+    Type forward_arg_et = get_input_element_type(0);
+    Type delta_et = get_input_element_type(1);
 
-    element::Type result_et;
+    Type result_et;
 
-    NODE_VALIDATION_ASSERT(this, element::Type::merge(result_et, forward_arg_et, delta_et))
+    NODE_VALIDATION_ASSERT(this, Type::merge(result_et, forward_arg_et, delta_et))
         << "Element types for forward argument (" << forward_arg_et << ") and delta (" << delta_et
         << ") do not match.";
 

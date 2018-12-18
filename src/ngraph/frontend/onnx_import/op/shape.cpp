@@ -37,7 +37,7 @@ namespace ngraph
                     auto data_shape = data->get_shape();
 
                     return {std::make_shared<ngraph::op::Constant>(
-                        ngraph::element::i64, Shape{data_shape.size()}, data_shape)};
+                        ngraph::i64, Shape{data_shape.size()}, data_shape)};
                 }
 
             } // namespace set_1

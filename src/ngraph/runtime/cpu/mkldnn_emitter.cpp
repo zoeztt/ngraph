@@ -80,7 +80,7 @@ mkldnn::memory::desc MKLDNNEmitter::build_memory_descriptor(const TensorViewWrap
 }
 
 mkldnn::memory::desc MKLDNNEmitter::build_memory_descriptor(const Shape& shape,
-                                                            const ngraph::element::Type& et,
+                                                            const ngraph::Type& et,
                                                             mkldnn::memory::format fmt) const
 {
     if (fmt == mkldnn::memory::format::blocked)

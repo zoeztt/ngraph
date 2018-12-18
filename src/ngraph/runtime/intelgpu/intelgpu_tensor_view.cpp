@@ -25,7 +25,7 @@
 using namespace ngraph;
 using namespace std;
 
-runtime::intelgpu::IntelGPUTensorView::IntelGPUTensorView(const element::Type& element_type,
+runtime::intelgpu::IntelGPUTensorView::IntelGPUTensorView(const Type& element_type,
                                                           const Shape& shape,
                                                           const cldnn::engine& backend_engine,
                                                           void* memory_pointer)

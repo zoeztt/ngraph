@@ -32,17 +32,17 @@ using namespace ngraph;
 TEST(distributed_${BACKEND_NAME}, allreduce)
 {
     auto shape = Shape{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
     auto f = make_shared<Function>(make_shared<op::AllReduce>(A), ParameterVector{A});
 
     auto backend = runtime::Backend::create("${BACKEND_NAME}");
     auto comm_size = MLSL::Environment::GetEnv().GetProcessCount();
 
     auto v = vector<float>{1, 2, 3, 4};
-    auto a = backend->create_tensor(element::f32, shape);
+    auto a = backend->create_tensor(f32, shape);
     copy_data(a, vector<float>{1, 2, 3, 4});
 
-    auto result = backend->create_tensor(element::f32, shape);
+    auto result = backend->create_tensor(f32, shape);
 
     std::transform(
         v.begin(), v.end(), v.begin(), std::bind1st(std::multiplies<float>(), comm_size));

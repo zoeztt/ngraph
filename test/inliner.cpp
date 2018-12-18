@@ -29,14 +29,14 @@ using namespace std;
 TEST(inline, basic)
 {
     Shape shape{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
-    auto B = make_shared<op::Parameter>(element::f32, shape);
-    auto C = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
+    auto B = make_shared<op::Parameter>(f32, shape);
+    auto C = make_shared<op::Parameter>(f32, shape);
     auto f = make_shared<Function>((A + B) * C, ParameterVector{A, B, C});
 
-    auto X = make_shared<op::Parameter>(element::f32, shape);
-    auto Y = make_shared<op::Parameter>(element::f32, shape);
-    auto Z = make_shared<op::Parameter>(element::f32, shape);
+    auto X = make_shared<op::Parameter>(f32, shape);
+    auto Y = make_shared<op::Parameter>(f32, shape);
+    auto Z = make_shared<op::Parameter>(f32, shape);
     auto fc1 = make_shared<op::FunctionCall>(f, NodeVector{X, Y, Z});
     auto fc2 = make_shared<op::FunctionCall>(f, NodeVector{X, Y, Z});
     auto g = make_shared<Function>(fc1 + fc2, ParameterVector{X, Y, Z});
@@ -54,19 +54,19 @@ TEST(inline, basic)
 TEST(inline, recursive)
 {
     Shape shape{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
-    auto B = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
+    auto B = make_shared<op::Parameter>(f32, shape);
     auto f = make_shared<Function>((A + B), ParameterVector{A, B});
 
-    auto X = make_shared<op::Parameter>(element::f32, shape);
-    auto Y = make_shared<op::Parameter>(element::f32, shape);
+    auto X = make_shared<op::Parameter>(f32, shape);
+    auto Y = make_shared<op::Parameter>(f32, shape);
 
     auto fc1 = make_shared<op::FunctionCall>(f, NodeVector{X, Y});
     auto g = make_shared<Function>(make_shared<op::Negative>(fc1), ParameterVector{X, Y});
 
-    auto P1 = make_shared<op::Parameter>(element::f32, shape);
-    auto P2 = make_shared<op::Parameter>(element::f32, shape);
-    auto P3 = make_shared<op::Parameter>(element::f32, shape);
+    auto P1 = make_shared<op::Parameter>(f32, shape);
+    auto P2 = make_shared<op::Parameter>(f32, shape);
+    auto P3 = make_shared<op::Parameter>(f32, shape);
     auto fc2 = make_shared<op::FunctionCall>(g, NodeVector{P1, P2});
 
     auto e = make_shared<Function>(fc2 * P3, ParameterVector{P1, P2, P3});

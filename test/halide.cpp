@@ -32,22 +32,22 @@ using namespace std;
 TEST(halide, halide_subgraph)
 {
     Shape shape{8};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
-    auto B = make_shared<op::Parameter>(element::f32, shape);
-    auto C = make_shared<op::Parameter>(element::f32, shape);
-    auto D = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
+    auto B = make_shared<op::Parameter>(f32, shape);
+    auto C = make_shared<op::Parameter>(f32, shape);
+    auto D = make_shared<op::Parameter>(f32, shape);
 
     auto relu = make_shared<op::Relu>((A + B) * C);
 
     auto f = make_shared<Function>(relu + D, ParameterVector{A, B, C, D});
 
     auto backend = runtime::Backend::create("CPU");
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> c = backend->create_tensor(element::f32, shape);
-    shared_ptr<runtime::Tensor> d = backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> c = backend->create_tensor(f32, shape);
+    shared_ptr<runtime::Tensor> d = backend->create_tensor(f32, shape);
 
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::f32, shape);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(f32, shape);
 
     vector<float> data{-1, 4, -2, 5, 1, 5, 7, 9};
 

@@ -50,7 +50,7 @@ using namespace std;
 
 static shared_ptr<Node> construct_constant_node(int n)
 {
-    return op::Constant::create(element::f32, Shape{}, {n});
+    return op::Constant::create(f32, Shape{}, {n});
 }
 
 void pass::CoreFusion::construct_relu()
@@ -88,11 +88,11 @@ void pass::CoreFusion::construct_relu()
 void pass::CoreFusion::construct_sigmoid()
 {
     // construct variance
-    auto input = std::make_shared<pattern::op::Label>(element::f32, Shape{3, 4});
+    auto input = std::make_shared<pattern::op::Label>(f32, Shape{3, 4});
     auto neg_input = std::make_shared<op::Negative>(input);
     auto exp_neg_input = std::make_shared<op::Exp>(neg_input);
 
-    auto constant = std::make_shared<pattern::op::Label>(element::f32, Shape{3, 4});
+    auto constant = std::make_shared<pattern::op::Label>(f32, Shape{3, 4});
     auto skip_broadcast =
         std::make_shared<pattern::op::Skip>(constant, pattern::has_class<op::Broadcast>());
 
@@ -105,7 +105,7 @@ void pass::CoreFusion::construct_sigmoid()
                      << m.get_match_root()->get_name();
         auto pattern_map = m.get_pattern_map();
 
-        if (m.get_match_root()->get_element_type() != element::f32)
+        if (m.get_match_root()->get_element_type() != f32)
         {
             NGRAPH_DEBUG << "mpattern = " << m.get_match_root()->get_name()
                          << " type is not float!";
@@ -137,19 +137,19 @@ void pass::CoreFusion::construct_sigmoid()
 void pass::CoreFusion::construct_sigmoid_bprop()
 {
     // construct variance
-    auto input = std::make_shared<pattern::op::Label>(element::f32, Shape{3, 4});
+    auto input = std::make_shared<pattern::op::Label>(f32, Shape{3, 4});
     auto neg_input = std::make_shared<op::Negative>(input);
     auto exp_neg_input = std::make_shared<op::Exp>(neg_input);
 
     // broadcast input
-    auto constant = std::make_shared<pattern::op::Label>(element::f32, Shape{});
+    auto constant = std::make_shared<pattern::op::Label>(f32, Shape{});
     auto broadcast_constant = std::make_shared<op::Broadcast>(constant, Shape{3, 4}, AxisSet{0, 1});
 
     auto add_exp = std::make_shared<op::Add>(exp_neg_input, broadcast_constant);
     // auto divide_1_over_exp = std::make_shared<op::Divide>(broadcast_constant, add_exp);
-    auto sigmoid_fwd = std::make_shared<pattern::op::Label>(element::f32, Shape{3, 4});
+    auto sigmoid_fwd = std::make_shared<pattern::op::Label>(f32, Shape{3, 4});
 
-    auto delta = std::make_shared<pattern::op::Label>(element::f32, Shape{3, 4});
+    auto delta = std::make_shared<pattern::op::Label>(f32, Shape{3, 4});
     auto neg_delta = std::make_shared<op::Negative>(delta);
 
     auto multiply_sigmoid_delta = std::make_shared<op::Multiply>(sigmoid_fwd, neg_delta);
@@ -163,7 +163,7 @@ void pass::CoreFusion::construct_sigmoid_bprop()
         NGRAPH_DEBUG << "In a callback for construct_bprop_sigmoid pattern against "
                      << m.get_match_root()->get_name();
         auto pattern_map = m.get_pattern_map();
-        if (m.get_match_root()->get_element_type() != element::f32)
+        if (m.get_match_root()->get_element_type() != f32)
         {
             NGRAPH_DEBUG << "mpattern = " << m.get_match_root()->get_name()
                          << " type is not float!";
@@ -190,8 +190,8 @@ void pass::CoreFusion::construct_sigmoid_bprop()
 void pass::CoreFusion::construct_folded_batch_norm()
 {
     Shape shape{2, 2, 1, 1};
-    auto input = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape);
+    auto input = std::make_shared<pattern::op::Label>(f32, shape);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape);
 
     auto pconv = std::make_shared<op::Convolution>(input,
                                                    filters,
@@ -201,13 +201,13 @@ void pass::CoreFusion::construct_folded_batch_norm()
                                                    CoordinateDiff{0, 0},
                                                    Strides{1, 1});
     auto mean_shape = Shape{2};
-    auto mean = std::make_shared<pattern::op::Label>(element::f32, mean_shape);
+    auto mean = std::make_shared<pattern::op::Label>(f32, mean_shape);
     auto var_shape = Shape{2};
-    auto var = std::make_shared<pattern::op::Label>(element::f32, var_shape);
+    auto var = std::make_shared<pattern::op::Label>(f32, var_shape);
     auto gamma_shape = Shape{2};
-    auto gamma = std::make_shared<pattern::op::Label>(element::f32, gamma_shape);
+    auto gamma = std::make_shared<pattern::op::Label>(f32, gamma_shape);
     auto beta_shape = Shape{2};
-    auto beta = std::make_shared<pattern::op::Label>(element::f32, beta_shape);
+    auto beta = std::make_shared<pattern::op::Label>(f32, beta_shape);
     double eps = 0.001;
     auto shape_r = Shape{1, 2, 2, 2};
     auto bn = std::make_shared<op::BatchNormInference>(eps, gamma, beta, pconv, mean, var);
@@ -234,7 +234,7 @@ void pass::CoreFusion::construct_folded_batch_norm()
         // new weights = old weights * gamma / sqrt(variance + epsilon)
         // new biases = -mean * gamma / sqrt(variance + epsilon) + beta
 
-        auto bn_eps = op::Constant::create(element::f32, Shape{}, {m_bn->get_eps_value()});
+        auto bn_eps = op::Constant::create(f32, Shape{}, {m_bn->get_eps_value()});
         auto var_eps = std::make_shared<op::Add>(
             pattern_map[var],
             std::make_shared<op::Broadcast>(bn_eps, pattern_map[var]->get_shape(), AxisSet{0}));
@@ -272,8 +272,8 @@ void pass::CoreFusion::construct_conv_affine_folding()
 {
     // A * Conv (input, filters) + B -> ConvBias (input, filters * A_c, B_c)
     Shape shape{2, 2, 1, 1};
-    auto input = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape);
+    auto input = std::make_shared<pattern::op::Label>(f32, shape);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape);
 
     auto conv = std::make_shared<op::Convolution>(input,
                                                   filters,
@@ -284,10 +284,10 @@ void pass::CoreFusion::construct_conv_affine_folding()
                                                   Strides{1, 1});
     auto conv_label = std::make_shared<pattern::op::Label>(conv, nullptr, NodeVector{conv});
 
-    auto Ac = std::make_shared<pattern::op::Label>(element::f32, Shape{2});
+    auto Ac = std::make_shared<pattern::op::Label>(f32, Shape{2});
     auto A = std::make_shared<op::Broadcast>(Ac, Shape{2, 2, 1, 1}, AxisSet{0, 2, 3});
     auto A_label = std::make_shared<pattern::op::Label>(A, nullptr, NodeVector{A});
-    auto Bc = std::make_shared<pattern::op::Label>(element::f32, Shape{2});
+    auto Bc = std::make_shared<pattern::op::Label>(f32, Shape{2});
     auto B = std::make_shared<op::Broadcast>(Bc, Shape{2, 2, 1, 1}, AxisSet{0, 2, 3});
     auto B_label = std::make_shared<pattern::op::Label>(B, nullptr, NodeVector{B});
     auto multiply = std::make_shared<op::Multiply>(conv_label, A_label);
@@ -443,7 +443,7 @@ static size_t shape_to_index(Shape shape)
 void ngraph::pass::CoreFusion::construct_reshape_broadcast()
 {
     Shape input_shape{10};
-    auto input = make_shared<pattern::op::Label>(element::f32, input_shape);
+    auto input = make_shared<pattern::op::Label>(f32, input_shape);
     auto reshape1 = make_shared<op::Reshape>(input, AxisVector{0}, Shape{10, 1});
     auto broadcast = make_shared<op::Broadcast>(reshape1, Shape{10, 1, 20}, AxisSet{2});
 
@@ -521,8 +521,8 @@ void pass::CoreFusion::construct_optimized_strided_conv()
 {
     Shape win_size_1{1, 1, 1, 1};
     auto is_bc = ngraph::pattern::has_class<op::Broadcast>();
-    auto data_stride3 = std::make_shared<pattern::op::Label>(element::f32, Shape{1, 1, 128, 128});
-    auto weights_stride3 = std::make_shared<pattern::op::Label>(element::f32, win_size_1);
+    auto data_stride3 = std::make_shared<pattern::op::Label>(f32, Shape{1, 1, 128, 128});
+    auto weights_stride3 = std::make_shared<pattern::op::Label>(f32, win_size_1);
 
     auto conv_stride3 = std::make_shared<op::Convolution>(data_stride3, weights_stride3);
 
@@ -533,7 +533,7 @@ void pass::CoreFusion::construct_optimized_strided_conv()
     auto add_w3 = std::make_shared<op::Add>(conv_stride3_label, broadcast_w3_label);
     auto relu_w3 = std::make_shared<op::Relu>(add_w3);
 
-    auto weights_stride1 = std::make_shared<pattern::op::Label>(element::f32, win_size_1);
+    auto weights_stride1 = std::make_shared<pattern::op::Label>(f32, win_size_1);
     auto conv_stride1 = std::make_shared<op::Convolution>(relu_w3, weights_stride1);
     auto conv_stride1_label =
         std::make_shared<pattern::op::Label>(conv_stride1, nullptr, NodeVector{conv_stride1});
@@ -541,7 +541,7 @@ void pass::CoreFusion::construct_optimized_strided_conv()
     auto add_w1 = std::make_shared<op::Add>(conv_stride1_label, broadcast_w1_label);
 
     auto eltwise_arg_label =
-        std::make_shared<pattern::op::Label>(element::f32, conv_stride1->get_shape());
+        std::make_shared<pattern::op::Label>(f32, conv_stride1->get_shape());
     auto add_two_convs = std::make_shared<op::Add>(add_w1, eltwise_arg_label);
 
     auto relu_two_convs = std::make_shared<op::Relu>(add_two_convs);
@@ -549,7 +549,7 @@ void pass::CoreFusion::construct_optimized_strided_conv()
     auto eltwise_label =
         std::make_shared<pattern::op::Label>(relu_two_convs, nullptr, NodeVector{relu_two_convs});
 
-    auto weights_eltwise = std::make_shared<pattern::op::Label>(element::f32, win_size_1);
+    auto weights_eltwise = std::make_shared<pattern::op::Label>(f32, win_size_1);
     auto eltwise_conv = std::make_shared<op::Convolution>(eltwise_label, weights_eltwise);
 
     pattern::graph_rewrite_callback callback = [win_size_1,
@@ -703,7 +703,7 @@ void ngraph::pass::CoreFusion::construct_reshape_softmax_reshape()
 {
     Shape input_shape{10, 20};
     AxisVector io{1, 0};
-    auto input = make_shared<pattern::op::Label>(element::f32, input_shape);
+    auto input = make_shared<pattern::op::Label>(f32, input_shape);
     auto reshape1 = make_shared<op::Reshape>(input, io, Shape{20, 10});
     auto softmax = make_shared<op::Softmax>(reshape1, AxisSet{1});
     auto reshape2 = make_shared<op::Reshape>(softmax, io, input_shape);

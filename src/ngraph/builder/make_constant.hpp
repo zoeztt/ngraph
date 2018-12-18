@@ -26,56 +26,56 @@ namespace ngraph
     {
         template <class T>
         std::shared_ptr<Node>
-            make_constant(const element::Type& type, const Shape& shape, const T& num)
+            make_constant(const Type& type, const Shape& shape, const T& num)
         {
             std::shared_ptr<Node> val = nullptr;
 
-            if (type == element::f32)
+            if (type == f32)
             {
                 val = std::make_shared<ngraph::op::Constant>(
                     type, ngraph::Shape{}, std::vector<float>{static_cast<float>(num)});
             }
-            else if (type == element::f64)
+            else if (type == f64)
             {
                 val = std::make_shared<ngraph::op::Constant>(
                     type, ngraph::Shape{}, std::vector<double>{static_cast<double>(num)});
             }
-            else if (type == element::i64)
+            else if (type == i64)
             {
                 val = std::make_shared<ngraph::op::Constant>(
                     type, ngraph::Shape{}, std::vector<int64_t>{static_cast<int64_t>(num)});
             }
-            else if (type == element::i32)
+            else if (type == i32)
             {
                 val = std::make_shared<ngraph::op::Constant>(
                     type, ngraph::Shape{}, std::vector<int32_t>{static_cast<int32_t>(num)});
             }
-            else if (type == element::i16)
+            else if (type == i16)
             {
                 val = std::make_shared<ngraph::op::Constant>(
                     type, ngraph::Shape{}, std::vector<int16_t>{static_cast<int16_t>(num)});
             }
-            else if (type == element::i8)
+            else if (type == i8)
             {
                 val = std::make_shared<ngraph::op::Constant>(
                     type, ngraph::Shape{}, std::vector<int8_t>{static_cast<int8_t>(num)});
             }
-            else if (type == element::u64)
+            else if (type == u64)
             {
                 val = std::make_shared<ngraph::op::Constant>(
                     type, ngraph::Shape{}, std::vector<uint64_t>{static_cast<uint64_t>(num)});
             }
-            else if (type == element::u32)
+            else if (type == u32)
             {
                 val = std::make_shared<ngraph::op::Constant>(
                     type, ngraph::Shape{}, std::vector<uint32_t>{static_cast<uint32_t>(num)});
             }
-            else if (type == element::u16)
+            else if (type == u16)
             {
                 val = std::make_shared<ngraph::op::Constant>(
                     type, ngraph::Shape{}, std::vector<uint16_t>{static_cast<uint16_t>(num)});
             }
-            else if (type == element::u8)
+            else if (type == u8)
             {
                 val = std::make_shared<ngraph::op::Constant>(
                     type, ngraph::Shape{}, std::vector<uint8_t>{static_cast<uint8_t>(num)});

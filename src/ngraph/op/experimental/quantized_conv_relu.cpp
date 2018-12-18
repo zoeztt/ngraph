@@ -45,7 +45,7 @@ op::QuantizedConvolutionRelu::QuantizedConvolutionRelu(const std::shared_ptr<Nod
     auto& filters_shape = filters->get_shape();
 
     set_output_type(0,
-                    element::u8,
+                    u8,
                     util::infer_convolution_output_shape(this,
                                                          data_batch_shape,
                                                          filters_shape,

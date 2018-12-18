@@ -40,7 +40,7 @@ namespace ngraph
             /// \param element_type The element type of the parameter.
             /// \param pshape The partial shape of the parameter.
             /// \param cacheable True if the parameter is not expected to be frequently updated.
-            Parameter(const ngraph::element::Type& element_type,
+            Parameter(const ngraph::Type& element_type,
                       const PartialShape& pshape,
                       const bool cacheable = false);
 
@@ -53,7 +53,7 @@ namespace ngraph
         protected:
             bool m_cacheable;
             PartialShape m_partial_shape;
-            element::Type m_element_type;
+            Type m_element_type;
         };
     }
 }

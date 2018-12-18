@@ -41,10 +41,10 @@ public:
     PlaidML_Backend(const char* configuration_string);
     ~PlaidML_Backend() final {}
     std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::element::Type& element_type, const Shape& shape) final;
+        create_tensor(const ngraph::Type& element_type, const Shape& shape) final;
 
     std::shared_ptr<ngraph::runtime::Tensor> create_tensor(
-        const ngraph::element::Type& element_type, const Shape& shape, void* memory_pointer) final;
+        const ngraph::Type& element_type, const Shape& shape, void* memory_pointer) final;
 
     bool compile(std::shared_ptr<Function> func) final;
 

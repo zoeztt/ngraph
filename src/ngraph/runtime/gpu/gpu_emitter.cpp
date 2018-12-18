@@ -217,7 +217,7 @@ void runtime::gpu::GPU_Emitter::emit_ArgReduce(EMIT_ARGS, cudnnReduceTensorOp_t 
     }
     auto axis_set = AxisSet{axis};
 
-    std::vector<element::Type> dtypes{args[0].get_element_type(), out[0].get_element_type()};
+    std::vector<Type> dtypes{args[0].get_element_type(), out[0].get_element_type()};
 
     writer.block_begin();
     {
@@ -755,7 +755,7 @@ void runtime::gpu::GPU_Emitter::emit_Max(EMIT_ARGS)
     }
 
     const ngraph::op::Max* max = static_cast<const ngraph::op::Max*>(node);
-    vector<element::Type> dtypes;
+    vector<Type> dtypes;
     dtypes.push_back(args[0].get_element_type());
     dtypes.push_back(out[0].get_element_type());
     auto& cuda_emitter = external_function->get_primitive_emitter()->get_cuda_emitter();
@@ -857,7 +857,7 @@ void runtime::gpu::GPU_Emitter::emit_Min(EMIT_ARGS)
     const ngraph::op::Min* min = static_cast<const ngraph::op::Min*>(node);
 
     size_t index;
-    vector<element::Type> dtypes;
+    vector<Type> dtypes;
     dtypes.push_back(args[0].get_element_type());
     dtypes.push_back(out[0].get_element_type());
     auto& cuda_emitter = external_function->get_primitive_emitter()->get_cuda_emitter();
@@ -974,7 +974,7 @@ void runtime::gpu::GPU_Emitter::emit_Product(EMIT_ARGS)
         if (out[0].get_size() != 0)
         {
             size_t prod_index;
-            vector<element::Type> dtypes;
+            vector<Type> dtypes;
             dtypes.push_back(args[0].get_element_type());
             dtypes.push_back(out[0].get_element_type());
             auto& cuda_emitter = external_function->get_primitive_emitter()->get_cuda_emitter();
@@ -1002,7 +1002,7 @@ void runtime::gpu::GPU_Emitter::emit_Reduce(EMIT_ARGS)
         if (out[0].get_size() != 0)
         {
             auto axes_set = reduce_op->get_reduction_axes();
-            std::vector<element::Type> dtypes;
+            std::vector<Type> dtypes;
             dtypes.push_back(args[0].get_element_type());
             dtypes.push_back(out[0].get_element_type());
             auto& cuda_emitter = external_function->get_primitive_emitter()->get_cuda_emitter();
@@ -1505,7 +1505,7 @@ void runtime::gpu::GPU_Emitter::emit_Softmax(EMIT_ARGS)
     writer.block_begin();
     {
         auto axes_set = softmax->get_axes();
-        std::vector<element::Type> dtypes;
+        std::vector<Type> dtypes;
         dtypes.push_back(args[0].get_element_type());
         dtypes.push_back(out[0].get_element_type());
         auto& cuda_emitter = external_function->get_primitive_emitter()->get_cuda_emitter();
@@ -1550,7 +1550,7 @@ to fail */
         if (out[0].get_size() != 0)
         {
             auto axes_set = sum->get_reduction_axes();
-            vector<element::Type> dtypes;
+            vector<Type> dtypes;
             dtypes.push_back(args[0].get_element_type());
             dtypes.push_back(out[0].get_element_type());
             auto& cuda_emitter = external_function->get_primitive_emitter()->get_cuda_emitter();
@@ -1572,7 +1572,7 @@ slower than the native cuda implementation is more precise and fixes the issue w
 tensorflow test failures*/
 {
     const ngraph::op::Sum* sum = static_cast<const ngraph::op::Sum*>(node);
-    std::vector<element::Type> dtypes{args[0].get_element_type(), out[0].get_element_type()};
+    std::vector<Type> dtypes{args[0].get_element_type(), out[0].get_element_type()};
     cudnnReduceTensorOp_t reduce_op = CUDNN_REDUCE_TENSOR_ADD;
     writer.block_begin();
     {
@@ -1627,7 +1627,7 @@ void runtime::gpu::GPU_Emitter::emit_TopK(EMIT_ARGS)
     size_t topk_k = topk->get_k();
     auto index_elem_type = topk->get_index_element_type();
     bool compute_max = topk->get_compute_max();
-    std::vector<element::Type> dtypes{args[0].get_element_type()};
+    std::vector<Type> dtypes{args[0].get_element_type()};
     NGRAPH_ASSERT(out.size() == 2) << "TopK can only have 2 outputs";
     for (size_t i = 0; i < out.size(); i++)
     {

@@ -52,11 +52,11 @@ namespace ngraph
             public:
                 size_t build_memset(const std::string& dtype, uint32_t tensor_size);
 
-                size_t build_topk(const std::vector<element::Type>& dtypes,
+                size_t build_topk(const std::vector<Type>& dtypes,
                                   const NVShape& input_shape,
                                   const size_t topk_axis,
                                   size_t topk_k,
-                                  const element::Type index_elem_type,
+                                  const Type index_elem_type,
                                   bool compute_max);
 
                 size_t build_pad(const std::vector<std::string>& dtypes,
@@ -128,7 +128,7 @@ namespace ngraph
                                               const double& eps);
 
                 template <typename T>
-                size_t build_reduce(const std::vector<element::Type>& dtypes,
+                size_t build_reduce(const std::vector<Type>& dtypes,
                                     NVShape input_shape,
                                     NVShape output_shape,
                                     NVShape reduce_axis,
@@ -190,7 +190,7 @@ namespace ngraph
                                     size_t concat_axis,
                                     NVShape output_shape);
 
-                size_t build_softmax(const std::vector<element::Type>& dtypes,
+                size_t build_softmax(const std::vector<Type>& dtypes,
                                      NVShape input_shape,
                                      NVShape reduce_axis);
 
@@ -219,26 +219,26 @@ namespace ngraph
                                                     const char* reduce_op,
                                                     bool save_elementwise);
 
-                size_t build_reduce(const std::vector<element::Type>& dtypes,
+                size_t build_reduce(const std::vector<Type>& dtypes,
                                     const NVShape& input_shape,
                                     const NVShape& output_shape,
                                     const NVShape& reduce_axis,
                                     const char* op,
                                     const char* kernel,
                                     const bool with_init_value);
-                size_t build_reduce_to_nd(const std::vector<element::Type>& dtypes,
+                size_t build_reduce_to_nd(const std::vector<Type>& dtypes,
                                           NVShape input_shape,
                                           NVShape reduce_axis,
                                           const char* op,
                                           const char* kernel);
-                size_t build_reduce_to_scalar(const std::vector<element::Type>& dtypes,
+                size_t build_reduce_to_scalar(const std::vector<Type>& dtypes,
                                               NVShape input_shape,
                                               const char* op,
                                               const char* kernel);
                 /// \brief This is the preprocess for reduce to scalar if the data size is large than a number.
                 /// The number can be tuned based on hardware.
                 /// This cuda kernel will accumulate reduction to a certain number of bins depends on hardware.
-                size_t build_reduce_to_scalar_acc(const std::vector<element::Type>& dtypes,
+                size_t build_reduce_to_scalar_acc(const std::vector<Type>& dtypes,
                                                   NVShape input_shape,
                                                   NVShape output_shape,
                                                   uint32_t block_size_x,
@@ -278,9 +278,9 @@ namespace ngraph
                                 std::vector<int>& shift);
                 /// \brief Get initial value for reduce op
                 void* get_init_reduce_val(std::string reduce_op, std::string data_type);
-                /// \brief Get vector<string> of datatype from vector<element::Type>
+                /// \brief Get vector<string> of datatype from vector<Type>
                 std::vector<std::string>
-                    get_string_vector(const std::vector<element::Type>& dtypes);
+                    get_string_vector(const std::vector<Type>& dtypes);
 
                 std::shared_ptr<GPUHostParameters> m_host_parameters;
                 GPUPrimitiveEmitter* m_primitive_emitter;

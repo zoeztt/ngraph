@@ -234,7 +234,7 @@ TEST(partial_shape, to_shape_rank_dynamic)
 
 TEST(partial_shape, tensor_descriptor_from_shape)
 {
-    descriptor::Tensor t{element::i32, Shape{1, 2, 3}, "Ankeny"};
+    descriptor::Tensor t{i32, Shape{1, 2, 3}, "Ankeny"};
 
     ASSERT_EQ(t.get_shape(), (Shape{1, 2, 3}));
     ASSERT_EQ(size_t(t.get_partial_shape().rank()), 3);
@@ -243,7 +243,7 @@ TEST(partial_shape, tensor_descriptor_from_shape)
 
 TEST(partial_shape, tensor_descriptor_from_static_partial_shape)
 {
-    descriptor::Tensor t{element::i32, PartialShape{1, 2, 3}, "Burnside"};
+    descriptor::Tensor t{i32, PartialShape{1, 2, 3}, "Burnside"};
 
     ASSERT_EQ(t.get_shape(), (Shape{1, 2, 3}));
     ASSERT_EQ(size_t(t.get_partial_shape().rank()), 3);
@@ -252,7 +252,7 @@ TEST(partial_shape, tensor_descriptor_from_static_partial_shape)
 
 TEST(partial_shape, tensor_descriptor_from_rank_static_dynamic_partial_shape)
 {
-    descriptor::Tensor t{element::i32, PartialShape{1, Dimension::dynamic(), 3}, "Couch"};
+    descriptor::Tensor t{i32, PartialShape{1, Dimension::dynamic(), 3}, "Couch"};
 
     ASSERT_EQ(size_t(t.get_partial_shape().rank()), 3);
     ASSERT_THROW({ t.get_shape(); }, std::invalid_argument);
@@ -261,7 +261,7 @@ TEST(partial_shape, tensor_descriptor_from_rank_static_dynamic_partial_shape)
 
 TEST(partial_shape, tensor_descriptor_from_rank_dynamic_partial_shape)
 {
-    descriptor::Tensor t{element::i32, PartialShape::dynamic(), "Davis"};
+    descriptor::Tensor t{i32, PartialShape::dynamic(), "Davis"};
 
     ASSERT_TRUE(t.get_partial_shape().rank().is_dynamic());
     ASSERT_THROW({ t.get_shape(); }, std::invalid_argument);
@@ -835,7 +835,7 @@ TEST(partial_shape, merge_rank_static_static_fail)
 
 TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_dynamic_ok)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{PartialShape::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 0, 0};
@@ -862,7 +862,7 @@ TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_dynamic_ok)
 
 TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_dynamic_zero_data_dilation)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{PartialShape::dynamic()};
     Strides data_dilation{1, 1, 0, 1};
     CoordinateDiff data_padding_below{0, 0, 0, 0};
@@ -889,7 +889,7 @@ TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_dynamic_zero_data
 
 TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_dynamic_zero_window_dilation)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{PartialShape::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 0, 0};
@@ -916,7 +916,7 @@ TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_dynamic_zero_wind
 
 TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_dynamic_zero_window_strides)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{PartialShape::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 0, 0};
@@ -943,7 +943,7 @@ TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_dynamic_zero_wind
 
 TEST(partial_shape, infer_windowed_reduction_rank_static_dynamic_rank_dynamic_ok)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{Dimension::dynamic(), 2, 3, Dimension::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 0, 0};
@@ -970,7 +970,7 @@ TEST(partial_shape, infer_windowed_reduction_rank_static_dynamic_rank_dynamic_ok
 TEST(partial_shape,
      infer_windowed_reduction_rank_static_dynamic_rank_dynamic_zero_data_post_padding)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{Dimension::dynamic(), 2, 3, Dimension::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, -1, 0, 0};
@@ -997,7 +997,7 @@ TEST(partial_shape,
 
 TEST(partial_shape, infer_windowed_reduction_rank_static_dynamic_rank_dynamic_neg_padding_ok)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{Dimension::dynamic(), 4, 3, Dimension::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, -1, 0, 0};
@@ -1022,7 +1022,7 @@ TEST(partial_shape, infer_windowed_reduction_rank_static_dynamic_rank_dynamic_ne
 
 TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_static_dynamic_ok)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{PartialShape::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 0, 0};
@@ -1048,7 +1048,7 @@ TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_static_dynamic_ok
 
 TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_static_dynamic_window_dim_zero)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{PartialShape::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 0, 0};
@@ -1077,7 +1077,7 @@ TEST(partial_shape, infer_windowed_reduction_rank_dynamic_rank_static_dynamic_wi
 TEST(partial_shape,
      infer_windowed_reduction_rank_dynamic_rank_static_dynamic_window_dilated_dim_zero)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{PartialShape::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 0, 0};
@@ -1106,7 +1106,7 @@ TEST(partial_shape,
 TEST(partial_shape,
      infer_windowed_reduction_rank_dynamic_rank_static_dynamic_window_all_in_padding_ok)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{PartialShape::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 3, 0};
@@ -1133,7 +1133,7 @@ TEST(partial_shape,
 TEST(partial_shape,
      infer_windowed_reduction_rank_dynamic_rank_static_dynamic_window_all_in_padding_not_ok)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{PartialShape::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 3, 0};
@@ -1162,7 +1162,7 @@ TEST(partial_shape,
 TEST(partial_shape,
      infer_windowed_reduction_rank_dynamic_rank_static_dynamic_dilated_window_not_all_in_padding)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{PartialShape::dynamic()};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 3, 0};
@@ -1188,7 +1188,7 @@ TEST(partial_shape,
 
 TEST(partial_shape, infer_windowed_reduction_rank_static_dynamic_rank_static_dynamic_ok)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{Dimension::dynamic(), Dimension::dynamic(), 6, 4};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 0, 0};
@@ -1216,7 +1216,7 @@ TEST(partial_shape, infer_windowed_reduction_rank_static_dynamic_rank_static_dyn
 TEST(partial_shape,
      infer_windowed_reduction_rank_static_dynamic_rank_static_dynamic_with_padding_ok)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{Dimension::dynamic(), Dimension::dynamic(), 6, 4};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 2, 0};
@@ -1244,7 +1244,7 @@ TEST(partial_shape,
 TEST(partial_shape,
      infer_windowed_reduction_rank_static_dynamic_rank_static_dynamic_with_padding_and_stride_ok)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{Dimension::dynamic(), Dimension::dynamic(), 6, 4};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 2, 0};
@@ -1271,7 +1271,7 @@ TEST(partial_shape,
 
 TEST(partial_shape, infer_windowed_reduction_rank_static_dynamic_rank_static_dynamic_window_too_big)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{Dimension::dynamic(), Dimension::dynamic(), 6, 4};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 0, 0};
@@ -1300,7 +1300,7 @@ TEST(partial_shape, infer_windowed_reduction_rank_static_dynamic_rank_static_dyn
 TEST(partial_shape,
      infer_windowed_reduction_rank_static_dynamic_rank_static_dynamic_window_not_too_big_padding)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{Dimension::dynamic(), Dimension::dynamic(), 6, 4};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 5, 0};
@@ -1328,7 +1328,7 @@ TEST(partial_shape,
 TEST(partial_shape,
      infer_windowed_reduction_rank_static_dynamic_rank_static_dynamic_window_dilated_too_big)
 {
-    auto node = std::make_shared<op::Parameter>(element::f32, Shape{});
+    auto node = std::make_shared<op::Parameter>(f32, Shape{});
     PartialShape data_shape{Dimension::dynamic(), Dimension::dynamic(), 6, 4};
     Strides data_dilation{1, 1, 1, 1};
     CoordinateDiff data_padding_below{0, 0, 5, 0};

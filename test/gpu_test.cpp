@@ -170,12 +170,12 @@ TEST(gpu_test, topk_fanout_graph_transform)
 {
     Shape shape{2, 3, 2};
     Shape out_shape{2, 2, 2};
-    auto A_gpu = make_shared<op::Parameter>(element::f32, shape);
-    auto A_int32_gpu_1 = make_shared<op::Parameter>(element::i32, out_shape);
-    auto A_int32_gpu_2 = make_shared<op::Parameter>(element::i32, out_shape);
-    auto A_f32_gpu_1 = make_shared<op::Parameter>(element::f32, out_shape);
-    auto A_f32_gpu_2 = make_shared<op::Parameter>(element::f32, out_shape);
-    auto B_gpu = make_shared<op::TopK>(A_gpu, 1, element::i32, 2, true);
+    auto A_gpu = make_shared<op::Parameter>(f32, shape);
+    auto A_int32_gpu_1 = make_shared<op::Parameter>(i32, out_shape);
+    auto A_int32_gpu_2 = make_shared<op::Parameter>(i32, out_shape);
+    auto A_f32_gpu_1 = make_shared<op::Parameter>(f32, out_shape);
+    auto A_f32_gpu_2 = make_shared<op::Parameter>(f32, out_shape);
+    auto B_gpu = make_shared<op::TopK>(A_gpu, 1, i32, 2, true);
     auto C_gpu_0 = make_shared<op::GetOutputElement>(B_gpu, 0);
     auto C_gpu_1 = make_shared<op::GetOutputElement>(B_gpu, 1);
 
@@ -190,22 +190,22 @@ TEST(gpu_test, topk_fanout_graph_transform)
 
     auto backend = runtime::Backend::create("GPU");
 
-    auto a = backend->create_tensor(element::f32, shape);
+    auto a = backend->create_tensor(f32, shape);
     copy_data(
         a, vector<float>{1.0f, 2.0f, 3.0f, 4.0f, 4.0f, 3.0f, 2.0f, 1.0f, 3.0f, 3.0f, 1.0f, 4.0f});
-    auto b = backend->create_tensor(element::i32, out_shape);
+    auto b = backend->create_tensor(i32, out_shape);
     copy_data(b, vector<int32_t>{0, 0, 0, 0, 0, 0, 0, 0});
-    auto c = backend->create_tensor(element::i32, out_shape);
+    auto c = backend->create_tensor(i32, out_shape);
     copy_data(c, vector<int32_t>{0, 0, 0, 0, 0, 0, 0, 0});
-    auto d = backend->create_tensor(element::f32, out_shape);
+    auto d = backend->create_tensor(f32, out_shape);
     copy_data(d, vector<float>{0, 0, 0, 0, 0, 0, 0, 0});
-    auto e = backend->create_tensor(element::f32, out_shape);
+    auto e = backend->create_tensor(f32, out_shape);
     copy_data(e, vector<float>{0, 0, 0, 0, 0, 0, 0, 0});
 
-    auto r0 = backend->create_tensor(element::i32, out_shape);
-    auto r1 = backend->create_tensor(element::i32, out_shape);
-    auto r2 = backend->create_tensor(element::f32, out_shape);
-    auto r3 = backend->create_tensor(element::f32, out_shape);
+    auto r0 = backend->create_tensor(i32, out_shape);
+    auto r1 = backend->create_tensor(i32, out_shape);
+    auto r2 = backend->create_tensor(f32, out_shape);
+    auto r3 = backend->create_tensor(f32, out_shape);
 
     backend->call_with_validate(backend->compile(gpu_f), {r0, r1, r2, r3}, {a, b, c, d, e});
 
@@ -258,8 +258,8 @@ TEST(gpu_test, maxpool_bprop_larger_than_cache)
     Shape shape_x{1, 1, 1, num_elements};
     Shape shape_y{1, 1, 1, num_pooled_elements};
 
-    auto x = make_shared<op::Parameter>(element::f32, shape_x);
-    auto dy = make_shared<op::Parameter>(element::f32, shape_y);
+    auto x = make_shared<op::Parameter>(f32, shape_x);
+    auto dy = make_shared<op::Parameter>(f32, shape_y);
     auto bprop =
         make_shared<Function>(make_shared<op::MaxPoolBackprop>(
                                   x, dy, window_shape, move_strides, padding_below, padding_above),
@@ -273,18 +273,18 @@ TEST(gpu_test, maxpool_bprop_larger_than_cache)
     {
         x_data[i] = (i % 2);
     }
-    auto x_t = backend->create_tensor(element::f32, shape_x);
+    auto x_t = backend->create_tensor(f32, shape_x);
     copy_data(x_t, x_data);
 
     // use random data for deltas dy
     std::vector<float> dy_data(num_pooled_elements);
     test::Uniform<float> rng(0.0f, 1.0f);
     rng.initialize(dy_data);
-    auto dy_t = backend->create_tensor(element::f32, shape_y);
+    auto dy_t = backend->create_tensor(f32, shape_y);
     copy_data(dy_t, dy_data);
 
     // create result deltas tensor and run the backward max pooling operation
-    auto dx_t = backend->create_tensor(element::f32, shape_x);
+    auto dx_t = backend->create_tensor(f32, shape_x);
     auto handle = backend->compile(bprop);
     backend->call_with_validate(handle, {dx_t}, {x_t, dy_t});
 

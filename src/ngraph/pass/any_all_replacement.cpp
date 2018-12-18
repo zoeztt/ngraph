@@ -27,24 +27,24 @@ using namespace ngraph;
 
 static std::shared_ptr<Node> make_any(std::shared_ptr<Node> arg, const AxisSet& reduction_axes)
 {
-    auto f_arg0 = std::make_shared<op::Parameter>(element::boolean, Shape{});
-    auto f_arg1 = std::make_shared<op::Parameter>(element::boolean, Shape{});
+    auto f_arg0 = std::make_shared<op::Parameter>(boolean, Shape{});
+    auto f_arg1 = std::make_shared<op::Parameter>(boolean, Shape{});
     auto f_or = std::make_shared<op::Or>(f_arg0, f_arg1);
     auto f = std::make_shared<Function>(f_or, ParameterVector{f_arg0, f_arg1});
 
-    auto k_false = op::Constant::create(element::boolean, Shape{}, std::vector<char>{0});
+    auto k_false = op::Constant::create(boolean, Shape{}, std::vector<char>{0});
 
     return std::make_shared<op::Reduce>(arg, k_false, f, reduction_axes);
 }
 
 static std::shared_ptr<Node> make_all(std::shared_ptr<Node> arg, const AxisSet& reduction_axes)
 {
-    auto f_arg0 = std::make_shared<op::Parameter>(element::boolean, Shape{});
-    auto f_arg1 = std::make_shared<op::Parameter>(element::boolean, Shape{});
+    auto f_arg0 = std::make_shared<op::Parameter>(boolean, Shape{});
+    auto f_arg1 = std::make_shared<op::Parameter>(boolean, Shape{});
     auto f_or = std::make_shared<op::And>(f_arg0, f_arg1);
     auto f = std::make_shared<Function>(f_or, ParameterVector{f_arg0, f_arg1});
 
-    auto k_true = op::Constant::create(element::boolean, Shape{}, std::vector<char>{1});
+    auto k_true = op::Constant::create(boolean, Shape{}, std::vector<char>{1});
 
     return std::make_shared<op::Reduce>(arg, k_true, f, reduction_axes);
 }

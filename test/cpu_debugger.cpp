@@ -41,8 +41,8 @@ using namespace std;
 TEST(debugger, add_breakpoint)
 {
     Shape shape{};
-    auto A = make_shared<op::Parameter>(element::i32, shape);
-    auto B = make_shared<op::Parameter>(element::i32, shape);
+    auto A = make_shared<op::Parameter>(i32, shape);
+    auto B = make_shared<op::Parameter>(i32, shape);
 
     auto add = make_shared<op::Add>(A, B);
     auto absn = make_shared<op::Abs>(add);
@@ -52,9 +52,9 @@ TEST(debugger, add_breakpoint)
 
     shared_ptr<runtime::Backend> backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::i32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(i32, shape);
 
     vector<int> dataA{-1};
     vector<int> dataB{-776};
@@ -77,8 +77,8 @@ TEST(debugger, add_breakpoint)
 TEST(debugger, stepping)
 {
     Shape shape{};
-    auto A = make_shared<op::Parameter>(element::i32, shape);
-    auto B = make_shared<op::Parameter>(element::i32, shape);
+    auto A = make_shared<op::Parameter>(i32, shape);
+    auto B = make_shared<op::Parameter>(i32, shape);
 
     auto add = make_shared<op::Add>(A, B);
     auto absn = make_shared<op::Abs>(add);
@@ -88,9 +88,9 @@ TEST(debugger, stepping)
 
     shared_ptr<runtime::Backend> backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::i32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(i32, shape);
 
     vector<int> dataA{-1};
     vector<int> dataB{-776};
@@ -114,8 +114,8 @@ TEST(debugger, stepping)
 TEST(debugger, delete_breakpoint)
 {
     Shape shape{};
-    auto A = make_shared<op::Parameter>(element::i32, shape);
-    auto B = make_shared<op::Parameter>(element::i32, shape);
+    auto A = make_shared<op::Parameter>(i32, shape);
+    auto B = make_shared<op::Parameter>(i32, shape);
 
     auto add = make_shared<op::Add>(A, B);
     auto absn = make_shared<op::Abs>(add);
@@ -125,9 +125,9 @@ TEST(debugger, delete_breakpoint)
 
     shared_ptr<runtime::Backend> backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::i32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(i32, shape);
 
     vector<int> dataA{-1};
     vector<int> dataB{-776};
@@ -154,8 +154,8 @@ TEST(debugger, delete_breakpoint)
 TEST(debugger, while_stepping)
 {
     Shape shape{};
-    auto A = make_shared<op::Parameter>(element::i32, shape);
-    auto B = make_shared<op::Parameter>(element::i32, shape);
+    auto A = make_shared<op::Parameter>(i32, shape);
+    auto B = make_shared<op::Parameter>(i32, shape);
 
     auto add = make_shared<op::Add>(A, B);
     auto absn = make_shared<op::Abs>(add);
@@ -165,9 +165,9 @@ TEST(debugger, while_stepping)
 
     shared_ptr<runtime::Backend> backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::i32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(i32, shape);
 
     vector<int> dataA{-1};
     vector<int> dataB{-776};
@@ -192,8 +192,8 @@ TEST(debugger, while_stepping)
 TEST(debugger, resume)
 {
     Shape shape{};
-    auto A = make_shared<op::Parameter>(element::i32, shape);
-    auto B = make_shared<op::Parameter>(element::i32, shape);
+    auto A = make_shared<op::Parameter>(i32, shape);
+    auto B = make_shared<op::Parameter>(i32, shape);
 
     auto add = make_shared<op::Add>(A, B);
     auto absn = make_shared<op::Abs>(add);
@@ -203,9 +203,9 @@ TEST(debugger, resume)
 
     shared_ptr<runtime::Backend> backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::i32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(i32, shape);
 
     vector<int> dataA{-1};
     vector<int> dataB{-776};
@@ -228,8 +228,8 @@ TEST(debugger, resume)
 TEST(tracer, basic)
 {
     Shape shape{};
-    auto A = make_shared<op::Parameter>(element::i32, shape);
-    auto B = make_shared<op::Parameter>(element::i32, shape);
+    auto A = make_shared<op::Parameter>(i32, shape);
+    auto B = make_shared<op::Parameter>(i32, shape);
 
     auto add = make_shared<op::Add>(A, B);
     auto absn = make_shared<op::Abs>(add);
@@ -239,9 +239,9 @@ TEST(tracer, basic)
 
     shared_ptr<runtime::Backend> backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::i32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(i32, shape);
 
     vector<int> dataA{-1};
     vector<int> dataB{-776};
@@ -268,8 +268,8 @@ TEST(tracer, basic)
 TEST(tracer, count_tracepoint)
 {
     Shape shape{};
-    auto A = make_shared<op::Parameter>(element::i32, shape);
-    auto B = make_shared<op::Parameter>(element::i32, shape);
+    auto A = make_shared<op::Parameter>(i32, shape);
+    auto B = make_shared<op::Parameter>(i32, shape);
 
     auto add = make_shared<op::Add>(A, B);
 
@@ -277,9 +277,9 @@ TEST(tracer, count_tracepoint)
 
     shared_ptr<runtime::Backend> backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::i32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(i32, shape);
 
     auto cf =
         std::dynamic_pointer_cast<ngraph::runtime::cpu::CPU_Backend>(backend)->get_call_frame(f);
@@ -309,8 +309,8 @@ TEST(tracer, count_tracepoint)
 TEST(tracer, conditional_tracepoint)
 {
     Shape shape{};
-    auto A = make_shared<op::Parameter>(element::i32, shape);
-    auto B = make_shared<op::Parameter>(element::i32, shape);
+    auto A = make_shared<op::Parameter>(i32, shape);
+    auto B = make_shared<op::Parameter>(i32, shape);
 
     auto add = make_shared<op::Add>(A, B);
 
@@ -318,9 +318,9 @@ TEST(tracer, conditional_tracepoint)
 
     shared_ptr<runtime::Backend> backend = runtime::Backend::create("CPU");
 
-    shared_ptr<runtime::Tensor> a = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> b = backend->create_tensor(element::i32, shape);
-    shared_ptr<runtime::Tensor> result = backend->create_tensor(element::i32, shape);
+    shared_ptr<runtime::Tensor> a = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> b = backend->create_tensor(i32, shape);
+    shared_ptr<runtime::Tensor> result = backend->create_tensor(i32, shape);
 
     auto cf =
         std::dynamic_pointer_cast<ngraph::runtime::cpu::CPU_Backend>(backend)->get_call_frame(f);

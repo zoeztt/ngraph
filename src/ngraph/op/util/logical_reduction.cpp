@@ -57,8 +57,8 @@ void op::util::LogicalReduction::validate_and_infer_types()
         result_shape = PartialShape(dims);
     }
 
-    NODE_VALIDATION_ASSERT(this, get_input_element_type(0).compatible(element::boolean))
+    NODE_VALIDATION_ASSERT(this, get_input_element_type(0).compatible(boolean))
         << "Input element type must be boolean.";
 
-    set_output_type(0, element::boolean, result_shape);
+    set_output_type(0, boolean, result_shape);
 }

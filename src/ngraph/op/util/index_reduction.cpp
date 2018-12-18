@@ -24,7 +24,7 @@ using namespace ngraph;
 op::util::IndexReduction::IndexReduction(const std::string& node_type,
                                          const std::shared_ptr<Node>& arg,
                                          size_t axis,
-                                         const element::Type& index_element_type)
+                                         const Type& index_element_type)
     : Op(node_type, check_single_output_args({arg}))
     , m_axis(axis)
     , m_index_element_type(index_element_type)
@@ -42,7 +42,7 @@ void op::util::IndexReduction::validate_and_infer_types()
     NODE_VALIDATION_ASSERT(this, rank.is_dynamic() || m_axis < size_t(rank))
         << "Reduction axis (" << m_axis << ") is not less than argument rank (" << rank << ").";
     NODE_VALIDATION_ASSERT(
-        this, m_index_element_type == element::i32 || m_index_element_type == element::i64)
+        this, m_index_element_type == i32 || m_index_element_type == i64)
         << "Index element is neither i64 or i32.";
 
     PartialShape output_shape{PartialShape::dynamic()};

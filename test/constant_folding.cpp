@@ -29,7 +29,7 @@ TEST(constant_folding, constant_reshape)
     Shape shape_out{2, 4, 1};
 
     vector<float> values_in{0, 1, 2, 3, 4, 5, 6, 7};
-    auto constant = make_shared<op::Constant>(element::f32, shape_in, values_in);
+    auto constant = make_shared<op::Constant>(f32, shape_in, values_in);
     auto reshape = make_shared<op::Reshape>(constant, AxisVector{0, 1}, shape_out);
     auto f = make_shared<Function>(reshape, ParameterVector{});
 
@@ -54,7 +54,7 @@ TEST(constant_folding, constant_reshape_permute)
     Shape shape_out{4, 2};
 
     vector<double> values_in{0, 1, 2, 3, 4, 5, 6, 7};
-    auto constant = make_shared<op::Constant>(element::f64, shape_in, values_in);
+    auto constant = make_shared<op::Constant>(f64, shape_in, values_in);
     auto reshape = make_shared<op::Reshape>(constant, AxisVector{1, 0}, shape_out);
     auto f = make_shared<Function>(reshape, ParameterVector{});
 
@@ -80,7 +80,7 @@ TEST(constant_folding, constant_broadcast)
     Shape shape_out{2, 4};
 
     vector<int> values_in{0, 1};
-    auto constant = make_shared<op::Constant>(element::i32, shape_in, values_in);
+    auto constant = make_shared<op::Constant>(i32, shape_in, values_in);
     auto broadcast = make_shared<op::Broadcast>(constant, shape_out, AxisSet{1});
     auto f = make_shared<Function>(broadcast, ParameterVector{});
 
@@ -105,8 +105,8 @@ TEST(constant_folding, constant_pad_exterior)
     Shape shape_in{2};
 
     vector<int> values_in{777, 888};
-    auto constant = make_shared<op::Constant>(element::i32, shape_in, values_in);
-    auto pad_value = make_shared<op::Constant>(element::i32, Shape{}, vector<int>{111});
+    auto constant = make_shared<op::Constant>(i32, shape_in, values_in);
+    auto pad_value = make_shared<op::Constant>(i32, Shape{}, vector<int>{111});
 
     Shape padding_below{1};
     Shape padding_above{2};
@@ -137,8 +137,8 @@ TEST(constant_folding, constant_pad_interior)
     Shape shape_in{2};
 
     vector<int> values_in{777, 888};
-    auto constant = make_shared<op::Constant>(element::i32, shape_in, values_in);
-    auto pad_value = make_shared<op::Constant>(element::i32, Shape{}, vector<int>{111});
+    auto constant = make_shared<op::Constant>(i32, shape_in, values_in);
+    auto pad_value = make_shared<op::Constant>(i32, Shape{}, vector<int>{111});
 
     Shape padding_below{0};
     Shape padding_above{0};
@@ -178,9 +178,9 @@ TEST(constant_folding, constant_unary_binary)
     vector<int> values_a{1, 2, 3, 4};
     vector<int> values_b{1, 2, 3, 4};
     vector<int> values_c{-1, -1, -1, -1};
-    auto a = make_shared<op::Constant>(element::i32, shape_in, values_a);
-    auto b = make_shared<op::Constant>(element::i32, shape_in, values_b);
-    auto c = make_shared<op::Constant>(element::i32, shape_in, values_c);
+    auto a = make_shared<op::Constant>(i32, shape_in, values_a);
+    auto b = make_shared<op::Constant>(i32, shape_in, values_b);
+    auto c = make_shared<op::Constant>(i32, shape_in, values_c);
 
     auto add = a + b;
     auto sub = a - b;
@@ -223,8 +223,8 @@ TEST(constant_folding, const_dequantize)
     Shape scale_offset_shape;
     AxisSet quantization_axes;
 
-    auto quant_type = element::u8;
-    auto output_type = element::f32;
+    auto quant_type = u8;
+    auto output_type = f32;
     typedef float output_c_type;
 
     vector<uint8_t> values_in{1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7};
@@ -257,13 +257,13 @@ TEST(constant_folding, const_quantize)
     Shape scale_offset_shape;
     AxisSet quantization_axes;
 
-    auto quant_type = element::u8;
-    auto output_type = element::u8;
+    auto quant_type = u8;
+    auto output_type = u8;
     typedef uint8_t output_c_type;
 
     vector<float> values_in{1.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 5.0, 5.0, 6.0, 6.0, 7.0};
-    auto constant = op::Constant::create(element::f32, input_shape, values_in);
-    auto scale = op::Constant::create(element::f32, scale_offset_shape, {2});
+    auto constant = op::Constant::create(f32, input_shape, values_in);
+    auto scale = op::Constant::create(f32, scale_offset_shape, {2});
     auto offset = op::Constant::create(quant_type, scale_offset_shape, {1});
     auto mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
     auto quantize =

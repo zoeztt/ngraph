@@ -81,7 +81,7 @@ static bool simplify_concat(std::shared_ptr<Node> n)
 
     std::shared_ptr<Node> branch_tip;
 
-    auto ltip = std::make_shared<pattern::op::Label>(element::i32, Shape{2, 1});
+    auto ltip = std::make_shared<pattern::op::Label>(i32, Shape{2, 1});
 
     auto pslice =
         std::make_shared<op::Slice>(ltip, Coordinate{0, 0}, Coordinate{2, 1}, Strides{1, 1});
@@ -258,7 +258,7 @@ static bool simplify_concat(std::shared_ptr<Node> n)
 static bool simplify_multiply(std::shared_ptr<Node> n)
 {
     NGRAPH_DEBUG << "In simplify_multiply for " << n->get_name();
-    auto iconst = ngraph::make_zero(element::i32, Shape{});
+    auto iconst = ngraph::make_zero(i32, Shape{});
     auto label = std::make_shared<pattern::op::Label>(iconst);
     auto const_label_zero =
         std::make_shared<pattern::op::Label>(iconst, ngraph::is_zero, NodeVector{iconst});
@@ -296,7 +296,7 @@ static bool simplify_multiply(std::shared_ptr<Node> n)
 static bool simplify_add(std::shared_ptr<Node> n)
 {
     NGRAPH_DEBUG << "In simplify_add for " << n->get_name();
-    auto iconst = ngraph::make_zero(element::i32, Shape{});
+    auto iconst = ngraph::make_zero(i32, Shape{});
     auto label = std::make_shared<pattern::op::Label>(iconst);
     auto const_label = std::make_shared<pattern::op::Label>(iconst, nullptr, NodeVector{iconst});
     auto matcher = create_binary_matcher<op::Add>(label, const_label);
@@ -354,7 +354,7 @@ static size_t reduction_shape_size(const AxisSet& axes, const Shape& shape)
 
 template <typename T>
 static std::shared_ptr<Node>
-    multiply_by(element::Type type, size_t multiplier, std::shared_ptr<op::Constant> cnst)
+    multiply_by(Type type, size_t multiplier, std::shared_ptr<op::Constant> cnst)
 {
     T sum_cnst = static_cast<T>(cnst->get_vector<T>().at(0) * multiplier);
     return op::Constant::create<T>(type, Shape{}, {sum_cnst});
@@ -362,7 +362,7 @@ static std::shared_ptr<Node>
 
 template <typename T>
 static std::shared_ptr<Node>
-    pow_by(element::Type type, size_t multiplier, std::shared_ptr<op::Constant> cnst)
+    pow_by(Type type, size_t multiplier, std::shared_ptr<op::Constant> cnst)
 {
     T prod = static_cast<T>(1);
     T val = cnst->get_vector<T>().at(0);
@@ -375,19 +375,19 @@ static std::shared_ptr<Node>
 
 static std::shared_ptr<Node> get_sum_constant(std::shared_ptr<op::Constant> cnst, size_t multiplier)
 {
-    if (cnst->get_element_type() == element::i32)
+    if (cnst->get_element_type() == i32)
     {
         return multiply_by<int>(cnst->get_element_type(), multiplier, cnst);
     }
-    else if (cnst->get_element_type() == element::i8)
+    else if (cnst->get_element_type() == i8)
     {
         return multiply_by<signed char>(cnst->get_element_type(), multiplier, cnst);
     }
-    else if (cnst->get_element_type() == element::f32)
+    else if (cnst->get_element_type() == f32)
     {
         return multiply_by<float>(cnst->get_element_type(), multiplier, cnst);
     }
-    else if (cnst->get_element_type() == element::f64)
+    else if (cnst->get_element_type() == f64)
     {
         return multiply_by<double>(cnst->get_element_type(), multiplier, cnst);
     }
@@ -398,19 +398,19 @@ static std::shared_ptr<Node> get_sum_constant(std::shared_ptr<op::Constant> cnst
 static std::shared_ptr<Node> get_prod_constant(std::shared_ptr<op::Constant> cnst,
                                                size_t multiplier)
 {
-    if (cnst->get_element_type() == element::i32)
+    if (cnst->get_element_type() == i32)
     {
         return pow_by<int>(cnst->get_element_type(), multiplier, cnst);
     }
-    else if (cnst->get_element_type() == element::i8)
+    else if (cnst->get_element_type() == i8)
     {
         return pow_by<signed char>(cnst->get_element_type(), multiplier, cnst);
     }
-    else if (cnst->get_element_type() == element::f32)
+    else if (cnst->get_element_type() == f32)
     {
         return pow_by<float>(cnst->get_element_type(), multiplier, cnst);
     }
-    else if (cnst->get_element_type() == element::f64)
+    else if (cnst->get_element_type() == f64)
     {
         return pow_by<double>(cnst->get_element_type(), multiplier, cnst);
     }

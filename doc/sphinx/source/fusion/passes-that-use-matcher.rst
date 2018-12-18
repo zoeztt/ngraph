@@ -67,7 +67,7 @@ Pattern for capturing
         //this should go in a cpp file.
         void construct_relu_pattern()
         {
-            auto iconst0 = ngraph::make_zero(element::i32, Shape{});
+            auto iconst0 = ngraph::make_zero(i32, Shape{});
             auto val = make_shared(iconst0);
             auto zero = make_shared(iconst0, nullptr, NodeVector{iconst0});
 
@@ -116,10 +116,10 @@ Equivalent to ``"A(BC)+A"`` in regexes
 .. code-block:: cpp
 
    Shape shape{};
-    auto a = make_shared<op::Parameter>(element::i32, shape);
-    auto b = make_shared<op::Parameter>(element::i32, shape);
+    auto a = make_shared<op::Parameter>(i32, shape);
+    auto b = make_shared<op::Parameter>(i32, shape);
     auto rpattern = std::make_shared<pattern::op::Label>(b);
-    auto iconst0 = ngraph::make_zero(element::i32, shape);
+    auto iconst0 = ngraph::make_zero(i32, shape);
     auto abs = make_shared<op::Abs>(a);
     auto add1 = iconst0 + b;
     auto add2 = iconst0 + add1;

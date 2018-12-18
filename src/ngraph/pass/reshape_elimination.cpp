@@ -42,7 +42,7 @@ void ngraph::pass::ReshapeElimination::construct_identity_reshape_pattern()
     Shape shape_op{3};
     Shape shape_r1{1, 3};
 
-    auto op = std::make_shared<pattern::op::Label>(element::f32, shape_op);
+    auto op = std::make_shared<pattern::op::Label>(f32, shape_op);
     auto reshape1 = std::make_shared<op::Reshape>(op, AxisVector{0}, shape_r1);
 
     auto callback = [op](pattern::Matcher& m) {
@@ -80,7 +80,7 @@ void ngraph::pass::ReshapeElimination::construct_reshapex2_pattern()
     Shape shape_op{3};
     Shape shape_r1{1, 3};
 
-    auto op = std::make_shared<pattern::op::Label>(element::f32, shape_op);
+    auto op = std::make_shared<pattern::op::Label>(f32, shape_op);
     auto reshape1 = std::make_shared<op::Reshape>(op, AxisVector{0}, shape_r1);
     auto reshape2 = std::make_shared<op::Reshape>(reshape1, AxisVector{0, 1}, shape_op);
 
@@ -141,7 +141,7 @@ void ngraph::pass::ReshapeElimination::construct_dot_transpose_pattern()
         return static_cast<bool>(std::dynamic_pointer_cast<op::Dot>(n));
     };
 
-    auto pdot = std::make_shared<pattern::op::Label>(element::f32, Shape{2, 1}, dot_pred);
+    auto pdot = std::make_shared<pattern::op::Label>(f32, Shape{2, 1}, dot_pred);
     auto preshape = std::make_shared<op::Reshape>(pdot, AxisVector{1, 0}, Shape{1, 2});
 
     ngraph::pattern::graph_rewrite_callback callback = [](pattern::Matcher& m) {

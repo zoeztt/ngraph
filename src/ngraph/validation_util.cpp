@@ -125,10 +125,10 @@ PartialShape ngraph::infer_windowed_reduction_output_shape(const Node* node,
 //
 // Infers the output batch shape and element type for convolution fprop.
 //
-std::tuple<element::Type, PartialShape>
+std::tuple<Type, PartialShape>
     ngraph::infer_convolution_forward(const Node* node,
-                                      element::Type et_batch,
-                                      element::Type et_filters,
+                                      Type et_batch,
+                                      Type et_filters,
                                       const PartialShape& data_batch_shape,
                                       const Strides& data_dilation,
                                       const CoordinateDiff& data_padding_below,
@@ -137,9 +137,9 @@ std::tuple<element::Type, PartialShape>
                                       const Strides& filter_strides,
                                       const Strides& filter_dilation)
 {
-    element::Type et_result;
+    Type et_result;
 
-    NODE_VALIDATION_ASSERT(node, element::Type::merge(et_result, et_batch, et_filters))
+    NODE_VALIDATION_ASSERT(node, Type::merge(et_result, et_batch, et_filters))
         << "Element types for data batch and filters do not match (data batch element type: "
         << et_batch << ", filters element type: " << et_filters << ").";
 
@@ -327,14 +327,14 @@ PartialShape ngraph::infer_batched_pooling_forward(const Node* node,
 
 struct ChannelShapedInputSpec
 {
-    element::Type m_element_type;
+    Type m_element_type;
     PartialShape m_shape;
     std::string m_input_name;
 };
 
-static std::tuple<element::Type, PartialShape, PartialShape> infer_batch_norm_forward_helper(
+static std::tuple<Type, PartialShape, PartialShape> infer_batch_norm_forward_helper(
     const Node* node,
-    element::Type input_element_type,
+    Type input_element_type,
     const PartialShape& input_shape,
     const std::vector<ChannelShapedInputSpec>& channel_shaped_inputs)
 {
@@ -354,11 +354,11 @@ static std::tuple<element::Type, PartialShape, PartialShape> infer_batch_norm_fo
     std::string channel_input_names = ss.str();
 
     // Infer output element type.
-    element::Type et_result{input_element_type};
+    Type et_result{input_element_type};
 
     for (auto& inp : channel_shaped_inputs)
     {
-        NODE_VALIDATION_ASSERT(node, element::Type::merge(et_result, et_result, inp.m_element_type))
+        NODE_VALIDATION_ASSERT(node, Type::merge(et_result, et_result, inp.m_element_type))
             << "Input element types do not match.";
     }
 
@@ -407,13 +407,13 @@ static std::tuple<element::Type, PartialShape, PartialShape> infer_batch_norm_fo
     return std::make_tuple(et_result, batch_result_shape, PartialShape{channel_dim});
 }
 
-std::tuple<element::Type, PartialShape, PartialShape>
+std::tuple<Type, PartialShape, PartialShape>
     ngraph::infer_batch_norm_forward(const Node* node,
-                                     element::Type input_element_type,
-                                     element::Type gamma_element_type,
-                                     element::Type beta_element_type,
-                                     element::Type mean_element_type,
-                                     element::Type variance_element_type,
+                                     Type input_element_type,
+                                     Type gamma_element_type,
+                                     Type beta_element_type,
+                                     Type mean_element_type,
+                                     Type variance_element_type,
                                      const PartialShape& input_shape,
                                      const PartialShape& gamma_shape,
                                      const PartialShape& beta_shape,
@@ -429,11 +429,11 @@ std::tuple<element::Type, PartialShape, PartialShape>
                                             {variance_element_type, variance_shape, "variance"}});
 }
 
-std::tuple<element::Type, PartialShape, PartialShape>
+std::tuple<Type, PartialShape, PartialShape>
     ngraph::infer_batch_norm_forward(const Node* node,
-                                     element::Type input_element_type,
-                                     element::Type gamma_element_type,
-                                     element::Type beta_element_type,
+                                     Type input_element_type,
+                                     Type gamma_element_type,
+                                     Type beta_element_type,
                                      const PartialShape& input_shape,
                                      const PartialShape& gamma_shape,
                                      const PartialShape& beta_shape)

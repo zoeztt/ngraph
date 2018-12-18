@@ -21,7 +21,7 @@
 using namespace std;
 using namespace ngraph;
 
-op::Convert::Convert(const shared_ptr<Node>& arg, const element::Type& element_type)
+op::Convert::Convert(const shared_ptr<Node>& arg, const Type& element_type)
     : Op("Convert", check_single_output_args({arg}))
     , m_element_type(element_type)
 {

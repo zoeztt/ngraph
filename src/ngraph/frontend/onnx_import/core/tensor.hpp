@@ -280,7 +280,7 @@ namespace ngraph
                 return static_cast<Type>(m_tensor_proto->data_type());
             }
 
-            const element::Type& get_ng_type() const
+            const Type& get_ng_type() const
             {
                 if (!m_tensor_proto->has_data_type())
                 {
@@ -288,18 +288,18 @@ namespace ngraph
                 }
                 switch (m_tensor_proto->data_type())
                 {
-                case onnx::TensorProto_DataType::TensorProto_DataType_BOOL: return element::boolean;
+                case onnx::TensorProto_DataType::TensorProto_DataType_BOOL: return boolean;
                 case onnx::TensorProto_DataType::TensorProto_DataType_FLOAT:
-                case onnx::TensorProto_DataType::TensorProto_DataType_FLOAT16: return element::f32;
-                case onnx::TensorProto_DataType::TensorProto_DataType_DOUBLE: return element::f64;
-                case onnx::TensorProto_DataType::TensorProto_DataType_INT8: return element::i8;
-                case onnx::TensorProto_DataType::TensorProto_DataType_INT16: return element::i16;
-                case onnx::TensorProto_DataType::TensorProto_DataType_INT32: return element::i32;
-                case onnx::TensorProto_DataType::TensorProto_DataType_INT64: return element::i64;
-                case onnx::TensorProto_DataType::TensorProto_DataType_UINT8: return element::u8;
-                case onnx::TensorProto_DataType::TensorProto_DataType_UINT16: return element::u16;
-                case onnx::TensorProto_DataType::TensorProto_DataType_UINT32: return element::u32;
-                case onnx::TensorProto_DataType::TensorProto_DataType_UINT64: return element::u64;
+                case onnx::TensorProto_DataType::TensorProto_DataType_FLOAT16: return f32;
+                case onnx::TensorProto_DataType::TensorProto_DataType_DOUBLE: return f64;
+                case onnx::TensorProto_DataType::TensorProto_DataType_INT8: return i8;
+                case onnx::TensorProto_DataType::TensorProto_DataType_INT16: return i16;
+                case onnx::TensorProto_DataType::TensorProto_DataType_INT32: return i32;
+                case onnx::TensorProto_DataType::TensorProto_DataType_INT64: return i64;
+                case onnx::TensorProto_DataType::TensorProto_DataType_UINT8: return u8;
+                case onnx::TensorProto_DataType::TensorProto_DataType_UINT16: return u16;
+                case onnx::TensorProto_DataType::TensorProto_DataType_UINT32: return u32;
+                case onnx::TensorProto_DataType::TensorProto_DataType_UINT64: return u64;
                 case onnx::TensorProto_DataType::TensorProto_DataType_UNDEFINED:
                     throw error::tensor::data_type_undefined{};
                 default: throw error::tensor::unsupported_data_type{m_tensor_proto->data_type()};

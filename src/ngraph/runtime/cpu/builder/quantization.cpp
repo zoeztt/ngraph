@@ -73,9 +73,9 @@ namespace ngraph
                     auto arg1_shape = args[1].get_shape();
                     auto daxes = dequantize->get_axes();
 
-                    if (args[0].get_element_type() == element::i8)
+                    if (args[0].get_element_type() == i8)
                     {
-                        if (out[0].get_element_type() == element::f32)
+                        if (out[0].get_element_type() == f32)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {
@@ -89,7 +89,7 @@ namespace ngraph
                                     daxes);
                             };
                         }
-                        else if (out[0].get_element_type() == element::f64)
+                        else if (out[0].get_element_type() == f64)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {
@@ -108,9 +108,9 @@ namespace ngraph
                             throw ngraph_error("Unsupported dequantization element type");
                         }
                     }
-                    else if (args[0].get_element_type() == element::u8)
+                    else if (args[0].get_element_type() == u8)
                     {
-                        if (out[0].get_element_type() == element::f32)
+                        if (out[0].get_element_type() == f32)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {
@@ -124,7 +124,7 @@ namespace ngraph
                                     daxes);
                             };
                         }
-                        else if (out[0].get_element_type() == element::f64)
+                        else if (out[0].get_element_type() == f64)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {
@@ -143,9 +143,9 @@ namespace ngraph
                             throw ngraph_error("Unsupported dequantization element type");
                         }
                     }
-                    else if (args[0].get_element_type() == element::i32)
+                    else if (args[0].get_element_type() == i32)
                     {
-                        if (out[0].get_element_type() == element::f32)
+                        if (out[0].get_element_type() == f32)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {
@@ -159,7 +159,7 @@ namespace ngraph
                                     daxes);
                             };
                         }
-                        else if (out[0].get_element_type() == element::f64)
+                        else if (out[0].get_element_type() == f64)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {
@@ -275,9 +275,9 @@ namespace ngraph
                     auto daxes = quantize->get_axes();
                     op::Quantize::RoundMode round_mode = quantize->get_round_mode();
 
-                    if (args[0].get_element_type() == element::f32)
+                    if (args[0].get_element_type() == f32)
                     {
-                        if (out[0].get_element_type() == element::i8)
+                        if (out[0].get_element_type() == i8)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes, round_mode](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {
@@ -292,7 +292,7 @@ namespace ngraph
                                     round_mode);
                             };
                         }
-                        else if (out[0].get_element_type() == element::u8)
+                        else if (out[0].get_element_type() == u8)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes, round_mode](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {
@@ -307,7 +307,7 @@ namespace ngraph
                                     round_mode);
                             };
                         }
-                        else if (out[0].get_element_type() == element::i32)
+                        else if (out[0].get_element_type() == i32)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes, round_mode](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {
@@ -327,9 +327,9 @@ namespace ngraph
                             throw ngraph_error("Unsupported quantization element type");
                         }
                     }
-                    else if (args[0].get_element_type() == element::f64)
+                    else if (args[0].get_element_type() == f64)
                     {
-                        if (out[0].get_element_type() == element::i8)
+                        if (out[0].get_element_type() == i8)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes, round_mode](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {
@@ -344,7 +344,7 @@ namespace ngraph
                                     round_mode);
                             };
                         }
-                        else if (out[0].get_element_type() == element::u8)
+                        else if (out[0].get_element_type() == u8)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes, round_mode](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {
@@ -359,7 +359,7 @@ namespace ngraph
                                     round_mode);
                             };
                         }
-                        else if (out[0].get_element_type() == element::i32)
+                        else if (out[0].get_element_type() == i32)
                         {
                             functor = [&, arg0_shape, arg1_shape, daxes, round_mode](
                                 CPURuntimeContext* ctx, CPUExecutionContext* ectx) {

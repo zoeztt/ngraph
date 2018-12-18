@@ -29,15 +29,15 @@ namespace ngraph
         namespace reference
         {
             template <typename T>
-            void allreduce(T* arg, T* out, const element::Type element_type, int count)
+            void allreduce(T* arg, T* out, const Type element_type, int count)
             {
                 auto data_type = MLSL::DT_FLOAT;
 
-                if (element_type == element::f32)
+                if (element_type == f32)
                 {
                     data_type = MLSL::DT_FLOAT;
                 }
-                else if (element_type == element::f64)
+                else if (element_type == f64)
                 {
                     data_type = MLSL::DT_DOUBLE;
                 }

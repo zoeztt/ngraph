@@ -234,9 +234,9 @@ An Example
 
        // First construct the graph
        Shape shape{32, 32};
-       auto a = std::make_shared<op::Parameter>(element::f32, shape);
-       auto b = std::make_shared<op::Parameter>(element::f32, shape);
-       auto c = std::make_shared<op::Parameter>(element::f32, shape);
+       auto a = std::make_shared<op::Parameter>(f32, shape);
+       auto b = std::make_shared<op::Parameter>(f32, shape);
+       auto c = std::make_shared<op::Parameter>(f32, shape);
        auto t0 = std::make_shared<op::Add>(a, b);
        auto t1 = std::make_shared<op::Multiply>(t0, c);
 

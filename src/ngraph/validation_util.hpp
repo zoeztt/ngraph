@@ -33,10 +33,10 @@ namespace ngraph
                                                        const Strides& window_dilation,
                                                        bool is_window_all_in_padding_allowed);
 
-    std::tuple<element::Type, PartialShape>
+    std::tuple<Type, PartialShape>
         infer_convolution_forward(const Node* node,
-                                  element::Type et_batch,
-                                  element::Type et_filters,
+                                  Type et_batch,
+                                  Type et_filters,
                                   const PartialShape& data_batch_shape,
                                   const Strides& data_dilation,
                                   const CoordinateDiff& data_padding_below,
@@ -53,24 +53,24 @@ namespace ngraph
                                                const Strides& window_strides,
                                                bool is_window_all_in_padding_allowed);
 
-    std::tuple<element::Type, PartialShape, PartialShape>
+    std::tuple<Type, PartialShape, PartialShape>
         infer_batch_norm_forward(const Node* node,
-                                 element::Type input_element_type,
-                                 element::Type gamma_element_type,
-                                 element::Type beta_element_type,
-                                 element::Type mean_element_type,
-                                 element::Type variance_element_type,
+                                 Type input_element_type,
+                                 Type gamma_element_type,
+                                 Type beta_element_type,
+                                 Type mean_element_type,
+                                 Type variance_element_type,
                                  const PartialShape& input_shape,
                                  const PartialShape& gamma_shape,
                                  const PartialShape& beta_shape,
                                  const PartialShape& mean_shape,
                                  const PartialShape& variance_shape);
 
-    std::tuple<element::Type, PartialShape, PartialShape>
+    std::tuple<Type, PartialShape, PartialShape>
         infer_batch_norm_forward(const Node* node,
-                                 element::Type input_element_type,
-                                 element::Type gamma_element_type,
-                                 element::Type beta_element_type,
+                                 Type input_element_type,
+                                 Type gamma_element_type,
+                                 Type beta_element_type,
                                  const PartialShape& input_shape,
                                  const PartialShape& gamma_shape,
                                  const PartialShape& beta_shape);

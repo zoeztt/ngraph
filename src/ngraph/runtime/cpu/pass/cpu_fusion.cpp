@@ -128,9 +128,9 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_matmulbias()
     Shape shape_w{2, 4};
     Shape shape_x{4, 1};
     Shape shape_b{1};
-    auto W = std::make_shared<pattern::op::Label>(element::f32, shape_w);
-    auto x = std::make_shared<pattern::op::Label>(element::f32, shape_x);
-    auto b = std::make_shared<pattern::op::Label>(element::f32, shape_b);
+    auto W = std::make_shared<pattern::op::Label>(f32, shape_w);
+    auto x = std::make_shared<pattern::op::Label>(f32, shape_x);
+    auto b = std::make_shared<pattern::op::Label>(f32, shape_b);
 
     auto pmmb = std::make_shared<op::MatmulBias>(
         W, x, nullptr, W->get_shape(), x->get_shape(), false, false);
@@ -171,8 +171,8 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_matmul()
     Shape shape_b{1};
     Shape shape_dot{2, 1};
 
-    auto W = std::make_shared<pattern::op::Label>(element::f32, shape_w);
-    auto x = std::make_shared<pattern::op::Label>(element::f32, shape_x);
+    auto W = std::make_shared<pattern::op::Label>(f32, shape_w);
+    auto x = std::make_shared<pattern::op::Label>(f32, shape_x);
 
     auto reshape_pred = pattern::has_class<op::Reshape>();
 
@@ -189,7 +189,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_matmul()
         auto mpattern = m.get_match_root();
         auto dot = m.get_match_root();
 
-        if (mpattern->get_element_type() != element::f32)
+        if (mpattern->get_element_type() != f32)
         {
             NGRAPH_DEBUG << "mpattern = " << mpattern->get_name() << " type is not float!";
             return false;
@@ -240,8 +240,8 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_matmul()
 void ngraph::runtime::cpu::pass::CPUFusion::construct_fprop_bn()
 {
     // construct varaiance
-    auto N = op::Constant::create(element::f32, Shape{3}, {2, 2, 2});
-    auto input = std::make_shared<pattern::op::Label>(element::f32, Shape{2, 3});
+    auto N = op::Constant::create(f32, Shape{3}, {2, 2, 2});
+    auto input = std::make_shared<pattern::op::Label>(f32, Shape{2, 3});
     auto input_sq = std::make_shared<op::Multiply>(input, input);
     auto sum_input = std::make_shared<op::Sum>(input, AxisSet{0});
     auto square_sumed_input = std::make_shared<op::Multiply>(sum_input, sum_input);
@@ -262,7 +262,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_fprop_bn()
     auto input_diff_mean = std::make_shared<op::Subtract>(input, mean_with_broadcast);
 
     // Eps
-    auto eps_label = std::make_shared<pattern::op::Label>(element::f32, Shape{3});
+    auto eps_label = std::make_shared<pattern::op::Label>(f32, Shape{3});
     auto eps_with_broadcast = std::make_shared<op::Broadcast>(eps_label, Shape{2, 3}, AxisSet{0});
 
     auto add1 = std::make_shared<op::Add>(eps_with_broadcast, variance_with_broadcast);
@@ -270,14 +270,14 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_fprop_bn()
     auto divide_mean_variance = std::make_shared<op::Divide>(input_diff_mean, sqrt_variance_eps);
 
     // Gamma
-    auto gamma_label = std::make_shared<pattern::op::Label>(element::f32, Shape{3});
+    auto gamma_label = std::make_shared<pattern::op::Label>(f32, Shape{3});
     auto gamma_with_broadcast =
         std::make_shared<op::Broadcast>(gamma_label, Shape{2, 3}, AxisSet{0});
     auto multiply_gamma =
         std::make_shared<op::Multiply>(gamma_with_broadcast, divide_mean_variance);
 
     // Beta
-    auto beta_label = std::make_shared<pattern::op::Label>(element::f32, Shape{3});
+    auto beta_label = std::make_shared<pattern::op::Label>(f32, Shape{3});
     auto beta_with_broadcast = std::make_shared<op::Broadcast>(beta_label, Shape{2, 3}, AxisSet{0});
 
     auto add_beta = std::make_shared<op::Add>(beta_with_broadcast, multiply_gamma);
@@ -345,7 +345,7 @@ static bool
                                        size_t channel_index)
 {
     // Only match float32 convolutions
-    if (match_root->get_element_type() != ngraph::element::f32)
+    if (match_root->get_element_type() != ngraph::f32)
     {
         return false;
     }
@@ -393,8 +393,8 @@ static bool
 
 void ngraph::runtime::cpu::pass::CPUFusion::construct_zero_padded_reshaped_conv()
 {
-    auto pad_input = std::make_shared<pattern::op::Label>(element::f32, Shape{});
-    auto pad_value = std::make_shared<pattern::op::Label>(element::f32, Shape{});
+    auto pad_input = std::make_shared<pattern::op::Label>(f32, Shape{});
+    auto pad_value = std::make_shared<pattern::op::Label>(f32, Shape{});
     auto pad = std::make_shared<op::Pad>(pad_input, pad_value, Shape{}, Shape{}, Shape{});
     auto pad_label = std::make_shared<pattern::op::Label>(pad, nullptr, NodeVector{pad});
 
@@ -402,7 +402,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_zero_padded_reshaped_conv(
     auto reshape_label =
         std::make_shared<pattern::op::Label>(reshape, nullptr, NodeVector{reshape});
 
-    auto conv_filter = std::make_shared<pattern::op::Label>(element::f32, Shape{1, 1, 1, 1});
+    auto conv_filter = std::make_shared<pattern::op::Label>(f32, Shape{1, 1, 1, 1});
 
     auto conv = std::make_shared<op::Convolution>(reshape_label,
                                                   conv_filter,
@@ -480,13 +480,13 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_zero_padded_reshaped_conv(
 
 void ngraph::runtime::cpu::pass::CPUFusion::construct_zero_padded_conv()
 {
-    auto pad_input = std::make_shared<pattern::op::Label>(element::f32, Shape{1, 1, 1, 1});
-    auto pad_value = std::make_shared<pattern::op::Label>(element::f32, Shape{});
+    auto pad_input = std::make_shared<pattern::op::Label>(f32, Shape{1, 1, 1, 1});
+    auto pad_value = std::make_shared<pattern::op::Label>(f32, Shape{});
     auto pad = std::make_shared<op::Pad>(
         pad_input, pad_value, Shape{0, 0, 0, 0}, Shape{0, 0, 0, 0}, Shape{0, 0, 0, 0});
     auto pad_label = std::make_shared<pattern::op::Label>(pad, nullptr, NodeVector{pad});
 
-    auto conv_filter = std::make_shared<pattern::op::Label>(element::f32, Shape{1, 1, 1, 1});
+    auto conv_filter = std::make_shared<pattern::op::Label>(f32, Shape{1, 1, 1, 1});
 
     auto conv = std::make_shared<op::Convolution>(pad_label,
                                                   conv_filter,
@@ -550,13 +550,13 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_zero_padded_conv()
 
 void ngraph::runtime::cpu::pass::CPUFusion::construct_zero_padded_conv_backprop_filters()
 {
-    auto pad_input = std::make_shared<pattern::op::Label>(element::f32, Shape{1, 1, 1, 1});
-    auto pad_value = std::make_shared<pattern::op::Label>(element::f32, Shape{});
+    auto pad_input = std::make_shared<pattern::op::Label>(f32, Shape{1, 1, 1, 1});
+    auto pad_value = std::make_shared<pattern::op::Label>(f32, Shape{});
     auto pad = std::make_shared<op::Pad>(
         pad_input, pad_value, Shape{0, 0, 0, 0}, Shape{0, 0, 0, 0}, Shape{0, 0, 0, 0});
     auto pad_label = std::make_shared<pattern::op::Label>(pad, nullptr, NodeVector{pad});
 
-    auto output_delta = std::make_shared<pattern::op::Label>(element::f32, Shape{1, 1, 1, 1});
+    auto output_delta = std::make_shared<pattern::op::Label>(f32, Shape{1, 1, 1, 1});
 
     auto conv = std::make_shared<op::ConvolutionBackpropFilters>(pad_label,
                                                                  Shape{1, 1, 3, 3},
@@ -624,9 +624,9 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_zero_padded_conv_backprop_
 void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias()
 {
     Shape shape{2, 2, 1, 1};
-    auto data_batch = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto pbias = std::make_shared<pattern::op::Label>(element::f32, Shape{});
+    auto data_batch = std::make_shared<pattern::op::Label>(f32, shape);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape);
+    auto pbias = std::make_shared<pattern::op::Label>(f32, Shape{});
 
     auto pbroadcast = std::make_shared<op::Broadcast>(pbias, shape, AxisSet{0, 1, 2, 3});
 
@@ -680,8 +680,8 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias()
 void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_bprop()
 {
     Shape shape{2, 2, 1, 1};
-    auto data_batch = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto delta = std::make_shared<pattern::op::Label>(element::f32, shape);
+    auto data_batch = std::make_shared<pattern::op::Label>(f32, shape);
+    auto delta = std::make_shared<pattern::op::Label>(f32, shape);
     auto conv_bprop_filter = std::make_shared<op::ConvolutionBackpropFilters>(data_batch,
                                                                               shape,
                                                                               delta,
@@ -701,7 +701,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_bprop()
 
         if (conv_bprop->get_input_shape(0).size() == 4 &&
             conv_bprop->get_input_shape(1).size() == 4 &&
-            conv_bprop->get_input_element_type(0) == element::f32)
+            conv_bprop->get_input_element_type(0) == f32)
         {
             for (auto delta_user : pattern_map[delta]->get_users())
             {
@@ -763,13 +763,13 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_bprop()
 void ngraph::runtime::cpu::pass::CPUFusion::construct_batch_norm_relu()
 {
     auto input_shape = Shape{1, 2, 2, 2};
-    auto input = std::make_shared<pattern::op::Label>(element::f32, input_shape);
+    auto input = std::make_shared<pattern::op::Label>(f32, input_shape);
     auto mean_shape = Shape{2};
     auto var_shape = Shape{2};
     auto gamma_shape = Shape{2};
-    auto gamma = std::make_shared<pattern::op::Label>(element::f32, gamma_shape);
+    auto gamma = std::make_shared<pattern::op::Label>(f32, gamma_shape);
     auto beta_shape = Shape{2};
-    auto beta = std::make_shared<pattern::op::Label>(element::f32, beta_shape);
+    auto beta = std::make_shared<pattern::op::Label>(f32, beta_shape);
     double eps = 0.001;
     auto bn = std::make_shared<op::BatchNormTraining>(eps, gamma, beta, input);
     auto goe = std::make_shared<op::GetOutputElement>(bn, 0);
@@ -826,15 +826,15 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_batch_norm_relu()
 void ngraph::runtime::cpu::pass::CPUFusion::construct_batch_norm_relu_global_stats()
 {
     auto input_shape = Shape{1, 2, 2, 2};
-    auto input = std::make_shared<pattern::op::Label>(element::f32, input_shape);
+    auto input = std::make_shared<pattern::op::Label>(f32, input_shape);
     auto mean_shape = Shape{2};
-    auto mean = std::make_shared<pattern::op::Label>(element::f32, mean_shape);
+    auto mean = std::make_shared<pattern::op::Label>(f32, mean_shape);
     auto var_shape = Shape{2};
-    auto var = std::make_shared<pattern::op::Label>(element::f32, var_shape);
+    auto var = std::make_shared<pattern::op::Label>(f32, var_shape);
     auto gamma_shape = Shape{2};
-    auto gamma = std::make_shared<pattern::op::Label>(element::f32, gamma_shape);
+    auto gamma = std::make_shared<pattern::op::Label>(f32, gamma_shape);
     auto beta_shape = Shape{2};
-    auto beta = std::make_shared<pattern::op::Label>(element::f32, beta_shape);
+    auto beta = std::make_shared<pattern::op::Label>(f32, beta_shape);
     auto bn_pred = [](std::shared_ptr<Node> node) {
         return pattern::has_class<op::BatchNormInference>()(node) ||
                pattern::has_class<op::BatchNormTraining>()(node);
@@ -889,8 +889,8 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_batch_norm_relu_global_sta
 void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_relu()
 {
     Shape shape{2, 2, 1, 1};
-    auto data_batch = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape);
+    auto data_batch = std::make_shared<pattern::op::Label>(f32, shape);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape);
 
     auto pconv = std::make_shared<op::Convolution>(data_batch,
                                                    filters,
@@ -932,9 +932,9 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_relu()
 void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_relu()
 {
     Shape shape{2, 2, 1, 1};
-    auto data_batch = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto bias = std::make_shared<pattern::op::Label>(element::f32, Shape{shape[0]});
+    auto data_batch = std::make_shared<pattern::op::Label>(f32, shape);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape);
+    auto bias = std::make_shared<pattern::op::Label>(f32, Shape{shape[0]});
 
     auto conv_bias = std::make_shared<op::ConvolutionBias>(data_batch,
                                                            filters,
@@ -982,8 +982,8 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_relu()
 void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_add()
 {
     Shape shape{2, 2, 1, 1};
-    auto data_batch = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape);
+    auto data_batch = std::make_shared<pattern::op::Label>(f32, shape);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape);
 
     auto pconv = std::make_shared<op::Convolution>(data_batch,
                                                    filters,
@@ -992,7 +992,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_add()
                                                    CoordinateDiff{0, 0},
                                                    CoordinateDiff{0, 0},
                                                    Strides{1, 1});
-    auto add_input = std::make_shared<pattern::op::Label>(element::f32, pconv->get_shape());
+    auto add_input = std::make_shared<pattern::op::Label>(f32, pconv->get_shape());
     auto padd = std::make_shared<op::Add>(add_input, pconv);
 
     pattern::graph_rewrite_callback callback = [data_batch, filters](pattern::Matcher& m) {
@@ -1048,9 +1048,9 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_add()
 void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_add_relu()
 {
     Shape shape{2, 2, 1, 1};
-    auto data_batch = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto add_input = std::make_shared<pattern::op::Label>(element::f32, shape);
+    auto data_batch = std::make_shared<pattern::op::Label>(f32, shape);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape);
+    auto add_input = std::make_shared<pattern::op::Label>(f32, shape);
 
     auto pconv = std::make_shared<op::ConvolutionAdd>(data_batch,
                                                       filters,
@@ -1097,9 +1097,9 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_add_relu()
 void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_add()
 {
     Shape shape{2, 2, 1, 1};
-    auto data_batch = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto bias = std::make_shared<pattern::op::Label>(element::f32, Shape{shape[0]});
+    auto data_batch = std::make_shared<pattern::op::Label>(f32, shape);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape);
+    auto bias = std::make_shared<pattern::op::Label>(f32, Shape{shape[0]});
 
     auto pconv = std::make_shared<op::ConvolutionBias>(data_batch,
                                                        filters,
@@ -1109,7 +1109,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_add()
                                                        CoordinateDiff{0, 0},
                                                        CoordinateDiff{0, 0},
                                                        Strides{1, 1});
-    auto add_input = std::make_shared<pattern::op::Label>(element::f32, pconv->get_shape());
+    auto add_input = std::make_shared<pattern::op::Label>(f32, pconv->get_shape());
     auto padd = std::make_shared<op::Add>(add_input, pconv);
 
     pattern::graph_rewrite_callback callback = [data_batch, filters](pattern::Matcher& m) {
@@ -1166,10 +1166,10 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_add()
 void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_add_relu()
 {
     Shape shape{2, 2, 1, 1};
-    auto data_batch = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto bias = std::make_shared<pattern::op::Label>(element::f32, Shape{shape[0]});
-    auto add_input = std::make_shared<pattern::op::Label>(element::f32, shape);
+    auto data_batch = std::make_shared<pattern::op::Label>(f32, shape);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape);
+    auto bias = std::make_shared<pattern::op::Label>(f32, Shape{shape[0]});
+    auto add_input = std::make_shared<pattern::op::Label>(f32, shape);
 
     auto pconv = std::make_shared<op::ConvolutionBiasAdd>(data_batch,
                                                           filters,
@@ -1240,8 +1240,8 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_sigmoid_multiply()
                (std::dynamic_pointer_cast<op::Add>(n) != nullptr) ||
                (std::dynamic_pointer_cast<op::Broadcast>(n) != nullptr);
     };
-    auto sigmoid_0 = std::make_shared<pattern::op::Label>(element::f32, Shape{1, 1}, sigmoid_pred);
-    auto sigmoid_1 = std::make_shared<pattern::op::Label>(element::f32, Shape{1, 1}, other_pred);
+    auto sigmoid_0 = std::make_shared<pattern::op::Label>(f32, Shape{1, 1}, sigmoid_pred);
+    auto sigmoid_1 = std::make_shared<pattern::op::Label>(f32, Shape{1, 1}, other_pred);
     auto elem_mul = std::make_shared<op::Multiply>(sigmoid_0, sigmoid_1);
 
     ngraph::pattern::graph_rewrite_callback callback = [sigmoid_0, sigmoid_1](pattern::Matcher& m) {
@@ -1249,7 +1249,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_sigmoid_multiply()
                      << m.get_match_root()->get_name();
         auto pattern_map = m.get_pattern_map();
 
-        if (m.get_match_root()->get_element_type() != element::f32)
+        if (m.get_match_root()->get_element_type() != f32)
         {
             NGRAPH_DEBUG << "mpattern = " << m.get_match_root()->get_name()
                          << " type is not float!";
@@ -1291,8 +1291,8 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_sigmoid_multiply()
 
 void ngraph::runtime::cpu::pass::CPUFusion::construct_leaky_relu()
 {
-    auto input = std::make_shared<pattern::op::Label>(element::f32, Shape{});
-    auto iconst1 = op::Constant::create(element::f32, Shape{}, {1});
+    auto input = std::make_shared<pattern::op::Label>(f32, Shape{});
+    auto iconst1 = op::Constant::create(f32, Shape{}, {1});
     auto alpha = std::make_shared<pattern::op::Label>(iconst1);
     auto broadcast_pred = [](std::shared_ptr<Node> n) {
         return (std::dynamic_pointer_cast<op::Broadcast>(n) != nullptr);
@@ -1312,7 +1312,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_leaky_relu()
             return false;
         }
 
-        if (pattern_map[alpha]->get_element_type() != element::f32)
+        if (pattern_map[alpha]->get_element_type() != f32)
         {
             NGRAPH_DEBUG << "Only float negative slope supported for leaky relu";
             return false;
@@ -1348,9 +1348,9 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_leaky_relu()
 }
 void ngraph::runtime::cpu::pass::CPUFusion::construct_bounded_relu()
 {
-    auto relu_input = std::make_shared<pattern::op::Label>(element::f32, Shape{});
+    auto relu_input = std::make_shared<pattern::op::Label>(f32, Shape{});
     auto relu = std::make_shared<op::Relu>(relu_input);
-    auto iconst1 = op::Constant::create(element::f32, Shape{}, {1});
+    auto iconst1 = op::Constant::create(f32, Shape{}, {1});
     auto alpha = std::make_shared<pattern::op::Label>(iconst1);
     auto broadcast_pred = [](std::shared_ptr<Node> n) {
         return (std::dynamic_pointer_cast<op::Broadcast>(n) != nullptr);
@@ -1362,7 +1362,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_bounded_relu()
         NGRAPH_DEBUG << "In a callback for construct_bounded_relu against "
                      << m.get_match_root()->get_name();
 
-        if (m.get_match_root()->get_element_type() != element::f32)
+        if (m.get_match_root()->get_element_type() != f32)
         {
             NGRAPH_DEBUG << "mpattern = " << m.get_match_root()->get_name()
                          << " type is not float!";
@@ -1401,9 +1401,9 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_bounded_relu()
 
 void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_folded_batch_norm()
 {
-    auto input = std::make_shared<pattern::op::Label>(element::f32, Shape{2, 2, 1, 1});
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, Shape{2, 2, 1, 1});
-    auto bias = std::make_shared<pattern::op::Label>(element::f32, Shape{2});
+    auto input = std::make_shared<pattern::op::Label>(f32, Shape{2, 2, 1, 1});
+    auto filters = std::make_shared<pattern::op::Label>(f32, Shape{2, 2, 1, 1});
+    auto bias = std::make_shared<pattern::op::Label>(f32, Shape{2});
 
     auto pconv = std::make_shared<op::ConvolutionBias>(input,
                                                        filters,
@@ -1414,10 +1414,10 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_folded_batch_nor
                                                        CoordinateDiff{0, 0},
                                                        Strides{1, 1});
 
-    auto mean = std::make_shared<pattern::op::Label>(element::f32, Shape{2});
-    auto var = std::make_shared<pattern::op::Label>(element::f32, Shape{2});
-    auto gamma = std::make_shared<pattern::op::Label>(element::f32, Shape{2});
-    auto beta = std::make_shared<pattern::op::Label>(element::f32, Shape{2});
+    auto mean = std::make_shared<pattern::op::Label>(f32, Shape{2});
+    auto var = std::make_shared<pattern::op::Label>(f32, Shape{2});
+    auto gamma = std::make_shared<pattern::op::Label>(f32, Shape{2});
+    auto beta = std::make_shared<pattern::op::Label>(f32, Shape{2});
     double eps = 0.001;
     auto bn = std::make_shared<op::BatchNormInference>(eps, gamma, beta, pconv, mean, var);
 
@@ -1443,7 +1443,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_folded_batch_nor
             // new weights = old weights * gamma / sqrt(variance + epsilon)
             // new biases = (old_bias-mean) * gamma / sqrt(variance + epsilon) + beta
 
-            auto bn_eps = op::Constant::create(element::f32, Shape{}, {m_bn->get_eps_value()});
+            auto bn_eps = op::Constant::create(f32, Shape{}, {m_bn->get_eps_value()});
             auto var_eps = std::make_shared<op::Add>(
                 pattern_map[var],
                 std::make_shared<op::Broadcast>(bn_eps, pattern_map[var]->get_shape(), AxisSet{0}));
@@ -1484,9 +1484,9 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_affine_folding()
 {
     // A * ConvBias (input, filters, bias) + B -> ConvBias (input, filters * A_c)
     Shape shape{2, 2, 1, 1};
-    auto input = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape);
-    auto bias = std::make_shared<pattern::op::Label>(element::f32, Shape{2});
+    auto input = std::make_shared<pattern::op::Label>(f32, shape);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape);
+    auto bias = std::make_shared<pattern::op::Label>(f32, Shape{2});
 
     auto conv = std::make_shared<op::ConvolutionBias>(input,
                                                       filters,
@@ -1498,7 +1498,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_conv_bias_affine_folding()
                                                       Strides{1, 1});
     auto conv_label = std::make_shared<pattern::op::Label>(conv, nullptr, NodeVector{conv});
 
-    auto Ac = std::make_shared<pattern::op::Label>(element::f32, Shape{2});
+    auto Ac = std::make_shared<pattern::op::Label>(f32, Shape{2});
     auto A = std::make_shared<op::Broadcast>(Ac, Shape{2, 2, 1, 1}, AxisSet{0, 2, 3});
     auto A_label = std::make_shared<pattern::op::Label>(A, nullptr, NodeVector{A});
     auto multiply = std::make_shared<op::Multiply>(conv_label, A_label);
@@ -1614,9 +1614,9 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_groupconv_batchnorm_global
     Shape shape_b{32, 1, 1, 1};
     Shape shape_r{1, 32, 2, 2};
 
-    auto input = std::make_shared<pattern::op::Label>(element::f32, shape_a);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape_b);
-    auto resShape = std::make_shared<pattern::op::Label>(element::f32, shape_r);
+    auto input = std::make_shared<pattern::op::Label>(f32, shape_a);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape_b);
+    auto resShape = std::make_shared<pattern::op::Label>(f32, shape_r);
 
     auto conv = std::make_shared<op::GroupConvolution>(input,
                                                        filters,
@@ -1629,10 +1629,10 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_groupconv_batchnorm_global
                                                        shape_r);
     auto conv_label = std::make_shared<pattern::op::Label>(conv, nullptr, NodeVector{conv});
 
-    auto mean = std::make_shared<pattern::op::Label>(element::f32, Shape{32});
-    auto var = std::make_shared<pattern::op::Label>(element::f32, Shape{32});
-    auto gamma = std::make_shared<pattern::op::Label>(element::f32, Shape{32});
-    auto beta = std::make_shared<pattern::op::Label>(element::f32, Shape{32});
+    auto mean = std::make_shared<pattern::op::Label>(f32, Shape{32});
+    auto var = std::make_shared<pattern::op::Label>(f32, Shape{32});
+    auto gamma = std::make_shared<pattern::op::Label>(f32, Shape{32});
+    auto beta = std::make_shared<pattern::op::Label>(f32, Shape{32});
     double eps = 0.001;
     auto bn = std::make_shared<op::BatchNormInference>(eps, gamma, beta, conv_label, mean, var);
 
@@ -1664,7 +1664,7 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_groupconv_batchnorm_global
             // new weights = old weights * gamma / sqrt(variance + epsilon)
             // new biases = (-mean) * gamma / sqrt(variance + epsilon) + beta
 
-            auto bn_eps = op::Constant::create(element::f32, Shape{}, {m_bn->get_eps_value()});
+            auto bn_eps = op::Constant::create(f32, Shape{}, {m_bn->get_eps_value()});
 
             auto var_eps = std::make_shared<op::Add>(
                 pattern_map[var],
@@ -1713,10 +1713,10 @@ void ngraph::runtime::cpu::pass::CPUFusion::
     Shape shape_bias{32};
     Shape shape_num{0};
 
-    auto input = std::make_shared<pattern::op::Label>(element::f32, shape_a);
-    auto filters = std::make_shared<pattern::op::Label>(element::f32, shape_b);
-    auto bias = std::make_shared<pattern::op::Label>(element::f32, shape_bias);
-    auto num = std::make_shared<pattern::op::Label>(element::f32, shape_num);
+    auto input = std::make_shared<pattern::op::Label>(f32, shape_a);
+    auto filters = std::make_shared<pattern::op::Label>(f32, shape_b);
+    auto bias = std::make_shared<pattern::op::Label>(f32, shape_bias);
+    auto num = std::make_shared<pattern::op::Label>(f32, shape_num);
 
     auto conv = std::make_shared<op::GroupConvolutionBias>(input,
                                                            filters,
@@ -1769,11 +1769,11 @@ void ngraph::runtime::cpu::pass::CPUFusion::
 
 void ngraph::runtime::cpu::pass::CPUFusion::construct_fuse_lstm_recurrent_state()
 {
-    auto src_layer_label = std::make_shared<pattern::op::Label>(element::f32, Shape{30, 100});
-    auto src_iter_label = std::make_shared<pattern::op::Label>(element::f32, Shape{20, 100});
-    auto weights_layer_label = std::make_shared<pattern::op::Label>(element::f32, Shape{100, 400});
-    auto weights_iter_label = std::make_shared<pattern::op::Label>(element::f32, Shape{100, 400});
-    auto bias_label = std::make_shared<pattern::op::Label>(element::f32, Shape{400});
+    auto src_layer_label = std::make_shared<pattern::op::Label>(f32, Shape{30, 100});
+    auto src_iter_label = std::make_shared<pattern::op::Label>(f32, Shape{20, 100});
+    auto weights_layer_label = std::make_shared<pattern::op::Label>(f32, Shape{100, 400});
+    auto weights_iter_label = std::make_shared<pattern::op::Label>(f32, Shape{100, 400});
+    auto bias_label = std::make_shared<pattern::op::Label>(f32, Shape{400});
     auto lstm1 = std::make_shared<op::Lstm>(
         src_layer_label, src_iter_label, weights_layer_label, weights_iter_label, bias_label);
 
@@ -1814,10 +1814,10 @@ void ngraph::runtime::cpu::pass::CPUFusion::construct_update_slice()
     Shape shape_a{2, 32, 2};
     Shape shape_b{1, 32, 2};
 
-    auto input = std::make_shared<pattern::op::Label>(element::f32, shape_a);
+    auto input = std::make_shared<pattern::op::Label>(f32, shape_a);
     auto slice = std::make_shared<op::Slice>(input, Coordinate{1, 0, 0}, Coordinate{2, 32, 2});
     auto slice_label = std::make_shared<pattern::op::Label>(slice, nullptr, NodeVector{slice});
-    auto update_input = std::make_shared<pattern::op::Label>(element::f32, shape_b);
+    auto update_input = std::make_shared<pattern::op::Label>(f32, shape_b);
     auto update = std::make_shared<op::Add>(update_input, slice_label);
     auto replace_slice = std::make_shared<op::ReplaceSlice>(
         input, update, Coordinate{1, 0, 0}, Coordinate{2, 32, 2});

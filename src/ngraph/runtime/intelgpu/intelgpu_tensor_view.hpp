@@ -35,7 +35,7 @@ namespace ngraph
 class ngraph::runtime::intelgpu::IntelGPUTensorView : public ngraph::runtime::Tensor
 {
 public:
-    IntelGPUTensorView(const element::Type& element_type,
+    IntelGPUTensorView(const Type& element_type,
                        const Shape& shape,
                        const cldnn::engine& backend_engine,
                        void* memory_pointer = nullptr);

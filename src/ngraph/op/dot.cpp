@@ -47,10 +47,10 @@ op::Dot::Dot(const shared_ptr<Node>& arg0,
 
 void op::Dot::validate_and_infer_types()
 {
-    element::Type result_et;
+    Type result_et;
 
     NODE_VALIDATION_ASSERT(
-        this, element::Type::merge(result_et, get_input_element_type(0), get_input_element_type(1)))
+        this, Type::merge(result_et, get_input_element_type(0), get_input_element_type(1)))
         << "Arguments do not have the same element type (arg0 element type: "
         << get_input_element_type(0) << ", arg1 element type: " << get_input_element_type(1)
         << ").";

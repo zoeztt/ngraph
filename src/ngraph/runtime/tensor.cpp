@@ -34,7 +34,7 @@ Strides runtime::Tensor::get_strides() const
     return m_descriptor->get_tensor_layout()->get_strides();
 }
 
-const element::Type& runtime::Tensor::get_element_type() const
+const Type& runtime::Tensor::get_element_type() const
 {
     return m_descriptor->get_element_type();
 }

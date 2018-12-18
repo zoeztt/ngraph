@@ -104,7 +104,7 @@
 using namespace ngraph;
 using namespace std;
 using json = nlohmann::json;
-using const_data_callback_t = shared_ptr<Node>(const string&, const element::Type&, const Shape&);
+using const_data_callback_t = shared_ptr<Node>(const string&, const Type&, const Shape&);
 
 // This expands the op list in op_tbl.hpp into a list of enumerations that look like this:
 // Abs,
@@ -212,14 +212,14 @@ static PartialShape read_partial_shape(const json& j)
     }
 }
 
-static json write_element_type(const ngraph::element::Type& n)
+static json write_element_type(const ngraph::Type& n)
 {
     json j;
     j = n.c_type_string();
     return j;
 }
 
-static element::Type read_element_type(const json& j)
+static Type read_element_type(const json& j)
 {
     size_t bitwidth = 0;
     bool is_real = false;
@@ -237,7 +237,7 @@ static element::Type read_element_type(const json& j)
     else
     {
         string c_type = j.get<string>();
-        for (const element::Type* t : element::Type::get_known_types())
+        for (const Type* t : Type::get_known_types())
         {
             if (t->c_type_string() == c_type)
             {
@@ -250,7 +250,7 @@ static element::Type read_element_type(const json& j)
             }
         }
     }
-    return element::Type(bitwidth, is_real, is_signed, is_quantized, c_type_string);
+    return Type(bitwidth, is_real, is_signed, is_quantized, c_type_string);
 }
 
 void ngraph::serialize(const string& path, shared_ptr<ngraph::Function> func, size_t indent)
@@ -331,7 +331,7 @@ shared_ptr<ngraph::Function> ngraph::deserialize(istream& in)
                 shared_ptr<Function> f = read_function(
                     func,
                     function_map,
-                    [&](const string& const_name, const element::Type& et, const Shape& shape) {
+                    [&](const string& const_name, const Type& et, const Shape& shape) {
                         shared_ptr<Node> const_node;
                         for (const cpio::FileInfo& info : file_info)
                         {

@@ -141,7 +141,7 @@ namespace ngraph
                         else
                         {
                             m_map[LSTMInput::LSTM_INPUT_B] = common::make_constant_node<float>(
-                                element::f32,
+                                f32,
                                 {num_directions, 2 * gates_count * hidden_size},
                                 {0.f});
                         }
@@ -154,7 +154,7 @@ namespace ngraph
                         {
                             m_map[LSTMInput::LSTM_INPUT_SEQ_LENGTHS] =
                                 common::make_constant_node<std::int32_t>(
-                                    element::i32,
+                                    i32,
                                     {batch_size},
                                     {static_cast<std::int32_t>(
                                         m_map[LSTMInput::LSTM_INPUT_X]->get_shape().at(0))});
@@ -167,7 +167,7 @@ namespace ngraph
                         else
                         {
                             m_map[LSTMInput::LSTM_INPUT_INIT_H] = common::make_constant_node<float>(
-                                element::f32, {num_directions, batch_size, hidden_size}, {0.f});
+                                f32, {num_directions, batch_size, hidden_size}, {0.f});
                         }
                         // The initial value of the cell. Shape [num_directions, batch_size, hidden_size]
                         if (ng_inputs.size() >= 7)
@@ -177,7 +177,7 @@ namespace ngraph
                         else
                         {
                             m_map[LSTMInput::LSTM_INPUT_INIT_C] = common::make_constant_node<float>(
-                                element::f32, {num_directions, batch_size, hidden_size}, {0.f});
+                                f32, {num_directions, batch_size, hidden_size}, {0.f});
                         }
                         // The weight tensor for peepholes. Shape [num_directions, 3*hidde_size]
                         if (ng_inputs.size() >= 8)
@@ -187,7 +187,7 @@ namespace ngraph
                         else
                         {
                             m_map[LSTMInput::LSTM_INPUT_P] = common::make_constant_node<float>(
-                                element::f32,
+                                f32,
                                 {num_directions, peepholes_count * hidden_size},
                                 {0.f});
                         }

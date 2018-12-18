@@ -78,7 +78,7 @@ namespace ngraph
                 mkldnn::memory::desc build_memory_descriptor(const TensorViewWrapper& tvw,
                                                              mkldnn::memory::format fmt) const;
                 mkldnn::memory::desc build_memory_descriptor(const Shape& shape,
-                                                             const ngraph::element::Type& et,
+                                                             const ngraph::Type& et,
                                                              mkldnn::memory::format fmt) const;
                 mkldnn::memory::desc
                     build_blocked_memory_descriptor(const mkldnn::memory::dims& dim,

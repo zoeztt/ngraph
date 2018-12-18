@@ -28,16 +28,16 @@ using namespace ngraph;
 
 TEST(type_prop, broadcast_deduce)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{2, 4});
+    auto param = make_shared<op::Parameter>(f32, Shape{2, 4});
     Shape bc_shape{2, 3, 4};
     auto bc = make_shared<op::Broadcast>(param, bc_shape, AxisSet{1});
-    ASSERT_EQ(bc->get_element_type(), element::f32);
+    ASSERT_EQ(bc->get_element_type(), f32);
     ASSERT_EQ(bc->get_shape(), bc_shape);
 }
 
 TEST(type_prop, broadcast_axes_oob)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{2, 4});
+    auto param = make_shared<op::Parameter>(f32, Shape{2, 4});
     auto bc_shape = Shape{2, 3, 4};
 
     try
@@ -58,7 +58,7 @@ TEST(type_prop, broadcast_axes_oob)
 
 TEST(type_prop, broadcast_shape_mismatch_wrong_rank)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{2, 4});
+    auto param = make_shared<op::Parameter>(f32, Shape{2, 4});
     auto bc_shape = Shape{2, 3, 4, 5};
 
     try
@@ -80,7 +80,7 @@ TEST(type_prop, broadcast_shape_mismatch_wrong_rank)
 
 TEST(type_prop, broadcast_shape_mismatch_wrong_size)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{2, 4});
+    auto param = make_shared<op::Parameter>(f32, Shape{2, 4});
     auto bc_shape = Shape{2, 3, 5};
 
     try
@@ -102,16 +102,16 @@ TEST(type_prop, broadcast_shape_mismatch_wrong_size)
 
 TEST(type_prop, broadcast_partial_rank_dynamic_ok)
 {
-    auto param = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     Shape bc_shape{2, 3, 4};
     auto bc = make_shared<op::Broadcast>(param, bc_shape, AxisSet{1});
-    ASSERT_EQ(bc->get_element_type(), element::f32);
+    ASSERT_EQ(bc->get_element_type(), f32);
     ASSERT_EQ(bc->get_shape(), bc_shape);
 }
 
 TEST(type_prop, broadcast_partial_rank_dynamic_axes_oob)
 {
-    auto param = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto bc_shape = Shape{2, 3, 4};
 
     try
@@ -132,16 +132,16 @@ TEST(type_prop, broadcast_partial_rank_dynamic_axes_oob)
 
 TEST(type_prop, broadcast_partial_rank_static_dynamic_ok)
 {
-    auto param = make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 4});
+    auto param = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 4});
     Shape bc_shape{2, 3, 4};
     auto bc = make_shared<op::Broadcast>(param, bc_shape, AxisSet{1});
-    ASSERT_EQ(bc->get_element_type(), element::f32);
+    ASSERT_EQ(bc->get_element_type(), f32);
     ASSERT_EQ(bc->get_shape(), bc_shape);
 }
 
 TEST(type_prop, broadcast_partial_rank_static_dynamic_axes_oob)
 {
-    auto param = make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 4});
+    auto param = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 4});
     auto bc_shape = Shape{2, 3, 4};
 
     try
@@ -162,7 +162,7 @@ TEST(type_prop, broadcast_partial_rank_static_dynamic_axes_oob)
 
 TEST(type_prop, broadcast_partial_rank_static_dynamic_shape_mismatch_wrong_rank)
 {
-    auto param = make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 4});
+    auto param = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 4});
     auto bc_shape = Shape{2, 3, 4, 5};
 
     try
@@ -184,7 +184,7 @@ TEST(type_prop, broadcast_partial_rank_static_dynamic_shape_mismatch_wrong_rank)
 
 TEST(type_prop, broadcast_partial_rank_static_dynamic_shape_mismatch_wrong_size)
 {
-    auto param = make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 4});
+    auto param = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 4});
     auto bc_shape = Shape{2, 3, 5};
 
     try
@@ -206,7 +206,7 @@ TEST(type_prop, broadcast_partial_rank_static_dynamic_shape_mismatch_wrong_size)
 
 TEST(type_prop, batchnorm_training_rank_less_than_2)
 {
-    auto dummy = make_shared<op::Parameter>(element::f32, Shape{1});
+    auto dummy = make_shared<op::Parameter>(f32, Shape{1});
     try
     {
         auto bc = make_shared<op::BatchNormTraining>(dummy, dummy, dummy, 0.001);
@@ -225,9 +225,9 @@ TEST(type_prop, batchnorm_training_rank_less_than_2)
 
 TEST(type_prop, batchnorm_training_zero_channel_check)
 {
-    auto data_batch = make_shared<op::Parameter>(element::f32, Shape{1, 0, 2, 3});
-    auto gamma = make_shared<op::Parameter>(element::f32, Shape{0});
-    auto beta = make_shared<op::Parameter>(element::f32, Shape{0});
+    auto data_batch = make_shared<op::Parameter>(f32, Shape{1, 0, 2, 3});
+    auto gamma = make_shared<op::Parameter>(f32, Shape{0});
+    auto beta = make_shared<op::Parameter>(f32, Shape{0});
     try
     {
         auto bc = make_shared<op::BatchNormTraining>(data_batch, gamma, beta, 0.001);
@@ -245,9 +245,9 @@ TEST(type_prop, batchnorm_training_zero_channel_check)
 
 TEST(type_prop, batchnorm_training_et_check)
 {
-    auto data_batch = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2, 2});
-    auto gamma = make_shared<op::Parameter>(element::f64, Shape{3});
-    auto beta = make_shared<op::Parameter>(element::f32, Shape{3});
+    auto data_batch = make_shared<op::Parameter>(f32, Shape{4, 3, 2, 2});
+    auto gamma = make_shared<op::Parameter>(f64, Shape{3});
+    auto beta = make_shared<op::Parameter>(f32, Shape{3});
 
     try
     {
@@ -266,9 +266,9 @@ TEST(type_prop, batchnorm_training_et_check)
 
 TEST(type_prop, batchnorm_training_shape_check)
 {
-    auto data_batch = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2, 2});
-    auto gamma = make_shared<op::Parameter>(element::f32, Shape{4});
-    auto beta = make_shared<op::Parameter>(element::f32, Shape{3});
+    auto data_batch = make_shared<op::Parameter>(f32, Shape{4, 3, 2, 2});
+    auto gamma = make_shared<op::Parameter>(f32, Shape{4});
+    auto beta = make_shared<op::Parameter>(f32, Shape{3});
 
     try
     {
@@ -287,12 +287,12 @@ TEST(type_prop, batchnorm_training_shape_check)
 
 TEST(type_prop, batchnorm_training_backprop_et_check)
 {
-    auto data_batch = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2, 2});
-    auto gamma = make_shared<op::Parameter>(element::f32, Shape{3});
-    auto beta = make_shared<op::Parameter>(element::f64, Shape{3});
-    auto mean = make_shared<op::Parameter>(element::f32, Shape{3});
-    auto variance = make_shared<op::Parameter>(element::f32, Shape{3});
-    auto delta = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2, 2});
+    auto data_batch = make_shared<op::Parameter>(f32, Shape{4, 3, 2, 2});
+    auto gamma = make_shared<op::Parameter>(f32, Shape{3});
+    auto beta = make_shared<op::Parameter>(f64, Shape{3});
+    auto mean = make_shared<op::Parameter>(f32, Shape{3});
+    auto variance = make_shared<op::Parameter>(f32, Shape{3});
+    auto delta = make_shared<op::Parameter>(f32, Shape{4, 3, 2, 2});
 
     try
     {
@@ -312,12 +312,12 @@ TEST(type_prop, batchnorm_training_backprop_et_check)
 
 TEST(type_prop, batchnorm_training_backprop_shape_check)
 {
-    auto data_batch = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2, 2});
-    auto gamma = make_shared<op::Parameter>(element::f32, Shape{3});
-    auto beta = make_shared<op::Parameter>(element::f32, Shape{4});
-    auto mean = make_shared<op::Parameter>(element::f32, Shape{3});
-    auto variance = make_shared<op::Parameter>(element::f32, Shape{3});
-    auto delta = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2, 2});
+    auto data_batch = make_shared<op::Parameter>(f32, Shape{4, 3, 2, 2});
+    auto gamma = make_shared<op::Parameter>(f32, Shape{3});
+    auto beta = make_shared<op::Parameter>(f32, Shape{4});
+    auto mean = make_shared<op::Parameter>(f32, Shape{3});
+    auto variance = make_shared<op::Parameter>(f32, Shape{3});
+    auto delta = make_shared<op::Parameter>(f32, Shape{4, 3, 2, 2});
 
     try
     {
@@ -338,10 +338,10 @@ TEST(type_prop, batchnorm_training_backprop_shape_check)
 
 TEST(type_prop, batchnorm_training_backprop_delta_check)
 {
-    auto dummy = make_shared<op::Parameter>(element::f32, Shape{3});
-    auto dummy2 = make_shared<op::Parameter>(element::f32, Shape{4});
-    auto param = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2, 2});
-    auto delta = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2, 3});
+    auto dummy = make_shared<op::Parameter>(f32, Shape{3});
+    auto dummy2 = make_shared<op::Parameter>(f32, Shape{4});
+    auto param = make_shared<op::Parameter>(f32, Shape{4, 3, 2, 2});
+    auto delta = make_shared<op::Parameter>(f32, Shape{4, 3, 2, 3});
 
     try
     {
@@ -368,11 +368,11 @@ TEST(type_prop, batchnorm_inference_partial_all_rank_dynamic)
     PartialShape mean_shape{PartialShape::dynamic()};
     PartialShape variance_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -396,11 +396,11 @@ TEST(type_prop, batchnorm_inference_partial_input_rank_static_dynamic_ok)
     PartialShape mean_shape{PartialShape::dynamic()};
     PartialShape variance_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -425,11 +425,11 @@ TEST(type_prop, batchnorm_inference_partial_input_rank_static_dynamic_zero_chann
     PartialShape mean_shape{PartialShape::dynamic()};
     PartialShape variance_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -461,11 +461,11 @@ TEST(type_prop, batchnorm_inference_partial_input_rank_dynamic_some_rank_static_
     PartialShape mean_shape{Dimension::dynamic()};
     PartialShape variance_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -488,11 +488,11 @@ TEST(type_prop, batchnorm_inference_partial_input_rank_dynamic_some_rank_static_
     PartialShape mean_shape{Dimension::dynamic(), Dimension::dynamic()};
     PartialShape variance_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -527,11 +527,11 @@ TEST(type_prop,
     PartialShape mean_shape{Dimension::dynamic()};
     PartialShape variance_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -565,11 +565,11 @@ TEST(type_prop,
     PartialShape mean_shape{4};
     PartialShape variance_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -602,11 +602,11 @@ TEST(type_prop, batchnorm_inference_partial_input_rank_static_dynamic_some_stati
     PartialShape mean_shape{3};
     PartialShape variance_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -631,11 +631,11 @@ TEST(type_prop,
     PartialShape mean_shape{3};
     PartialShape variance_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -667,9 +667,9 @@ TEST(type_prop, batchnorm_training_partial_all_rank_dynamic)
     PartialShape gamma_shape{PartialShape::dynamic()};
     PartialShape beta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -693,9 +693,9 @@ TEST(type_prop, batchnorm_training_partial_input_rank_static_dynamic_batch_size_
     PartialShape gamma_shape{PartialShape::dynamic()};
     PartialShape beta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -720,9 +720,9 @@ TEST(type_prop, batchnorm_training_partial_input_rank_static_dynamic_channel_cou
     PartialShape gamma_shape{PartialShape::dynamic()};
     PartialShape beta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -747,9 +747,9 @@ TEST(type_prop, batchnorm_training_partial_input_rank_static_dynamic_zero_channe
     PartialShape gamma_shape{PartialShape::dynamic()};
     PartialShape beta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -775,9 +775,9 @@ TEST(type_prop, batchnorm_training_partial_input_rank_dynamic_some_rank_static_d
     PartialShape gamma_shape{Dimension::dynamic()};
     PartialShape beta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -800,9 +800,9 @@ TEST(type_prop, batchnorm_training_partial_input_rank_dynamic_some_rank_static_d
     PartialShape gamma_shape{Dimension::dynamic(), Dimension::dynamic()};
     PartialShape beta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -831,9 +831,9 @@ TEST(type_prop,
     PartialShape gamma_shape{3, Dimension::dynamic()};
     PartialShape beta_shape{Dimension::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -861,9 +861,9 @@ TEST(type_prop,
     PartialShape gamma_shape{3};
     PartialShape beta_shape{4};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -890,9 +890,9 @@ TEST(type_prop, batchnorm_training_partial_input_rank_static_dynamic_some_static
     PartialShape gamma_shape{3};
     PartialShape beta_shape{3};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -917,9 +917,9 @@ TEST(type_prop,
     PartialShape gamma_shape{3};
     PartialShape beta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -956,12 +956,12 @@ TEST(type_prop, batchnorm_training_backprop_partial_all_rank_dynamic)
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -992,12 +992,12 @@ TEST(type_prop, batchnorm_training_backprop_partial_input_rank_static_dynamic_ok
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1029,12 +1029,12 @@ TEST(type_prop, batchnorm_training_backprop_partial_input_rank_static_dynamic_ze
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1068,12 +1068,12 @@ TEST(type_prop, batchnorm_training_backprop_partial_delta_rank_static_dynamic_ok
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{64, Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1104,12 +1104,12 @@ TEST(type_prop, batchnorm_training_backprop_partial_delta_rank_static_dynamic_ch
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{Dimension::dynamic(), 5, Dimension::dynamic(), Dimension::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1140,12 +1140,12 @@ TEST(type_prop, batchnorm_training_backprop_partial_delta_rank_static_dynamic_ze
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{Dimension::dynamic(), 0, Dimension::dynamic(), Dimension::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1180,12 +1180,12 @@ TEST(type_prop,
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1217,12 +1217,12 @@ TEST(
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1260,12 +1260,12 @@ TEST(
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1302,12 +1302,12 @@ TEST(
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{PartialShape::dynamic()};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1343,12 +1343,12 @@ TEST(type_prop,
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{Dimension::dynamic(), 3, 448, 224};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1380,12 +1380,12 @@ TEST(
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{Dimension::dynamic(), 4, 448, 224};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1423,12 +1423,12 @@ TEST(
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{128, 4, Dimension::dynamic(), 224};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1467,12 +1467,12 @@ TEST(
     PartialShape variance_shape{PartialShape::dynamic()};
     PartialShape delta_shape{Dimension::dynamic(), 3, Dimension::dynamic(), 448};
     double epsilon = 0.001;
-    element::Type data_batch_et = element::f32;
-    element::Type gamma_et = element::f32;
-    element::Type beta_et = element::f32;
-    element::Type mean_et = element::f32;
-    element::Type variance_et = element::f32;
-    element::Type delta_et = element::f32;
+    Type data_batch_et = f32;
+    Type gamma_et = f32;
+    Type beta_et = f32;
+    Type mean_et = f32;
+    Type variance_et = f32;
+    Type delta_et = f32;
 
     auto data_batch = make_shared<op::Parameter>(data_batch_et, data_batch_shape);
     auto gamma = make_shared<op::Parameter>(gamma_et, gamma_shape);
@@ -1503,19 +1503,19 @@ TEST(
 TEST(type_prop, concat_deduce)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 4});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{2, 7, 4});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{2, 2, 4});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{2, 3, 4});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{2, 7, 4});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{2, 2, 4});
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
-    ASSERT_EQ(c->get_element_type(), element::f32);
+    ASSERT_EQ(c->get_element_type(), f32);
     ASSERT_EQ(c->get_shape(), (Shape{2, 12, 4}));
 }
 
 TEST(type_prop, concat_deduce_wrong_rank)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 4});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{2, 7, 4});
-    auto param2 = make_shared<op::Parameter>(element::f32,
+    auto param0 = make_shared<op::Parameter>(f32, Shape{2, 3, 4});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{2, 7, 4});
+    auto param2 = make_shared<op::Parameter>(f32,
                                              Shape{
                                                  2, 2,
                                              });
@@ -1540,9 +1540,9 @@ TEST(type_prop, concat_deduce_wrong_rank)
 
 TEST(type_prop, concat_deduce_wrong_shape)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 4});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{2, 7, 4});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{2, 2, 5});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{2, 3, 4});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{2, 7, 4});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{2, 2, 5});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
@@ -1564,9 +1564,9 @@ TEST(type_prop, concat_deduce_wrong_shape)
 
 TEST(type_prop, concat_deduce_axis_oob)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 4});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{2, 7, 4});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{2, 2, 5});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{2, 3, 4});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{2, 7, 4});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{2, 2, 5});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 3);
@@ -1586,19 +1586,19 @@ TEST(type_prop, concat_deduce_axis_oob)
 TEST(type_prop, concat_deduce_axis_barely_in_bounds)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 4});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 8});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 12});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{2, 3, 4});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{2, 3, 8});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{2, 3, 12});
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 2);
-    ASSERT_EQ(c->get_element_type(), element::f32);
+    ASSERT_EQ(c->get_element_type(), f32);
     ASSERT_EQ(c->get_shape(), (Shape{2, 3, 24}));
 }
 
 TEST(type_prop, concat_deduce_elem_type_mismatch)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 4});
-    auto param1 = make_shared<op::Parameter>(element::i32, Shape{2, 7, 4});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{2, 2, 4});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{2, 3, 4});
+    auto param1 = make_shared<op::Parameter>(i32, Shape{2, 7, 4});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{2, 2, 4});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
@@ -1617,20 +1617,20 @@ TEST(type_prop, concat_deduce_elem_type_mismatch)
 
 TEST(type_prop, concat_partial_et_consistent)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 4});
-    auto param1 = make_shared<op::Parameter>(element::dynamic, Shape{2, 7, 4});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{2, 2, 4});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{2, 3, 4});
+    auto param1 = make_shared<op::Parameter>(dynamic, Shape{2, 7, 4});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{2, 2, 4});
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
 
-    ASSERT_EQ(c->get_element_type(), element::f32);
+    ASSERT_EQ(c->get_element_type(), f32);
     ASSERT_EQ(c->get_shape(), (Shape{2, 12, 4}));
 }
 
 TEST(type_prop, concat_partial_et_inconsistent)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 4});
-    auto param1 = make_shared<op::Parameter>(element::dynamic, Shape{2, 7, 4});
-    auto param2 = make_shared<op::Parameter>(element::i32, Shape{2, 2, 4});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{2, 3, 4});
+    auto param1 = make_shared<op::Parameter>(dynamic, Shape{2, 7, 4});
+    auto param2 = make_shared<op::Parameter>(i32, Shape{2, 2, 4});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
@@ -1649,9 +1649,9 @@ TEST(type_prop, concat_partial_et_inconsistent)
 
 TEST(type_prop, concat_partial_all_rank_dynamic)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param2 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
 
     ASSERT_TRUE(c->get_output_partial_shape(0).rank().is_dynamic());
@@ -1660,10 +1660,10 @@ TEST(type_prop, concat_partial_all_rank_dynamic)
 TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_dynamic_consistent)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, Dimension::dynamic(), 3});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param2 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, 3, Dimension::dynamic()});
+        make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
 
     ASSERT_TRUE(
@@ -1673,10 +1673,10 @@ TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_dynamic_cons
 TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_dynamic_rank_inconsistent)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, Dimension::dynamic(), 3});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param2 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, 3, Dimension::dynamic(), 4});
+        make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic(), 4});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
@@ -1700,10 +1700,10 @@ TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_dynamic_rank
 TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_dynamic_dims_inconsistent)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, Dimension::dynamic(), 3});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param2 =
-        make_shared<op::Parameter>(element::f32, PartialShape{3, 3, Dimension::dynamic()});
+        make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
@@ -1728,12 +1728,12 @@ TEST(type_prop,
      concat_partial_some_rank_dynamic_others_rank_static_dynamic_dims_intransitively_inconsistent)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, Dimension::dynamic(), 3});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param2 = make_shared<op::Parameter>(
-        element::f32, PartialShape{Dimension::dynamic(), 3, Dimension::dynamic()});
+        f32, PartialShape{Dimension::dynamic(), 3, Dimension::dynamic()});
     auto param3 =
-        make_shared<op::Parameter>(element::f32, PartialShape{3, 3, Dimension::dynamic()});
+        make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2, param3}, 1);
@@ -1756,10 +1756,10 @@ TEST(type_prop,
 
 TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_with_concat_axis_static)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape{2, 2, 3});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, 2, 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param2 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, 3, Dimension::dynamic()});
+        make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
 
     ASSERT_TRUE(
@@ -1769,10 +1769,10 @@ TEST(type_prop, concat_partial_some_rank_dynamic_others_rank_static_with_concat_
 TEST(type_prop,
      concat_partial_some_rank_dynamic_others_rank_static_with_concat_axis_static_dims_inconsistent)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape{2, 2, 3});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, 2, 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param2 =
-        make_shared<op::Parameter>(element::f32, PartialShape{3, 3, Dimension::dynamic()});
+        make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
 
     try
     {
@@ -1796,11 +1796,11 @@ TEST(type_prop,
 
 TEST(type_prop, concat_partial_all_static_with_concat_axis_static_compatible_result_static)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape{2, 2, 3});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, 2, 3});
     auto param1 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 4, 3});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 4, 3});
     auto param2 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, 3, Dimension::dynamic()});
+        make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
 
     ASSERT_EQ(c->get_shape(), (Shape{2, 9, 3}));
@@ -1809,11 +1809,11 @@ TEST(type_prop, concat_partial_all_static_with_concat_axis_static_compatible_res
 TEST(type_prop, concat_partial_all_static_with_concat_axis_static_compatible_result_dynamic)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, 2, Dimension::dynamic()});
+        make_shared<op::Parameter>(f32, PartialShape{2, 2, Dimension::dynamic()});
     auto param1 = make_shared<op::Parameter>(
-        element::f32, PartialShape{Dimension::dynamic(), 4, Dimension::dynamic()});
+        f32, PartialShape{Dimension::dynamic(), 4, Dimension::dynamic()});
     auto param2 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, 3, Dimension::dynamic()});
+        make_shared<op::Parameter>(f32, PartialShape{2, 3, Dimension::dynamic()});
     auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
 
     ASSERT_TRUE(
@@ -1822,11 +1822,11 @@ TEST(type_prop, concat_partial_all_static_with_concat_axis_static_compatible_res
 
 TEST(type_prop, concat_partial_all_static_with_concat_axis_static_dims_incompatible)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape{2, 2, 3});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{2, 2, 3});
     auto param1 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 4, 3});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 4, 3});
     auto param2 =
-        make_shared<op::Parameter>(element::f32, PartialShape{3, 3, Dimension::dynamic()});
+        make_shared<op::Parameter>(f32, PartialShape{3, 3, Dimension::dynamic()});
     try
     {
         auto c = make_shared<op::Concat>(NodeVector{param0, param1, param2}, 1);
@@ -1850,87 +1850,87 @@ TEST(type_prop, concat_partial_all_static_with_concat_axis_static_dims_incompati
 TEST(type_prop, convert_deduce)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{2, 3, 4});
-    auto c = make_shared<op::Convert>(param, element::i32);
-    ASSERT_EQ(c->get_element_type(), element::i32);
+    auto param = make_shared<op::Parameter>(f32, Shape{2, 3, 4});
+    auto c = make_shared<op::Convert>(param, i32);
+    ASSERT_EQ(c->get_element_type(), i32);
     ASSERT_EQ(c->get_shape(), (Shape{2, 3, 4}));
 }
 
 TEST(type_prop, dot_deduce_scalar_2d)
 {
     // Deduce type for scalar/matrix arguments
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{4, 5});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{4, 5});
     auto bc = make_shared<op::Dot>(param1, param2);
-    ASSERT_EQ(bc->get_element_type(), element::f32);
+    ASSERT_EQ(bc->get_element_type(), f32);
     ASSERT_EQ(bc->get_shape(), (Shape{4, 5}));
 }
 
 TEST(type_prop, dot_deduce_2d_scalar)
 {
     // Deduce type for matrix/scalar arguments
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{4, 5});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{4, 5});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{});
     auto bc = make_shared<op::Dot>(param1, param2);
-    ASSERT_EQ(bc->get_element_type(), element::f32);
+    ASSERT_EQ(bc->get_element_type(), f32);
     ASSERT_EQ(bc->get_shape(), (Shape{4, 5}));
 }
 
 TEST(type_prop, dot_deduce_scalar_scalar)
 {
     // Deduce type for scalar/scalar arguments
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{});
     auto bc = make_shared<op::Dot>(param1, param2);
-    ASSERT_EQ(bc->get_element_type(), element::f32);
+    ASSERT_EQ(bc->get_element_type(), f32);
     ASSERT_EQ(bc->get_shape(), (Shape{}));
 }
 
 TEST(type_prop, dot_deduce_scalar_1d)
 {
     // Deduce type for scalar/vector arguments
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{6});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{6});
     auto bc = make_shared<op::Dot>(param1, param2);
-    ASSERT_EQ(bc->get_element_type(), element::f32);
+    ASSERT_EQ(bc->get_element_type(), f32);
     ASSERT_EQ(bc->get_shape(), (Shape{6}));
 }
 
 TEST(type_prop, dot_deduce_1d)
 {
     // Deduce type for vector/vector arguments
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{4});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{4});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{4});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{4});
     auto bc = make_shared<op::Dot>(param1, param2);
-    ASSERT_EQ(bc->get_element_type(), element::f32);
+    ASSERT_EQ(bc->get_element_type(), f32);
     ASSERT_EQ(bc->get_shape(), (Shape{}));
 }
 
 TEST(type_prop, dot_deduce_2d)
 {
     // Deduce type for matrix/matrix arguments
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{4, 2});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{2, 3});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{4, 2});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{2, 3});
     auto bc = make_shared<op::Dot>(param1, param2);
-    ASSERT_EQ(bc->get_element_type(), element::f32);
+    ASSERT_EQ(bc->get_element_type(), f32);
     ASSERT_EQ(bc->get_shape(), (Shape{4, 3}));
 }
 
 TEST(type_prop, dot_deduce_different_rank)
 {
     // Deduce type for different-rank tensor arguments
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{2, 8, 4, 2});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{2, 1, 3});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{2, 8, 4, 2});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{2, 1, 3});
     auto bc = make_shared<op::Dot>(param1, param2);
-    ASSERT_EQ(bc->get_element_type(), element::f32);
+    ASSERT_EQ(bc->get_element_type(), f32);
     ASSERT_EQ(bc->get_shape(), (Shape{2, 8, 4, 1, 3}));
 }
 
 TEST(type_prop, dot_deduce_element_type_mismatch)
 {
     // Type deduction fails due to element type mismatch
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{4, 2});
-    auto param2 = make_shared<op::Parameter>(element::i32, Shape{2, 5});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{4, 2});
+    auto param2 = make_shared<op::Parameter>(i32, Shape{2, 5});
     try
     {
         auto bc = make_shared<op::Dot>(param1, param2);
@@ -1951,8 +1951,8 @@ TEST(type_prop, dot_deduce_element_type_mismatch)
 TEST(type_prop, dot_deduce_reduction_axes_size_mismatch)
 {
     // Type deduction fails due to reduction axes size mismatch
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{4, 2});
-    auto param2 = make_shared<op::Parameter>(element::f32, Shape{3, 5});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{4, 2});
+    auto param2 = make_shared<op::Parameter>(f32, Shape{3, 5});
     try
     {
         auto bc = make_shared<op::Dot>(param1, param2);
@@ -1974,8 +1974,8 @@ TEST(type_prop, dot_deduce_reduction_axes_size_mismatch)
 
 TEST(type_prop, dot_partial_both_rank_dynamic_axis_count_implicit)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto d = make_shared<op::Dot>(param0, param1);
 
     ASSERT_TRUE(d->get_output_partial_shape(0).rank().is_dynamic());
@@ -1983,8 +1983,8 @@ TEST(type_prop, dot_partial_both_rank_dynamic_axis_count_implicit)
 
 TEST(type_prop, dot_partial_both_rank_dynamic_axis_count_explicit)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto d = make_shared<op::Dot>(param0, param1, /*reduction axis count=*/1234);
 
     ASSERT_TRUE(d->get_output_partial_shape(0).rank().is_dynamic());
@@ -1992,9 +1992,9 @@ TEST(type_prop, dot_partial_both_rank_dynamic_axis_count_explicit)
 
 TEST(type_prop, dot_partial_left_rank_dynamic_right_rank_static_dynamic_axis_count_implicit)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param1 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     auto d = make_shared<op::Dot>(param0, param1);
 
     ASSERT_TRUE(d->get_output_partial_shape(0).rank().is_dynamic());
@@ -2002,9 +2002,9 @@ TEST(type_prop, dot_partial_left_rank_dynamic_right_rank_static_dynamic_axis_cou
 
 TEST(type_prop, dot_partial_left_rank_dynamic_right_rank_static_dynamic_axis_count_explicit_ok)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param1 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/3);
 
     ASSERT_TRUE(d->get_output_partial_shape(0).rank().is_dynamic());
@@ -2013,9 +2013,9 @@ TEST(type_prop, dot_partial_left_rank_dynamic_right_rank_static_dynamic_axis_cou
 TEST(type_prop,
      dot_partial_left_rank_dynamic_right_rank_static_dynamic_axis_count_explicit_too_many)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param1 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     try
     {
         auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/4);
@@ -2035,8 +2035,8 @@ TEST(type_prop,
 TEST(type_prop, dot_partial_left_rank_static_dynamic_right_rank_dynamic_axis_count_implicit)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto d = make_shared<op::Dot>(param0, param1);
 
     ASSERT_TRUE(d->get_output_partial_shape(0).rank().is_dynamic());
@@ -2045,8 +2045,8 @@ TEST(type_prop, dot_partial_left_rank_static_dynamic_right_rank_dynamic_axis_cou
 TEST(type_prop, dot_partial_left_rank_static_dynamic_right_rank_dynamic_axis_count_explicit_ok)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/3);
 
     ASSERT_TRUE(d->get_output_partial_shape(0).rank().is_dynamic());
@@ -2056,8 +2056,8 @@ TEST(type_prop,
      dot_partial_left_rank_static_dynamic_right_rank_dynamic_axis_count_explicit_too_many)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     try
     {
         auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/4);
@@ -2078,9 +2078,9 @@ TEST(type_prop,
      dot_partial_left_rank_static_dynamic_right_rank_static_dynamic_axis_count_implicit_1_ok)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 2});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 2});
     auto param1 = make_shared<op::Parameter>(
-        element::f32, PartialShape{2, Dimension::dynamic(), 4, Dimension::dynamic(), 5});
+        f32, PartialShape{2, Dimension::dynamic(), 4, Dimension::dynamic(), 5});
     auto d = make_shared<op::Dot>(param0, param1);
 
     ASSERT_TRUE(d->get_output_partial_shape(0).same_scheme(
@@ -2090,9 +2090,9 @@ TEST(type_prop,
 TEST(type_prop,
      dot_partial_left_rank_static_dynamic_right_rank_static_dynamic_axis_count_implicit_0_ok)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape{});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape{});
     auto param1 = make_shared<op::Parameter>(
-        element::f32, PartialShape{2, Dimension::dynamic(), 4, Dimension::dynamic(), 5});
+        f32, PartialShape{2, Dimension::dynamic(), 4, Dimension::dynamic(), 5});
     auto d = make_shared<op::Dot>(param0, param1);
 
     ASSERT_TRUE(d->get_output_partial_shape(0).same_scheme(
@@ -2104,9 +2104,9 @@ TEST(
     dot_partial_left_rank_static_dynamic_right_rank_static_dynamic_axis_count_explicit_too_many_for_left)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     auto param1 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3, 5, 6});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3, 5, 6});
     try
     {
         auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/4);
@@ -2128,9 +2128,9 @@ TEST(
     dot_partial_left_rank_static_dynamic_right_rank_static_dynamic_axis_count_explicit_too_many_for_right)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3, 5, 6});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3, 5, 6});
     auto param1 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     try
     {
         auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/4);
@@ -2152,9 +2152,9 @@ TEST(
     dot_partial_left_rank_static_dynamic_right_rank_static_dynamic_axis_count_explicit_too_many_for_both)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     auto param1 =
-        make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3});
+        make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3});
     try
     {
         auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/4);
@@ -2173,29 +2173,29 @@ TEST(
 
 TEST(type_prop, dot_partial_left_et_dynamic)
 {
-    auto param0 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/3);
 
-    ASSERT_EQ(d->get_output_element_type(0), element::f32);
+    ASSERT_EQ(d->get_output_element_type(0), f32);
 }
 
 TEST(type_prop, dot_partial_right_et_dynamic)
 {
-    auto param0 = make_shared<op::Parameter>(element::i32, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(i32, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
     auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/3);
 
-    ASSERT_EQ(d->get_output_element_type(0), element::i32);
+    ASSERT_EQ(d->get_output_element_type(0), i32);
 }
 
 TEST(type_prop, dot_partial_both_et_dynamic)
 {
-    auto param0 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
     auto d = make_shared<op::Dot>(param0, param1, /* reduction axis count=*/3);
 
-    ASSERT_EQ(d->get_output_element_type(0), element::dynamic);
+    ASSERT_EQ(d->get_output_element_type(0), dynamic);
 }
 
 //
@@ -2205,10 +2205,10 @@ void test_binary(std::string node_type,
                  shared_ptr<Node>(f)(const shared_ptr<Node>& x, const shared_ptr<Node>& y))
 {
     // Check for bad arguments
-    auto tv0_2_4_param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto tv0_2_4_param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto tv0_2_4_param_2 = make_shared<op::Parameter>(element::i32, Shape{2, 4});
-    auto tv0_4_2_param = make_shared<op::Parameter>(element::f32, Shape{4, 2});
+    auto tv0_2_4_param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto tv0_2_4_param_1 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto tv0_2_4_param_2 = make_shared<op::Parameter>(i32, Shape{2, 4});
+    auto tv0_4_2_param = make_shared<op::Parameter>(f32, Shape{4, 2});
 
     auto test_binary_bad_arguments_view_shapes = [&](const shared_ptr<Node>& x,
                                                      const shared_ptr<Node>& y) {
@@ -2296,11 +2296,11 @@ void test_binary_logical(std::string node_type,
                          shared_ptr<Node>(f)(const shared_ptr<Node>& x, const shared_ptr<Node>& y))
 {
     // Check for bad arguments
-    auto tv0_2_4_param_0 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
-    auto tv0_2_4_param_1 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
-    auto tv0_2_4_param_2 = make_shared<op::Parameter>(element::i32, Shape{2, 4});
-    auto tv0_2_4_param_3 = make_shared<op::Parameter>(element::i32, Shape{2, 4});
-    auto tv0_4_2_param = make_shared<op::Parameter>(element::boolean, Shape{4, 2});
+    auto tv0_2_4_param_0 = make_shared<op::Parameter>(boolean, Shape{2, 4});
+    auto tv0_2_4_param_1 = make_shared<op::Parameter>(boolean, Shape{2, 4});
+    auto tv0_2_4_param_2 = make_shared<op::Parameter>(i32, Shape{2, 4});
+    auto tv0_2_4_param_3 = make_shared<op::Parameter>(i32, Shape{2, 4});
+    auto tv0_4_2_param = make_shared<op::Parameter>(boolean, Shape{4, 2});
 
     auto test_binary_bad_arguments_view_shapes = [&](const shared_ptr<Node>& x,
                                                      const shared_ptr<Node>& y) {
@@ -2388,8 +2388,8 @@ TEST(type_prop, or_bad_arguments)
 
 TEST(type_prop, embedding_lookup_non_matrix_weights)
 {
-    auto tv0_2_4_param_0 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
-    auto tv0_2_4_param_1 = make_shared<op::Parameter>(element::boolean, Shape{2, 4, 5});
+    auto tv0_2_4_param_0 = make_shared<op::Parameter>(boolean, Shape{2, 4});
+    auto tv0_2_4_param_1 = make_shared<op::Parameter>(boolean, Shape{2, 4, 5});
     try
     {
         auto bc = make_shared<op::EmbeddingLookup>(tv0_2_4_param_0, tv0_2_4_param_1);
@@ -2408,55 +2408,55 @@ TEST(type_prop, embedding_lookup_non_matrix_weights)
 
 TEST(type_prop, embedding_lookup_static_shapes)
 {
-    auto data = make_shared<op::Parameter>(element::f32, Shape{8, 10, 12});
-    auto weights = make_shared<op::Parameter>(element::f32, Shape{5, 10});
+    auto data = make_shared<op::Parameter>(f32, Shape{8, 10, 12});
+    auto weights = make_shared<op::Parameter>(f32, Shape{5, 10});
     auto embed = make_shared<op::EmbeddingLookup>(data, weights);
-    ASSERT_EQ(embed->get_element_type(), element::f32);
+    ASSERT_EQ(embed->get_element_type(), f32);
     ASSERT_EQ(embed->get_shape(), (Shape{8, 10, 12, 10}));
 }
 
 TEST(type_prop, embedding_lookup_dynamic_shape_arg0)
 {
-    auto data = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto weights = make_shared<op::Parameter>(element::f32, Shape{5, 10});
+    auto data = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto weights = make_shared<op::Parameter>(f32, Shape{5, 10});
     auto embed = make_shared<op::EmbeddingLookup>(data, weights);
-    ASSERT_EQ(embed->get_element_type(), element::f32);
+    ASSERT_EQ(embed->get_element_type(), f32);
     ASSERT_TRUE(embed->get_output_partial_shape(0).rank().is_dynamic());
 }
 
 TEST(type_prop, embedding_lookup_dynamic_shape_arg1)
 {
-    auto data = make_shared<op::Parameter>(element::f32, Shape{8, 10, 12});
-    auto weights = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto data = make_shared<op::Parameter>(f32, Shape{8, 10, 12});
+    auto weights = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto embed = make_shared<op::EmbeddingLookup>(data, weights);
-    ASSERT_EQ(embed->get_element_type(), element::f32);
+    ASSERT_EQ(embed->get_element_type(), f32);
     PartialShape expected{8, 10, 12, Dimension::dynamic()};
     ASSERT_TRUE(embed->get_output_partial_shape(0).same_scheme(expected));
 }
 
 TEST(type_prop, embedding_lookup_shape_arg1_dynamic_embedding_length)
 {
-    auto data = make_shared<op::Parameter>(element::f32, Shape{8, 10, 12});
-    auto weights = make_shared<op::Parameter>(element::f32, PartialShape{5, Dimension::dynamic()});
+    auto data = make_shared<op::Parameter>(f32, Shape{8, 10, 12});
+    auto weights = make_shared<op::Parameter>(f32, PartialShape{5, Dimension::dynamic()});
     auto embed = make_shared<op::EmbeddingLookup>(data, weights);
-    ASSERT_EQ(embed->get_element_type(), element::f32);
+    ASSERT_EQ(embed->get_element_type(), f32);
     PartialShape expected{8, 10, 12, Dimension::dynamic()};
     ASSERT_TRUE(embed->get_output_partial_shape(0).same_scheme(expected));
 }
 
 TEST(type_prop, comparison_good)
 {
-    auto tv0_2_4_param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto tv0_2_4_param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
+    auto tv0_2_4_param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto tv0_2_4_param_1 = make_shared<op::Parameter>(f32, Shape{2, 4});
     auto eq = make_shared<op::Equal>(tv0_2_4_param_0, tv0_2_4_param_1);
-    EXPECT_EQ(eq->get_element_type(), element::boolean);
+    EXPECT_EQ(eq->get_element_type(), boolean);
     EXPECT_EQ(eq->get_shape(), (Shape{2, 4}));
 }
 
 TEST(type_prop, binary_arithmetic_bad_argument_element_types)
 {
-    auto tv0_2_4_param_0 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
-    auto tv0_2_4_param_1 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
+    auto tv0_2_4_param_0 = make_shared<op::Parameter>(boolean, Shape{2, 4});
+    auto tv0_2_4_param_1 = make_shared<op::Parameter>(boolean, Shape{2, 4});
     try
     {
         auto bc = make_shared<op::Add>(tv0_2_4_param_0, tv0_2_4_param_1);
@@ -2476,7 +2476,7 @@ TEST(type_prop, binary_arithmetic_bad_argument_element_types)
 
 TEST(type_prop, unary_arithmetic_bad_argument_element_types)
 {
-    auto tv0_2_4_param = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
+    auto tv0_2_4_param = make_shared<op::Parameter>(boolean, Shape{2, 4});
     try
     {
         auto bc = make_shared<op::Negative>(tv0_2_4_param);
@@ -2496,19 +2496,19 @@ TEST(type_prop, unary_arithmetic_bad_argument_element_types)
 
 TEST(type_prop, select_deduce)
 {
-    auto tv0_2_4_param_0 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
-    auto tv0_2_4_param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto tv0_2_4_param_2 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
+    auto tv0_2_4_param_0 = make_shared<op::Parameter>(boolean, Shape{2, 4});
+    auto tv0_2_4_param_1 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto tv0_2_4_param_2 = make_shared<op::Parameter>(f32, Shape{2, 4});
     auto bc = make_shared<op::Select>(tv0_2_4_param_0, tv0_2_4_param_1, tv0_2_4_param_2);
-    ASSERT_EQ(bc->get_element_type(), element::f32);
+    ASSERT_EQ(bc->get_element_type(), f32);
     ASSERT_EQ(bc->get_shape(), (Shape{2, 4}));
 }
 
 TEST(type_prop, select_shape_mismatch_a)
 {
-    auto tv0_2_4_param_0 = make_shared<op::Parameter>(element::boolean, Shape{3, 5});
-    auto tv0_2_4_param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto tv0_2_4_param_2 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
+    auto tv0_2_4_param_0 = make_shared<op::Parameter>(boolean, Shape{3, 5});
+    auto tv0_2_4_param_1 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto tv0_2_4_param_2 = make_shared<op::Parameter>(f32, Shape{2, 4});
     try
     {
         auto bc = make_shared<op::Select>(tv0_2_4_param_0, tv0_2_4_param_1, tv0_2_4_param_2);
@@ -2527,9 +2527,9 @@ TEST(type_prop, select_shape_mismatch_a)
 
 TEST(type_prop, select_shape_mismatch_b)
 {
-    auto tv0_2_4_param_0 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
-    auto tv0_2_4_param_1 = make_shared<op::Parameter>(element::f32, Shape{3, 5});
-    auto tv0_2_4_param_2 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
+    auto tv0_2_4_param_0 = make_shared<op::Parameter>(boolean, Shape{2, 4});
+    auto tv0_2_4_param_1 = make_shared<op::Parameter>(f32, Shape{3, 5});
+    auto tv0_2_4_param_2 = make_shared<op::Parameter>(f32, Shape{2, 4});
     try
     {
         auto bc = make_shared<op::Select>(tv0_2_4_param_0, tv0_2_4_param_1, tv0_2_4_param_2);
@@ -2548,9 +2548,9 @@ TEST(type_prop, select_shape_mismatch_b)
 
 TEST(type_prop, select_shape_mismatch_c)
 {
-    auto tv0_2_4_param_0 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
-    auto tv0_2_4_param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto tv0_2_4_param_2 = make_shared<op::Parameter>(element::f32, Shape{3, 5});
+    auto tv0_2_4_param_0 = make_shared<op::Parameter>(boolean, Shape{2, 4});
+    auto tv0_2_4_param_1 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto tv0_2_4_param_2 = make_shared<op::Parameter>(f32, Shape{3, 5});
     try
     {
         auto bc = make_shared<op::Select>(tv0_2_4_param_0, tv0_2_4_param_1, tv0_2_4_param_2);
@@ -2569,9 +2569,9 @@ TEST(type_prop, select_shape_mismatch_c)
 
 TEST(type_prop, select_elem_mismatch_a)
 {
-    auto tv0_2_4_param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto tv0_2_4_param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto tv0_2_4_param_2 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
+    auto tv0_2_4_param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto tv0_2_4_param_1 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto tv0_2_4_param_2 = make_shared<op::Parameter>(f32, Shape{2, 4});
     try
     {
         auto bc = make_shared<op::Select>(tv0_2_4_param_0, tv0_2_4_param_1, tv0_2_4_param_2);
@@ -2591,9 +2591,9 @@ TEST(type_prop, select_elem_mismatch_a)
 
 TEST(type_prop, select_elem_mismatch_bc)
 {
-    auto tv0_2_4_param_0 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
-    auto tv0_2_4_param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto tv0_2_4_param_2 = make_shared<op::Parameter>(element::i32, Shape{2, 4});
+    auto tv0_2_4_param_0 = make_shared<op::Parameter>(boolean, Shape{2, 4});
+    auto tv0_2_4_param_1 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto tv0_2_4_param_2 = make_shared<op::Parameter>(i32, Shape{2, 4});
     try
     {
         auto bc = make_shared<op::Select>(tv0_2_4_param_0, tv0_2_4_param_1, tv0_2_4_param_2);
@@ -2613,21 +2613,21 @@ TEST(type_prop, select_elem_mismatch_bc)
 
 TEST(type_prop, select_partial_all_rank_dynamic)
 {
-    auto param0 = make_shared<op::Parameter>(element::boolean, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param2 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(boolean, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     auto sel = make_shared<op::Select>(param0, param1, param2);
 
-    ASSERT_EQ(sel->get_output_element_type(0), element::f32);
+    ASSERT_EQ(sel->get_output_element_type(0), f32);
     ASSERT_TRUE(sel->get_output_partial_shape(0).rank().is_dynamic());
 }
 
 TEST(type_prop, select_partial_all_rank_dynamic_arg0_et_dynamic_arg1_arg2_et_mismatch)
 {
-    auto param0 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param2 = make_shared<op::Parameter>(element::i32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param2 = make_shared<op::Parameter>(i32, PartialShape::dynamic());
 
     try
     {
@@ -2648,78 +2648,78 @@ TEST(type_prop, select_partial_all_rank_dynamic_arg0_et_dynamic_arg1_arg2_et_mis
 
 TEST(type_prop, select_partial_all_rank_dynamic_arg0_arg1_et_dynamic)
 {
-    auto param0 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
-    auto param2 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     auto sel = make_shared<op::Select>(param0, param1, param2);
 
-    ASSERT_EQ(sel->get_output_element_type(0), element::f32);
+    ASSERT_EQ(sel->get_output_element_type(0), f32);
     ASSERT_TRUE(sel->get_output_partial_shape(0).rank().is_dynamic());
 }
 
 TEST(type_prop, select_partial_all_rank_dynamic_arg0_arg2_et_dynamic)
 {
-    auto param0 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param2 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param2 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
 
     auto sel = make_shared<op::Select>(param0, param1, param2);
 
-    ASSERT_EQ(sel->get_output_element_type(0), element::f32);
+    ASSERT_EQ(sel->get_output_element_type(0), f32);
     ASSERT_TRUE(sel->get_output_partial_shape(0).rank().is_dynamic());
 }
 
 TEST(type_prop, select_partial_all_rank_dynamic_arg0_arg1_arg2_et_dynamic)
 {
-    auto param0 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
-    auto param2 = make_shared<op::Parameter>(element::dynamic, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
+    auto param2 = make_shared<op::Parameter>(dynamic, PartialShape::dynamic());
 
     auto sel = make_shared<op::Select>(param0, param1, param2);
 
-    ASSERT_EQ(sel->get_output_element_type(0), element::dynamic);
+    ASSERT_EQ(sel->get_output_element_type(0), dynamic);
     ASSERT_TRUE(sel->get_output_partial_shape(0).rank().is_dynamic());
 }
 
 TEST(type_prop, select_partial_arg0_rank_dynamic_static_arg1_arg2_rank_dynamic_ok)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::boolean, PartialShape{2, Dimension::dynamic(), 3});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param2 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+        make_shared<op::Parameter>(boolean, PartialShape{2, Dimension::dynamic(), 3});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     auto sel = make_shared<op::Select>(param0, param1, param2);
 
-    ASSERT_EQ(sel->get_output_element_type(0), element::f32);
+    ASSERT_EQ(sel->get_output_element_type(0), f32);
     ASSERT_TRUE(
         sel->get_output_partial_shape(0).same_scheme(PartialShape{2, Dimension::dynamic(), 3}));
 }
 
 TEST(type_prop, select_partial_arg1_rank_dynamic_static_arg0_arg2_rank_dynamic_ok)
 {
-    auto param0 = make_shared<op::Parameter>(element::boolean, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(boolean, PartialShape::dynamic());
     auto param1 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, Dimension::dynamic(), 3});
-    auto param2 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
+    auto param2 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     auto sel = make_shared<op::Select>(param0, param1, param2);
 
-    ASSERT_EQ(sel->get_output_element_type(0), element::f32);
+    ASSERT_EQ(sel->get_output_element_type(0), f32);
     ASSERT_TRUE(
         sel->get_output_partial_shape(0).same_scheme(PartialShape{2, Dimension::dynamic(), 3}));
 }
 
 TEST(type_prop, select_partial_arg2_rank_dynamic_static_arg0_arg1_rank_dynamic_ok)
 {
-    auto param0 = make_shared<op::Parameter>(element::boolean, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(boolean, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto param2 =
-        make_shared<op::Parameter>(element::f32, PartialShape{2, Dimension::dynamic(), 3});
+        make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3});
 
     auto sel = make_shared<op::Select>(param0, param1, param2);
 
-    ASSERT_EQ(sel->get_output_element_type(0), element::f32);
+    ASSERT_EQ(sel->get_output_element_type(0), f32);
     ASSERT_TRUE(
         sel->get_output_partial_shape(0).same_scheme(PartialShape{2, Dimension::dynamic(), 3}));
 }
@@ -2727,15 +2727,15 @@ TEST(type_prop, select_partial_arg2_rank_dynamic_static_arg0_arg1_rank_dynamic_o
 TEST(type_prop, select_partial_all_rank_static_dynamic_ok)
 {
     auto param0 = make_shared<op::Parameter>(
-        element::boolean, PartialShape{2, Dimension::dynamic(), Dimension::dynamic()});
+        boolean, PartialShape{2, Dimension::dynamic(), Dimension::dynamic()});
     auto param1 = make_shared<op::Parameter>(
-        element::f32, PartialShape{Dimension::dynamic(), 8, Dimension::dynamic()});
+        f32, PartialShape{Dimension::dynamic(), 8, Dimension::dynamic()});
     auto param2 = make_shared<op::Parameter>(
-        element::f32, PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3});
+        f32, PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3});
 
     auto sel = make_shared<op::Select>(param0, param1, param2);
 
-    ASSERT_EQ(sel->get_output_element_type(0), element::f32);
+    ASSERT_EQ(sel->get_output_element_type(0), f32);
     ASSERT_TRUE(sel->get_output_partial_shape(0).is_static());
     ASSERT_EQ(sel->get_output_shape(0), (Shape{2, 8, 3}));
 }
@@ -2743,11 +2743,11 @@ TEST(type_prop, select_partial_all_rank_static_dynamic_ok)
 TEST(type_prop, select_partial_all_rank_static_intransitive_incompatibility)
 {
     auto param0 = make_shared<op::Parameter>(
-        element::boolean, PartialShape{2, Dimension::dynamic(), Dimension::dynamic()});
+        boolean, PartialShape{2, Dimension::dynamic(), Dimension::dynamic()});
     auto param1 = make_shared<op::Parameter>(
-        element::f32, PartialShape{Dimension::dynamic(), 8, Dimension::dynamic()});
+        f32, PartialShape{Dimension::dynamic(), 8, Dimension::dynamic()});
     auto param2 =
-        make_shared<op::Parameter>(element::f32, PartialShape{3, Dimension::dynamic(), 3});
+        make_shared<op::Parameter>(f32, PartialShape{3, Dimension::dynamic(), 3});
 
     try
     {
@@ -2766,37 +2766,37 @@ TEST(type_prop, select_partial_all_rank_static_intransitive_incompatibility)
 
 TEST(type_prop, reduce_deduce)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     auto r0 = make_shared<op::Reduce>(param_0, param_1, f, AxisSet{0});
-    ASSERT_EQ(r0->get_element_type(), element::f32);
+    ASSERT_EQ(r0->get_element_type(), f32);
     ASSERT_EQ(r0->get_shape(), (Shape{4}));
 
     auto r1 = make_shared<op::Reduce>(param_0, param_1, f, AxisSet{1});
-    ASSERT_EQ(r1->get_element_type(), element::f32);
+    ASSERT_EQ(r1->get_element_type(), f32);
     ASSERT_EQ(r1->get_shape(), (Shape{2}));
 
     auto r01 = make_shared<op::Reduce>(param_0, param_1, f, AxisSet{0, 1});
-    ASSERT_EQ(r01->get_element_type(), element::f32);
+    ASSERT_EQ(r01->get_element_type(), f32);
     ASSERT_EQ(r01->get_shape(), (Shape{}));
 
     auto r_none = make_shared<op::Reduce>(param_0, param_1, f, AxisSet{});
-    ASSERT_EQ(r_none->get_element_type(), element::f32);
+    ASSERT_EQ(r_none->get_element_type(), f32);
     ASSERT_EQ(r_none->get_shape(), (Shape{2, 4}));
 }
 
 TEST(type_prop, reduce_nonscalar)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     try
@@ -2817,11 +2817,11 @@ TEST(type_prop, reduce_nonscalar)
 
 TEST(type_prop, reduce_elem_type_mismatch)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto param_1 = make_shared<op::Parameter>(element::boolean, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto param_1 = make_shared<op::Parameter>(boolean, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     try
@@ -2843,11 +2843,11 @@ TEST(type_prop, reduce_elem_type_mismatch)
 
 TEST(type_prop, reduce_function_return_element_type_mismatch)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Equal>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
@@ -2871,11 +2871,11 @@ TEST(type_prop, reduce_function_return_element_type_mismatch)
 
 TEST(type_prop, reduce_function_return_shape_mismatch)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(
         make_shared<op::Broadcast>(f_param_0 + f_param_1, Shape{1}, AxisSet{0}),
         ParameterVector{f_param_0, f_param_1});
@@ -2899,11 +2899,11 @@ TEST(type_prop, reduce_function_return_shape_mismatch)
 
 TEST(type_prop, reduce_function_arg0_type_mismatch)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::boolean, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(boolean, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_1, ParameterVector{f_param_0, f_param_1});
 
     try
@@ -2924,11 +2924,11 @@ TEST(type_prop, reduce_function_arg0_type_mismatch)
 
 TEST(type_prop, reduce_function_arg1_type_mismatch)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::boolean, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(boolean, Shape{});
     auto f = make_shared<Function>(f_param_0, ParameterVector{f_param_0, f_param_1});
 
     try
@@ -2949,12 +2949,12 @@ TEST(type_prop, reduce_function_arg1_type_mismatch)
 
 TEST(type_prop, reduce_function_arg_count_mismatch)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_2 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1 + f_param_2,
                                    ParameterVector{f_param_0, f_param_1, f_param_2});
 
@@ -2977,11 +2977,11 @@ TEST(type_prop, reduce_function_arg_count_mismatch)
 
 TEST(type_prop, reduce_axis_oob)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     try
@@ -3004,105 +3004,105 @@ TEST(type_prop, function_call_deduce)
 {
     // First create "f(A,B,C) = (A+B)*C".
     Shape shape{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
-    auto B = make_shared<op::Parameter>(element::f32, shape);
-    auto C = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
+    auto B = make_shared<op::Parameter>(f32, shape);
+    auto C = make_shared<op::Parameter>(f32, shape);
     auto f = make_shared<Function>((A + B * C), ParameterVector{A, B, C});
 
     // Now make "f(X,Y,Z) + f(X,Y,Z)"
-    auto X = make_shared<op::Parameter>(element::f32, shape);
-    auto Y = make_shared<op::Parameter>(element::f32, shape);
-    auto Z = make_shared<op::Parameter>(element::f32, shape);
+    auto X = make_shared<op::Parameter>(f32, shape);
+    auto Y = make_shared<op::Parameter>(f32, shape);
+    auto Z = make_shared<op::Parameter>(f32, shape);
     auto r = make_shared<op::FunctionCall>(f, NodeVector{X, Y, Z});
     auto r_p_r = r + r;
 
-    ASSERT_EQ(r_p_r->get_element_type(), element::f32);
+    ASSERT_EQ(r_p_r->get_element_type(), f32);
     ASSERT_EQ(r_p_r->get_shape(), shape);
 }
 
 TEST(type_prop, reshape_deduce_s2v)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param = make_shared<op::Parameter>(f32, Shape{});
     auto r = make_shared<op::Reshape>(param, AxisVector{}, Shape{1});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_EQ(r->get_shape(), (Shape{1}));
 }
 
 TEST(type_prop, reshape_deduce_s2m)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param = make_shared<op::Parameter>(f32, Shape{});
     auto r = make_shared<op::Reshape>(param, AxisVector{}, Shape{1, 1});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_EQ(r->get_shape(), (Shape{1, 1}));
 }
 
 TEST(type_prop, reshape_deduce_s2t)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param = make_shared<op::Parameter>(f32, Shape{});
     auto r = make_shared<op::Reshape>(param, AxisVector{}, Shape{1, 1, 1});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_EQ(r->get_shape(), (Shape{1, 1, 1}));
 }
 
 TEST(type_prop, reshape_deduce_v2s)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{1});
+    auto param = make_shared<op::Parameter>(f32, Shape{1});
     auto r = make_shared<op::Reshape>(param, AxisVector{0}, Shape{});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_EQ(r->get_shape(), (Shape{}));
 }
 
 TEST(type_prop, reshape_deduce_m2s)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{1, 1});
+    auto param = make_shared<op::Parameter>(f32, Shape{1, 1});
     auto r = make_shared<op::Reshape>(param, AxisVector{0, 1}, Shape{});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_EQ(r->get_shape(), (Shape{}));
 }
 
 TEST(type_prop, reshape_deduce_t2s)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{1, 1, 1});
+    auto param = make_shared<op::Parameter>(f32, Shape{1, 1, 1});
     auto r = make_shared<op::Reshape>(param, AxisVector{0, 1, 2}, Shape{});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_EQ(r->get_shape(), (Shape{}));
 }
 
 TEST(type_prop, reshape_deduce_m2v_01)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{3, 4});
+    auto param = make_shared<op::Parameter>(f32, Shape{3, 4});
     auto r = make_shared<op::Reshape>(param, AxisVector{0, 1}, Shape{12});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_EQ(r->get_shape(), (Shape{12}));
 }
 
 TEST(type_prop, reshape_deduce_m2v_10)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{3, 4});
+    auto param = make_shared<op::Parameter>(f32, Shape{3, 4});
     auto r = make_shared<op::Reshape>(param, AxisVector{1, 0}, Shape{12});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_EQ(r->get_shape(), (Shape{12}));
 }
 
 TEST(type_prop, reshape_deduce_t2v_012)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{3, 4, 5});
+    auto param = make_shared<op::Parameter>(f32, Shape{3, 4, 5});
     auto r = make_shared<op::Reshape>(param, AxisVector{0, 1, 2}, Shape{60});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_EQ(r->get_shape(), (Shape{60}));
 }
 
 TEST(type_prop, reshape_deduce_t2v_120)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{3, 4, 5});
+    auto param = make_shared<op::Parameter>(f32, Shape{3, 4, 5});
     auto r = make_shared<op::Reshape>(param, AxisVector{1, 2, 0}, Shape{60});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_EQ(r->get_shape(), (Shape{60}));
 }
 
 TEST(type_prop, reshape_deduce_not_enough_axes)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{3, 4, 5});
+    auto param = make_shared<op::Parameter>(f32, Shape{3, 4, 5});
     try
     {
         auto r = make_shared<op::Reshape>(param, AxisVector{1, 0}, Shape{60});
@@ -3123,7 +3123,7 @@ TEST(type_prop, reshape_deduce_not_enough_axes)
 
 TEST(type_prop, reshape_deduce_too_many_axes)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{3, 4, 5});
+    auto param = make_shared<op::Parameter>(f32, Shape{3, 4, 5});
     try
     {
         auto r = make_shared<op::Reshape>(param, AxisVector{1, 2, 0, 3}, Shape{60});
@@ -3144,7 +3144,7 @@ TEST(type_prop, reshape_deduce_too_many_axes)
 
 TEST(type_prop, reshape_deduce_duplicate_axes)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{3, 4, 5});
+    auto param = make_shared<op::Parameter>(f32, Shape{3, 4, 5});
     try
     {
         auto r = make_shared<op::Reshape>(param, AxisVector{1, 1, 0}, Shape{60});
@@ -3165,7 +3165,7 @@ TEST(type_prop, reshape_deduce_duplicate_axes)
 
 TEST(type_prop, reshape_deduce_wrong_output_shape)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{3, 4, 5});
+    auto param = make_shared<op::Parameter>(f32, Shape{3, 4, 5});
     try
     {
         auto r = make_shared<op::Reshape>(param, AxisVector{1, 2, 0}, Shape{3, 3, 3});
@@ -3190,16 +3190,16 @@ TEST(type_prop, reshape_deduce_wrong_output_shape)
 //
 TEST(type_prop, reshape_partial_rank_dynamic_axisvector_ok)
 {
-    auto param = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto r = make_shared<op::Reshape>(param, AxisVector{2, 1, 0, 3}, Shape{3, 1, 8, 2});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_TRUE(r->get_output_partial_shape(0).is_static());
     ASSERT_EQ(r->get_shape(), (Shape{3, 1, 8, 2}));
 }
 
 TEST(type_prop, reshape_partial_rank_dynamic_axisvector_not_ok)
 {
-    auto param = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     try
     {
         auto r = make_shared<op::Reshape>(param, AxisVector{2, 1, 0, 4}, Shape{3, 1, 8, 2});
@@ -3226,9 +3226,9 @@ TEST(type_prop, reshape_partial_rank_static_dynamic_axisvector_ok)
 {
     auto param_shape =
         PartialShape{Dimension::dynamic(), 6, Dimension::dynamic(), Dimension::dynamic()};
-    auto param = make_shared<op::Parameter>(element::f32, param_shape);
+    auto param = make_shared<op::Parameter>(f32, param_shape);
     auto r = make_shared<op::Reshape>(param, AxisVector{2, 1, 0, 3}, Shape{3, 1, 8, 2});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_TRUE(r->get_output_partial_shape(0).is_static());
     ASSERT_EQ(r->get_shape(), (Shape{3, 1, 8, 2}));
 }
@@ -3237,7 +3237,7 @@ TEST(type_prop, reshape_partial_rank_static_dynamic_axisvector_not_ok)
 {
     auto param_shape =
         PartialShape{Dimension::dynamic(), 6, Dimension::dynamic(), Dimension::dynamic()};
-    auto param = make_shared<op::Parameter>(element::f32, param_shape);
+    auto param = make_shared<op::Parameter>(f32, param_shape);
     try
     {
         auto r = make_shared<op::Reshape>(param, AxisVector{2, 1, 0}, Shape{3, 1, 8, 2});
@@ -3264,9 +3264,9 @@ TEST(type_prop, reshape_partial_rank_static_dynamic_but_zero_ok)
 {
     auto param_shape =
         PartialShape{Dimension::dynamic(), 0, Dimension::dynamic(), Dimension::dynamic()};
-    auto param = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto r = make_shared<op::Reshape>(param, AxisVector{2, 1, 0, 3}, Shape{3, 1, 0, 2});
-    ASSERT_EQ(r->get_element_type(), element::f32);
+    ASSERT_EQ(r->get_element_type(), f32);
     ASSERT_TRUE(r->get_output_partial_shape(0).is_static());
     ASSERT_EQ(r->get_shape(), (Shape{3, 1, 0, 2}));
 }
@@ -3275,7 +3275,7 @@ TEST(type_prop, reshape_partial_rank_static_dynamic_but_zero_not_ok)
 {
     auto param_shape =
         PartialShape{Dimension::dynamic(), 0, Dimension::dynamic(), Dimension::dynamic()};
-    auto param = make_shared<op::Parameter>(element::f32, param_shape);
+    auto param = make_shared<op::Parameter>(f32, param_shape);
     try
     {
         auto r = make_shared<op::Reshape>(param, AxisVector{2, 1, 0}, Shape{3, 1, 8, 2});
@@ -3297,71 +3297,71 @@ TEST(type_prop, reshape_partial_rank_static_dynamic_but_zero_not_ok)
 
 TEST(type_prop, slice_deduce_vector)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6});
+    auto param = make_shared<op::Parameter>(f32, Shape{6});
     auto sl = make_shared<op::Slice>(param, Coordinate{2}, Coordinate{5});
-    ASSERT_EQ(sl->get_element_type(), element::f32);
+    ASSERT_EQ(sl->get_element_type(), f32);
     ASSERT_EQ(sl->get_shape(), (Shape{3}));
 }
 
 TEST(type_prop, slice_deduce_matrix)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     auto sl = make_shared<op::Slice>(param, Coordinate{2, 1}, Coordinate{5, 7});
-    ASSERT_EQ(sl->get_element_type(), element::f32);
+    ASSERT_EQ(sl->get_element_type(), f32);
     ASSERT_EQ(sl->get_shape(), (Shape{3, 6}));
 }
 
 TEST(type_prop, slice_deduce_matrix_strided)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     auto sl = make_shared<op::Slice>(param, Coordinate{2, 1}, Coordinate{5, 7}, Strides{3, 2});
-    ASSERT_EQ(sl->get_element_type(), element::f32);
+    ASSERT_EQ(sl->get_element_type(), f32);
     ASSERT_EQ(sl->get_shape(), (Shape{1, 3}));
 }
 
 TEST(type_prop, slice_deduce_matrix_strided_uneven)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     auto sl = make_shared<op::Slice>(param, Coordinate{2, 1}, Coordinate{5, 7}, Strides{3, 4});
-    ASSERT_EQ(sl->get_element_type(), element::f32);
+    ASSERT_EQ(sl->get_element_type(), f32);
     ASSERT_EQ(sl->get_shape(), (Shape{1, 2}));
 }
 
 TEST(type_prop, slice_deduce_vector_edge)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6});
+    auto param = make_shared<op::Parameter>(f32, Shape{6});
     auto sl = make_shared<op::Slice>(param, Coordinate{0}, Coordinate{6});
-    ASSERT_EQ(sl->get_element_type(), element::f32);
+    ASSERT_EQ(sl->get_element_type(), f32);
     ASSERT_EQ(sl->get_shape(), (Shape{6}));
 }
 
 TEST(type_prop, slice_deduce_matrix_edge)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     auto sl = make_shared<op::Slice>(param, Coordinate{0, 0}, Coordinate{6, 8});
-    ASSERT_EQ(sl->get_element_type(), element::f32);
+    ASSERT_EQ(sl->get_element_type(), f32);
     ASSERT_EQ(sl->get_shape(), (Shape{6, 8}));
 }
 
 TEST(type_prop, slice_deduce_matrix_zero_cols)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     auto sl = make_shared<op::Slice>(param, Coordinate{0, 0}, Coordinate{6, 0});
-    ASSERT_EQ(sl->get_element_type(), element::f32);
+    ASSERT_EQ(sl->get_element_type(), f32);
     ASSERT_EQ(sl->get_shape(), (Shape{6, 0}));
 }
 
 TEST(type_prop, slice_deduce_matrix_zero_zero)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     auto sl = make_shared<op::Slice>(param, Coordinate{0, 0}, Coordinate{0, 0});
-    ASSERT_EQ(sl->get_element_type(), element::f32);
+    ASSERT_EQ(sl->get_element_type(), f32);
     ASSERT_EQ(sl->get_shape(), (Shape{0, 0}));
 }
 
 TEST(type_prop, slice_deduce_vector_invalid_strides)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6});
+    auto param = make_shared<op::Parameter>(f32, Shape{6});
     try
     {
         auto sl = make_shared<op::Slice>(param, Coordinate{0}, Coordinate{7}, Strides{1, 2});
@@ -3383,7 +3383,7 @@ TEST(type_prop, slice_deduce_vector_invalid_strides)
 
 TEST(type_prop, slice_deduce_vector_edge_upper_oob)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6});
+    auto param = make_shared<op::Parameter>(f32, Shape{6});
     try
     {
         auto sl = make_shared<op::Slice>(param, Coordinate{0}, Coordinate{7});
@@ -3403,7 +3403,7 @@ TEST(type_prop, slice_deduce_vector_edge_upper_oob)
 
 TEST(type_prop, slice_deduce_matrix_edge_upper_oob)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     try
     {
         auto sl = make_shared<op::Slice>(param, Coordinate{0, 0}, Coordinate{6, 9});
@@ -3423,7 +3423,7 @@ TEST(type_prop, slice_deduce_matrix_edge_upper_oob)
 
 TEST(type_prop, slice_deduce_vector_lower_above_upper)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6});
+    auto param = make_shared<op::Parameter>(f32, Shape{6});
     try
     {
         auto sl = make_shared<op::Slice>(param, Coordinate{3}, Coordinate{2});
@@ -3444,7 +3444,7 @@ TEST(type_prop, slice_deduce_vector_lower_above_upper)
 
 TEST(type_prop, slice_deduce_matrix_lower_above_upper)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     try
     {
         auto sl = make_shared<op::Slice>(param, Coordinate{0, 5}, Coordinate{6, 4});
@@ -3465,7 +3465,7 @@ TEST(type_prop, slice_deduce_matrix_lower_above_upper)
 
 TEST(type_prop, slice_deduce_matrix_lower_missing)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     try
     {
         auto sl = make_shared<op::Slice>(param, Coordinate{0}, Coordinate{5, 5});
@@ -3487,7 +3487,7 @@ TEST(type_prop, slice_deduce_matrix_lower_missing)
 
 TEST(type_prop, slice_deduce_matrix_upper_missing)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     try
     {
         auto sl = make_shared<op::Slice>(param, Coordinate{0, 0}, Coordinate{5});
@@ -3509,7 +3509,7 @@ TEST(type_prop, slice_deduce_matrix_upper_missing)
 
 TEST(type_prop, slice_deduce_matrix_lower_extra)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     try
     {
         auto sl = make_shared<op::Slice>(param, Coordinate{0, 0, 0}, Coordinate{5, 5});
@@ -3531,7 +3531,7 @@ TEST(type_prop, slice_deduce_matrix_lower_extra)
 
 TEST(type_prop, slice_deduce_matrix_upper_extra)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 8});
     try
     {
         auto sl = make_shared<op::Slice>(param, Coordinate{0, 0}, Coordinate{5, 5, 5});
@@ -3558,10 +3558,10 @@ TEST(type_prop, slice_partial_arg_input_rank_dynamic_attribs_ok)
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     auto sl = make_shared<op::Slice>(param, lower_bounds, upper_bounds, strides);
 
-    ASSERT_EQ(sl->get_element_type(), element::f32);
+    ASSERT_EQ(sl->get_element_type(), f32);
     ASSERT_EQ(sl->get_shape(), (Shape{0, 1, 2, 2}));
 }
 
@@ -3572,7 +3572,7 @@ TEST(type_prop, slice_partial_arg_rank_dynamic_attribs_rank_mismatch)
     Coordinate upper_bounds{1, 3, 5};
     Strides strides{1, 1, 1, 2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto sl = make_shared<op::Slice>(param, lower_bounds, upper_bounds, strides);
@@ -3600,7 +3600,7 @@ TEST(type_prop, slice_partial_arg_rank_dynamic_attribs_bounds_crossing)
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto sl = make_shared<op::Slice>(param, lower_bounds, upper_bounds, strides);
@@ -3628,10 +3628,10 @@ TEST(type_prop, slice_partial_arg_rank_static_dynamic_ok)
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     auto sl = make_shared<op::Slice>(param, lower_bounds, upper_bounds, strides);
 
-    ASSERT_EQ(sl->get_element_type(), element::f32);
+    ASSERT_EQ(sl->get_element_type(), f32);
     ASSERT_EQ(sl->get_shape(), (Shape{0, 1, 2, 2}));
 }
 
@@ -3642,10 +3642,10 @@ TEST(type_prop, slice_partial_arg_rank_static_dynamic_some_dims_known_ok)
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     auto sl = make_shared<op::Slice>(param, lower_bounds, upper_bounds, strides);
 
-    ASSERT_EQ(sl->get_element_type(), element::f32);
+    ASSERT_EQ(sl->get_element_type(), f32);
     ASSERT_EQ(sl->get_shape(), (Shape{0, 1, 2, 2}));
 }
 
@@ -3660,7 +3660,7 @@ TEST(type_prop, slice_partial_arg_rank_static_dynamic_attribs_rank_mismatches_ar
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto sl = make_shared<op::Slice>(param, lower_bounds, upper_bounds, strides);
@@ -3689,7 +3689,7 @@ TEST(type_prop, slice_partial_arg_rank_static_dynamic_some_dims_known_upper_boun
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto sl = make_shared<op::Slice>(param, lower_bounds, upper_bounds, strides);
@@ -3711,29 +3711,29 @@ TEST(type_prop, slice_partial_arg_rank_static_dynamic_some_dims_known_upper_boun
 
 TEST(type_prop, scalar_constant_deduce_float32)
 {
-    auto c = op::Constant::create(element::f32, Shape{}, {208});
-    ASSERT_EQ(c->get_element_type(), element::f32);
+    auto c = op::Constant::create(f32, Shape{}, {208});
+    ASSERT_EQ(c->get_element_type(), f32);
     ASSERT_EQ(c->get_shape(), (Shape{}));
 }
 
 TEST(type_prop, scalar_constant_deduce_bool)
 {
-    auto c = op::Constant::create(element::boolean, Shape{}, {1});
-    ASSERT_EQ(c->get_element_type(), element::boolean);
+    auto c = op::Constant::create(boolean, Shape{}, {1});
+    ASSERT_EQ(c->get_element_type(), boolean);
     ASSERT_EQ(c->get_shape(), (Shape{}));
 }
 
 TEST(type_prop, tensor_constant_deduce_float32)
 {
-    auto c = op::Constant::create(element::f32, Shape{2, 2}, {208, 208, 208, 208});
-    ASSERT_EQ(c->get_element_type(), element::f32);
+    auto c = op::Constant::create(f32, Shape{2, 2}, {208, 208, 208, 208});
+    ASSERT_EQ(c->get_element_type(), f32);
     ASSERT_EQ(c->get_shape(), (Shape{2, 2}));
 }
 
 TEST(type_prop, tensor_constant_deduce_bool)
 {
-    auto c = op::Constant::create(element::boolean, Shape{2, 2}, {1, 1, 1, 1});
-    ASSERT_EQ(c->get_element_type(), element::boolean);
+    auto c = op::Constant::create(boolean, Shape{2, 2}, {1, 1, 1, 1});
+    ASSERT_EQ(c->get_element_type(), boolean);
     ASSERT_EQ(c->get_shape(), (Shape{2, 2}));
 }
 
@@ -3741,7 +3741,7 @@ TEST(type_prop, tensor_constant_bad_count)
 {
     try
     {
-        auto c = op::Constant::create(element::boolean, Shape{2, 2}, {1, 1, 1});
+        auto c = op::Constant::create(boolean, Shape{2, 2}, {1, 1, 1});
         // Should have thrown, so fail if it didn't
         FAIL() << "Incorrect number of literals not detected";
     }
@@ -3759,82 +3759,82 @@ TEST(type_prop, tensor_constant_bad_count)
 
 TEST(type_prop, replace_slice_deduce_vector)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{3});
     auto rsl = make_shared<op::ReplaceSlice>(param0, param1, Coordinate{2}, Coordinate{5});
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_EQ(rsl->get_shape(), (Shape{6}));
 }
 
 TEST(type_prop, replace_slice_deduce_matrix)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{3, 6});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{3, 6});
     auto rsl = make_shared<op::ReplaceSlice>(param0, param1, Coordinate{2, 1}, Coordinate{5, 7});
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_EQ(rsl->get_shape(), (Shape{6, 8}));
 }
 
 TEST(type_prop, replace_slice_deduce_matrix_strided)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{1, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{1, 3});
     auto rsl = make_shared<op::ReplaceSlice>(
         param0, param1, Coordinate{2, 1}, Coordinate{5, 7}, Strides{3, 2});
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_EQ(rsl->get_shape(), (Shape{6, 8}));
 }
 
 TEST(type_prop, replace_slice_deduce_matrix_strided_uneven)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{1, 2});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{1, 2});
     auto rsl = make_shared<op::ReplaceSlice>(
         param0, param1, Coordinate{2, 1}, Coordinate{5, 7}, Strides{3, 4});
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_EQ(rsl->get_shape(), (Shape{6, 8}));
 }
 
 TEST(type_prop, replace_slice_deduce_vector_edge)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6});
     auto rsl = make_shared<op::ReplaceSlice>(param0, param1, Coordinate{0}, Coordinate{6});
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_EQ(rsl->get_shape(), (Shape{6}));
 }
 
 TEST(type_prop, replace_slice_deduce_matrix_edge)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 8});
     auto rsl = make_shared<op::ReplaceSlice>(param0, param1, Coordinate{0, 0}, Coordinate{6, 8});
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_EQ(rsl->get_shape(), (Shape{6, 8}));
 }
 
 TEST(type_prop, replace_slice_deduce_matrix_zero_cols)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 0});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 0});
     auto rsl = make_shared<op::ReplaceSlice>(param0, param1, Coordinate{0, 0}, Coordinate{6, 0});
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_EQ(rsl->get_shape(), (Shape{6, 8}));
 }
 
 TEST(type_prop, replace_slice_deduce_matrix_zero_zero)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{0, 0});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{0, 0});
     auto rsl = make_shared<op::ReplaceSlice>(param0, param1, Coordinate{0, 0}, Coordinate{0, 0});
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_EQ(rsl->get_shape(), (Shape{6, 8}));
 }
 
 TEST(type_prop, replace_slice_deduce_vector_invalid_strides)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{4});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{4});
     try
     {
         auto sl = make_shared<op::ReplaceSlice>(
@@ -3857,8 +3857,8 @@ TEST(type_prop, replace_slice_deduce_vector_invalid_strides)
 
 TEST(type_prop, replace_slice_deduce_matrix_arg_rank_mismatch)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{3, 6, 5});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{3, 6, 5});
     try
     {
         auto rsl =
@@ -3878,8 +3878,8 @@ TEST(type_prop, replace_slice_deduce_matrix_arg_rank_mismatch)
 
 TEST(type_prop, replace_slice_deduce_matrix_arg_element_type_mismatch)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::i32, Shape{3, 6});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(i32, Shape{3, 6});
     try
     {
         auto rsl =
@@ -3899,8 +3899,8 @@ TEST(type_prop, replace_slice_deduce_matrix_arg_element_type_mismatch)
 
 TEST(type_prop, replace_slice_deduce_matrix_slice_shape_mismatch)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{3, 6});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{3, 6});
     try
     {
         auto rsl =
@@ -3923,8 +3923,8 @@ TEST(type_prop, replace_slice_deduce_matrix_slice_shape_mismatch)
 
 TEST(type_prop, replace_slice_deduce_matrix_slice_shape_mismatch_strided)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{4, 6});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{4, 6});
     try
     {
         auto rsl = make_shared<op::ReplaceSlice>(
@@ -3947,8 +3947,8 @@ TEST(type_prop, replace_slice_deduce_matrix_slice_shape_mismatch_strided)
 
 TEST(type_prop, replace_slice_deduce_vector_edge_upper_oob)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{7});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{7});
     try
     {
         auto rsl = make_shared<op::ReplaceSlice>(param0, param1, Coordinate{0}, Coordinate{7});
@@ -3968,8 +3968,8 @@ TEST(type_prop, replace_slice_deduce_vector_edge_upper_oob)
 
 TEST(type_prop, replace_slice_deduce_matrix_edge_upper_oob)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 9});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 9});
     try
     {
         auto rsl =
@@ -3990,8 +3990,8 @@ TEST(type_prop, replace_slice_deduce_matrix_edge_upper_oob)
 
 TEST(type_prop, replace_slice_deduce_vector_lower_above_upper)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{0});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{0});
     try
     {
         auto rsl = make_shared<op::ReplaceSlice>(param0, param1, Coordinate{3}, Coordinate{2});
@@ -4012,8 +4012,8 @@ TEST(type_prop, replace_slice_deduce_vector_lower_above_upper)
 
 TEST(type_prop, replace_slice_deduce_matrix_lower_above_upper)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 0});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 0});
     try
     {
         auto rsl =
@@ -4035,8 +4035,8 @@ TEST(type_prop, replace_slice_deduce_matrix_lower_above_upper)
 
 TEST(type_prop, replace_slice_deduce_matrix_lower_missing)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 6});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 6});
     try
     {
         auto rsl = make_shared<op::ReplaceSlice>(param0, param1, Coordinate{0}, Coordinate{5, 5});
@@ -4058,8 +4058,8 @@ TEST(type_prop, replace_slice_deduce_matrix_lower_missing)
 
 TEST(type_prop, replace_slice_deduce_matrix_upper_missing)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 6});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 6});
     try
     {
         auto rsl = make_shared<op::ReplaceSlice>(param0, param1, Coordinate{0, 0}, Coordinate{5});
@@ -4081,8 +4081,8 @@ TEST(type_prop, replace_slice_deduce_matrix_upper_missing)
 
 TEST(type_prop, replace_slice_deduce_matrix_lower_extra)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 6});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 6});
     try
     {
         auto rsl =
@@ -4105,8 +4105,8 @@ TEST(type_prop, replace_slice_deduce_matrix_lower_extra)
 
 TEST(type_prop, replace_slice_deduce_matrix_upper_extra)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 6});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 6});
     try
     {
         auto rsl =
@@ -4135,11 +4135,11 @@ TEST(type_prop, replace_slice_partial_input_rank_dynamic_replacement_rank_dynami
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     auto rsl = make_shared<op::ReplaceSlice>(param0, param1, lower_bounds, upper_bounds, strides);
 
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_TRUE(rsl->get_output_partial_shape(0).same_scheme(PartialShape{
         Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()}));
 }
@@ -4153,8 +4153,8 @@ TEST(type_prop,
     Coordinate upper_bounds{1, 3, 5};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     try
     {
         auto rsl =
@@ -4185,8 +4185,8 @@ TEST(type_prop,
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     try
     {
         auto rsl =
@@ -4216,11 +4216,11 @@ TEST(type_prop, replace_slice_partial_input_rank_static_dynamic_replacement_rank
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     auto rsl = make_shared<op::ReplaceSlice>(param0, param1, lower_bounds, upper_bounds, strides);
 
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_TRUE(rsl->get_output_partial_shape(0).same_scheme(PartialShape{
         Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()}));
 }
@@ -4234,11 +4234,11 @@ TEST(type_prop,
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     auto rsl = make_shared<op::ReplaceSlice>(param0, param1, lower_bounds, upper_bounds, strides);
 
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_TRUE(
         rsl->get_output_partial_shape(0).same_scheme(PartialShape{2, 4, 10, Dimension::dynamic()}));
 }
@@ -4257,8 +4257,8 @@ TEST(
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     try
     {
         auto rsl =
@@ -4290,8 +4290,8 @@ TEST(
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     try
     {
         auto rsl =
@@ -4321,11 +4321,11 @@ TEST(type_prop, replace_slice_partial_input_rank_dynamic_replacement_rank_static
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     auto rsl = make_shared<op::ReplaceSlice>(param0, param1, lower_bounds, upper_bounds, strides);
 
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_TRUE(rsl->get_output_partial_shape(0).same_scheme(PartialShape{
         Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()}));
 }
@@ -4339,11 +4339,11 @@ TEST(type_prop,
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     auto rsl = make_shared<op::ReplaceSlice>(param0, param1, lower_bounds, upper_bounds, strides);
 
-    ASSERT_EQ(rsl->get_element_type(), element::f32);
+    ASSERT_EQ(rsl->get_element_type(), f32);
     ASSERT_TRUE(rsl->get_output_partial_shape(0).same_scheme(PartialShape{
         Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()}));
 }
@@ -4358,8 +4358,8 @@ TEST(
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     try
     {
         auto rsl =
@@ -4394,8 +4394,8 @@ TEST(
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     try
     {
         auto rsl =
@@ -4433,8 +4433,8 @@ TEST(
     Coordinate upper_bounds{1, 3, 5, 7};
     Strides strides{1, 1, 1, 2};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, input_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, replacement_shape);
+    auto param0 = make_shared<op::Parameter>(f32, input_shape);
+    auto param1 = make_shared<op::Parameter>(f32, replacement_shape);
     try
     {
         auto rsl =
@@ -4455,63 +4455,63 @@ TEST(
 
 TEST(type_prop, one_hot_deduce_scalar)
 {
-    auto param = make_shared<op::Parameter>(element::i32, Shape{});
+    auto param = make_shared<op::Parameter>(i32, Shape{});
     auto oh = make_shared<op::OneHot>(param, Shape{9}, 0);
-    ASSERT_EQ(oh->get_element_type(), element::i32);
+    ASSERT_EQ(oh->get_element_type(), i32);
     ASSERT_EQ(oh->get_shape(), (Shape{9}));
 }
 
 TEST(type_prop, one_hot_deduce_vector_0)
 {
-    auto param = make_shared<op::Parameter>(element::i32, Shape{8});
+    auto param = make_shared<op::Parameter>(i32, Shape{8});
     auto oh = make_shared<op::OneHot>(param, Shape{9, 8}, 0);
-    ASSERT_EQ(oh->get_element_type(), element::i32);
+    ASSERT_EQ(oh->get_element_type(), i32);
     ASSERT_EQ(oh->get_shape(), (Shape{9, 8}));
 }
 
 TEST(type_prop, one_hot_deduce_vector_1)
 {
-    auto param = make_shared<op::Parameter>(element::i32, Shape{8});
+    auto param = make_shared<op::Parameter>(i32, Shape{8});
     auto oh = make_shared<op::OneHot>(param, Shape{8, 9}, 1);
-    ASSERT_EQ(oh->get_element_type(), element::i32);
+    ASSERT_EQ(oh->get_element_type(), i32);
     ASSERT_EQ(oh->get_shape(), (Shape{8, 9}));
 }
 
 TEST(type_prop, one_hot_deduce_matrix_0)
 {
-    auto param = make_shared<op::Parameter>(element::i32, Shape{12, 24});
+    auto param = make_shared<op::Parameter>(i32, Shape{12, 24});
     auto oh = make_shared<op::OneHot>(param, Shape{2, 12, 24}, 0);
-    ASSERT_EQ(oh->get_element_type(), element::i32);
+    ASSERT_EQ(oh->get_element_type(), i32);
     ASSERT_EQ(oh->get_shape(), (Shape{2, 12, 24}));
 }
 
 TEST(type_prop, one_hot_deduce_matrix_1)
 {
-    auto param = make_shared<op::Parameter>(element::i32, Shape{12, 24});
+    auto param = make_shared<op::Parameter>(i32, Shape{12, 24});
     auto oh = make_shared<op::OneHot>(param, Shape{12, 2, 24}, 1);
-    ASSERT_EQ(oh->get_element_type(), element::i32);
+    ASSERT_EQ(oh->get_element_type(), i32);
     ASSERT_EQ(oh->get_shape(), (Shape{12, 2, 24}));
 }
 
 TEST(type_prop, one_hot_deduce_matrix_2)
 {
-    auto param = make_shared<op::Parameter>(element::i32, Shape{12, 24});
+    auto param = make_shared<op::Parameter>(i32, Shape{12, 24});
     auto oh = make_shared<op::OneHot>(param, Shape{12, 24, 2}, 2);
-    ASSERT_EQ(oh->get_element_type(), element::i32);
+    ASSERT_EQ(oh->get_element_type(), i32);
     ASSERT_EQ(oh->get_shape(), (Shape{12, 24, 2}));
 }
 
 TEST(type_prop, one_hot_deduce_floating_point)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{12, 24});
+    auto param = make_shared<op::Parameter>(f32, Shape{12, 24});
     auto oh = make_shared<op::OneHot>(param, Shape{12, 24, 8}, 2);
-    ASSERT_EQ(oh->get_element_type(), element::f32);
+    ASSERT_EQ(oh->get_element_type(), f32);
     ASSERT_EQ(oh->get_shape(), (Shape{12, 24, 8}));
 }
 
 TEST(type_prop, one_hot_deduce_axis_oob)
 {
-    auto param = make_shared<op::Parameter>(element::i32, Shape{12, 24});
+    auto param = make_shared<op::Parameter>(i32, Shape{12, 24});
     try
     {
         auto oh = make_shared<op::OneHot>(param, Shape{12, 24, 8}, 3);
@@ -4530,7 +4530,7 @@ TEST(type_prop, one_hot_deduce_axis_oob)
 
 TEST(type_prop, one_hot_deduce_shape_incompatible)
 {
-    auto param = make_shared<op::Parameter>(element::i32, Shape{12, 24});
+    auto param = make_shared<op::Parameter>(i32, Shape{12, 24});
     try
     {
         auto oh = make_shared<op::OneHot>(param, Shape{12, 22, 8}, 2);
@@ -4554,7 +4554,7 @@ TEST(type_prop, one_hot_partial_rank_dynamic_rank_dynamic)
     PartialShape requested_shape{PartialShape::dynamic()};
     size_t one_hot_axis{3000};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto oh = make_shared<op::OneHot>(param, requested_shape, one_hot_axis);
@@ -4577,10 +4577,10 @@ TEST(type_prop, one_hot_partial_rank_dynamic_rank_static_dynamic_ok)
     PartialShape requested_shape{Dimension::dynamic(), 2, 3, Dimension::dynamic()};
     size_t one_hot_axis{2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     auto oh = make_shared<op::OneHot>(param, requested_shape, one_hot_axis);
 
-    ASSERT_EQ(oh->get_output_element_type(0), element::f32);
+    ASSERT_EQ(oh->get_output_element_type(0), f32);
     ASSERT_TRUE(oh->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), 2, 3, Dimension::dynamic()}));
 }
@@ -4591,7 +4591,7 @@ TEST(type_prop, one_hot_partial_rank_dynamic_rank_static_dynamic_one_hot_dim_dyn
     PartialShape requested_shape{Dimension::dynamic(), 2, 3, Dimension::dynamic()};
     size_t one_hot_axis{3};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto oh = make_shared<op::OneHot>(param, requested_shape, one_hot_axis);
@@ -4616,7 +4616,7 @@ TEST(type_prop, one_hot_partial_rank_dynamic_rank_static_dynamic_one_hot_axis_oo
     PartialShape requested_shape{Dimension::dynamic(), 2, 3, Dimension::dynamic()};
     size_t one_hot_axis{4};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto oh = make_shared<op::OneHot>(param, requested_shape, one_hot_axis);
@@ -4642,10 +4642,10 @@ TEST(type_prop, one_hot_partial_rank_static_dynamic_rank_static_dynamic_ok)
     PartialShape requested_shape{Dimension::dynamic(), 2, 3, Dimension::dynamic(), 4};
     size_t one_hot_axis{2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     auto oh = make_shared<op::OneHot>(param, requested_shape, one_hot_axis);
 
-    ASSERT_EQ(oh->get_output_element_type(0), element::f32);
+    ASSERT_EQ(oh->get_output_element_type(0), f32);
     ASSERT_TRUE(oh->get_output_partial_shape(0).same_scheme(
         PartialShape{3, 2, 3, Dimension::dynamic(), 4}));
 }
@@ -4657,7 +4657,7 @@ TEST(type_prop,
     PartialShape requested_shape{Dimension::dynamic(), 2, 3, Dimension::dynamic(), 4};
     size_t one_hot_axis{2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto oh = make_shared<op::OneHot>(param, requested_shape, one_hot_axis);
@@ -4684,7 +4684,7 @@ TEST(type_prop,
     PartialShape requested_shape{Dimension::dynamic(), 2, 3, Dimension::dynamic(), 4};
     size_t one_hot_axis{2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto oh = make_shared<op::OneHot>(param, requested_shape, one_hot_axis);
@@ -4711,7 +4711,7 @@ TEST(type_prop, one_hot_partial_rank_static_dynamic_rank_static_dynamic_incompat
     PartialShape requested_shape{Dimension::dynamic(), 2, 3, Dimension::dynamic(), 4};
     size_t one_hot_axis{2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto oh = make_shared<op::OneHot>(param, requested_shape, one_hot_axis);
@@ -4738,7 +4738,7 @@ TEST(type_prop, one_hot_partial_rank_static_dynamic_rank_static_dynamic_one_hot_
         Dimension::dynamic(), 2, Dimension::dynamic(), Dimension::dynamic(), 4};
     size_t one_hot_axis{2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto oh = make_shared<op::OneHot>(param, requested_shape, one_hot_axis);
@@ -4765,7 +4765,7 @@ TEST(type_prop, one_hot_partial_rank_static_dynamic_rank_static_dynamic_one_hot_
         Dimension::dynamic(), 2, Dimension::dynamic(), Dimension::dynamic(), 4};
     size_t one_hot_axis{2};
 
-    auto param = make_shared<op::Parameter>(element::f32, input_shape);
+    auto param = make_shared<op::Parameter>(f32, input_shape);
     try
     {
         auto oh = make_shared<op::OneHot>(param, requested_shape, one_hot_axis);
@@ -4788,10 +4788,10 @@ TEST(type_prop, one_hot_partial_rank_static_dynamic_rank_static_dynamic_one_hot_
 TEST(type_prop, conv_1d_deduce)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});
     auto conv = make_shared<op::Convolution>(param0, param1);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 91}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), Strides{1});
@@ -4806,8 +4806,8 @@ TEST(type_prop, conv_1d_back_data_batch_deduce)
 {
     // Deduce type
     Shape data_batch_shape{64, 3, 100};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});  // filters
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 91}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});  // filters
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 91}); // output delta
     auto conv = make_shared<op::ConvolutionBackpropData>(data_batch_shape,
                                                          param0,
                                                          param1,
@@ -4816,7 +4816,7 @@ TEST(type_prop, conv_1d_back_data_batch_deduce)
                                                          CoordinateDiff{0},
                                                          CoordinateDiff{0},
                                                          Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), data_batch_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{1});
@@ -4832,8 +4832,8 @@ TEST(type_prop, conv_1d_back_filters_deduce)
     // Deduce type
     // Shape data_batch_shape{64, 3, 100};
     Shape filters_shape{128, 3, 10};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});  // data batch
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 91}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});  // data batch
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 91}); // output delta
     auto conv = make_shared<op::ConvolutionBackpropFilters>(param0,
                                                             filters_shape,
                                                             param1,
@@ -4842,7 +4842,7 @@ TEST(type_prop, conv_1d_back_filters_deduce)
                                                             CoordinateDiff{0},
                                                             CoordinateDiff{0},
                                                             Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), filters_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{1});
@@ -4856,15 +4856,15 @@ TEST(type_prop, conv_1d_back_filters_deduce)
 TEST(type_prop, conv_1d_deduce_padded)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});
     auto move_strides = Strides{1};
     auto dilation_strides = Strides{1};
     auto padding_below = CoordinateDiff{2};
     auto padding_above = CoordinateDiff{3};
     auto conv = make_shared<op::Convolution>(
         param0, param1, move_strides, dilation_strides, padding_below, padding_above);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 96}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), Strides{1});
@@ -4879,8 +4879,8 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_padded)
 {
     // Deduce type
     Shape data_batch_shape{64, 3, 100};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});  // filters
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 96}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});  // filters
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 96}); // output delta
     auto move_strides = Strides{1};
     auto dilation_strides = Strides{1};
     auto padding_below = CoordinateDiff{2};
@@ -4893,7 +4893,7 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_padded)
                                                          padding_below,
                                                          padding_above,
                                                          Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), data_batch_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{1});
@@ -4909,8 +4909,8 @@ TEST(type_prop, conv_1d_back_filters_deduce_padded)
     // Deduce type
     // Shape data_batch_shape{64, 3, 100};
     Shape filters_shape{128, 3, 10};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});  // data batch
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 96}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});  // data batch
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 96}); // output delta
     auto move_strides = Strides{1};
     auto dilation_strides = Strides{1};
     auto padding_below = CoordinateDiff{2};
@@ -4923,7 +4923,7 @@ TEST(type_prop, conv_1d_back_filters_deduce_padded)
                                                             padding_below,
                                                             padding_above,
                                                             Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), filters_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{1});
@@ -4937,11 +4937,11 @@ TEST(type_prop, conv_1d_back_filters_deduce_padded)
 TEST(type_prop, conv_1d_deduce_strided)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});
     auto move_strides = Strides{2};
     auto conv = make_shared<op::Convolution>(param0, param1, move_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 46}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), Strides{2});
@@ -4956,8 +4956,8 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_strided)
 {
     // Deduce type
     Shape data_batch_shape{64, 3, 100};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});  // filters
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 46}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});  // filters
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 46}); // output delta
     auto move_strides = Strides{2};
     auto conv = make_shared<op::ConvolutionBackpropData>(data_batch_shape,
                                                          param0,
@@ -4967,7 +4967,7 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_strided)
                                                          CoordinateDiff{0},
                                                          CoordinateDiff{0},
                                                          Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), data_batch_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{2});
@@ -4983,8 +4983,8 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided)
     // Deduce type
     // Shape data_batch_shape{64, 3, 100};
     Shape filters_shape{128, 3, 10};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});  // data batch
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 46}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});  // data batch
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 46}); // output delta
     auto move_strides = Strides{2};
     auto conv = make_shared<op::ConvolutionBackpropFilters>(param0,
                                                             filters_shape,
@@ -4994,7 +4994,7 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided)
                                                             CoordinateDiff{0},
                                                             CoordinateDiff{0},
                                                             Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), filters_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{2});
@@ -5008,15 +5008,15 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided)
 TEST(type_prop, conv_1d_deduce_strided_padded)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});
     auto move_strides = Strides{2};
     auto dilation_strides = Strides{1};
     auto padding_below = CoordinateDiff{2};
     auto padding_above = CoordinateDiff{3};
     auto conv = make_shared<op::Convolution>(
         param0, param1, move_strides, dilation_strides, padding_below, padding_above);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 48}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), Strides{2});
@@ -5031,8 +5031,8 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_strided_padded)
 {
     // Deduce type
     Shape data_batch_shape{64, 3, 100};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});  // filters
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 48}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});  // filters
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 48}); // output delta
     auto move_strides = Strides{2};
     auto dilation_strides = Strides{1};
     auto padding_below = CoordinateDiff{2};
@@ -5045,7 +5045,7 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_strided_padded)
                                                          padding_below,
                                                          padding_above,
                                                          Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), data_batch_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{2});
@@ -5061,8 +5061,8 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided_padded)
     // Deduce type
     // Shape data_batch_shape{64, 3, 100};
     Shape filters_shape{128, 3, 10};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});  // data batch
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 48}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});  // data batch
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 48}); // output delta
     auto move_strides = Strides{2};
     auto dilation_strides = Strides{1};
     auto padding_below = CoordinateDiff{2};
@@ -5075,7 +5075,7 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided_padded)
                                                             padding_below,
                                                             padding_above,
                                                             Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), filters_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{2});
@@ -5089,11 +5089,11 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided_padded)
 TEST(type_prop, conv_1d_deduce_strided_small_uneven)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 5});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 2});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 5});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 2});
     auto move_strides = Strides{2};
     auto conv = make_shared<op::Convolution>(param0, param1, move_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 2}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), Strides{2});
@@ -5108,8 +5108,8 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_strided_small_uneven)
 {
     // Deduce type
     Shape data_batch_shape{64, 3, 5};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 2});  // filters
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 2}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{128, 3, 2});  // filters
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 2}); // output delta
     auto move_strides = Strides{2};
     auto conv = make_shared<op::ConvolutionBackpropData>(data_batch_shape,
                                                          param0,
@@ -5119,7 +5119,7 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_strided_small_uneven)
                                                          CoordinateDiff{0},
                                                          CoordinateDiff{0},
                                                          Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), data_batch_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{2});
@@ -5135,8 +5135,8 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided_small_uneven)
     // Deduce type
     // Shape data_batch_shape{64, 3, 5};
     Shape filters_shape{128, 3, 2};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 5});   // data batch
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 2}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 5});   // data batch
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 2}); // output delta
     auto move_strides = Strides{2};
     auto conv = make_shared<op::ConvolutionBackpropFilters>(param0,
                                                             filters_shape,
@@ -5146,7 +5146,7 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided_small_uneven)
                                                             CoordinateDiff{0},
                                                             CoordinateDiff{0},
                                                             Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), filters_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{2});
@@ -5160,11 +5160,11 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided_small_uneven)
 TEST(type_prop, conv_1d_deduce_strided_small_even)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 6});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 2});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 6});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 2});
     auto move_strides = Strides{2};
     auto conv = make_shared<op::Convolution>(param0, param1, move_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 3}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), Strides{2});
@@ -5179,8 +5179,8 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_strided_small_even)
 {
     // Deduce type
     Shape data_batch_shape{64, 3, 6};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 2});  // filters
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 3}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{128, 3, 2});  // filters
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 3}); // output delta
     auto move_strides = Strides{2};
     auto conv = make_shared<op::ConvolutionBackpropData>(data_batch_shape,
                                                          param0,
@@ -5190,7 +5190,7 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_strided_small_even)
                                                          CoordinateDiff{0},
                                                          CoordinateDiff{0},
                                                          Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), data_batch_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{2});
@@ -5206,8 +5206,8 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided_small_even)
     // Deduce type
     // Shape data_batch_shape{64, 3, 6};
     Shape filters_shape{128, 3, 2};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 6});   // data batch
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 3}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 6});   // data batch
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 3}); // output delta
     auto move_strides = Strides{2};
     auto conv = make_shared<op::ConvolutionBackpropFilters>(param0,
                                                             filters_shape,
@@ -5217,7 +5217,7 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided_small_even)
                                                             CoordinateDiff{0},
                                                             CoordinateDiff{0},
                                                             Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), filters_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{2});
@@ -5231,12 +5231,12 @@ TEST(type_prop, conv_1d_back_filters_deduce_strided_small_even)
 TEST(type_prop, conv_1d_deduce_window_dilated)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});
     auto move_strides = Strides{1};
     auto dilate_strides = Strides{2};
     auto conv = make_shared<op::Convolution>(param0, param1, move_strides, dilate_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 82}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), Strides{1});
@@ -5251,8 +5251,8 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_window_dilated)
 {
     // Deduce type
     Shape data_batch_shape{64, 3, 100};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});  // filters
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 82}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});  // filters
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 82}); // output delta
     auto move_strides = Strides{1};
     auto dilate_strides = Strides{2};
     auto conv = make_shared<op::ConvolutionBackpropData>(data_batch_shape,
@@ -5263,7 +5263,7 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_window_dilated)
                                                          CoordinateDiff{0},
                                                          CoordinateDiff{0},
                                                          Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), data_batch_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{1});
@@ -5279,8 +5279,8 @@ TEST(type_prop, conv_1d_back_filters_deduce_window_dilated)
     // Deduce type
     // Shape data_batch_shape{64, 3, 100};
     Shape filters_shape{128, 3, 10};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});  // data batch
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 82}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});  // data batch
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 82}); // output delta
     auto move_strides = Strides{1};
     auto dilate_strides = Strides{2};
     auto conv = make_shared<op::ConvolutionBackpropFilters>(param0,
@@ -5291,7 +5291,7 @@ TEST(type_prop, conv_1d_back_filters_deduce_window_dilated)
                                                             CoordinateDiff{0},
                                                             CoordinateDiff{0},
                                                             Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), filters_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{1});
@@ -5305,15 +5305,15 @@ TEST(type_prop, conv_1d_back_filters_deduce_window_dilated)
 TEST(type_prop, conv_1d_deduce_window_dilated_padded)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});
     auto move_strides = Strides{1};
     auto dilate_strides = Strides{2};
     auto padding_below = CoordinateDiff{2};
     auto padding_above = CoordinateDiff{3};
     auto conv = make_shared<op::Convolution>(
         param0, param1, move_strides, dilate_strides, padding_below, padding_above);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 87}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), Strides{1});
@@ -5328,8 +5328,8 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_window_dilated_padded)
 {
     // Deduce type
     Shape data_batch_shape{64, 3, 100};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});  // filters
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 87}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});  // filters
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 87}); // output delta
     auto move_strides = Strides{1};
     auto dilate_strides = Strides{2};
     auto padding_below = CoordinateDiff{2};
@@ -5342,7 +5342,7 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_window_dilated_padded)
                                                          padding_below,
                                                          padding_above,
                                                          Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), data_batch_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{1});
@@ -5358,8 +5358,8 @@ TEST(type_prop, conv_1d_back_filters_deduce_window_dilated_padded)
     // Deduce type
     // Shape data_batch_shape{64, 3, 100};
     Shape filters_shape{128, 3, 10};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});  // data batch
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 87}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});  // data batch
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 87}); // output delta
     auto move_strides = Strides{1};
     auto dilate_strides = Strides{2};
     auto padding_below = CoordinateDiff{2};
@@ -5372,7 +5372,7 @@ TEST(type_prop, conv_1d_back_filters_deduce_window_dilated_padded)
                                                             padding_below,
                                                             padding_above,
                                                             Strides{1});
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), filters_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{1});
@@ -5386,8 +5386,8 @@ TEST(type_prop, conv_1d_back_filters_deduce_window_dilated_padded)
 TEST(type_prop, conv_1d_deduce_window_dilated_data_dilated_padded)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});
     auto move_strides = Strides{1};
     auto dilate_strides = Strides{2};
     auto padding_below = CoordinateDiff{2};
@@ -5400,7 +5400,7 @@ TEST(type_prop, conv_1d_deduce_window_dilated_data_dilated_padded)
                                              padding_below,
                                              padding_above,
                                              data_dilate_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 285}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), Strides{1});
@@ -5415,8 +5415,8 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_window_dilated_data_dilated_padde
 {
     // Deduce type
     Shape data_batch_shape{64, 3, 100};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10});   // filters
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 285}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{128, 3, 10});   // filters
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 285}); // output delta
     auto move_strides = Strides{1};
     auto dilate_strides = Strides{2};
     auto padding_below = CoordinateDiff{2};
@@ -5430,7 +5430,7 @@ TEST(type_prop, conv_1d_back_data_batch_deduce_window_dilated_data_dilated_padde
                                                          padding_below,
                                                          padding_above,
                                                          data_dilate_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), data_batch_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{1});
@@ -5446,8 +5446,8 @@ TEST(type_prop, conv_1d_back_filters_deduce_window_dilated_data_dilated_padded)
     // Deduce type
     // Shape data_batch_shape{64, 3, 100};
     Shape filters_shape{128, 3, 10};
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});   // data batch
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{64, 128, 285}); // output delta
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100});   // data batch
+    auto param1 = make_shared<op::Parameter>(f32, Shape{64, 128, 285}); // output delta
     auto move_strides = Strides{1};
     auto dilate_strides = Strides{2};
     auto padding_below = CoordinateDiff{2};
@@ -5461,7 +5461,7 @@ TEST(type_prop, conv_1d_back_filters_deduce_window_dilated_data_dilated_padded)
                                                             padding_below,
                                                             padding_above,
                                                             data_dilate_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), filters_shape);
 
     EXPECT_EQ(conv->get_window_movement_strides_forward(), Strides{1});
@@ -5475,10 +5475,10 @@ TEST(type_prop, conv_1d_back_filters_deduce_window_dilated_data_dilated_padded)
 TEST(type_prop, conv_2d_deduce)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100, 150});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10, 20});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100, 150});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10, 20});
     auto conv = make_shared<op::Convolution>(param0, param1);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 91, 131}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), (Strides{1, 1}));
@@ -5492,15 +5492,15 @@ TEST(type_prop, conv_2d_deduce)
 TEST(type_prop, conv_2d_deduce_padded)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100, 150});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10, 20});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100, 150});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10, 20});
     auto move_strides = Strides{1, 1};
     auto dilate_strides = Strides{1, 1};
     auto padding_below = CoordinateDiff{2, 3};
     auto padding_above = CoordinateDiff{3, 4};
     auto conv = make_shared<op::Convolution>(
         param0, param1, move_strides, dilate_strides, padding_below, padding_above);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 96, 138}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), (Strides{1, 1}));
@@ -5514,15 +5514,15 @@ TEST(type_prop, conv_2d_deduce_padded)
 TEST(type_prop, conv_2d_deduce_padded_neg)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100, 150});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10, 20});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100, 150});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10, 20});
     auto move_strides = Strides{1, 1};
     auto dilate_strides = Strides{1, 1};
     auto padding_below = CoordinateDiff{2, -3};
     auto padding_above = CoordinateDiff{3, -4};
     auto conv = make_shared<op::Convolution>(
         param0, param1, move_strides, dilate_strides, padding_below, padding_above);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 96, 124}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), (Strides{1, 1}));
@@ -5536,11 +5536,11 @@ TEST(type_prop, conv_2d_deduce_padded_neg)
 TEST(type_prop, conv_2d_deduce_strided)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100, 150});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10, 20});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100, 150});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10, 20});
     auto move_strides = Strides{2, 3};
     auto conv = make_shared<op::Convolution>(param0, param1, move_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 46, 44}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), (Strides{2, 3}));
@@ -5554,12 +5554,12 @@ TEST(type_prop, conv_2d_deduce_strided)
 TEST(type_prop, conv_2d_deduce_strided_window_dilated)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100, 150});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10, 20});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100, 150});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10, 20});
     auto move_strides = Strides{2, 3};
     auto dilate_strides = Strides{3, 2};
     auto conv = make_shared<op::Convolution>(param0, param1, move_strides, dilate_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 37, 38}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), (Strides{2, 3}));
@@ -5573,8 +5573,8 @@ TEST(type_prop, conv_2d_deduce_strided_window_dilated)
 TEST(type_prop, conv_2d_deduce_strided_window_dilated_data_dilated)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100, 150});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 10, 20});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 100, 150});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 10, 20});
     auto move_strides = Strides{2, 3};
     auto dilate_strides = Strides{3, 2};
     auto padding_below = CoordinateDiff{0, 0};
@@ -5587,7 +5587,7 @@ TEST(type_prop, conv_2d_deduce_strided_window_dilated_data_dilated)
                                              padding_below,
                                              padding_above,
                                              data_dilate_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 86, 137}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), (Strides{2, 3}));
@@ -5601,12 +5601,12 @@ TEST(type_prop, conv_2d_deduce_strided_window_dilated_data_dilated)
 TEST(type_prop, conv_2d_deduce_strided_window_dilated_small)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 7, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 2, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 7, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 2, 3});
     auto move_strides = Strides{2, 3};
     auto dilate_strides = Strides{3, 2};
     auto conv = make_shared<op::Convolution>(param0, param1, move_strides, dilate_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 2, 2}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), (Strides{2, 3}));
@@ -5620,12 +5620,12 @@ TEST(type_prop, conv_2d_deduce_strided_window_dilated_small)
 TEST(type_prop, conv_3d_deduce_strided_window_dilated_small)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 7, 8, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 2, 3, 2});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 7, 8, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 2, 3, 2});
     auto move_strides = Strides{2, 3, 4};
     auto dilate_strides = Strides{3, 2, 2};
     auto conv = make_shared<op::Convolution>(param0, param1, move_strides, dilate_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 2, 2, 2}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), (Strides{2, 3, 4}));
@@ -5639,8 +5639,8 @@ TEST(type_prop, conv_3d_deduce_strided_window_dilated_small)
 TEST(type_prop, conv_3d_deduce_strided_window_dilated_data_dilated_small)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{64, 3, 7, 8, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{128, 3, 2, 3, 2});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{64, 3, 7, 8, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{128, 3, 2, 3, 2});
     auto move_strides = Strides{2, 3, 4};
     auto dilate_strides = Strides{3, 2, 2};
     auto padding_below = CoordinateDiff{0, 0, 0};
@@ -5653,7 +5653,7 @@ TEST(type_prop, conv_3d_deduce_strided_window_dilated_data_dilated_small)
                                              padding_below,
                                              padding_above,
                                              data_dilate_strides);
-    EXPECT_EQ(conv->get_element_type(), element::f32);
+    EXPECT_EQ(conv->get_element_type(), f32);
     EXPECT_EQ(conv->get_shape(), (Shape{64, 128, 5, 6, 5}));
 
     EXPECT_EQ(conv->get_window_movement_strides(), (Strides{2, 3, 4}));
@@ -5667,8 +5667,8 @@ TEST(type_prop, conv_3d_deduce_strided_window_dilated_data_dilated_small)
 TEST(type_prop, conv_invalid_element_type_mismatch)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{3, 3, 3, 3});
-    auto param1 = make_shared<op::Parameter>(element::i32, Shape{3, 3, 2, 2});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{3, 3, 3, 3});
+    auto param1 = make_shared<op::Parameter>(i32, Shape{3, 3, 2, 2});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -5690,8 +5690,8 @@ TEST(type_prop, conv_invalid_element_type_mismatch)
 TEST(type_prop, conv_invalid_0d_input)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -5715,8 +5715,8 @@ TEST(type_prop, conv_invalid_0d_input)
 TEST(type_prop, conv_invalid_1d_input)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{2});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{2});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{2});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{2});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -5740,8 +5740,8 @@ TEST(type_prop, conv_invalid_1d_input)
 TEST(type_prop, conv_invalid_2d_input)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{2, 6});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{2, 6});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{2, 6});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{2, 6});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -5765,8 +5765,8 @@ TEST(type_prop, conv_invalid_2d_input)
 TEST(type_prop, conv_invalid_0_batch_size)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{0, 6, 1});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{0, 6, 1});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{0, 6, 1});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{0, 6, 1});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -5787,8 +5787,8 @@ TEST(type_prop, conv_invalid_0_batch_size)
 TEST(type_prop, conv_invalid_0_input_channels)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 0, 1});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{5, 0, 1});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 0, 1});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{5, 0, 1});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -5811,8 +5811,8 @@ TEST(type_prop, conv_invalid_0_input_channels)
 TEST(type_prop, conv_invalid_wrong_number_of_filter_dimensions_too_many)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{5, 2, 3, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{5, 2, 3, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -5833,8 +5833,8 @@ TEST(type_prop, conv_invalid_wrong_number_of_filter_dimensions_too_many)
 TEST(type_prop, conv_invalid_wrong_number_of_filter_dimensions_too_few)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{5, 2, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{5, 2, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -5855,8 +5855,8 @@ TEST(type_prop, conv_invalid_wrong_number_of_filter_dimensions_too_few)
 TEST(type_prop, conv_invalid_0_output_channels)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{0, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{0, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -5877,8 +5877,8 @@ TEST(type_prop, conv_invalid_0_output_channels)
 TEST(type_prop, conv_invalid_input_channel_mismatch)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 3, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 3, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -5902,8 +5902,8 @@ TEST(type_prop, conv_invalid_input_channel_mismatch)
 TEST(type_prop, conv_invalid_movement_stride_rank)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1, Strides{2, 3, 8});
@@ -5931,8 +5931,8 @@ TEST(type_prop, conv_invalid_movement_stride_rank)
 TEST(type_prop, conv_invalid_window_dilation_stride_rank)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1, Strides{2, 3}, Strides{2, 3, 8});
@@ -5960,8 +5960,8 @@ TEST(type_prop, conv_invalid_window_dilation_stride_rank)
 TEST(type_prop, conv_invalid_data_dilation_stride_rank)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0,
@@ -5995,8 +5995,8 @@ TEST(type_prop, conv_invalid_data_dilation_stride_rank)
 TEST(type_prop, conv_invalid_padding_below_rank)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0,
@@ -6029,8 +6029,8 @@ TEST(type_prop, conv_invalid_padding_below_rank)
 TEST(type_prop, conv_invalid_padding_above_rank)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0,
@@ -6063,8 +6063,8 @@ TEST(type_prop, conv_invalid_padding_above_rank)
 TEST(type_prop, conv_invalid_input_spatial_size_negative_after_padding)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0,
@@ -6092,8 +6092,8 @@ TEST(type_prop, conv_invalid_input_spatial_size_negative_after_padding)
 TEST(type_prop, conv_invalid_input_spatial_size_zero_after_padding)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0,
@@ -6121,8 +6121,8 @@ TEST(type_prop, conv_invalid_input_spatial_size_zero_after_padding)
 TEST(type_prop, conv_invalid_input_spatial_size_0)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 0, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 0, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -6145,8 +6145,8 @@ TEST(type_prop, conv_invalid_input_spatial_size_0)
 TEST(type_prop, conv_invalid_window_size_0)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 0});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 0});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1);
@@ -6169,8 +6169,8 @@ TEST(type_prop, conv_invalid_window_size_0)
 TEST(type_prop, conv_invalid_window_dilation_stride_0)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1, Strides{2, 3}, Strides{2, 0});
@@ -6193,8 +6193,8 @@ TEST(type_prop, conv_invalid_window_dilation_stride_0)
 TEST(type_prop, conv_invalid_data_dilation_stride_0)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0,
@@ -6223,8 +6223,8 @@ TEST(type_prop, conv_invalid_data_dilation_stride_0)
 TEST(type_prop, conv_invalid_dilated_window_too_large)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 8, 8});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 8, 8});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1, Strides{1, 1}, Strides{4, 4});
@@ -6247,8 +6247,8 @@ TEST(type_prop, conv_invalid_dilated_window_too_large)
 TEST(type_prop, conv_invalid_movement_stride_0)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6, 2, 3, 3});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6, 2, 3, 3});
     try
     {
         auto conv = make_shared<op::Convolution>(param0, param1, Strides{0, 1});
@@ -6278,8 +6278,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_dynamic_ok)
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -6289,7 +6289,7 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_dynamic_ok)
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(PartialShape::dynamic(4)));
 }
 
@@ -6303,8 +6303,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_dynamic_window_strides_rank_wrong
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6344,8 +6344,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_dynamic_window_strides_dim_zero)
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6381,8 +6381,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_dynamic_window_dilation_rank_wron
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6422,8 +6422,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_dynamic_window_dilation_dim_zero)
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6459,8 +6459,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_dynamic_padding_below_rank_wrong)
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6500,8 +6500,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_dynamic_padding_above_rank_wrong)
     CoordinateDiff padding_above{0, 0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6541,8 +6541,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_dynamic_data_dilation_rank_wrong)
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6582,8 +6582,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_dynamic_data_dilation_dim_zero)
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 0};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6619,8 +6619,8 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_dynamic_ok)
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -6630,7 +6630,7 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_dynamic_ok)
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(PartialShape::dynamic(4)));
 }
 
@@ -6644,8 +6644,8 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_dynamic_data_batch_rank_wr
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6687,8 +6687,8 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_dynamic_batch_size_known_o
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -6698,7 +6698,7 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_dynamic_batch_size_known_o
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(
         PartialShape{64, Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()}));
 }
@@ -6714,8 +6714,8 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_dynamic_batch_size_known_z
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6750,8 +6750,8 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_dynamic_input_channel_coun
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -6761,7 +6761,7 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_dynamic_input_channel_coun
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(PartialShape::dynamic(4)));
 }
 
@@ -6776,8 +6776,8 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_dynamic_input_channel_coun
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6814,8 +6814,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_static_dynamic_output_channel_cou
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -6825,7 +6825,7 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_static_dynamic_output_channel_cou
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), 32, Dimension::dynamic(), Dimension::dynamic()}));
 }
@@ -6840,8 +6840,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_static_dynamic_output_channel_cou
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6875,8 +6875,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_static_dynamic_input_channel_coun
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -6886,7 +6886,7 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_static_dynamic_input_channel_coun
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(PartialShape::dynamic(4)));
 }
 
@@ -6900,8 +6900,8 @@ TEST(type_prop, conv_partial_rank_dynamic_rank_static_dynamic_input_channel_coun
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -6937,8 +6937,8 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_static_dynamic_ok)
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -6948,7 +6948,7 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_static_dynamic_ok)
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(PartialShape::dynamic(4)));
 }
 
@@ -6962,8 +6962,8 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_static_dynamic_arg_ranks_m
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -7000,8 +7000,8 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_static_dynamic_input_chann
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -7011,7 +7011,7 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_static_dynamic_input_chann
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(PartialShape::dynamic(4)));
 }
 
@@ -7027,8 +7027,8 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_static_dynamic_input_chann
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -7065,8 +7065,8 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_static_dynamic_all_nonspat
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -7076,7 +7076,7 @@ TEST(type_prop, conv_partial_rank_static_dynamic_rank_static_dynamic_all_nonspat
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(
         PartialShape{64, 100, Dimension::dynamic(), Dimension::dynamic()}));
 }
@@ -7092,8 +7092,8 @@ TEST(type_prop,
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -7103,7 +7103,7 @@ TEST(type_prop,
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(
         PartialShape{64, 100, 196, Dimension::dynamic()}));
 }
@@ -7120,8 +7120,8 @@ TEST(
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -7159,8 +7159,8 @@ TEST(
     CoordinateDiff padding_above{-1, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -7170,7 +7170,7 @@ TEST(
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(
         PartialShape{64, 100, 1, Dimension::dynamic()}));
 }
@@ -7187,8 +7187,8 @@ TEST(
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{2, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -7198,7 +7198,7 @@ TEST(
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(
         PartialShape{64, 100, 199, Dimension::dynamic()}));
 }
@@ -7215,8 +7215,8 @@ TEST(
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{2, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -7226,7 +7226,7 @@ TEST(
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(
         PartialShape{64, 100, 67, Dimension::dynamic()}));
 }
@@ -7243,8 +7243,8 @@ TEST(
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -7282,8 +7282,8 @@ TEST(
     CoordinateDiff padding_above{0, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -7321,8 +7321,8 @@ TEST(
     CoordinateDiff padding_above{0, -1};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -7332,7 +7332,7 @@ TEST(
                                              padding_above,
                                              data_dilation_strides);
 
-    ASSERT_EQ(conv->get_output_element_type(0), element::f32);
+    ASSERT_EQ(conv->get_output_element_type(0), f32);
     ASSERT_TRUE(conv->get_output_partial_shape(0).same_scheme(
         PartialShape{64, 100, 196, Dimension::dynamic()}));
 }
@@ -7349,8 +7349,8 @@ TEST(
     CoordinateDiff padding_above{0, -20};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -7388,8 +7388,8 @@ TEST(
     CoordinateDiff padding_above{0, -20};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::f32, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::f32, filters_shape);
+    auto param0 = make_shared<op::Parameter>(f32, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(f32, filters_shape);
 
     try
     {
@@ -7427,8 +7427,8 @@ TEST(type_prop, conv_partial_dynamic_et)
     CoordinateDiff padding_above{-1, 0};
     Strides data_dilation_strides{1, 1};
 
-    auto param0 = make_shared<op::Parameter>(element::dynamic, data_batch_shape);
-    auto param1 = make_shared<op::Parameter>(element::dynamic, filters_shape);
+    auto param0 = make_shared<op::Parameter>(dynamic, data_batch_shape);
+    auto param1 = make_shared<op::Parameter>(dynamic, filters_shape);
 
     auto conv = make_shared<op::Convolution>(param0,
                                              param1,
@@ -7446,11 +7446,11 @@ TEST(type_prop, conv_partial_dynamic_et)
 TEST(type_prop, max_pool_1d_deduce)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 100});
     Shape window_shape{10};
     auto max_pool = make_shared<op::MaxPool>(param, window_shape);
 
-    EXPECT_EQ(max_pool->get_element_type(), element::f32);
+    EXPECT_EQ(max_pool->get_element_type(), f32);
     EXPECT_EQ(max_pool->get_shape(), (Shape{64, 3, 91}));
 
     EXPECT_EQ(max_pool->get_window_movement_strides(), Strides{1});
@@ -7460,12 +7460,12 @@ TEST(type_prop, max_pool_1d_deduce)
 TEST(type_prop, max_pool_1d_deduce_strided)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 100});
     Shape window_shape{10};
     auto move_strides = Strides{2};
     auto max_pool = make_shared<op::MaxPool>(param, window_shape, move_strides);
 
-    EXPECT_EQ(max_pool->get_element_type(), element::f32);
+    EXPECT_EQ(max_pool->get_element_type(), f32);
     EXPECT_EQ(max_pool->get_shape(), (Shape{64, 3, 46}));
 
     EXPECT_EQ(max_pool->get_window_movement_strides(), Strides{2});
@@ -7475,12 +7475,12 @@ TEST(type_prop, max_pool_1d_deduce_strided)
 TEST(type_prop, max_pool_1d_deduce_strided_small_uneven)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 5});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 5});
     Shape window_shape{2};
     auto move_strides = Strides{2};
     auto max_pool = make_shared<op::MaxPool>(param, window_shape, move_strides);
 
-    EXPECT_EQ(max_pool->get_element_type(), element::f32);
+    EXPECT_EQ(max_pool->get_element_type(), f32);
     EXPECT_EQ(max_pool->get_shape(), (Shape{64, 3, 2}));
 
     EXPECT_EQ(max_pool->get_window_movement_strides(), Strides{2});
@@ -7490,12 +7490,12 @@ TEST(type_prop, max_pool_1d_deduce_strided_small_uneven)
 TEST(type_prop, max_pool_1d_deduce_strided_small_even)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 6});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 6});
     Shape window_shape{2};
     auto move_strides = Strides{2};
     auto max_pool = make_shared<op::MaxPool>(param, window_shape, move_strides);
 
-    EXPECT_EQ(max_pool->get_element_type(), element::f32);
+    EXPECT_EQ(max_pool->get_element_type(), f32);
     EXPECT_EQ(max_pool->get_shape(), (Shape{64, 3, 3}));
 
     EXPECT_EQ(max_pool->get_window_movement_strides(), Strides{2});
@@ -7505,11 +7505,11 @@ TEST(type_prop, max_pool_1d_deduce_strided_small_even)
 TEST(type_prop, max_pool_2d_deduce)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100, 150});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 100, 150});
     Shape window_shape{10, 20};
     auto max_pool = make_shared<op::MaxPool>(param, window_shape);
 
-    EXPECT_EQ(max_pool->get_element_type(), element::f32);
+    EXPECT_EQ(max_pool->get_element_type(), f32);
     EXPECT_EQ(max_pool->get_shape(), (Shape{64, 3, 91, 131}));
 
     EXPECT_EQ(max_pool->get_window_movement_strides(), (Strides{1, 1}));
@@ -7519,12 +7519,12 @@ TEST(type_prop, max_pool_2d_deduce)
 TEST(type_prop, max_pool_2d_deduce_strided)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100, 150});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 100, 150});
     Shape window_shape{10, 20};
     auto move_strides = Strides{2, 3};
     auto max_pool = make_shared<op::MaxPool>(param, window_shape, move_strides);
 
-    EXPECT_EQ(max_pool->get_element_type(), element::f32);
+    EXPECT_EQ(max_pool->get_element_type(), f32);
     EXPECT_EQ(max_pool->get_shape(), (Shape{64, 3, 46, 44}));
 
     EXPECT_EQ(max_pool->get_window_movement_strides(), (Strides{2, 3}));
@@ -7534,12 +7534,12 @@ TEST(type_prop, max_pool_2d_deduce_strided)
 TEST(type_prop, max_pool_3d_deduce_strided_small)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 7, 8, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 7, 8, 10});
     Shape window_shape{2, 3, 2};
     auto move_strides = Strides{2, 3, 4};
     auto max_pool = make_shared<op::MaxPool>(param, window_shape, move_strides);
 
-    EXPECT_EQ(max_pool->get_element_type(), element::f32);
+    EXPECT_EQ(max_pool->get_element_type(), f32);
     EXPECT_EQ(max_pool->get_shape(), (Shape{64, 3, 3, 2, 3}));
 
     EXPECT_EQ(max_pool->get_window_movement_strides(), (Strides{2, 3, 4}));
@@ -7549,7 +7549,7 @@ TEST(type_prop, max_pool_3d_deduce_strided_small)
 TEST(type_prop, max_pool_invalid_0d_input)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param = make_shared<op::Parameter>(f32, Shape{});
     Shape window_shape{};
     try
     {
@@ -7571,7 +7571,7 @@ TEST(type_prop, max_pool_invalid_0d_input)
 TEST(type_prop, max_pool_invalid_1d_input)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{2});
+    auto param = make_shared<op::Parameter>(f32, Shape{2});
     Shape window_shape{};
     try
     {
@@ -7593,7 +7593,7 @@ TEST(type_prop, max_pool_invalid_1d_input)
 TEST(type_prop, max_pool_invalid_2d_input)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{2, 6});
+    auto param = make_shared<op::Parameter>(f32, Shape{2, 6});
     Shape window_shape{};
     try
     {
@@ -7615,7 +7615,7 @@ TEST(type_prop, max_pool_invalid_2d_input)
 TEST(type_prop, max_pool_invalid_0_batch_size)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{0, 6, 1});
+    auto param = make_shared<op::Parameter>(f32, Shape{0, 6, 1});
     Shape window_shape{1};
     try
     {
@@ -7637,7 +7637,7 @@ TEST(type_prop, max_pool_invalid_0_batch_size)
 TEST(type_prop, max_pool_invalid_0_channels)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 0, 1});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 0, 1});
     Shape window_shape{1};
     try
     {
@@ -7659,7 +7659,7 @@ TEST(type_prop, max_pool_invalid_0_channels)
 TEST(type_prop, max_pool_invalid_wrong_number_of_window_dimensions_too_many)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3, 3, 3};
     try
     {
@@ -7686,7 +7686,7 @@ TEST(type_prop, max_pool_invalid_wrong_number_of_window_dimensions_too_many)
 TEST(type_prop, max_pool_invalid_wrong_number_of_window_dimensions_too_few)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3};
     try
     {
@@ -7713,7 +7713,7 @@ TEST(type_prop, max_pool_invalid_wrong_number_of_window_dimensions_too_few)
 TEST(type_prop, max_pool_invalid_movement_stride_rank)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3, 3};
     auto move_strides = Strides{2, 3, 8};
     try
@@ -7741,7 +7741,7 @@ TEST(type_prop, max_pool_invalid_movement_stride_rank)
 TEST(type_prop, max_pool_invalid_input_data_size_0)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 0, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 0, 10});
     Shape window_shape{3, 3};
     try
     {
@@ -7765,7 +7765,7 @@ TEST(type_prop, max_pool_invalid_input_data_size_0)
 TEST(type_prop, max_pool_invalid_window_size_0)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3, 0};
     try
     {
@@ -7789,7 +7789,7 @@ TEST(type_prop, max_pool_invalid_window_size_0)
 TEST(type_prop, max_pool_invalid_dilated_too_large)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 8, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 8, 8});
     Shape window_shape{9, 9};
     try
     {
@@ -7813,7 +7813,7 @@ TEST(type_prop, max_pool_invalid_dilated_too_large)
 TEST(type_prop, max_pool_invalid_movement_stride_0)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3, 3};
     auto move_strides = Strides{0, 1};
     try
@@ -7843,11 +7843,11 @@ TEST(type_prop, max_pool_partial_rank_dynamic_ok)
     Shape padding_below{0, 0, 0, 0};
     Shape padding_above{0, 0, 0, 0};
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
     auto mp = make_shared<op::MaxPool>(
         param, window_shape, window_movement_strides, padding_below, padding_above);
 
-    ASSERT_EQ(mp->get_output_element_type(0), element::f32);
+    ASSERT_EQ(mp->get_output_element_type(0), f32);
     ASSERT_TRUE(mp->get_output_partial_shape(0).same_scheme(PartialShape::dynamic(6)));
 }
 
@@ -7859,7 +7859,7 @@ TEST(type_prop, max_pool_partial_rank_dynamic_attrib_rank_mismatch)
     Shape padding_below{0, 0, 0, 0};
     Shape padding_above{0, 0, 0, 0};
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
 
     try
     {
@@ -7890,11 +7890,11 @@ TEST(type_prop, max_pool_partial_rank_static_dynamic_ok)
     Shape padding_below{0, 0, 0, 0};
     Shape padding_above{0, 0, 0, 0};
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
     auto mp = make_shared<op::MaxPool>(
         param, window_shape, window_movement_strides, padding_below, padding_above);
 
-    ASSERT_EQ(mp->get_output_element_type(0), element::f32);
+    ASSERT_EQ(mp->get_output_element_type(0), f32);
     ASSERT_TRUE(mp->get_output_partial_shape(0).same_scheme(PartialShape::dynamic(6)));
 }
 
@@ -7906,11 +7906,11 @@ TEST(type_prop, max_pool_partial_rank_static_dynamic_some_dims_known_ok)
     Shape padding_below{0, 0, 0, 0};
     Shape padding_above{0, 0, 0, 0};
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
     auto mp = make_shared<op::MaxPool>(
         param, window_shape, window_movement_strides, padding_below, padding_above);
 
-    ASSERT_EQ(mp->get_output_element_type(0), element::f32);
+    ASSERT_EQ(mp->get_output_element_type(0), f32);
     ASSERT_TRUE(mp->get_output_partial_shape(0).same_scheme(
         PartialShape{5, Dimension::dynamic(), 7, Dimension::dynamic(), 1, 3}));
 }
@@ -7923,7 +7923,7 @@ TEST(type_prop, max_pool_partial_rank_static_dynamic_attrib_rank_mismatch)
     Shape padding_below{0, 0, 0, 0};
     Shape padding_above{0, 0, 0, 0};
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
 
     try
     {
@@ -7954,7 +7954,7 @@ TEST(type_prop, max_pool_partial_rank_static_dynamic_window_not_too_big)
     Shape padding_below{0, 0, 0, 0};
     Shape padding_above{0, 0, 0, 0};
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
 
     try
     {
@@ -7982,11 +7982,11 @@ TEST(type_prop, max_pool_partial_rank_static_dynamic_padded_window_not_too_big)
     Shape padding_below{0, 0, 0, 0};
     Shape padding_above{1, 0, 0, 0};
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
     auto mp = make_shared<op::MaxPool>(
         param, window_shape, window_movement_strides, padding_below, padding_above);
 
-    ASSERT_EQ(mp->get_output_element_type(0), element::f32);
+    ASSERT_EQ(mp->get_output_element_type(0), f32);
     ASSERT_TRUE(mp->get_output_partial_shape(0).same_scheme(
         PartialShape{5, Dimension::dynamic(), 1, Dimension::dynamic(), 1, 3}));
 }
@@ -7994,157 +7994,157 @@ TEST(type_prop, max_pool_partial_rank_static_dynamic_padded_window_not_too_big)
 TEST(type_prop, reverse_0d_deduce)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param = make_shared<op::Parameter>(f32, Shape{});
     auto rev = make_shared<op::Reverse>(param, AxisSet{});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{}));
 }
 
 TEST(type_prop, reverse_1d_deduce_nochange)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5});
+    auto param = make_shared<op::Parameter>(f32, Shape{5});
     auto rev = make_shared<op::Reverse>(param, AxisSet{});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5}));
 }
 
 TEST(type_prop, reverse_1d_deduce_0)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5});
+    auto param = make_shared<op::Parameter>(f32, Shape{5});
     auto rev = make_shared<op::Reverse>(param, AxisSet{0});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5}));
 }
 
 TEST(type_prop, reverse_2d_deduce_nochange)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6});
     auto rev = make_shared<op::Reverse>(param, AxisSet{});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6}));
 }
 
 TEST(type_prop, reverse_2d_deduce_0)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6});
     auto rev = make_shared<op::Reverse>(param, AxisSet{0});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6}));
 }
 
 TEST(type_prop, reverse_2d_deduce_1)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6});
     auto rev = make_shared<op::Reverse>(param, AxisSet{1});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6}));
 }
 
 TEST(type_prop, reverse_2d_deduce_01)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6});
     auto rev = make_shared<op::Reverse>(param, AxisSet{0, 1});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6}));
 }
 
 TEST(type_prop, reverse_3d_deduce_nochange)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6, 7});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6, 7});
     auto rev = make_shared<op::Reverse>(param, AxisSet{});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6, 7}));
 }
 
 TEST(type_prop, reverse_3d_deduce_0)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6, 7});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6, 7});
     auto rev = make_shared<op::Reverse>(param, AxisSet{0});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6, 7}));
 }
 
 TEST(type_prop, reverse_3d_deduce_1)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6, 7});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6, 7});
     auto rev = make_shared<op::Reverse>(param, AxisSet{1});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6, 7}));
 }
 
 TEST(type_prop, reverse_3d_deduce_2)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6, 7});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6, 7});
     auto rev = make_shared<op::Reverse>(param, AxisSet{2});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6, 7}));
 }
 
 TEST(type_prop, reverse_3d_deduce_01)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6, 7});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6, 7});
     auto rev = make_shared<op::Reverse>(param, AxisSet{0, 1});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6, 7}));
 }
 
 TEST(type_prop, reverse_3d_deduce_02)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6, 7});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6, 7});
     auto rev = make_shared<op::Reverse>(param, AxisSet{0, 2});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6, 7}));
 }
 
 TEST(type_prop, reverse_3d_deduce_12)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6, 7});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6, 7});
     auto rev = make_shared<op::Reverse>(param, AxisSet{1, 2});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6, 7}));
 }
 
 TEST(type_prop, reverse_3d_deduce_012)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6, 7});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6, 7});
     auto rev = make_shared<op::Reverse>(param, AxisSet{0, 1, 2});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_EQ(rev->get_shape(), (Shape{5, 6, 7}));
 }
 
 TEST(type_prop, reverse_3d_deduce_oob)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{5, 6, 7});
+    auto param = make_shared<op::Parameter>(f32, Shape{5, 6, 7});
     try
     {
         auto rev = make_shared<op::Reverse>(param, AxisSet{0, 3, 2});
@@ -8167,10 +8167,10 @@ TEST(type_prop, reverse_3d_deduce_oob)
 //
 TEST(type_prop, reverse_partial_rank_dynamic)
 {
-    auto param = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto rev = make_shared<op::Reverse>(param, AxisSet{0, 2, 1776, 90909});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_TRUE(rev->get_output_partial_shape(0).rank().is_dynamic());
 }
 
@@ -8181,17 +8181,17 @@ TEST(type_prop, reverse_partial_rank_dynamic)
 TEST(type_prop, reverse_partial_rank_static_dynamic_axes_ok)
 {
     PartialShape param_shape{Dimension::dynamic(), Dimension::dynamic(), 2, 3};
-    auto param = make_shared<op::Parameter>(element::f32, param_shape);
+    auto param = make_shared<op::Parameter>(f32, param_shape);
     auto rev = make_shared<op::Reverse>(param, AxisSet{0, 2});
 
-    EXPECT_EQ(rev->get_element_type(), element::f32);
+    EXPECT_EQ(rev->get_element_type(), f32);
     EXPECT_TRUE(rev->get_output_partial_shape(0).same_scheme(param_shape));
 }
 
 TEST(type_prop, reverse_partial_rank_static_dynamic_axes_oob)
 {
     PartialShape param_shape{Dimension::dynamic(), Dimension::dynamic(), 2, 3};
-    auto param = make_shared<op::Parameter>(element::f32, param_shape);
+    auto param = make_shared<op::Parameter>(f32, param_shape);
     try
     {
         auto rev = make_shared<op::Reverse>(param, AxisSet{0, 4, 2});
@@ -8211,8 +8211,8 @@ TEST(type_prop, reverse_partial_rank_static_dynamic_axes_oob)
 
 TEST(type_prop, reverse_sequence_1_dim)
 {
-    auto data = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2});
-    auto seq_lenghts = make_shared<op::Parameter>(element::f32, Shape{4, 4});
+    auto data = make_shared<op::Parameter>(f32, Shape{4, 3, 2});
+    auto seq_lenghts = make_shared<op::Parameter>(f32, Shape{4, 4});
     try
     {
         size_t batch_axis = 0;
@@ -8233,8 +8233,8 @@ TEST(type_prop, reverse_sequence_1_dim)
 
 TEST(type_prop, reverse_sequence_batch_index_oob)
 {
-    auto data = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2});
-    auto seq_lenghts = make_shared<op::Parameter>(element::f32, Shape{3});
+    auto data = make_shared<op::Parameter>(f32, Shape{4, 3, 2});
+    auto seq_lenghts = make_shared<op::Parameter>(f32, Shape{3});
     try
     {
         size_t batch_axis = 3;
@@ -8254,8 +8254,8 @@ TEST(type_prop, reverse_sequence_batch_index_oob)
 
 TEST(type_prop, reverse_sequence_sequence_index_oob)
 {
-    auto data = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2});
-    auto seq_lengths = make_shared<op::Parameter>(element::f32, Shape{3});
+    auto data = make_shared<op::Parameter>(f32, Shape{4, 3, 2});
+    auto seq_lengths = make_shared<op::Parameter>(f32, Shape{3});
     try
     {
         size_t batch_axis = 1;
@@ -8275,8 +8275,8 @@ TEST(type_prop, reverse_sequence_sequence_index_oob)
 
 TEST(type_prop, reverse_sequence_seq_len_size_equal_to_batch_dim)
 {
-    auto data = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2});
-    auto seq_lenghts = make_shared<op::Parameter>(element::f32, Shape{3});
+    auto data = make_shared<op::Parameter>(f32, Shape{4, 3, 2});
+    auto seq_lenghts = make_shared<op::Parameter>(f32, Shape{3});
     try
     {
         size_t batch_axis = 0;
@@ -8299,67 +8299,67 @@ TEST(type_prop, reverse_sequence_seq_len_size_equal_to_batch_dim)
 
 TEST(type_prop, reverse_sequence_partial_both_rank_dynamic)
 {
-    auto data = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto seq_lengths = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto data = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     // Unrealistic values, but they don't matter here.
     size_t batch_axis = 202;
     size_t seq_axis = 909;
     auto rs = make_shared<op::ReverseSequence>(data, seq_lengths, batch_axis, seq_axis);
 
     EXPECT_TRUE(rs->get_output_partial_shape(0).is_dynamic());
-    EXPECT_EQ(rs->get_output_element_type(0), element::f32);
+    EXPECT_EQ(rs->get_output_element_type(0), f32);
 }
 
 TEST(type_prop, reverse_sequence_partial_left_rank_dynamic)
 {
-    auto data = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto seq_lengths = make_shared<op::Parameter>(element::f32, PartialShape{3});
+    auto data = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape{3});
     // Unrealistic values, but they don't matter here.
     size_t batch_axis = 202;
     size_t seq_axis = 909;
     auto rs = make_shared<op::ReverseSequence>(data, seq_lengths, batch_axis, seq_axis);
 
     EXPECT_TRUE(rs->get_output_partial_shape(0).is_dynamic());
-    EXPECT_EQ(rs->get_output_element_type(0), element::f32);
+    EXPECT_EQ(rs->get_output_element_type(0), f32);
 }
 
 TEST(type_prop, reverse_sequence_partial_right_rank_dynamic)
 {
-    auto data = make_shared<op::Parameter>(element::f32, PartialShape{2, 4, 6, 8});
-    auto seq_lengths = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto data = make_shared<op::Parameter>(f32, PartialShape{2, 4, 6, 8});
+    auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     size_t batch_axis = 0;
     size_t seq_axis = 1;
     auto rs = make_shared<op::ReverseSequence>(data, seq_lengths, batch_axis, seq_axis);
 
     EXPECT_TRUE(rs->get_output_partial_shape(0).same_scheme(PartialShape{2, 4, 6, 8}));
-    EXPECT_EQ(rs->get_output_element_type(0), element::f32);
+    EXPECT_EQ(rs->get_output_element_type(0), f32);
 }
 
 TEST(type_prop, reverse_sequence_partial_both_rank_static_dynamic)
 {
-    auto data = make_shared<op::Parameter>(element::f32,
+    auto data = make_shared<op::Parameter>(f32,
                                            PartialShape{Dimension::dynamic(),
                                                         Dimension::dynamic(),
                                                         Dimension::dynamic(),
                                                         Dimension::dynamic()});
-    auto seq_lengths = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     size_t batch_axis = 0;
     size_t seq_axis = 1;
     auto rs = make_shared<op::ReverseSequence>(data, seq_lengths, batch_axis, seq_axis);
 
     EXPECT_TRUE(rs->get_output_partial_shape(0).same_scheme(PartialShape{
         Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()}));
-    EXPECT_EQ(rs->get_output_element_type(0), element::f32);
+    EXPECT_EQ(rs->get_output_element_type(0), f32);
 }
 
 TEST(type_prop, reverse_sequence_partial_both_rank_static_dynamic_batch_axis_oob)
 {
-    auto data = make_shared<op::Parameter>(element::f32,
+    auto data = make_shared<op::Parameter>(f32,
                                            PartialShape{Dimension::dynamic(),
                                                         Dimension::dynamic(),
                                                         Dimension::dynamic(),
                                                         Dimension::dynamic()});
-    auto seq_lengths = make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic()});
+    auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic()});
     size_t batch_axis = 4;
     size_t seq_axis = 1;
     try
@@ -8379,12 +8379,12 @@ TEST(type_prop, reverse_sequence_partial_both_rank_static_dynamic_batch_axis_oob
 
 TEST(type_prop, reverse_sequence_partial_both_rank_static_dynamic_sequence_axis_oob)
 {
-    auto data = make_shared<op::Parameter>(element::f32,
+    auto data = make_shared<op::Parameter>(f32,
                                            PartialShape{Dimension::dynamic(),
                                                         Dimension::dynamic(),
                                                         Dimension::dynamic(),
                                                         Dimension::dynamic()});
-    auto seq_lengths = make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic()});
+    auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic()});
     size_t batch_axis = 1;
     size_t seq_axis = 4;
     try
@@ -8405,50 +8405,50 @@ TEST(type_prop, reverse_sequence_partial_both_rank_static_dynamic_sequence_axis_
 TEST(type_prop,
      reverse_sequence_partial_left_rank_static_dynamic_right_static_left_seq_length_dynamic)
 {
-    auto data = make_shared<op::Parameter>(element::f32,
+    auto data = make_shared<op::Parameter>(f32,
                                            PartialShape{Dimension::dynamic(),
                                                         Dimension::dynamic(),
                                                         Dimension::dynamic(),
                                                         Dimension::dynamic()});
-    auto seq_lengths = make_shared<op::Parameter>(element::f32, PartialShape{3});
+    auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape{3});
     size_t batch_axis = 2;
     size_t seq_axis = 1;
     auto rs = make_shared<op::ReverseSequence>(data, seq_lengths, batch_axis, seq_axis);
 
     EXPECT_TRUE(rs->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()}));
-    EXPECT_EQ(rs->get_output_element_type(0), element::f32);
+    EXPECT_EQ(rs->get_output_element_type(0), f32);
 }
 
 TEST(type_prop, reverse_sequence_partial_both_rank_static_dynamic_right_seq_length_dynamic)
 {
     auto data = make_shared<op::Parameter>(
-        element::f32,
+        f32,
         PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()});
-    auto seq_lengths = make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic()});
+    auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic()});
     size_t batch_axis = 2;
     size_t seq_axis = 1;
     auto rs = make_shared<op::ReverseSequence>(data, seq_lengths, batch_axis, seq_axis);
 
     EXPECT_TRUE(rs->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()}));
-    EXPECT_EQ(rs->get_output_element_type(0), element::f32);
+    EXPECT_EQ(rs->get_output_element_type(0), f32);
 }
 
 TEST(type_prop,
      reverse_sequence_partial_left_rank_static_dynamic_right_static_left_seq_length_static)
 {
     auto data = make_shared<op::Parameter>(
-        element::f32,
+        f32,
         PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()});
-    auto seq_lengths = make_shared<op::Parameter>(element::f32, PartialShape{3});
+    auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape{3});
     size_t batch_axis = 2;
     size_t seq_axis = 1;
     auto rs = make_shared<op::ReverseSequence>(data, seq_lengths, batch_axis, seq_axis);
 
     EXPECT_TRUE(rs->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()}));
-    EXPECT_EQ(rs->get_output_element_type(0), element::f32);
+    EXPECT_EQ(rs->get_output_element_type(0), f32);
 }
 
 TEST(
@@ -8456,9 +8456,9 @@ TEST(
     reverse_sequence_partial_left_rank_static_dynamic_right_static_left_seq_length_static_inconsistent)
 {
     auto data = make_shared<op::Parameter>(
-        element::f32,
+        f32,
         PartialShape{Dimension::dynamic(), Dimension::dynamic(), 3, Dimension::dynamic()});
-    auto seq_lengths = make_shared<op::Parameter>(element::f32, PartialShape{4});
+    auto seq_lengths = make_shared<op::Parameter>(f32, PartialShape{4});
     size_t batch_axis = 2;
     size_t seq_axis = 1;
     try
@@ -8480,96 +8480,96 @@ TEST(
 
 TEST(type_prop, reduce_window_deduce_1d)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4};
     Strides move_strides{1};
 
     auto rw = make_shared<op::ReduceWindow>(param_0, param_1, f, window_shape, move_strides);
-    ASSERT_EQ(rw->get_element_type(), element::f32);
+    ASSERT_EQ(rw->get_element_type(), f32);
     ASSERT_EQ(rw->get_shape(), (Shape{13}));
 }
 
 TEST(type_prop, reduce_window_deduce_1d_strided_even)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4};
     Strides move_strides{4};
 
     auto rw = make_shared<op::ReduceWindow>(param_0, param_1, f, window_shape, move_strides);
-    ASSERT_EQ(rw->get_element_type(), element::f32);
+    ASSERT_EQ(rw->get_element_type(), f32);
     ASSERT_EQ(rw->get_shape(), (Shape{4}));
 }
 
 TEST(type_prop, reduce_window_deduce_1d_strided_uneven)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4};
     Strides move_strides{4};
 
     auto rw = make_shared<op::ReduceWindow>(param_0, param_1, f, window_shape, move_strides);
-    ASSERT_EQ(rw->get_element_type(), element::f32);
+    ASSERT_EQ(rw->get_element_type(), f32);
     ASSERT_EQ(rw->get_shape(), (Shape{4}));
 }
 
 TEST(type_prop, reduce_window_deduce_2d_strided_uneven)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2};
     Strides move_strides{4, 3};
 
     auto rw = make_shared<op::ReduceWindow>(param_0, param_1, f, window_shape, move_strides);
-    ASSERT_EQ(rw->get_element_type(), element::f32);
+    ASSERT_EQ(rw->get_element_type(), f32);
     ASSERT_EQ(rw->get_shape(), (Shape{4, 3}));
 }
 
 TEST(type_prop, reduce_window_deduce_3d_strided_uneven)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2, 4};
     Strides move_strides{4, 3, 2};
 
     auto rw = make_shared<op::ReduceWindow>(param_0, param_1, f, window_shape, move_strides);
-    ASSERT_EQ(rw->get_element_type(), element::f32);
+    ASSERT_EQ(rw->get_element_type(), f32);
     ASSERT_EQ(rw->get_shape(), (Shape{4, 3, 6}));
 }
 
 TEST(type_prop, reduce_window_deduce_non_scalar_init)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{3});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{3});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2, 4};
@@ -8594,11 +8594,11 @@ TEST(type_prop, reduce_window_deduce_non_scalar_init)
 
 TEST(type_prop, reduce_window_deduce_different_element_types)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::i32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(i32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2, 4};
@@ -8624,11 +8624,11 @@ TEST(type_prop, reduce_window_deduce_different_element_types)
 
 TEST(type_prop, reduce_window_deduce_bad_window_shape)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2};
@@ -8653,11 +8653,11 @@ TEST(type_prop, reduce_window_deduce_bad_window_shape)
 
 TEST(type_prop, reduce_window_deduce_bad_move_strides)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2, 4};
@@ -8683,11 +8683,11 @@ TEST(type_prop, reduce_window_deduce_bad_move_strides)
 
 TEST(type_prop, reduce_window_deduce_zero_length_axis)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 0, 4};
@@ -8712,11 +8712,11 @@ TEST(type_prop, reduce_window_deduce_zero_length_axis)
 
 TEST(type_prop, reduce_window_deduce_zero_length_stride)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2, 4};
@@ -8741,11 +8741,11 @@ TEST(type_prop, reduce_window_deduce_zero_length_stride)
 
 TEST(type_prop, reduce_window_deduce_window_too_big)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 11, 4};
@@ -8770,12 +8770,12 @@ TEST(type_prop, reduce_window_deduce_window_too_big)
 
 TEST(type_prop, reduce_window_deduce_param_count)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_2 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_0 + f_param_1,
                                    ParameterVector{f_param_0, f_param_1, f_param_2});
 
@@ -8802,11 +8802,11 @@ TEST(type_prop, reduce_window_deduce_param_count)
 
 TEST(type_prop, reduce_window_deduce_param_0_wrong_element_type)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::i32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(i32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2, 4};
@@ -8832,11 +8832,11 @@ TEST(type_prop, reduce_window_deduce_param_0_wrong_element_type)
 
 TEST(type_prop, reduce_window_deduce_param_0_wrong_shape)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{1});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{1});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(f_param_1, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2, 4};
@@ -8861,11 +8861,11 @@ TEST(type_prop, reduce_window_deduce_param_0_wrong_shape)
 
 TEST(type_prop, reduce_window_deduce_param_1_wrong_element_type)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::i32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(i32, Shape{});
     auto f = make_shared<Function>(f_param_0, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2, 4};
@@ -8891,11 +8891,11 @@ TEST(type_prop, reduce_window_deduce_param_1_wrong_element_type)
 
 TEST(type_prop, reduce_window_deduce_param_1_wrong_shape)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{1});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{1});
     auto f = make_shared<Function>(f_param_0, ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2, 4};
@@ -8920,11 +8920,11 @@ TEST(type_prop, reduce_window_deduce_param_1_wrong_shape)
 
 TEST(type_prop, reduce_window_deduce_multi_output)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(NodeVector{f_param_0 + f_param_1, f_param_0 * f_param_1},
                                    ParameterVector{f_param_0, f_param_1});
 
@@ -8950,12 +8950,12 @@ TEST(type_prop, reduce_window_deduce_multi_output)
 
 TEST(type_prop, reduce_window_reduction_function_return_element_type_mismatch)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f = make_shared<Function>(make_shared<op::Convert>(f_param_0 + f_param_1, element::i32),
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
+    auto f = make_shared<Function>(make_shared<op::Convert>(f_param_0 + f_param_1, i32),
                                    ParameterVector{f_param_0, f_param_1});
 
     Shape window_shape{4, 2, 4};
@@ -8982,11 +8982,11 @@ TEST(type_prop, reduce_window_reduction_function_return_element_type_mismatch)
 
 TEST(type_prop, reduce_window_reduction_function_return_shape_mismatch)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{18, 10, 15});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{18, 10, 15});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(
         make_shared<op::Broadcast>(f_param_0 + f_param_1, Shape{1}, AxisSet{0}),
         ParameterVector{f_param_0, f_param_1});
@@ -9014,17 +9014,17 @@ TEST(type_prop, reduce_window_reduction_function_return_shape_mismatch)
 
 TEST(type_prop, select_and_scatter_deduce_1d)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{13});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{13});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{4};
@@ -9032,23 +9032,23 @@ TEST(type_prop, select_and_scatter_deduce_1d)
 
     auto sas = make_shared<op::SelectAndScatter>(
         param_0, param_1, param_2, f, g, window_shape, move_strides);
-    ASSERT_EQ(sas->get_element_type(), element::f32);
+    ASSERT_EQ(sas->get_element_type(), f32);
     ASSERT_EQ(sas->get_shape(), (Shape{16}));
 }
 
 TEST(type_prop, select_and_scatter_deduce_2d)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{13, 14});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{13, 14});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{4, 5};
@@ -9056,23 +9056,23 @@ TEST(type_prop, select_and_scatter_deduce_2d)
 
     auto sas = make_shared<op::SelectAndScatter>(
         param_0, param_1, param_2, f, g, window_shape, move_strides);
-    ASSERT_EQ(sas->get_element_type(), element::f32);
+    ASSERT_EQ(sas->get_element_type(), f32);
     ASSERT_EQ(sas->get_shape(), (Shape{16, 18}));
 }
 
 TEST(type_prop, select_and_scatter_deduce_3d)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{13, 14, 9});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{13, 14, 9});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{4, 5, 2};
@@ -9080,23 +9080,23 @@ TEST(type_prop, select_and_scatter_deduce_3d)
 
     auto sas = make_shared<op::SelectAndScatter>(
         param_0, param_1, param_2, f, g, window_shape, move_strides);
-    ASSERT_EQ(sas->get_element_type(), element::f32);
+    ASSERT_EQ(sas->get_element_type(), f32);
     ASSERT_EQ(sas->get_shape(), (Shape{16, 18, 10}));
 }
 
 TEST(type_prop, select_and_scatter_deduce_3d_strided)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{4, 3, 2});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{4, 3, 2});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{4, 3, 2};
@@ -9104,23 +9104,23 @@ TEST(type_prop, select_and_scatter_deduce_3d_strided)
 
     auto sas = make_shared<op::SelectAndScatter>(
         param_0, param_1, param_2, f, g, window_shape, move_strides);
-    ASSERT_EQ(sas->get_element_type(), element::f32);
+    ASSERT_EQ(sas->get_element_type(), f32);
     ASSERT_EQ(sas->get_shape(), (Shape{16, 18, 10}));
 }
 
 TEST(type_prop, select_and_scatter_deduce_3d_strided_uneven)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9128,23 +9128,23 @@ TEST(type_prop, select_and_scatter_deduce_3d_strided_uneven)
 
     auto sas = make_shared<op::SelectAndScatter>(
         param_0, param_1, param_2, f, g, window_shape, move_strides);
-    ASSERT_EQ(sas->get_element_type(), element::f32);
+    ASSERT_EQ(sas->get_element_type(), f32);
     ASSERT_EQ(sas->get_shape(), (Shape{16, 18, 10}));
 }
 
 TEST(type_prop, select_and_scatter_deduce_init_not_scalar)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{4});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{4});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9170,17 +9170,17 @@ TEST(type_prop, select_and_scatter_deduce_init_not_scalar)
 
 TEST(type_prop, select_and_scatter_deduce_init_elem_type_wrong)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::i32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(i32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9207,17 +9207,17 @@ TEST(type_prop, select_and_scatter_deduce_init_elem_type_wrong)
 
 TEST(type_prop, select_and_scatter_deduce_source_elem_type_wrong)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::i32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(i32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9244,17 +9244,17 @@ TEST(type_prop, select_and_scatter_deduce_source_elem_type_wrong)
 
 TEST(type_prop, select_and_scatter_deduce_source_window_shape_wrong_rank)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5};
@@ -9281,17 +9281,17 @@ TEST(type_prop, select_and_scatter_deduce_source_window_shape_wrong_rank)
 
 TEST(type_prop, select_and_scatter_deduce_source_window_strides_wrong_rank)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9318,17 +9318,17 @@ TEST(type_prop, select_and_scatter_deduce_source_window_strides_wrong_rank)
 
 TEST(type_prop, select_and_scatter_deduce_source_window_shape_zero_length_axis)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 0, 3};
@@ -9354,17 +9354,17 @@ TEST(type_prop, select_and_scatter_deduce_source_window_shape_zero_length_axis)
 
 TEST(type_prop, select_and_scatter_deduce_source_window_strides_zero_length_axis)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9390,17 +9390,17 @@ TEST(type_prop, select_and_scatter_deduce_source_window_strides_zero_length_axis
 
 TEST(type_prop, select_and_scatter_deduce_source_window_too_big)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 19, 3};
@@ -9426,17 +9426,17 @@ TEST(type_prop, select_and_scatter_deduce_source_window_too_big)
 
 TEST(type_prop, select_and_scatter_deduce_source_tensor_wrong_shape)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 4, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 4, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9462,18 +9462,18 @@ TEST(type_prop, select_and_scatter_deduce_source_tensor_wrong_shape)
 
 TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_param_count)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_2 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1, f_param_2});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9500,17 +9500,17 @@ TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_param_count)
 
 TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_param_0_element_type)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::i32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(i32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_1, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9537,17 +9537,17 @@ TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_param_0_eleme
 
 TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_param_0_shape)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{1});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{1});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_1, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9573,17 +9573,17 @@ TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_param_0_shape
 
 TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_param_1_element_type)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::i32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(i32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_0),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9610,17 +9610,17 @@ TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_param_1_eleme
 
 TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_param_1_shape)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{1});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{1});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_0),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9646,19 +9646,19 @@ TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_param_1_shape
 
 TEST(type_prop, select_and_scatter_deduce_selection_function_multi_output)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(
         std::vector<std::shared_ptr<Node>>{make_shared<op::Greater>(f_param_0, f_param_1),
                                            make_shared<op::Greater>(f_param_0, f_param_1)},
         ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9684,17 +9684,17 @@ TEST(type_prop, select_and_scatter_deduce_selection_function_multi_output)
 
 TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_result_element_type)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Add>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9721,19 +9721,19 @@ TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_result_elemen
 
 TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_result_shape)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(
         make_shared<op::Broadcast>(
             make_shared<op::Greater>(f_param_0, f_param_1), Shape{1}, AxisSet{0}),
         ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9760,18 +9760,18 @@ TEST(type_prop, select_and_scatter_deduce_selection_function_wrong_result_shape)
 
 TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_param_count)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_2 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_1,
                                    ParameterVector{g_param_0, g_param_1, g_param_2});
 
@@ -9799,17 +9799,17 @@ TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_param_count)
 
 TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_param_0_element_type)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::i32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(i32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_1 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9836,17 +9836,17 @@ TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_param_0_element
 
 TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_param_0_shape)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{1});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{1});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(g_param_1 + g_param_1, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9872,17 +9872,17 @@ TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_param_0_shape)
 
 TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_param_1_element_type)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::i32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(i32, Shape{});
     auto g = make_shared<Function>(g_param_0 + g_param_0, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9909,17 +9909,17 @@ TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_param_1_element
 
 TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_param_1_shape)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{1});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{1});
     auto g = make_shared<Function>(g_param_0 + g_param_0, ParameterVector{g_param_0, g_param_1});
 
     Shape window_shape{5, 5, 3};
@@ -9945,17 +9945,17 @@ TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_param_1_shape)
 
 TEST(type_prop, select_and_scatter_deduce_scatter_function_multi_output)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(
         std::vector<std::shared_ptr<Node>>{g_param_0 + g_param_1, g_param_0 + g_param_1},
         ParameterVector{g_param_0, g_param_1});
@@ -9983,17 +9983,17 @@ TEST(type_prop, select_and_scatter_deduce_scatter_function_multi_output)
 
 TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_result_element_type)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(make_shared<op::Greater>(g_param_0, g_param_1),
                                    ParameterVector{g_param_0, g_param_1});
 
@@ -10022,17 +10022,17 @@ TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_result_element_
 
 TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_result_shape)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{16, 18, 10});
-    auto param_1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 3});
-    auto param_2 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{16, 18, 10});
+    auto param_1 = make_shared<op::Parameter>(f32, Shape{2, 3, 3});
+    auto param_2 = make_shared<op::Parameter>(f32, Shape{});
 
-    auto f_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto f_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto f_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto f_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto f = make_shared<Function>(make_shared<op::Greater>(f_param_0, f_param_1),
                                    ParameterVector{f_param_0, f_param_1});
 
-    auto g_param_0 = make_shared<op::Parameter>(element::f32, Shape{});
-    auto g_param_1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto g_param_0 = make_shared<op::Parameter>(f32, Shape{});
+    auto g_param_1 = make_shared<op::Parameter>(f32, Shape{});
     auto g = make_shared<Function>(
         make_shared<op::Broadcast>(g_param_0 + g_param_1, Shape{1}, AxisSet{0}),
         ParameterVector{g_param_0, g_param_1});
@@ -10061,11 +10061,11 @@ TEST(type_prop, select_and_scatter_deduce_scatter_function_wrong_result_shape)
 TEST(type_prop, avg_pool_1d_deduce)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 100});
     Shape window_shape{10};
     auto avg_pool = make_shared<op::AvgPool>(param, window_shape);
 
-    EXPECT_EQ(avg_pool->get_element_type(), element::f32);
+    EXPECT_EQ(avg_pool->get_element_type(), f32);
     EXPECT_EQ(avg_pool->get_shape(), (Shape{64, 3, 91}));
 
     EXPECT_EQ(avg_pool->get_window_movement_strides(), Strides{1});
@@ -10077,12 +10077,12 @@ TEST(type_prop, avg_pool_1d_deduce)
 TEST(type_prop, avg_pool_1d_deduce_strided)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 100});
     Shape window_shape{10};
     auto move_strides = Strides{2};
     auto avg_pool = make_shared<op::AvgPool>(param, window_shape, move_strides);
 
-    EXPECT_EQ(avg_pool->get_element_type(), element::f32);
+    EXPECT_EQ(avg_pool->get_element_type(), f32);
     EXPECT_EQ(avg_pool->get_shape(), (Shape{64, 3, 46}));
 
     EXPECT_EQ(avg_pool->get_window_movement_strides(), Strides{2});
@@ -10094,12 +10094,12 @@ TEST(type_prop, avg_pool_1d_deduce_strided)
 TEST(type_prop, avg_pool_1d_deduce_strided_small_uneven)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 5});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 5});
     Shape window_shape{2};
     auto move_strides = Strides{2};
     auto avg_pool = make_shared<op::AvgPool>(param, window_shape, move_strides);
 
-    EXPECT_EQ(avg_pool->get_element_type(), element::f32);
+    EXPECT_EQ(avg_pool->get_element_type(), f32);
     EXPECT_EQ(avg_pool->get_shape(), (Shape{64, 3, 2}));
 
     EXPECT_EQ(avg_pool->get_window_movement_strides(), Strides{2});
@@ -10111,12 +10111,12 @@ TEST(type_prop, avg_pool_1d_deduce_strided_small_uneven)
 TEST(type_prop, avg_pool_1d_deduce_strided_small_even)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 6});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 6});
     Shape window_shape{2};
     auto move_strides = Strides{2};
     auto avg_pool = make_shared<op::AvgPool>(param, window_shape, move_strides);
 
-    EXPECT_EQ(avg_pool->get_element_type(), element::f32);
+    EXPECT_EQ(avg_pool->get_element_type(), f32);
     EXPECT_EQ(avg_pool->get_shape(), (Shape{64, 3, 3}));
 
     EXPECT_EQ(avg_pool->get_window_movement_strides(), Strides{2});
@@ -10128,11 +10128,11 @@ TEST(type_prop, avg_pool_1d_deduce_strided_small_even)
 TEST(type_prop, avg_pool_2d_deduce)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100, 150});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 100, 150});
     Shape window_shape{10, 20};
     auto avg_pool = make_shared<op::AvgPool>(param, window_shape);
 
-    EXPECT_EQ(avg_pool->get_element_type(), element::f32);
+    EXPECT_EQ(avg_pool->get_element_type(), f32);
     EXPECT_EQ(avg_pool->get_shape(), (Shape{64, 3, 91, 131}));
 
     EXPECT_EQ(avg_pool->get_window_movement_strides(), (Strides{1, 1}));
@@ -10144,12 +10144,12 @@ TEST(type_prop, avg_pool_2d_deduce)
 TEST(type_prop, avg_pool_2d_deduce_strided)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 100, 150});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 100, 150});
     Shape window_shape{10, 20};
     auto move_strides = Strides{2, 3};
     auto avg_pool = make_shared<op::AvgPool>(param, window_shape, move_strides);
 
-    EXPECT_EQ(avg_pool->get_element_type(), element::f32);
+    EXPECT_EQ(avg_pool->get_element_type(), f32);
     EXPECT_EQ(avg_pool->get_shape(), (Shape{64, 3, 46, 44}));
 
     EXPECT_EQ(avg_pool->get_window_movement_strides(), (Strides{2, 3}));
@@ -10161,12 +10161,12 @@ TEST(type_prop, avg_pool_2d_deduce_strided)
 TEST(type_prop, avg_pool_3d_deduce_strided_small)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 7, 8, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 7, 8, 10});
     Shape window_shape{2, 3, 2};
     auto move_strides = Strides{2, 3, 4};
     auto avg_pool = make_shared<op::AvgPool>(param, window_shape, move_strides);
 
-    EXPECT_EQ(avg_pool->get_element_type(), element::f32);
+    EXPECT_EQ(avg_pool->get_element_type(), f32);
     EXPECT_EQ(avg_pool->get_shape(), (Shape{64, 3, 3, 2, 3}));
 
     EXPECT_EQ(avg_pool->get_window_movement_strides(), (Strides{2, 3, 4}));
@@ -10178,7 +10178,7 @@ TEST(type_prop, avg_pool_3d_deduce_strided_small)
 TEST(type_prop, avg_pool_3d_deduce_strided_padded_small)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{64, 3, 7, 8, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{64, 3, 7, 8, 10});
     Shape window_shape{2, 3, 2};
     auto move_strides = Strides{2, 3, 4};
     Shape padding_below{5, 6, 4};
@@ -10186,7 +10186,7 @@ TEST(type_prop, avg_pool_3d_deduce_strided_padded_small)
     auto avg_pool = make_shared<op::AvgPool>(
         param, window_shape, move_strides, padding_below, padding_above, true);
 
-    EXPECT_EQ(avg_pool->get_element_type(), element::f32);
+    EXPECT_EQ(avg_pool->get_element_type(), f32);
     EXPECT_EQ(avg_pool->get_shape(), (Shape{64, 3, 9, 6, 5}));
 
     EXPECT_EQ(avg_pool->get_window_movement_strides(), (Strides{2, 3, 4}));
@@ -10198,7 +10198,7 @@ TEST(type_prop, avg_pool_3d_deduce_strided_padded_small)
 TEST(type_prop, avg_pool_invalid_0d_input)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param = make_shared<op::Parameter>(f32, Shape{});
     Shape window_shape{};
     try
     {
@@ -10222,7 +10222,7 @@ TEST(type_prop, avg_pool_invalid_0d_input)
 TEST(type_prop, avg_pool_invalid_1d_input)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{2});
+    auto param = make_shared<op::Parameter>(f32, Shape{2});
     Shape window_shape{};
     try
     {
@@ -10246,7 +10246,7 @@ TEST(type_prop, avg_pool_invalid_1d_input)
 TEST(type_prop, avg_pool_invalid_2d_input)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{2, 6});
+    auto param = make_shared<op::Parameter>(f32, Shape{2, 6});
     Shape window_shape{};
     try
     {
@@ -10270,7 +10270,7 @@ TEST(type_prop, avg_pool_invalid_2d_input)
 TEST(type_prop, avg_pool_invalid_0_batch_size)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{0, 6, 1});
+    auto param = make_shared<op::Parameter>(f32, Shape{0, 6, 1});
     Shape window_shape{1};
     try
     {
@@ -10292,7 +10292,7 @@ TEST(type_prop, avg_pool_invalid_0_batch_size)
 TEST(type_prop, avg_pool_invalid_0_channels)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 0, 1});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 0, 1});
     Shape window_shape{1};
     try
     {
@@ -10314,7 +10314,7 @@ TEST(type_prop, avg_pool_invalid_0_channels)
 TEST(type_prop, avg_pool_invalid_wrong_number_of_window_dimensions_too_many)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3, 3, 3};
     try
     {
@@ -10340,7 +10340,7 @@ TEST(type_prop, avg_pool_invalid_wrong_number_of_window_dimensions_too_many)
 TEST(type_prop, avg_pool_invalid_wrong_number_of_window_dimensions_too_few)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3};
     try
     {
@@ -10366,7 +10366,7 @@ TEST(type_prop, avg_pool_invalid_wrong_number_of_window_dimensions_too_few)
 TEST(type_prop, avg_pool_invalid_movement_stride_rank)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3, 3};
     auto move_strides = Strides{2, 3, 8};
     try
@@ -10393,7 +10393,7 @@ TEST(type_prop, avg_pool_invalid_movement_stride_rank)
 TEST(type_prop, avg_pool_invalid_padding_below_rank)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3, 3};
     auto move_strides = Strides{2, 3};
     Shape padding_below{1, 2, 3};
@@ -10423,7 +10423,7 @@ TEST(type_prop, avg_pool_invalid_padding_below_rank)
 TEST(type_prop, avg_pool_invalid_padding_above_rank)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3, 3};
     auto move_strides = Strides{2, 3};
     Shape padding_below{1, 2};
@@ -10453,7 +10453,7 @@ TEST(type_prop, avg_pool_invalid_padding_above_rank)
 TEST(type_prop, avg_pool_invalid_input_item_size_0)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 0, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 0, 10});
     Shape window_shape{3, 3};
     try
     {
@@ -10477,7 +10477,7 @@ TEST(type_prop, avg_pool_invalid_input_item_size_0)
 TEST(type_prop, avg_pool_invalid_window_size_0)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3, 0};
     try
     {
@@ -10500,7 +10500,7 @@ TEST(type_prop, avg_pool_invalid_window_size_0)
 TEST(type_prop, avg_pool_invalid_dilated_too_large)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 8, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 8, 8});
     Shape window_shape{9, 9};
     try
     {
@@ -10523,7 +10523,7 @@ TEST(type_prop, avg_pool_invalid_dilated_too_large)
 
 TEST(type_prop, avg_pool_larger_than_pre_padding_but_fits_in_post_padding)
 {
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 8, 8});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 8, 8});
     Shape window_shape{9, 9};
     Strides window_strides{1, 1};
     Shape padding_below{0, 0};
@@ -10531,14 +10531,14 @@ TEST(type_prop, avg_pool_larger_than_pre_padding_but_fits_in_post_padding)
     auto avg_pool =
         make_shared<op::AvgPool>(param, window_shape, window_strides, padding_below, padding_above);
 
-    ASSERT_EQ(avg_pool->get_output_element_type(0), element::f32);
+    ASSERT_EQ(avg_pool->get_output_element_type(0), f32);
     ASSERT_EQ(avg_pool->get_output_shape(0), (Shape{6, 2, 1, 1}));
 }
 
 TEST(type_prop, avg_pool_invalid_movement_stride_0)
 {
     // Deduce type
-    auto param = make_shared<op::Parameter>(element::f32, Shape{6, 2, 10, 10});
+    auto param = make_shared<op::Parameter>(f32, Shape{6, 2, 10, 10});
     Shape window_shape{3, 3};
     auto move_strides = Strides{0, 1};
     try
@@ -10568,7 +10568,7 @@ TEST(type_prop, avg_pool_partial_rank_dynamic_ok)
     Shape padding_above{0, 0, 0, 0};
     bool include_padding_in_average = false;
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
     auto ap = make_shared<op::AvgPool>(param,
                                        window_shape,
                                        window_movement_strides,
@@ -10576,7 +10576,7 @@ TEST(type_prop, avg_pool_partial_rank_dynamic_ok)
                                        padding_above,
                                        include_padding_in_average);
 
-    ASSERT_EQ(ap->get_output_element_type(0), element::f32);
+    ASSERT_EQ(ap->get_output_element_type(0), f32);
     ASSERT_TRUE(ap->get_output_partial_shape(0).same_scheme(PartialShape::dynamic(6)));
 }
 
@@ -10589,7 +10589,7 @@ TEST(type_prop, avg_pool_partial_rank_dynamic_attrib_rank_mismatch)
     Shape padding_above{0, 0, 0, 0};
     bool include_padding_in_average = false;
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
 
     try
     {
@@ -10625,7 +10625,7 @@ TEST(type_prop, avg_pool_partial_rank_static_dynamic_ok)
     Shape padding_above{0, 0, 0, 0};
     bool include_padding_in_average = false;
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
     auto ap = make_shared<op::AvgPool>(param,
                                        window_shape,
                                        window_movement_strides,
@@ -10633,7 +10633,7 @@ TEST(type_prop, avg_pool_partial_rank_static_dynamic_ok)
                                        padding_above,
                                        include_padding_in_average);
 
-    ASSERT_EQ(ap->get_output_element_type(0), element::f32);
+    ASSERT_EQ(ap->get_output_element_type(0), f32);
     ASSERT_TRUE(ap->get_output_partial_shape(0).same_scheme(PartialShape::dynamic(6)));
 }
 
@@ -10646,7 +10646,7 @@ TEST(type_prop, avg_pool_partial_rank_static_dynamic_some_dims_known_ok)
     Shape padding_above{0, 0, 0, 0};
     bool include_padding_in_average = false;
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
     auto ap = make_shared<op::AvgPool>(param,
                                        window_shape,
                                        window_movement_strides,
@@ -10654,7 +10654,7 @@ TEST(type_prop, avg_pool_partial_rank_static_dynamic_some_dims_known_ok)
                                        padding_above,
                                        include_padding_in_average);
 
-    ASSERT_EQ(ap->get_output_element_type(0), element::f32);
+    ASSERT_EQ(ap->get_output_element_type(0), f32);
     ASSERT_TRUE(ap->get_output_partial_shape(0).same_scheme(
         PartialShape{5, Dimension::dynamic(), 7, Dimension::dynamic(), 1, 3}));
 }
@@ -10668,7 +10668,7 @@ TEST(type_prop, avg_pool_partial_rank_static_dynamic_attrib_rank_mismatch)
     Shape padding_above{0, 0, 0, 0};
     bool include_padding_in_average = false;
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
 
     try
     {
@@ -10704,7 +10704,7 @@ TEST(type_prop, avg_pool_partial_rank_static_dynamic_window_not_too_big)
     Shape padding_above{0, 0, 0, 0};
     bool include_padding_in_average = false;
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
 
     try
     {
@@ -10737,7 +10737,7 @@ TEST(type_prop, avg_pool_partial_rank_static_dynamic_padded_window_not_too_big)
     Shape padding_above{1, 0, 0, 0};
     bool include_padding_in_average = false;
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
     auto ap = make_shared<op::AvgPool>(param,
                                        window_shape,
                                        window_movement_strides,
@@ -10745,7 +10745,7 @@ TEST(type_prop, avg_pool_partial_rank_static_dynamic_padded_window_not_too_big)
                                        padding_above,
                                        include_padding_in_average);
 
-    ASSERT_EQ(ap->get_output_element_type(0), element::f32);
+    ASSERT_EQ(ap->get_output_element_type(0), f32);
     ASSERT_TRUE(ap->get_output_partial_shape(0).same_scheme(
         PartialShape{5, Dimension::dynamic(), 1, Dimension::dynamic(), 1, 3}));
 }
@@ -10759,7 +10759,7 @@ TEST(type_prop, avg_pool_partial_rank_static_dynamic_window_in_padding)
     Shape padding_above{0, 0, 0, 0};
     bool include_padding_in_average = false;
 
-    auto param = make_shared<op::Parameter>(element::f32, arg_shape);
+    auto param = make_shared<op::Parameter>(f32, arg_shape);
 
     try
     {
@@ -10786,13 +10786,13 @@ TEST(type_prop, avg_pool_partial_rank_static_dynamic_window_in_padding)
 TEST(type_prop, pad_deduce_1d_exterior)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{50});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{50});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
     Shape padding_below{2};
     Shape padding_above{3};
     Shape padding_interior{0};
     auto pad = make_shared<op::Pad>(param0, param1, padding_below, padding_above, padding_interior);
-    EXPECT_EQ(pad->get_element_type(), element::f32);
+    EXPECT_EQ(pad->get_element_type(), f32);
     EXPECT_EQ(pad->get_shape(), (Shape{55}));
 
     EXPECT_EQ(pad->get_padding_below(), (Shape{2}));
@@ -10803,13 +10803,13 @@ TEST(type_prop, pad_deduce_1d_exterior)
 TEST(type_prop, pad_deduce_1d_interior)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{50});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{50});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
     Shape padding_below{0};
     Shape padding_above{0};
     Shape padding_interior{2};
     auto pad = make_shared<op::Pad>(param0, param1, padding_below, padding_above, padding_interior);
-    EXPECT_EQ(pad->get_element_type(), element::f32);
+    EXPECT_EQ(pad->get_element_type(), f32);
     EXPECT_EQ(pad->get_shape(), (Shape{148}));
 
     EXPECT_EQ(pad->get_padding_below(), (Shape{0}));
@@ -10820,13 +10820,13 @@ TEST(type_prop, pad_deduce_1d_interior)
 TEST(type_prop, pad_deduce_1d_interior_exterior)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{50});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{50});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
     Shape padding_below{5};
     Shape padding_above{6};
     Shape padding_interior{2};
     auto pad = make_shared<op::Pad>(param0, param1, padding_below, padding_above, padding_interior);
-    EXPECT_EQ(pad->get_element_type(), element::f32);
+    EXPECT_EQ(pad->get_element_type(), f32);
     EXPECT_EQ(pad->get_shape(), (Shape{159}));
 
     EXPECT_EQ(pad->get_padding_below(), (Shape{5}));
@@ -10837,13 +10837,13 @@ TEST(type_prop, pad_deduce_1d_interior_exterior)
 TEST(type_prop, pad_deduce_2d_interior_exterior)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{50, 40});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{50, 40});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
     Shape padding_below{5, 3};
     Shape padding_above{6, 9};
     Shape padding_interior{2, 3};
     auto pad = make_shared<op::Pad>(param0, param1, padding_below, padding_above, padding_interior);
-    EXPECT_EQ(pad->get_element_type(), element::f32);
+    EXPECT_EQ(pad->get_element_type(), f32);
     EXPECT_EQ(pad->get_shape(), (Shape{159, 169}));
 
     EXPECT_EQ(pad->get_padding_below(), (Shape{5, 3}));
@@ -10854,13 +10854,13 @@ TEST(type_prop, pad_deduce_2d_interior_exterior)
 TEST(type_prop, pad_deduce_3d_interior_exterior)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{50, 40, 20});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{50, 40, 20});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
     Shape padding_below{5, 3, 0};
     Shape padding_above{6, 9, 4};
     Shape padding_interior{2, 3, 0};
     auto pad = make_shared<op::Pad>(param0, param1, padding_below, padding_above, padding_interior);
-    EXPECT_EQ(pad->get_element_type(), element::f32);
+    EXPECT_EQ(pad->get_element_type(), f32);
     EXPECT_EQ(pad->get_shape(), (Shape{159, 169, 24}));
 
     EXPECT_EQ(pad->get_padding_below(), (Shape{5, 3, 0}));
@@ -10871,8 +10871,8 @@ TEST(type_prop, pad_deduce_3d_interior_exterior)
 TEST(type_prop, pad_deduce_element_type_mismatch)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{50, 40, 20});
-    auto param1 = make_shared<op::Parameter>(element::i32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{50, 40, 20});
+    auto param1 = make_shared<op::Parameter>(i32, Shape{});
     Shape padding_below{5, 3, 0};
     Shape padding_above{6, 9, 4};
     Shape padding_interior{2, 3, 0};
@@ -10897,8 +10897,8 @@ TEST(type_prop, pad_deduce_element_type_mismatch)
 TEST(type_prop, pad_deduce_nonscalar_pad_value)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{50, 40, 20});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{6});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{50, 40, 20});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{6});
     Shape padding_below{5, 3, 0};
     Shape padding_above{6, 9, 4};
     Shape padding_interior{2, 3, 0};
@@ -10924,8 +10924,8 @@ TEST(type_prop, pad_deduce_nonscalar_pad_value)
 TEST(type_prop, pad_deduce_below_padding_wrong_rank)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{50, 40, 20});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{50, 40, 20});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
     Shape padding_below{5, 3, 0, 6};
     Shape padding_above{6, 9, 4};
     Shape padding_interior{2, 3, 0};
@@ -10953,8 +10953,8 @@ TEST(type_prop, pad_deduce_below_padding_wrong_rank)
 TEST(type_prop, pad_deduce_above_padding_wrong_rank)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{50, 40, 20});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{50, 40, 20});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
     Shape padding_below{5, 3, 0};
     Shape padding_above{6, 9};
     Shape padding_interior{2, 3, 0};
@@ -10982,8 +10982,8 @@ TEST(type_prop, pad_deduce_above_padding_wrong_rank)
 TEST(type_prop, pad_deduce_interior_padding_wrong_rank)
 {
     // Deduce type
-    auto param0 = make_shared<op::Parameter>(element::f32, Shape{50, 40, 20});
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, Shape{50, 40, 20});
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
     Shape padding_below{5, 3, 0};
     Shape padding_above{6, 9, 4};
     Shape padding_interior{2, 3, 0, 9, 3};
@@ -11010,8 +11010,8 @@ TEST(type_prop, pad_deduce_interior_padding_wrong_rank)
 
 TEST(type_prop, pad_partial_data_rank_dynamic_padding_rank_dynamic_ok)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     Shape padding_below{2, 4, 6};
     Shape padding_above{8, 2, 3};
@@ -11019,15 +11019,15 @@ TEST(type_prop, pad_partial_data_rank_dynamic_padding_rank_dynamic_ok)
 
     auto pad = make_shared<op::Pad>(param0, param1, padding_below, padding_above, padding_interior);
 
-    ASSERT_EQ(pad->get_output_element_type(0), element::f32);
+    ASSERT_EQ(pad->get_output_element_type(0), f32);
     ASSERT_TRUE(pad->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()}));
 }
 
 TEST(type_prop, pad_partial_data_rank_dynamic_padding_rank_dynamic_attribs_rank_inconsistent)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     Shape padding_below{2, 4, 6};
     Shape padding_above{8, 2, 3, 0};
@@ -11055,9 +11055,9 @@ TEST(type_prop, pad_partial_data_rank_dynamic_padding_rank_dynamic_attribs_rank_
 TEST(type_prop, pad_partial_data_rank_static_dynamic_padding_rank_dynamic_ok)
 {
     auto param0 = make_shared<op::Parameter>(
-        element::f32,
+        f32,
         PartialShape{Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     Shape padding_below{2, 4, 6};
     Shape padding_above{8, 2, 3};
@@ -11065,7 +11065,7 @@ TEST(type_prop, pad_partial_data_rank_static_dynamic_padding_rank_dynamic_ok)
 
     auto pad = make_shared<op::Pad>(param0, param1, padding_below, padding_above, padding_interior);
 
-    ASSERT_EQ(pad->get_output_element_type(0), element::f32);
+    ASSERT_EQ(pad->get_output_element_type(0), f32);
     ASSERT_TRUE(pad->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()}));
 }
@@ -11073,8 +11073,8 @@ TEST(type_prop, pad_partial_data_rank_static_dynamic_padding_rank_dynamic_ok)
 TEST(type_prop, pad_partial_data_rank_static_dynamic_some_dims_known_padding_rank_dynamic_ok)
 {
     auto param0 =
-        make_shared<op::Parameter>(element::f32, PartialShape{3, 5, Dimension::dynamic()});
-    auto param1 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+        make_shared<op::Parameter>(f32, PartialShape{3, 5, Dimension::dynamic()});
+    auto param1 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     Shape padding_below{2, 4, 6};
     Shape padding_above{8, 2, 3};
@@ -11082,15 +11082,15 @@ TEST(type_prop, pad_partial_data_rank_static_dynamic_some_dims_known_padding_ran
 
     auto pad = make_shared<op::Pad>(param0, param1, padding_below, padding_above, padding_interior);
 
-    ASSERT_EQ(pad->get_output_element_type(0), element::f32);
+    ASSERT_EQ(pad->get_output_element_type(0), f32);
     ASSERT_TRUE(
         pad->get_output_partial_shape(0).same_scheme(PartialShape{15, 11, Dimension::dynamic()}));
 }
 
 TEST(type_prop, pad_partial_data_rank_dynamic_padding_static_ok)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
 
     Shape padding_below{2, 4, 6};
     Shape padding_above{8, 2, 3};
@@ -11098,15 +11098,15 @@ TEST(type_prop, pad_partial_data_rank_dynamic_padding_static_ok)
 
     auto pad = make_shared<op::Pad>(param0, param1, padding_below, padding_above, padding_interior);
 
-    ASSERT_EQ(pad->get_output_element_type(0), element::f32);
+    ASSERT_EQ(pad->get_output_element_type(0), f32);
     ASSERT_TRUE(pad->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()}));
 }
 
 TEST(type_prop, pad_partial_data_rank_dynamic_padding_static_wrong_padding_rank)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{2, 3, 8});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, Shape{2, 3, 8});
 
     Shape padding_below{2, 4, 6};
     Shape padding_above{8, 2, 3};
@@ -11132,8 +11132,8 @@ TEST(type_prop, pad_partial_data_rank_dynamic_padding_static_wrong_padding_rank)
 
 TEST(type_prop, pad_partial_data_rank_dynamic_padding_static_attribs_rank_inconsistent)
 {
-    auto param0 = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto param1 = make_shared<op::Parameter>(element::f32, Shape{});
+    auto param0 = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto param1 = make_shared<op::Parameter>(f32, Shape{});
 
     Shape padding_below{2, 4, 6};
     Shape padding_above{8, 2, 3, 4};
@@ -11160,28 +11160,28 @@ TEST(type_prop, pad_partial_data_rank_dynamic_padding_static_attribs_rank_incons
 
 TEST(type_prop, sum_deduce)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
 
     auto r0 = make_shared<op::Sum>(param_0, AxisSet{0});
-    ASSERT_EQ(r0->get_element_type(), element::f32);
+    ASSERT_EQ(r0->get_element_type(), f32);
     ASSERT_EQ(r0->get_shape(), (Shape{4}));
 
     auto r1 = make_shared<op::Sum>(param_0, AxisSet{1});
-    ASSERT_EQ(r1->get_element_type(), element::f32);
+    ASSERT_EQ(r1->get_element_type(), f32);
     ASSERT_EQ(r1->get_shape(), (Shape{2}));
 
     auto r01 = make_shared<op::Sum>(param_0, AxisSet{0, 1});
-    ASSERT_EQ(r01->get_element_type(), element::f32);
+    ASSERT_EQ(r01->get_element_type(), f32);
     ASSERT_EQ(r01->get_shape(), (Shape{}));
 
     auto r_none = make_shared<op::Sum>(param_0, AxisSet{});
-    ASSERT_EQ(r_none->get_element_type(), element::f32);
+    ASSERT_EQ(r_none->get_element_type(), f32);
     ASSERT_EQ(r_none->get_shape(), (Shape{2, 4}));
 }
 
 TEST(type_prop, sum_axis_oob)
 {
-    auto param_0 = make_shared<op::Parameter>(element::f32, Shape{2, 4});
+    auto param_0 = make_shared<op::Parameter>(f32, Shape{2, 4});
 
     try
     {
@@ -11201,33 +11201,33 @@ TEST(type_prop, sum_axis_oob)
 
 TEST(type_prop, sum_partial_rank_dynamic)
 {
-    auto param = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto param = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto summation_axes = AxisSet{2385, 0, 4404}; // arbitrary
     auto sum = make_shared<op::Sum>(param, summation_axes);
 
-    EXPECT_EQ(sum->get_output_element_type(0), element::f32);
+    EXPECT_EQ(sum->get_output_element_type(0), f32);
     EXPECT_TRUE(sum->get_output_partial_shape(0).is_dynamic());
 }
 
 TEST(type_prop, sum_partial_rank_static_dynamic_ok_result_static)
 {
     auto param =
-        make_shared<op::Parameter>(element::f32, PartialShape{1, 2, Dimension::dynamic(), 4, 5});
+        make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic(), 4, 5});
     auto summation_axes = AxisSet{2, 3};
     auto sum = make_shared<op::Sum>(param, summation_axes);
 
-    EXPECT_EQ(sum->get_output_element_type(0), element::f32);
+    EXPECT_EQ(sum->get_output_element_type(0), f32);
     EXPECT_EQ(sum->get_shape(), (Shape{1, 2, 5}));
 }
 
 TEST(type_prop, sum_partial_rank_static_dynamic_ok_result_dynamic)
 {
     auto param = make_shared<op::Parameter>(
-        element::f32, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
+        f32, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
     auto summation_axes = AxisSet{2, 3};
     auto sum = make_shared<op::Sum>(param, summation_axes);
 
-    EXPECT_EQ(sum->get_output_element_type(0), element::f32);
+    EXPECT_EQ(sum->get_output_element_type(0), f32);
     EXPECT_TRUE(
         sum->get_output_partial_shape(0).same_scheme(PartialShape{1, 2, Dimension::dynamic()}));
 }
@@ -11235,7 +11235,7 @@ TEST(type_prop, sum_partial_rank_static_dynamic_ok_result_dynamic)
 TEST(type_prop, sum_partial_rank_static_dynamic_axes_oob)
 {
     auto param = make_shared<op::Parameter>(
-        element::f32, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
+        f32, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
     auto summation_axes = AxisSet{2, 5, 1};
 
     try
@@ -11256,11 +11256,11 @@ TEST(type_prop, sum_partial_rank_static_dynamic_axes_oob)
 
 TEST(type_prop, index_reduction_scalar)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{});
+    auto a = make_shared<op::Parameter>(f32, Shape{});
 
     try
     {
-        auto argmin = make_shared<op::ArgMin>(a, 0, element::i32);
+        auto argmin = make_shared<op::ArgMin>(a, 0, i32);
         FAIL() << "ArgMin c-tor should throw for scalar shapes";
     }
     catch (const NodeValidationError& error)
@@ -11275,11 +11275,11 @@ TEST(type_prop, index_reduction_scalar)
 
 TEST(type_prop, index_reduction_invalid_rank)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{2, 2});
+    auto a = make_shared<op::Parameter>(f32, Shape{2, 2});
 
     try
     {
-        auto argmin = make_shared<op::ArgMin>(a, 2, element::i32);
+        auto argmin = make_shared<op::ArgMin>(a, 2, i32);
         FAIL() << "ArgMin c-tor should throw for axis out of bounds";
     }
     catch (const NodeValidationError& error)
@@ -11294,11 +11294,11 @@ TEST(type_prop, index_reduction_invalid_rank)
 
 TEST(type_prop, index_reduction_invalid_index_type)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{2, 2});
+    auto a = make_shared<op::Parameter>(f32, Shape{2, 2});
 
     try
     {
-        auto argmin = make_shared<op::ArgMin>(a, 1, element::f32);
+        auto argmin = make_shared<op::ArgMin>(a, 1, f32);
         FAIL() << "ArgMin c-tor should throw for invalid index type";
     }
     catch (const NodeValidationError& error)
@@ -11313,14 +11313,14 @@ TEST(type_prop, index_reduction_invalid_index_type)
 
 TEST(type_prop, index_reduction_partial_rank_dynamic_output_et_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto a = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     size_t axis = 228;
-    auto output_et = element::dynamic;
+    auto output_et = dynamic;
 
     try
     {
         auto argmax = make_shared<op::ArgMax>(a, axis, output_et);
-        FAIL() << "Invalid output type of element::dynamic not detected";
+        FAIL() << "Invalid output type of dynamic not detected";
     }
     catch (const NodeValidationError& error)
     {
@@ -11334,14 +11334,14 @@ TEST(type_prop, index_reduction_partial_rank_dynamic_output_et_dynamic)
 
 TEST(type_prop, index_reduction_partial_rank_dynamic_output_et_invalid)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto a = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     size_t axis = 228;
-    auto output_et = element::dynamic;
+    auto output_et = dynamic;
 
     try
     {
         auto argmax = make_shared<op::ArgMax>(a, axis, output_et);
-        FAIL() << "Invalid output type of element::f32 not detected";
+        FAIL() << "Invalid output type of f32 not detected";
     }
     catch (const NodeValidationError& error)
     {
@@ -11355,21 +11355,21 @@ TEST(type_prop, index_reduction_partial_rank_dynamic_output_et_invalid)
 
 TEST(type_prop, index_reduction_partial_rank_dynamic_ok)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto a = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     size_t axis = 228;
-    auto output_et = element::i32;
+    auto output_et = i32;
 
     auto argmax = make_shared<op::ArgMax>(a, axis, output_et);
 
-    ASSERT_EQ(argmax->get_output_element_type(0), element::i32);
+    ASSERT_EQ(argmax->get_output_element_type(0), i32);
     ASSERT_TRUE(argmax->get_output_partial_shape(0).rank().is_dynamic());
 }
 
 TEST(type_prop, index_reduction_partial_rank_static_dynamic_axis_oob)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3, 4});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3, 4});
     size_t axis = 4;
-    auto output_et = element::i32;
+    auto output_et = i32;
 
     try
     {
@@ -11388,13 +11388,13 @@ TEST(type_prop, index_reduction_partial_rank_static_dynamic_axis_oob)
 
 TEST(type_prop, index_reduction_partial_rank_static_dynamic_ok)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 2, 3, 4});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 2, 3, 4});
     size_t axis = 2;
-    auto output_et = element::i32;
+    auto output_et = i32;
 
     auto argmax = make_shared<op::ArgMax>(a, axis, output_et);
 
-    ASSERT_EQ(argmax->get_output_element_type(0), element::i32);
+    ASSERT_EQ(argmax->get_output_element_type(0), i32);
     ASSERT_TRUE(
         argmax->get_output_partial_shape(0).same_scheme(PartialShape{Dimension::dynamic(), 2, 4}));
 }
@@ -11402,24 +11402,24 @@ TEST(type_prop, index_reduction_partial_rank_static_dynamic_ok)
 TEST(type_prop, index_reduction_partial_et_dynamic_rank_static_dynamic_ok)
 {
     auto a =
-        make_shared<op::Parameter>(element::dynamic, PartialShape{Dimension::dynamic(), 2, 3, 4});
+        make_shared<op::Parameter>(dynamic, PartialShape{Dimension::dynamic(), 2, 3, 4});
     size_t axis = 2;
-    auto output_et = element::i32;
+    auto output_et = i32;
 
     auto argmax = make_shared<op::ArgMax>(a, axis, output_et);
 
-    ASSERT_EQ(argmax->get_output_element_type(0), element::i32);
+    ASSERT_EQ(argmax->get_output_element_type(0), i32);
     ASSERT_TRUE(
         argmax->get_output_partial_shape(0).same_scheme(PartialShape{Dimension::dynamic(), 2, 4}));
 }
 
 TEST(type_prop, topk_invalid_rank)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{});
+    auto a = make_shared<op::Parameter>(f32, Shape{});
 
     try
     {
-        auto topk = make_shared<op::TopK>(a, 0, element::i32, 1, true);
+        auto topk = make_shared<op::TopK>(a, 0, i32, 1, true);
         FAIL() << "TopK c-tor should throw for scalar shapes";
     }
     catch (const NodeValidationError& error)
@@ -11434,11 +11434,11 @@ TEST(type_prop, topk_invalid_rank)
 
 TEST(type_prop, topk_invalid_top_k)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{2, 2});
+    auto a = make_shared<op::Parameter>(f32, Shape{2, 2});
 
     try
     {
-        auto topk = make_shared<op::TopK>(a, 2, element::i32, 1, true);
+        auto topk = make_shared<op::TopK>(a, 2, i32, 1, true);
         FAIL() << "TopK c-tor should throw for invalid top k axis";
     }
     catch (const NodeValidationError& error)
@@ -11453,18 +11453,18 @@ TEST(type_prop, topk_invalid_top_k)
 
 TEST(type_prop, topk_invalid_index_type)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{2, 2});
+    auto a = make_shared<op::Parameter>(f32, Shape{2, 2});
 
     try
     {
-        auto topk = make_shared<op::TopK>(a, 0, element::f32, 1, true);
+        auto topk = make_shared<op::TopK>(a, 0, f32, 1, true);
         FAIL() << "TopK c-tor should throw for invalid index element type";
     }
     catch (const NodeValidationError& error)
     {
         EXPECT_HAS_SUBSTRING(
             error.what(),
-            "Argument element type must be i64 or i32 (got element::Type{32, 1, 1, 0, \"float\"})");
+            "Argument element type must be i64 or i32 (got Type{32, 1, 1, 0, \"float\"})");
     }
     catch (...)
     {
@@ -11474,11 +11474,11 @@ TEST(type_prop, topk_invalid_index_type)
 
 TEST(type_prop, topk_invalid_k)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{2, 2});
+    auto a = make_shared<op::Parameter>(f32, Shape{2, 2});
 
     try
     {
-        auto topk = make_shared<op::TopK>(a, 0, element::i32, 3, true);
+        auto topk = make_shared<op::TopK>(a, 0, i32, 3, true);
         FAIL() << "TopK c-tor should throw for invalid K";
     }
     catch (const NodeValidationError& error)
@@ -11494,30 +11494,30 @@ TEST(type_prop, topk_invalid_k)
 
 TEST(type_prop, topk_rank_dynamic_ok)
 {
-    element::Type arg_et{element::f32};
+    Type arg_et{f32};
     PartialShape arg_shape{PartialShape::dynamic()};
     size_t top_k_axis = 22;
     size_t k = 900;
-    element::Type result_et{element::i32};
+    Type result_et{i32};
     bool compute_max = true;
 
     auto param = make_shared<op::Parameter>(arg_et, arg_shape);
 
     auto topk = make_shared<op::TopK>(param, top_k_axis, result_et, k, compute_max);
 
-    ASSERT_TRUE(topk->get_output_element_type(0) == element::i32);
-    ASSERT_TRUE(topk->get_output_element_type(1) == element::f32);
+    ASSERT_TRUE(topk->get_output_element_type(0) == i32);
+    ASSERT_TRUE(topk->get_output_element_type(1) == f32);
     ASSERT_TRUE(topk->get_output_partial_shape(0).rank().is_dynamic());
     ASSERT_TRUE(topk->get_output_partial_shape(1).rank().is_dynamic());
 }
 
 TEST(type_prop, topk_rank_dynamic_result_et_dynamic)
 {
-    element::Type arg_et{element::f32};
+    Type arg_et{f32};
     PartialShape arg_shape{PartialShape::dynamic()};
     size_t top_k_axis = 22;
     size_t k = 900;
-    element::Type result_et{element::dynamic};
+    Type result_et{dynamic};
     bool compute_max = true;
 
     auto param = make_shared<op::Parameter>(arg_et, arg_shape);
@@ -11539,11 +11539,11 @@ TEST(type_prop, topk_rank_dynamic_result_et_dynamic)
 
 TEST(type_prop, topk_rank_dynamic_result_et_invalid)
 {
-    element::Type arg_et{element::f32};
+    Type arg_et{f32};
     PartialShape arg_shape{PartialShape::dynamic()};
     size_t top_k_axis = 22;
     size_t k = 900;
-    element::Type result_et{element::f32};
+    Type result_et{f32};
     bool compute_max = true;
 
     auto param = make_shared<op::Parameter>(arg_et, arg_shape);
@@ -11557,7 +11557,7 @@ TEST(type_prop, topk_rank_dynamic_result_et_invalid)
     {
         EXPECT_HAS_SUBSTRING(
             error.what(),
-            "Argument element type must be i64 or i32 (got element::Type{32, 1, 1, 0, \"float\"})");
+            "Argument element type must be i64 or i32 (got Type{32, 1, 1, 0, \"float\"})");
     }
     catch (...)
     {
@@ -11567,19 +11567,19 @@ TEST(type_prop, topk_rank_dynamic_result_et_invalid)
 
 TEST(type_prop, topk_rank_static_dynamic_k_known_topk_dim_dynamic_ok)
 {
-    element::Type arg_et{element::f32};
+    Type arg_et{f32};
     PartialShape arg_shape{Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()};
     size_t top_k_axis = 1;
     size_t k = 999;
-    element::Type result_et{element::i32};
+    Type result_et{i32};
     bool compute_max = true;
 
     auto param = make_shared<op::Parameter>(arg_et, arg_shape);
 
     auto topk = make_shared<op::TopK>(param, top_k_axis, result_et, k, compute_max);
 
-    ASSERT_TRUE(topk->get_output_element_type(0) == element::i32);
-    ASSERT_TRUE(topk->get_output_element_type(1) == element::f32);
+    ASSERT_TRUE(topk->get_output_element_type(0) == i32);
+    ASSERT_TRUE(topk->get_output_element_type(1) == f32);
     ASSERT_TRUE(topk->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), 999, Dimension::dynamic()}));
     ASSERT_TRUE(topk->get_output_partial_shape(1).same_scheme(
@@ -11588,19 +11588,19 @@ TEST(type_prop, topk_rank_static_dynamic_k_known_topk_dim_dynamic_ok)
 
 TEST(type_prop, topk_rank_static_dynamic_k_unknown_topk_dim_dynamic_ok)
 {
-    element::Type arg_et{element::f32};
+    Type arg_et{f32};
     PartialShape arg_shape{Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()};
     size_t top_k_axis = 1;
     size_t k = 0;
-    element::Type result_et{element::i32};
+    Type result_et{i32};
     bool compute_max = true;
 
     auto param = make_shared<op::Parameter>(arg_et, arg_shape);
 
     auto topk = make_shared<op::TopK>(param, top_k_axis, result_et, k, compute_max);
 
-    ASSERT_TRUE(topk->get_output_element_type(0) == element::i32);
-    ASSERT_TRUE(topk->get_output_element_type(1) == element::f32);
+    ASSERT_TRUE(topk->get_output_element_type(0) == i32);
+    ASSERT_TRUE(topk->get_output_element_type(1) == f32);
     ASSERT_TRUE(topk->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()}));
     ASSERT_TRUE(topk->get_output_partial_shape(1).same_scheme(
@@ -11609,11 +11609,11 @@ TEST(type_prop, topk_rank_static_dynamic_k_unknown_topk_dim_dynamic_ok)
 
 TEST(type_prop, topk_rank_static_dynamic_axis_oob)
 {
-    element::Type arg_et{element::f32};
+    Type arg_et{f32};
     PartialShape arg_shape{Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()};
     size_t top_k_axis = 22;
     size_t k = 900;
-    element::Type result_et{element::f32};
+    Type result_et{f32};
     bool compute_max = true;
 
     auto param = make_shared<op::Parameter>(arg_et, arg_shape);
@@ -11627,7 +11627,7 @@ TEST(type_prop, topk_rank_static_dynamic_axis_oob)
     {
         EXPECT_HAS_SUBSTRING(
             error.what(),
-            "Argument element type must be i64 or i32 (got element::Type{32, 1, 1, 0, \"float\"})");
+            "Argument element type must be i64 or i32 (got Type{32, 1, 1, 0, \"float\"})");
     }
     catch (...)
     {
@@ -11637,11 +11637,11 @@ TEST(type_prop, topk_rank_static_dynamic_axis_oob)
 
 TEST(type_prop, topk_rank_static_dynamic_k_unknown_axis_oob)
 {
-    element::Type arg_et{element::f32};
+    Type arg_et{f32};
     PartialShape arg_shape{Dimension::dynamic(), Dimension::dynamic(), Dimension::dynamic()};
     size_t top_k_axis = 22;
     size_t k = 0;
-    element::Type result_et{element::f32};
+    Type result_et{f32};
     bool compute_max = true;
 
     auto param = make_shared<op::Parameter>(arg_et, arg_shape);
@@ -11655,7 +11655,7 @@ TEST(type_prop, topk_rank_static_dynamic_k_unknown_axis_oob)
     {
         EXPECT_HAS_SUBSTRING(
             error.what(),
-            "Argument element type must be i64 or i32 (got element::Type{32, 1, 1, 0, \"float\"})");
+            "Argument element type must be i64 or i32 (got Type{32, 1, 1, 0, \"float\"})");
     }
     catch (...)
     {
@@ -11665,11 +11665,11 @@ TEST(type_prop, topk_rank_static_dynamic_k_unknown_axis_oob)
 
 TEST(type_prop, topk_rank_static_dynamic_k_known_too_big)
 {
-    element::Type arg_et{element::f32};
+    Type arg_et{f32};
     PartialShape arg_shape{Dimension::dynamic(), 3, Dimension::dynamic()};
     size_t top_k_axis = 1;
     size_t k = 4;
-    element::Type result_et{element::f32};
+    Type result_et{f32};
     bool compute_max = true;
 
     auto param = make_shared<op::Parameter>(arg_et, arg_shape);
@@ -11683,7 +11683,7 @@ TEST(type_prop, topk_rank_static_dynamic_k_known_too_big)
     {
         EXPECT_HAS_SUBSTRING(
             error.what(),
-            "Argument element type must be i64 or i32 (got element::Type{32, 1, 1, 0, \"float\"})");
+            "Argument element type must be i64 or i32 (got Type{32, 1, 1, 0, \"float\"})");
     }
     catch (...)
     {
@@ -11693,19 +11693,19 @@ TEST(type_prop, topk_rank_static_dynamic_k_known_too_big)
 
 TEST(type_prop, topk_rank_static_dynamic_k_unknown_ok)
 {
-    element::Type arg_et{element::f32};
+    Type arg_et{f32};
     PartialShape arg_shape{Dimension::dynamic(), 3, Dimension::dynamic()};
     size_t top_k_axis = 1;
     size_t k = 0;
-    element::Type result_et{element::i32};
+    Type result_et{i32};
     bool compute_max = true;
 
     auto param = make_shared<op::Parameter>(arg_et, arg_shape);
 
     auto topk = make_shared<op::TopK>(param, top_k_axis, result_et, k, compute_max);
 
-    ASSERT_TRUE(topk->get_output_element_type(0) == element::i32);
-    ASSERT_TRUE(topk->get_output_element_type(1) == element::f32);
+    ASSERT_TRUE(topk->get_output_element_type(0) == i32);
+    ASSERT_TRUE(topk->get_output_element_type(1) == f32);
     ASSERT_TRUE(topk->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), 3, Dimension::dynamic()}));
     ASSERT_TRUE(topk->get_output_partial_shape(1).same_scheme(
@@ -11714,19 +11714,19 @@ TEST(type_prop, topk_rank_static_dynamic_k_unknown_ok)
 
 TEST(type_prop, topk_rank_static_dynamic_k_known_ok)
 {
-    element::Type arg_et{element::f32};
+    Type arg_et{f32};
     PartialShape arg_shape{Dimension::dynamic(), 3, Dimension::dynamic()};
     size_t top_k_axis = 1;
     size_t k = 2;
-    element::Type result_et{element::i32};
+    Type result_et{i32};
     bool compute_max = true;
 
     auto param = make_shared<op::Parameter>(arg_et, arg_shape);
 
     auto topk = make_shared<op::TopK>(param, top_k_axis, result_et, k, compute_max);
 
-    ASSERT_TRUE(topk->get_output_element_type(0) == element::i32);
-    ASSERT_TRUE(topk->get_output_element_type(1) == element::f32);
+    ASSERT_TRUE(topk->get_output_element_type(0) == i32);
+    ASSERT_TRUE(topk->get_output_element_type(1) == f32);
     ASSERT_TRUE(topk->get_output_partial_shape(0).same_scheme(
         PartialShape{Dimension::dynamic(), 2, Dimension::dynamic()}));
     ASSERT_TRUE(topk->get_output_partial_shape(1).same_scheme(
@@ -11735,7 +11735,7 @@ TEST(type_prop, topk_rank_static_dynamic_k_known_ok)
 
 TEST(type_prop, param_partial_rank_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto a = make_shared<op::Parameter>(f32, PartialShape::dynamic());
 
     auto& pshape = a->get_output_partial_shape(0);
 
@@ -11745,7 +11745,7 @@ TEST(type_prop, param_partial_rank_dynamic)
 
 TEST(type_prop, param_partial_rank_static)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{2, Dimension::dynamic(), 3, 4});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{2, Dimension::dynamic(), 3, 4});
 
     auto& pshape = a->get_output_partial_shape(0);
 
@@ -11759,8 +11759,8 @@ TEST(type_prop, param_partial_rank_static)
 
 TEST(type_prop, binary_elementwise_arithmetic_both_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto a = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto b = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto add = make_shared<op::Add>(a, b);
 
     ASSERT_TRUE(add->get_output_partial_shape(0).rank().is_dynamic());
@@ -11768,8 +11768,8 @@ TEST(type_prop, binary_elementwise_arithmetic_both_dynamic)
 
 TEST(type_prop, binary_elementwise_arithmetic_left_rank_dynamic_right_static)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto b = make_shared<op::Parameter>(element::f32, Shape{1, 2, 3});
+    auto a = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto b = make_shared<op::Parameter>(f32, Shape{1, 2, 3});
     auto add = make_shared<op::Add>(a, b);
 
     ASSERT_TRUE(add->get_output_partial_shape(0).is_static());
@@ -11778,8 +11778,8 @@ TEST(type_prop, binary_elementwise_arithmetic_left_rank_dynamic_right_static)
 
 TEST(type_prop, binary_elementwise_arithmetic_left_static_right_rank_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{1, 2, 3});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto a = make_shared<op::Parameter>(f32, Shape{1, 2, 3});
+    auto b = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto add = make_shared<op::Add>(a, b);
 
     ASSERT_TRUE(add->get_output_partial_shape(0).is_static());
@@ -11788,8 +11788,8 @@ TEST(type_prop, binary_elementwise_arithmetic_left_static_right_rank_dynamic)
 
 TEST(type_prop, binary_elementwise_arithmetic_left_rank_static_dynamic_right_rank_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{1, Dimension::dynamic(), 3});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto a = make_shared<op::Parameter>(f32, PartialShape{1, Dimension::dynamic(), 3});
+    auto b = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto add = make_shared<op::Add>(a, b);
 
     ASSERT_TRUE(add->get_output_partial_shape(0).rank().is_static());
@@ -11800,8 +11800,8 @@ TEST(type_prop, binary_elementwise_arithmetic_left_rank_static_dynamic_right_ran
 
 TEST(type_prop, binary_elementwise_arithmetic_left_rank_dynamic_right_rank_static_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape{1, Dimension::dynamic(), 3});
+    auto a = make_shared<op::Parameter>(f32, PartialShape::dynamic());
+    auto b = make_shared<op::Parameter>(f32, PartialShape{1, Dimension::dynamic(), 3});
     auto add = make_shared<op::Add>(a, b);
 
     ASSERT_TRUE(add->get_output_partial_shape(0).rank().is_static());
@@ -11813,8 +11813,8 @@ TEST(type_prop, binary_elementwise_arithmetic_left_rank_dynamic_right_rank_stati
 TEST(type_prop,
      binary_elementwise_arithmetic_left_rank_static_dynamic_right_rank_static_dynamic_result_static)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{1, Dimension::dynamic(), 3});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, Dimension::dynamic()});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{1, Dimension::dynamic(), 3});
+    auto b = make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic()});
     auto add = make_shared<op::Add>(a, b);
 
     ASSERT_TRUE(add->get_output_partial_shape(0).is_static());
@@ -11826,8 +11826,8 @@ TEST(
     binary_elementwise_arithmetic_left_rank_static_dynamic_right_rank_static_dynamic_result_rank_static_dynamic)
 {
     auto a = make_shared<op::Parameter>(
-        element::f32, PartialShape{1, Dimension::dynamic(), Dimension::dynamic()});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, Dimension::dynamic()});
+        f32, PartialShape{1, Dimension::dynamic(), Dimension::dynamic()});
+    auto b = make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic()});
     auto add = make_shared<op::Add>(a, b);
 
     ASSERT_TRUE(add->get_output_partial_shape(0).rank().is_static());
@@ -11838,8 +11838,8 @@ TEST(
 
 TEST(type_prop, binary_elementwise_arithmetic_left_static_right_rank_static_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, 3});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, Dimension::dynamic()});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{1, 2, 3});
+    auto b = make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic()});
     auto add = make_shared<op::Add>(a, b);
 
     ASSERT_TRUE(add->get_output_partial_shape(0).is_static());
@@ -11848,8 +11848,8 @@ TEST(type_prop, binary_elementwise_arithmetic_left_static_right_rank_static_dyna
 
 TEST(type_prop, binary_elementwise_arithmetic_left_rank_static_dynamic_right_static)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, Dimension::dynamic()});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, 3});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic()});
+    auto b = make_shared<op::Parameter>(f32, PartialShape{1, 2, 3});
     auto add = make_shared<op::Add>(a, b);
 
     ASSERT_TRUE(add->get_output_partial_shape(0).is_static());
@@ -11858,8 +11858,8 @@ TEST(type_prop, binary_elementwise_arithmetic_left_rank_static_dynamic_right_sta
 
 TEST(type_prop, binary_elementwise_arithmetic_left_rank_static_dynamic_inconsistent)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, Dimension::dynamic()});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape{1, 3, 3});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic()});
+    auto b = make_shared<op::Parameter>(f32, PartialShape{1, 3, 3});
 
     try
     {
@@ -11878,8 +11878,8 @@ TEST(type_prop, binary_elementwise_arithmetic_left_rank_static_dynamic_inconsist
 
 TEST(type_prop, binary_elementwise_arithmetic_right_rank_static_dynamic_inconsistent)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{1, 3, 3});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, Dimension::dynamic()});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{1, 3, 3});
+    auto b = make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic()});
 
     try
     {
@@ -11898,8 +11898,8 @@ TEST(type_prop, binary_elementwise_arithmetic_right_rank_static_dynamic_inconsis
 
 TEST(type_prop, binary_elementwise_arithmetic_both_rank_static_dynamic_inconsistent)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{Dimension::dynamic(), 3, 3});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, Dimension::dynamic()});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{Dimension::dynamic(), 3, 3});
+    auto b = make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic()});
 
     try
     {
@@ -11918,8 +11918,8 @@ TEST(type_prop, binary_elementwise_arithmetic_both_rank_static_dynamic_inconsist
 
 TEST(type_prop, binary_elementwise_arithmetic_left_rank_static_dynamic_different_rank)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, Dimension::dynamic()});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, 3, 4});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic()});
+    auto b = make_shared<op::Parameter>(f32, PartialShape{1, 2, 3, 4});
 
     try
     {
@@ -11938,8 +11938,8 @@ TEST(type_prop, binary_elementwise_arithmetic_left_rank_static_dynamic_different
 
 TEST(type_prop, binary_elementwise_arithmetic_right_rank_static_dynamic_different_rank)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, 3, 4});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, Dimension::dynamic()});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{1, 2, 3, 4});
+    auto b = make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic()});
 
     try
     {
@@ -11958,8 +11958,8 @@ TEST(type_prop, binary_elementwise_arithmetic_right_rank_static_dynamic_differen
 
 TEST(type_prop, binary_elementwise_arithmetic_both_rank_static_dynamic_different_rank)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape{1, Dimension::dynamic(), 3, 4});
-    auto b = make_shared<op::Parameter>(element::f32, PartialShape{1, 2, Dimension::dynamic()});
+    auto a = make_shared<op::Parameter>(f32, PartialShape{1, Dimension::dynamic(), 3, 4});
+    auto b = make_shared<op::Parameter>(f32, PartialShape{1, 2, Dimension::dynamic()});
 
     try
     {
@@ -11978,8 +11978,8 @@ TEST(type_prop, binary_elementwise_arithmetic_both_rank_static_dynamic_different
 
 TEST(type_prop, binary_elementwise_arithmetic_both_et_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::dynamic, Shape{1, 2, 3, 4});
-    auto b = make_shared<op::Parameter>(element::dynamic, Shape{1, 2, 3, 4});
+    auto a = make_shared<op::Parameter>(dynamic, Shape{1, 2, 3, 4});
+    auto b = make_shared<op::Parameter>(dynamic, Shape{1, 2, 3, 4});
     auto add = make_shared<op::Add>(a, b);
 
     ASSERT_TRUE(add->get_output_element_type(0).is_dynamic());
@@ -11987,43 +11987,43 @@ TEST(type_prop, binary_elementwise_arithmetic_both_et_dynamic)
 
 TEST(type_prop, binary_elementwise_arithmetic_left_et_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::dynamic, Shape{1, 2, 3, 4});
-    auto b = make_shared<op::Parameter>(element::u32, Shape{1, 2, 3, 4});
+    auto a = make_shared<op::Parameter>(dynamic, Shape{1, 2, 3, 4});
+    auto b = make_shared<op::Parameter>(u32, Shape{1, 2, 3, 4});
     auto add = make_shared<op::Add>(a, b);
 
-    ASSERT_EQ(add->get_output_element_type(0), element::u32);
+    ASSERT_EQ(add->get_output_element_type(0), u32);
 }
 
 TEST(type_prop, binary_elementwise_arithmetic_right_et_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::i64, Shape{1, 2, 3, 4});
-    auto b = make_shared<op::Parameter>(element::dynamic, Shape{1, 2, 3, 4});
+    auto a = make_shared<op::Parameter>(i64, Shape{1, 2, 3, 4});
+    auto b = make_shared<op::Parameter>(dynamic, Shape{1, 2, 3, 4});
     auto add = make_shared<op::Add>(a, b);
 
-    ASSERT_EQ(add->get_output_element_type(0), element::i64);
+    ASSERT_EQ(add->get_output_element_type(0), i64);
 }
 
 TEST(type_prop, logic_arith_compare_partial_et)
 {
-    auto test_logic = [](element::Type et0, element::Type et1) -> std::shared_ptr<Node> {
+    auto test_logic = [](Type et0, Type et1) -> std::shared_ptr<Node> {
         auto param0 = std::make_shared<op::Parameter>(et0, Shape{1, 2, 3});
         auto param1 = std::make_shared<op::Parameter>(et1, Shape{1, 2, 3});
         return std::make_shared<op::And>(param0, param1);
     };
 
-    auto test_arith = [](element::Type et0, element::Type et1) -> std::shared_ptr<Node> {
+    auto test_arith = [](Type et0, Type et1) -> std::shared_ptr<Node> {
         auto param0 = std::make_shared<op::Parameter>(et0, Shape{1, 2, 3});
         auto param1 = std::make_shared<op::Parameter>(et1, Shape{1, 2, 3});
         return std::make_shared<op::Add>(param0, param1);
     };
 
-    auto test_compare = [](element::Type et0, element::Type et1) -> std::shared_ptr<Node> {
+    auto test_compare = [](Type et0, Type et1) -> std::shared_ptr<Node> {
         auto param0 = std::make_shared<op::Parameter>(et0, Shape{1, 2, 3});
         auto param1 = std::make_shared<op::Parameter>(et1, Shape{1, 2, 3});
         return std::make_shared<op::Greater>(param0, param1);
     };
 
-    auto test_not = [](element::Type et) -> std::shared_ptr<Node> {
+    auto test_not = [](Type et) -> std::shared_ptr<Node> {
         auto param = std::make_shared<op::Parameter>(et, Shape{1, 2, 3});
         return std::make_shared<op::Not>(param);
     };
@@ -12039,15 +12039,15 @@ TEST(type_prop, logic_arith_compare_partial_et)
     // dyn int -> !
     // dyn boo -> boo
     // dyn dyn -> boo
-    ASSERT_ANY_THROW({ test_logic(element::i32, element::i32); });
-    ASSERT_ANY_THROW({ test_logic(element::i32, element::boolean); });
-    ASSERT_ANY_THROW({ test_logic(element::i32, element::dynamic); });
-    ASSERT_ANY_THROW({ test_logic(element::boolean, element::i32); });
-    ASSERT_EQ(test_logic(element::boolean, element::boolean)->get_element_type(), element::boolean);
-    ASSERT_EQ(test_logic(element::boolean, element::dynamic)->get_element_type(), element::boolean);
-    ASSERT_ANY_THROW({ test_logic(element::dynamic, element::i32); });
-    ASSERT_EQ(test_logic(element::dynamic, element::boolean)->get_element_type(), element::boolean);
-    ASSERT_EQ(test_logic(element::dynamic, element::dynamic)->get_element_type(), element::boolean);
+    ASSERT_ANY_THROW({ test_logic(i32, i32); });
+    ASSERT_ANY_THROW({ test_logic(i32, boolean); });
+    ASSERT_ANY_THROW({ test_logic(i32, dynamic); });
+    ASSERT_ANY_THROW({ test_logic(boolean, i32); });
+    ASSERT_EQ(test_logic(boolean, boolean)->get_element_type(), boolean);
+    ASSERT_EQ(test_logic(boolean, dynamic)->get_element_type(), boolean);
+    ASSERT_ANY_THROW({ test_logic(dynamic, i32); });
+    ASSERT_EQ(test_logic(dynamic, boolean)->get_element_type(), boolean);
+    ASSERT_EQ(test_logic(dynamic, dynamic)->get_element_type(), boolean);
 
     // Arith ops:
     //
@@ -12060,15 +12060,15 @@ TEST(type_prop, logic_arith_compare_partial_et)
     // dyn int -> int
     // dyn boo -> !
     // dyn dyn -> dyn
-    ASSERT_EQ(test_arith(element::i32, element::i32)->get_element_type(), element::i32);
-    ASSERT_ANY_THROW({ test_arith(element::i32, element::boolean); });
-    ASSERT_EQ(test_arith(element::i32, element::dynamic)->get_element_type(), element::i32);
-    ASSERT_ANY_THROW({ test_arith(element::boolean, element::i32); });
-    ASSERT_ANY_THROW({ test_arith(element::boolean, element::boolean); });
-    ASSERT_ANY_THROW({ test_arith(element::boolean, element::dynamic); });
-    ASSERT_EQ(test_arith(element::dynamic, element::i32)->get_element_type(), element::i32);
-    ASSERT_ANY_THROW({ test_arith(element::dynamic, element::boolean); });
-    ASSERT_EQ(test_arith(element::dynamic, element::dynamic)->get_element_type(), element::dynamic);
+    ASSERT_EQ(test_arith(i32, i32)->get_element_type(), i32);
+    ASSERT_ANY_THROW({ test_arith(i32, boolean); });
+    ASSERT_EQ(test_arith(i32, dynamic)->get_element_type(), i32);
+    ASSERT_ANY_THROW({ test_arith(boolean, i32); });
+    ASSERT_ANY_THROW({ test_arith(boolean, boolean); });
+    ASSERT_ANY_THROW({ test_arith(boolean, dynamic); });
+    ASSERT_EQ(test_arith(dynamic, i32)->get_element_type(), i32);
+    ASSERT_ANY_THROW({ test_arith(dynamic, boolean); });
+    ASSERT_EQ(test_arith(dynamic, dynamic)->get_element_type(), dynamic);
 
     // Comparison ops:
     //
@@ -12081,19 +12081,19 @@ TEST(type_prop, logic_arith_compare_partial_et)
     // dyn int -> boo
     // dyn boo -> boo
     // dyn dyn -> boo
-    ASSERT_EQ(test_compare(element::i32, element::i32)->get_element_type(), element::boolean);
-    ASSERT_ANY_THROW({ test_compare(element::i32, element::boolean); });
-    ASSERT_EQ(test_compare(element::i32, element::dynamic)->get_element_type(), element::boolean);
-    ASSERT_ANY_THROW({ test_compare(element::boolean, element::i32); });
-    ASSERT_EQ(test_compare(element::boolean, element::boolean)->get_element_type(),
-              element::boolean);
-    ASSERT_EQ(test_compare(element::boolean, element::dynamic)->get_element_type(),
-              element::boolean);
-    ASSERT_EQ(test_compare(element::dynamic, element::i32)->get_element_type(), element::boolean);
-    ASSERT_EQ(test_compare(element::dynamic, element::boolean)->get_element_type(),
-              element::boolean);
-    ASSERT_EQ(test_compare(element::dynamic, element::dynamic)->get_element_type(),
-              element::boolean);
+    ASSERT_EQ(test_compare(i32, i32)->get_element_type(), boolean);
+    ASSERT_ANY_THROW({ test_compare(i32, boolean); });
+    ASSERT_EQ(test_compare(i32, dynamic)->get_element_type(), boolean);
+    ASSERT_ANY_THROW({ test_compare(boolean, i32); });
+    ASSERT_EQ(test_compare(boolean, boolean)->get_element_type(),
+              boolean);
+    ASSERT_EQ(test_compare(boolean, dynamic)->get_element_type(),
+              boolean);
+    ASSERT_EQ(test_compare(dynamic, i32)->get_element_type(), boolean);
+    ASSERT_EQ(test_compare(dynamic, boolean)->get_element_type(),
+              boolean);
+    ASSERT_EQ(test_compare(dynamic, dynamic)->get_element_type(),
+              boolean);
 
     // Logical negation op:
     //
@@ -12106,43 +12106,43 @@ TEST(type_prop, logic_arith_compare_partial_et)
     // int -> !
     // boo -> boo
     // dyn -> boo
-    ASSERT_EQ(test_not(element::i32)->get_element_type(), element::i32);
-    ASSERT_EQ(test_not(element::boolean)->get_element_type(), element::boolean);
-    ASSERT_EQ(test_not(element::dynamic)->get_element_type(), element::dynamic);
+    ASSERT_EQ(test_not(i32)->get_element_type(), i32);
+    ASSERT_EQ(test_not(boolean)->get_element_type(), boolean);
+    ASSERT_EQ(test_not(dynamic)->get_element_type(), dynamic);
 }
 
 TEST(type_prop, get_output_element_partial_et_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::dynamic, Shape{1, 2, 3, 4});
-    auto b = make_shared<op::Parameter>(element::dynamic, Shape{1, 2, 3, 4});
+    auto a = make_shared<op::Parameter>(dynamic, Shape{1, 2, 3, 4});
+    auto b = make_shared<op::Parameter>(dynamic, Shape{1, 2, 3, 4});
     auto add = make_shared<op::Add>(a, b);
     auto goe = make_shared<op::GetOutputElement>(add, 0);
 
-    ASSERT_EQ(goe->get_output_element_type(0), element::dynamic);
+    ASSERT_EQ(goe->get_output_element_type(0), dynamic);
     ASSERT_EQ(goe->get_output_shape(0), (Shape{1, 2, 3, 4}));
 }
 
 TEST(type_prop, get_output_element_partial_rank_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::i32, PartialShape::dynamic());
-    auto b = make_shared<op::Parameter>(element::i32, PartialShape::dynamic());
+    auto a = make_shared<op::Parameter>(i32, PartialShape::dynamic());
+    auto b = make_shared<op::Parameter>(i32, PartialShape::dynamic());
     auto add = make_shared<op::Add>(a, b);
     auto goe = make_shared<op::GetOutputElement>(add, 0);
 
-    ASSERT_EQ(goe->get_output_element_type(0), element::i32);
+    ASSERT_EQ(goe->get_output_element_type(0), i32);
     ASSERT_TRUE(goe->get_output_partial_shape(0).rank().is_dynamic());
 }
 
 TEST(type_prop, get_output_element_partial_rank_static_dynamic)
 {
     auto a = make_shared<op::Parameter>(
-        element::i32, PartialShape{Dimension::dynamic(), 2, 3, Dimension::dynamic()});
+        i32, PartialShape{Dimension::dynamic(), 2, 3, Dimension::dynamic()});
     auto b = make_shared<op::Parameter>(
-        element::i32, PartialShape{Dimension::dynamic(), 2, Dimension::dynamic(), 4});
+        i32, PartialShape{Dimension::dynamic(), 2, Dimension::dynamic(), 4});
     auto add = make_shared<op::Add>(a, b);
     auto goe = make_shared<op::GetOutputElement>(add, 0);
 
-    ASSERT_EQ(goe->get_output_element_type(0), element::i32);
+    ASSERT_EQ(goe->get_output_element_type(0), i32);
     ASSERT_TRUE(
         goe->get_output_partial_shape(0).same_scheme(PartialShape{Dimension::dynamic(), 2, 3, 4}));
 }
@@ -12152,11 +12152,11 @@ TEST(type_prop, quantize_f32_to_i8_nchw_per_channel_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{3};
     Shape offset_shape{3};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{1};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12174,11 +12174,11 @@ TEST(type_prop, quantize_f32_to_i8_nchw_per_image_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64};
     Shape offset_shape{64};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12196,11 +12196,11 @@ TEST(type_prop, quantize_f32_to_i8_nchw_per_row_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{480};
     Shape offset_shape{480};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{2};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12218,11 +12218,11 @@ TEST(type_prop, quantize_f32_to_i8_nchw_per_image_channel_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64, 3};
     Shape offset_shape{64, 3};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12240,11 +12240,11 @@ TEST(type_prop, quantize_f32_to_i8_nchw_whole_batch_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12262,11 +12262,11 @@ TEST(type_prop, quantize_f64_to_i8_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f64;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f64;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12284,11 +12284,11 @@ TEST(type_prop, quantize_f64_to_u8_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f64;
-    element::Type quantized_type = element::u8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f64;
+    Type quantized_type = u8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12306,11 +12306,11 @@ TEST(type_prop, quantize_f64_to_dyn_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f64;
-    element::Type quantized_type = element::dynamic;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f64;
+    Type quantized_type = dynamic;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12339,11 +12339,11 @@ TEST(type_prop, quantize_i8_to_u8_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::i8;
-    element::Type quantized_type = element::u8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = i8;
+    Type quantized_type = u8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12360,7 +12360,7 @@ TEST(type_prop, quantize_i8_to_u8_fails)
     catch (const NodeValidationError& error)
     {
         EXPECT_HAS_SUBSTRING(error.what(),
-                             "Scale/input element type (element::Type{8, 0, 1, 1, \"int8_t\"}) "
+                             "Scale/input element type (Type{8, 0, 1, 1, \"int8_t\"}) "
                              "must be a floating point number");
     }
     catch (...)
@@ -12374,11 +12374,11 @@ TEST(type_prop, quantize_f32_to_f32_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::f32;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = f32;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12396,7 +12396,7 @@ TEST(type_prop, quantize_f32_to_f32_fails)
     {
         EXPECT_HAS_SUBSTRING(
             error.what(),
-            "Output element type (element::Type{32, 1, 1, 0, \"float\"}) must be a quantized type");
+            "Output element type (Type{32, 1, 1, 0, \"float\"}) must be a quantized type");
     }
     catch (...)
     {
@@ -12409,11 +12409,11 @@ TEST(type_prop, quantize_batch_scale_type_mismatch_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = element::f64;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = f64;
+    Type offset_type = quantized_type;
     AxisSet axes{};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12430,8 +12430,8 @@ TEST(type_prop, quantize_batch_scale_type_mismatch_fails)
     catch (const NodeValidationError& error)
     {
         EXPECT_HAS_SUBSTRING(error.what(),
-                             "Scale element type (element::Type{64, 1, 1, 0, \"double\"}) must "
-                             "match input element type (element::Type{32, 1, 1, 0, \"float\"})");
+                             "Scale element type (Type{64, 1, 1, 0, \"double\"}) must "
+                             "match input element type (Type{32, 1, 1, 0, \"float\"})");
     }
     catch (...)
     {
@@ -12444,11 +12444,11 @@ TEST(type_prop, quantize_offset_type_mismatch_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = element::u8;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = u8;
     AxisSet axes{};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12465,8 +12465,8 @@ TEST(type_prop, quantize_offset_type_mismatch_fails)
     catch (const NodeValidationError& error)
     {
         EXPECT_HAS_SUBSTRING(error.what(),
-                             "Offset element type (element::Type{8, 0, 0, 1, \"uint8_t\"}) must "
-                             "match output element type (element::Type{8, 0, 1, 1, \"int8_t\"})");
+                             "Offset element type (Type{8, 0, 0, 1, \"uint8_t\"}) must "
+                             "match output element type (Type{8, 0, 1, 1, \"int8_t\"})");
     }
     catch (...)
     {
@@ -12479,11 +12479,11 @@ TEST(type_prop, quantize_oob_axis_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{320};
     Shape offset_shape{320};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{3, 4};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12513,11 +12513,11 @@ TEST(type_prop, quantize_scale_shape_mismatch_same_rank_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64, 4};
     Shape offset_shape{64, 3};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12547,11 +12547,11 @@ TEST(type_prop, quantize_scale_shape_mismatch_different_rank_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64, 3, 2};
     Shape offset_shape{64, 3};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12581,11 +12581,11 @@ TEST(type_prop, quantize_offset_shape_mismatch_same_rank_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64, 3};
     Shape offset_shape{64, 4};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12615,11 +12615,11 @@ TEST(type_prop, quantize_offset_shape_mismatch_different_rank_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64, 3};
     Shape offset_shape{64, 3, 2};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12649,11 +12649,11 @@ TEST(type_prop, quantize_partial_all_rank_dynamic_ok)
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{PartialShape::dynamic()};
     PartialShape offset_shape{PartialShape::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1, 2000};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12672,11 +12672,11 @@ TEST(type_prop,
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{64, Dimension::dynamic(), 96};
     PartialShape offset_shape{PartialShape::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1, 2000};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12696,11 +12696,11 @@ TEST(
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{64, Dimension::dynamic(), 96};
     PartialShape offset_shape{PartialShape::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12732,11 +12732,11 @@ TEST(type_prop,
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{64, Dimension::dynamic(), 96, Dimension::dynamic()};
     PartialShape offset_shape{64, 22, Dimension::dynamic(), Dimension::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1, 5, 88};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12756,11 +12756,11 @@ TEST(
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{64, Dimension::dynamic(), 96, Dimension::dynamic()};
     PartialShape offset_shape{64, 22, Dimension::dynamic(), Dimension::dynamic(), 3};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1, 5, 88};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12792,11 +12792,11 @@ TEST(
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{64, Dimension::dynamic(), 96, Dimension::dynamic()};
     PartialShape offset_shape{65, 22, Dimension::dynamic(), Dimension::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1, 5, 88};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12828,11 +12828,11 @@ TEST(
     PartialShape batch_shape{2, 4, 6, Dimension::dynamic(), 10, Dimension::dynamic()};
     PartialShape scale_shape{4, Dimension::dynamic(), Dimension::dynamic()};
     PartialShape offset_shape{Dimension::dynamic(), 8, Dimension::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{1, 3, 5};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12853,11 +12853,11 @@ TEST(
     PartialShape batch_shape{2, 4, 6, Dimension::dynamic(), 10, Dimension::dynamic()};
     PartialShape scale_shape{4, Dimension::dynamic(), Dimension::dynamic()};
     PartialShape offset_shape{Dimension::dynamic(), 8, Dimension::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{1, 3, 6};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12889,11 +12889,11 @@ TEST(
     PartialShape batch_shape{2, 5, 6, Dimension::dynamic(), 10, Dimension::dynamic()};
     PartialShape scale_shape{4, Dimension::dynamic(), Dimension::dynamic()};
     PartialShape offset_shape{Dimension::dynamic(), 8, Dimension::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = unquantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = unquantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{1, 3, 5};
     auto round_mode = op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_INFINITY;
 
@@ -12924,11 +12924,11 @@ TEST(type_prop, dequantize_f32_from_i8_nchw_per_channel_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{3};
     Shape offset_shape{3};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{1};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -12945,11 +12945,11 @@ TEST(type_prop, dequantize_f32_from_i8_nchw_per_image_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64};
     Shape offset_shape{64};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -12966,11 +12966,11 @@ TEST(type_prop, dequantize_f32_from_i8_nchw_per_row_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{480};
     Shape offset_shape{480};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{2};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -12987,11 +12987,11 @@ TEST(type_prop, dequantize_f32_from_i8_nchw_per_image_channel_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64, 3};
     Shape offset_shape{64, 3};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13008,11 +13008,11 @@ TEST(type_prop, dequantize_f32_from_i8_nchw_whole_batch_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13029,11 +13029,11 @@ TEST(type_prop, dequantize_f64_from_i8_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f64;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f64;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13050,11 +13050,11 @@ TEST(type_prop, dequantize_f64_to_u8_ok)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f64;
-    element::Type quantized_type = element::u8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f64;
+    Type quantized_type = u8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13071,11 +13071,11 @@ TEST(type_prop, dequantize_i8_from_u8_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::i8;
-    element::Type quantized_type = element::u8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = i8;
+    Type quantized_type = u8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13090,7 +13090,7 @@ TEST(type_prop, dequantize_i8_from_u8_fails)
     catch (const NodeValidationError& error)
     {
         EXPECT_HAS_SUBSTRING(error.what(),
-                             "Output element type (element::Type{8, 0, 1, 1, \"int8_t\"}) must be "
+                             "Output element type (Type{8, 0, 1, 1, \"int8_t\"}) must be "
                              "a floating point type");
     }
     catch (...)
@@ -13104,11 +13104,11 @@ TEST(type_prop, dequantize_f32_from_f32_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::f32;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = f32;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13123,7 +13123,7 @@ TEST(type_prop, dequantize_f32_from_f32_fails)
     catch (const NodeValidationError& error)
     {
         EXPECT_HAS_SUBSTRING(error.what(),
-                             "Offset/input element type (element::Type{32, 1, 1, 0, \"float\"}) "
+                             "Offset/input element type (Type{32, 1, 1, 0, \"float\"}) "
                              "must be a quantized type");
     }
     catch (...)
@@ -13137,11 +13137,11 @@ TEST(type_prop, dequantize_batch_offset_type_mismatch_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = element::u8;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = u8;
     AxisSet axes{};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13156,8 +13156,8 @@ TEST(type_prop, dequantize_batch_offset_type_mismatch_fails)
     catch (const NodeValidationError& error)
     {
         EXPECT_HAS_SUBSTRING(error.what(),
-                             "Offset element type (element::Type{8, 0, 0, 1, \"uint8_t\"}) must "
-                             "match input element type (element::Type{8, 0, 1, 1, \"int8_t\"})");
+                             "Offset element type (Type{8, 0, 0, 1, \"uint8_t\"}) must "
+                             "match input element type (Type{8, 0, 1, 1, \"int8_t\"})");
     }
     catch (...)
     {
@@ -13170,11 +13170,11 @@ TEST(type_prop, dequantize_scale_type_mismatch_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{};
     Shape offset_shape{};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = element::f64;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = f64;
+    Type offset_type = quantized_type;
     AxisSet axes{};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13189,8 +13189,8 @@ TEST(type_prop, dequantize_scale_type_mismatch_fails)
     catch (const NodeValidationError& error)
     {
         EXPECT_HAS_SUBSTRING(error.what(),
-                             "Scale element type (element::Type{64, 1, 1, 0, \"double\"}) must "
-                             "match output element type (element::Type{32, 1, 1, 0, \"float\"})"
+                             "Scale element type (Type{64, 1, 1, 0, \"double\"}) must "
+                             "match output element type (Type{32, 1, 1, 0, \"float\"})"
 
                              );
     }
@@ -13205,11 +13205,11 @@ TEST(type_prop, dequantize_oob_axis_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{320};
     Shape offset_shape{320};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{3, 4};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13237,11 +13237,11 @@ TEST(type_prop, dequantize_scale_shape_mismatch_same_rank_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64, 4};
     Shape offset_shape{64, 3};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13269,11 +13269,11 @@ TEST(type_prop, dequantize_scale_shape_mismatch_different_rank_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64, 3, 2};
     Shape offset_shape{64, 3};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13301,11 +13301,11 @@ TEST(type_prop, dequantize_offset_shape_mismatch_same_rank_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64, 3};
     Shape offset_shape{64, 4};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13333,11 +13333,11 @@ TEST(type_prop, dequantize_offset_shape_mismatch_different_rank_fails)
     Shape batch_shape{64, 3, 480, 640};
     Shape scale_shape{64, 3};
     Shape offset_shape{64, 3, 2};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13365,11 +13365,11 @@ TEST(type_prop, dequantize_partial_all_rank_dynamic_ok)
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{PartialShape::dynamic()};
     PartialShape offset_shape{PartialShape::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1, 2000};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13387,11 +13387,11 @@ TEST(type_prop,
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{64, Dimension::dynamic(), 96};
     PartialShape offset_shape{PartialShape::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1, 2000};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13410,11 +13410,11 @@ TEST(
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{64, Dimension::dynamic(), 96};
     PartialShape offset_shape{PartialShape::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13444,11 +13444,11 @@ TEST(type_prop,
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{64, Dimension::dynamic(), 96, Dimension::dynamic()};
     PartialShape offset_shape{64, 22, Dimension::dynamic(), Dimension::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1, 5, 88};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13467,11 +13467,11 @@ TEST(
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{64, Dimension::dynamic(), 96, Dimension::dynamic()};
     PartialShape offset_shape{64, 22, Dimension::dynamic(), Dimension::dynamic(), 3};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1, 5, 88};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13501,11 +13501,11 @@ TEST(
     PartialShape batch_shape{PartialShape::dynamic()};
     PartialShape scale_shape{64, Dimension::dynamic(), 96, Dimension::dynamic()};
     PartialShape offset_shape{65, 22, Dimension::dynamic(), Dimension::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{0, 1, 5, 88};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13535,11 +13535,11 @@ TEST(
     PartialShape batch_shape{2, 4, 6, Dimension::dynamic(), 10, Dimension::dynamic()};
     PartialShape scale_shape{4, Dimension::dynamic(), Dimension::dynamic()};
     PartialShape offset_shape{Dimension::dynamic(), 8, Dimension::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{1, 3, 5};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13559,11 +13559,11 @@ TEST(
     PartialShape batch_shape{2, 4, 6, Dimension::dynamic(), 10, Dimension::dynamic()};
     PartialShape scale_shape{4, Dimension::dynamic(), Dimension::dynamic()};
     PartialShape offset_shape{Dimension::dynamic(), 8, Dimension::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{1, 3, 6};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13593,11 +13593,11 @@ TEST(
     PartialShape batch_shape{2, 5, 6, Dimension::dynamic(), 10, Dimension::dynamic()};
     PartialShape scale_shape{4, Dimension::dynamic(), Dimension::dynamic()};
     PartialShape offset_shape{Dimension::dynamic(), 8, Dimension::dynamic()};
-    element::Type unquantized_type = element::f32;
-    element::Type quantized_type = element::i8;
-    element::Type batch_type = quantized_type;
-    element::Type scale_type = unquantized_type;
-    element::Type offset_type = quantized_type;
+    Type unquantized_type = f32;
+    Type quantized_type = i8;
+    Type batch_type = quantized_type;
+    Type scale_type = unquantized_type;
+    Type offset_type = quantized_type;
     AxisSet axes{1, 3, 5};
 
     auto batch = make_shared<op::Parameter>(batch_type, batch_shape);
@@ -13623,86 +13623,86 @@ TEST(
 
 TEST(type_prop, shape_of)
 {
-    auto a = make_shared<op::Parameter>(element::f32, Shape{1, 2, 3, 4});
+    auto a = make_shared<op::Parameter>(f32, Shape{1, 2, 3, 4});
     auto so = make_shared<op::ShapeOf>(a);
 
-    ASSERT_EQ(so->get_output_element_type(0), element::u64);
+    ASSERT_EQ(so->get_output_element_type(0), u64);
     ASSERT_EQ(so->get_shape(), Shape{4});
 }
 
 TEST(type_prop, shape_of_partial_et_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::dynamic, Shape{1, 2, 3, 4});
+    auto a = make_shared<op::Parameter>(dynamic, Shape{1, 2, 3, 4});
     auto so = make_shared<op::ShapeOf>(a);
 
-    ASSERT_EQ(so->get_output_element_type(0), element::u64);
+    ASSERT_EQ(so->get_output_element_type(0), u64);
     ASSERT_EQ(so->get_shape(), Shape{4});
 }
 
 TEST(type_prop, shape_of_partial_rank_static_dynamic)
 {
     auto a = make_shared<op::Parameter>(
-        element::f32, PartialShape{1, Dimension::dynamic(), Dimension::dynamic(), 4});
+        f32, PartialShape{1, Dimension::dynamic(), Dimension::dynamic(), 4});
     auto so = make_shared<op::ShapeOf>(a);
 
-    ASSERT_EQ(so->get_output_element_type(0), element::u64);
+    ASSERT_EQ(so->get_output_element_type(0), u64);
     ASSERT_EQ(so->get_shape(), Shape{4});
 }
 
 TEST(type_prop, shape_of_partial_rank_dynamic)
 {
-    auto a = make_shared<op::Parameter>(element::f32, PartialShape::dynamic());
+    auto a = make_shared<op::Parameter>(f32, PartialShape::dynamic());
     auto so = make_shared<op::ShapeOf>(a);
 
-    ASSERT_EQ(so->get_output_element_type(0), element::u64);
+    ASSERT_EQ(so->get_output_element_type(0), u64);
     ASSERT_TRUE(so->get_output_partial_shape(0).same_scheme(PartialShape::dynamic(1)));
 }
 
 TEST(type_prop, any_deduce)
 {
-    auto param_0 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
+    auto param_0 = make_shared<op::Parameter>(boolean, Shape{2, 4});
 
     auto r0 = make_shared<op::Any>(param_0, AxisSet{0});
-    ASSERT_EQ(r0->get_element_type(), element::boolean);
+    ASSERT_EQ(r0->get_element_type(), boolean);
     ASSERT_EQ(r0->get_shape(), (Shape{4}));
 
     auto r1 = make_shared<op::Any>(param_0, AxisSet{1});
-    ASSERT_EQ(r1->get_element_type(), element::boolean);
+    ASSERT_EQ(r1->get_element_type(), boolean);
     ASSERT_EQ(r1->get_shape(), (Shape{2}));
 
     auto r01 = make_shared<op::Any>(param_0, AxisSet{0, 1});
-    ASSERT_EQ(r01->get_element_type(), element::boolean);
+    ASSERT_EQ(r01->get_element_type(), boolean);
     ASSERT_EQ(r01->get_shape(), (Shape{}));
 
     auto r_none = make_shared<op::Any>(param_0, AxisSet{});
-    ASSERT_EQ(r_none->get_element_type(), element::boolean);
+    ASSERT_EQ(r_none->get_element_type(), boolean);
     ASSERT_EQ(r_none->get_shape(), (Shape{2, 4}));
 }
 
 TEST(type_prop, any_deduce_et_dynamic)
 {
-    auto param_0 = make_shared<op::Parameter>(element::dynamic, Shape{2, 4});
+    auto param_0 = make_shared<op::Parameter>(dynamic, Shape{2, 4});
 
     auto r0 = make_shared<op::Any>(param_0, AxisSet{0});
-    ASSERT_EQ(r0->get_element_type(), element::boolean);
+    ASSERT_EQ(r0->get_element_type(), boolean);
     ASSERT_EQ(r0->get_shape(), (Shape{4}));
 
     auto r1 = make_shared<op::Any>(param_0, AxisSet{1});
-    ASSERT_EQ(r1->get_element_type(), element::boolean);
+    ASSERT_EQ(r1->get_element_type(), boolean);
     ASSERT_EQ(r1->get_shape(), (Shape{2}));
 
     auto r01 = make_shared<op::Any>(param_0, AxisSet{0, 1});
-    ASSERT_EQ(r01->get_element_type(), element::boolean);
+    ASSERT_EQ(r01->get_element_type(), boolean);
     ASSERT_EQ(r01->get_shape(), (Shape{}));
 
     auto r_none = make_shared<op::Any>(param_0, AxisSet{});
-    ASSERT_EQ(r_none->get_element_type(), element::boolean);
+    ASSERT_EQ(r_none->get_element_type(), boolean);
     ASSERT_EQ(r_none->get_shape(), (Shape{2, 4}));
 }
 
 TEST(type_prop, any_et_non_boolean)
 {
-    auto param_0 = make_shared<op::Parameter>(element::i32, Shape{2, 4});
+    auto param_0 = make_shared<op::Parameter>(i32, Shape{2, 4});
 
     try
     {
@@ -13722,7 +13722,7 @@ TEST(type_prop, any_et_non_boolean)
 
 TEST(type_prop, any_axis_oob)
 {
-    auto param_0 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
+    auto param_0 = make_shared<op::Parameter>(boolean, Shape{2, 4});
 
     try
     {
@@ -13742,33 +13742,33 @@ TEST(type_prop, any_axis_oob)
 
 TEST(type_prop, any_partial_rank_dynamic)
 {
-    auto param = make_shared<op::Parameter>(element::boolean, PartialShape::dynamic());
+    auto param = make_shared<op::Parameter>(boolean, PartialShape::dynamic());
     auto axes = AxisSet{2385, 0, 4404}; // arbitrary
     auto any = make_shared<op::Any>(param, axes);
 
-    EXPECT_EQ(any->get_output_element_type(0), element::boolean);
+    EXPECT_EQ(any->get_output_element_type(0), boolean);
     EXPECT_TRUE(any->get_output_partial_shape(0).is_dynamic());
 }
 
 TEST(type_prop, any_partial_rank_static_dynamic_ok_result_static)
 {
-    auto param = make_shared<op::Parameter>(element::boolean,
+    auto param = make_shared<op::Parameter>(boolean,
                                             PartialShape{1, 2, Dimension::dynamic(), 4, 5});
     auto axes = AxisSet{2, 3};
     auto any = make_shared<op::Any>(param, axes);
 
-    EXPECT_EQ(any->get_output_element_type(0), element::boolean);
+    EXPECT_EQ(any->get_output_element_type(0), boolean);
     EXPECT_EQ(any->get_shape(), (Shape{1, 2, 5}));
 }
 
 TEST(type_prop, any_partial_rank_static_dynamic_ok_result_dynamic)
 {
     auto param = make_shared<op::Parameter>(
-        element::boolean, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
+        boolean, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
     auto axes = AxisSet{2, 3};
     auto any = make_shared<op::Any>(param, axes);
 
-    EXPECT_EQ(any->get_output_element_type(0), element::boolean);
+    EXPECT_EQ(any->get_output_element_type(0), boolean);
     EXPECT_TRUE(
         any->get_output_partial_shape(0).same_scheme(PartialShape{1, 2, Dimension::dynamic()}));
 }
@@ -13776,7 +13776,7 @@ TEST(type_prop, any_partial_rank_static_dynamic_ok_result_dynamic)
 TEST(type_prop, any_partial_rank_static_dynamic_axes_oob)
 {
     auto param = make_shared<op::Parameter>(
-        element::boolean, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
+        boolean, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
     auto axes = AxisSet{2, 5, 1};
 
     try
@@ -13797,49 +13797,49 @@ TEST(type_prop, any_partial_rank_static_dynamic_axes_oob)
 
 TEST(type_prop, all_deduce)
 {
-    auto param_0 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
+    auto param_0 = make_shared<op::Parameter>(boolean, Shape{2, 4});
 
     auto r0 = make_shared<op::All>(param_0, AxisSet{0});
-    ASSERT_EQ(r0->get_element_type(), element::boolean);
+    ASSERT_EQ(r0->get_element_type(), boolean);
     ASSERT_EQ(r0->get_shape(), (Shape{4}));
 
     auto r1 = make_shared<op::All>(param_0, AxisSet{1});
-    ASSERT_EQ(r1->get_element_type(), element::boolean);
+    ASSERT_EQ(r1->get_element_type(), boolean);
     ASSERT_EQ(r1->get_shape(), (Shape{2}));
 
     auto r01 = make_shared<op::All>(param_0, AxisSet{0, 1});
-    ASSERT_EQ(r01->get_element_type(), element::boolean);
+    ASSERT_EQ(r01->get_element_type(), boolean);
     ASSERT_EQ(r01->get_shape(), (Shape{}));
 
     auto r_none = make_shared<op::All>(param_0, AxisSet{});
-    ASSERT_EQ(r_none->get_element_type(), element::boolean);
+    ASSERT_EQ(r_none->get_element_type(), boolean);
     ASSERT_EQ(r_none->get_shape(), (Shape{2, 4}));
 }
 
 TEST(type_prop, all_deduce_et_dynamic)
 {
-    auto param_0 = make_shared<op::Parameter>(element::dynamic, Shape{2, 4});
+    auto param_0 = make_shared<op::Parameter>(dynamic, Shape{2, 4});
 
     auto r0 = make_shared<op::All>(param_0, AxisSet{0});
-    ASSERT_EQ(r0->get_element_type(), element::boolean);
+    ASSERT_EQ(r0->get_element_type(), boolean);
     ASSERT_EQ(r0->get_shape(), (Shape{4}));
 
     auto r1 = make_shared<op::All>(param_0, AxisSet{1});
-    ASSERT_EQ(r1->get_element_type(), element::boolean);
+    ASSERT_EQ(r1->get_element_type(), boolean);
     ASSERT_EQ(r1->get_shape(), (Shape{2}));
 
     auto r01 = make_shared<op::All>(param_0, AxisSet{0, 1});
-    ASSERT_EQ(r01->get_element_type(), element::boolean);
+    ASSERT_EQ(r01->get_element_type(), boolean);
     ASSERT_EQ(r01->get_shape(), (Shape{}));
 
     auto r_none = make_shared<op::All>(param_0, AxisSet{});
-    ASSERT_EQ(r_none->get_element_type(), element::boolean);
+    ASSERT_EQ(r_none->get_element_type(), boolean);
     ASSERT_EQ(r_none->get_shape(), (Shape{2, 4}));
 }
 
 TEST(type_prop, all_et_non_boolean)
 {
-    auto param_0 = make_shared<op::Parameter>(element::i32, Shape{2, 4});
+    auto param_0 = make_shared<op::Parameter>(i32, Shape{2, 4});
 
     try
     {
@@ -13859,7 +13859,7 @@ TEST(type_prop, all_et_non_boolean)
 
 TEST(type_prop, all_axis_oob)
 {
-    auto param_0 = make_shared<op::Parameter>(element::boolean, Shape{2, 4});
+    auto param_0 = make_shared<op::Parameter>(boolean, Shape{2, 4});
 
     try
     {
@@ -13879,33 +13879,33 @@ TEST(type_prop, all_axis_oob)
 
 TEST(type_prop, all_partial_rank_dynamic)
 {
-    auto param = make_shared<op::Parameter>(element::boolean, PartialShape::dynamic());
+    auto param = make_shared<op::Parameter>(boolean, PartialShape::dynamic());
     auto axes = AxisSet{2385, 0, 4404}; // arbitrary
     auto all = make_shared<op::All>(param, axes);
 
-    EXPECT_EQ(all->get_output_element_type(0), element::boolean);
+    EXPECT_EQ(all->get_output_element_type(0), boolean);
     EXPECT_TRUE(all->get_output_partial_shape(0).is_dynamic());
 }
 
 TEST(type_prop, all_partial_rank_static_dynamic_ok_result_static)
 {
-    auto param = make_shared<op::Parameter>(element::boolean,
+    auto param = make_shared<op::Parameter>(boolean,
                                             PartialShape{1, 2, Dimension::dynamic(), 4, 5});
     auto axes = AxisSet{2, 3};
     auto all = make_shared<op::All>(param, axes);
 
-    EXPECT_EQ(all->get_output_element_type(0), element::boolean);
+    EXPECT_EQ(all->get_output_element_type(0), boolean);
     EXPECT_EQ(all->get_shape(), (Shape{1, 2, 5}));
 }
 
 TEST(type_prop, all_partial_rank_static_dynamic_ok_result_dynamic)
 {
     auto param = make_shared<op::Parameter>(
-        element::boolean, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
+        boolean, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
     auto axes = AxisSet{2, 3};
     auto all = make_shared<op::All>(param, axes);
 
-    EXPECT_EQ(all->get_output_element_type(0), element::boolean);
+    EXPECT_EQ(all->get_output_element_type(0), boolean);
     EXPECT_TRUE(
         all->get_output_partial_shape(0).same_scheme(PartialShape{1, 2, Dimension::dynamic()}));
 }
@@ -13913,7 +13913,7 @@ TEST(type_prop, all_partial_rank_static_dynamic_ok_result_dynamic)
 TEST(type_prop, all_partial_rank_static_dynamic_axes_oob)
 {
     auto param = make_shared<op::Parameter>(
-        element::boolean, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
+        boolean, PartialShape{1, 2, Dimension::dynamic(), 4, Dimension::dynamic()});
     auto axes = AxisSet{2, 5, 1};
 
     try

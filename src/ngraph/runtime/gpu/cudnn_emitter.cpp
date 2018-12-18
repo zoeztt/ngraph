@@ -153,25 +153,25 @@ cudnnDataType_t runtime::gpu::CUDNNEmitter::get_cudnn_datatype(std::string dtype
     return p->second;
 }
 
-cudnnDataType_t runtime::gpu::CUDNNEmitter::get_cudnn_datatype(const element::Type& dtype)
+cudnnDataType_t runtime::gpu::CUDNNEmitter::get_cudnn_datatype(const Type& dtype)
 {
     return get_cudnn_datatype(dtype.c_type_string());
 }
 
 size_t runtime::gpu::CUDNNEmitter::build_reduce_forward(const cudnnReduceTensorOp_t& reduce_op,
-                                                        const std::vector<element::Type>& dtypes,
+                                                        const std::vector<Type>& dtypes,
                                                         const Shape& input_shape,
                                                         const AxisSet& reduction_axes,
                                                         const ReductionMode& reduction_mode)
 {
     auto input_type = dtypes[0];
     bool use_cudnn_reduce = !((reduction_mode == ReductionMode::Reduce) &&
-                              ((input_type == element::i32) || (input_type == element::i8)));
+                              ((input_type == i32) || (input_type == i8)));
     NGRAPH_ASSERT(use_cudnn_reduce)
         << "cuDNN reduce for input type int32_t or int8_t currently not supported";
 
     bool unsupported_int8_type_arg_reduce =
-        !((reduction_mode == ReductionMode::ArgReduce) && (input_type == element::i8));
+        !((reduction_mode == ReductionMode::ArgReduce) && (input_type == i8));
     NGRAPH_ASSERT(unsupported_int8_type_arg_reduce)
         << "cuDNN arg_reduce for input type int8_t currently not supported";
     auto output_type = dtypes[1];
@@ -189,7 +189,7 @@ size_t runtime::gpu::CUDNNEmitter::build_reduce_forward(const cudnnReduceTensorO
     }
 
     auto& desc = m_descriptors.build<cudnnReduceTensorDescriptor_t>();
-    auto modified_input_type = (input_type == element::i32) ? element::f64 : input_type;
+    auto modified_input_type = (input_type == i32) ? f64 : input_type;
     cudnnDataType_t data_type = get_cudnn_datatype(modified_input_type);
     cudnnTensorFormat_t tensor_format = CUDNN_TENSOR_NCHW;
     auto& input_desc = tensor_descriptor_from_shape(input_shape, data_type, tensor_format);
@@ -248,10 +248,10 @@ size_t runtime::gpu::CUDNNEmitter::build_reduce_forward(const cudnnReduceTensorO
 
     case ReductionMode::ArgReduce:
     {
-        if (output_type == element::i32 || output_type == element::i64)
+        if (output_type == i32 || output_type == i64)
         {
             // Since cuDNN only outputs int32 indices
-            size_t indices_size = shape_size(output_shape) * element::i32.size();
+            size_t indices_size = shape_size(output_shape) * i32.size();
             size_t reduce_buffer_idx =
                 allocator.reserve_workspace(shape_size(output_shape) * modified_input_type.size());
 
@@ -271,11 +271,11 @@ size_t runtime::gpu::CUDNNEmitter::build_reduce_forward(const cudnnReduceTensorO
             std::function<void(void**, void**)> convert_output = [](void** inputs, void** outputs) {
             };
             std::function<void*(void*)> convert_output_space = [](void* ptr) { return ptr; };
-            if (output_type == element::i64)
+            if (output_type == i64)
             {
                 size_t workspace_indices_idx = allocator.reserve_workspace(indices_size);
                 auto convert_idx = cuda_emitter->template build_elementwise<op::Convert>(
-                    {element::i32.c_type_string(), element::i64.c_type_string()}, output_shape);
+                    {i32.c_type_string(), i64.c_type_string()}, output_shape);
                 convert_output = [=](void** inputs, void** outputs) {
                     gpu::invoke_primitive(m_ctx, convert_idx, inputs, outputs);
                 };
@@ -287,7 +287,7 @@ size_t runtime::gpu::CUDNNEmitter::build_reduce_forward(const cudnnReduceTensorO
             std::function<void(void**, void**)> convert_input = [](void** inputs, void** outputs) {
             };
             std::function<void*(void*)> convert_input_space = [](void* ptr) { return ptr; };
-            if (input_type == element::i32)
+            if (input_type == i32)
             {
                 size_t input_idx = allocator.reserve_workspace(shape_size(input_shape) *
                                                                modified_input_type.size());
@@ -975,7 +975,7 @@ size_t runtime::gpu::CUDNNEmitter::build_primitive(const op::Max* node)
     }
     else
     {
-        std::vector<element::Type> dtypes{args[0].get_element_type(), out[0].get_element_type()};
+        std::vector<Type> dtypes{args[0].get_element_type(), out[0].get_element_type()};
         auto& cudnn_emitter = m_primitive_emitter->get_cudnn_emitter();
         auto max_index = cudnn_emitter->build_reduce_forward(CUDNN_REDUCE_TENSOR_MAX,
                                                              dtypes,
@@ -1038,7 +1038,7 @@ size_t runtime::gpu::CUDNNEmitter::build_primitive(const op::Min* node)
     }
     else
     {
-        std::vector<element::Type> dtypes{args[0].get_element_type(), out[0].get_element_type()};
+        std::vector<Type> dtypes{args[0].get_element_type(), out[0].get_element_type()};
         auto& cudnn_emitter = m_primitive_emitter->get_cudnn_emitter();
         auto min_index = cudnn_emitter->build_reduce_forward(CUDNN_REDUCE_TENSOR_MIN,
                                                              dtypes,
@@ -1540,7 +1540,7 @@ size_t runtime::gpu::CUDNNEmitter::build_convolution_backward_filter(
 }
 
 size_t runtime::gpu::CUDNNEmitter::build_pooling(const cudnnPoolingMode_t& pool_op,
-                                                 const element::Type& dtype,
+                                                 const Type& dtype,
                                                  const Prop& direction,
                                                  const Shape& input_shape,
                                                  const Shape& output_shape,

@@ -48,10 +48,10 @@ static Shape shape_dims(const Shape& dimentions, const AxisSet& axis = {})
 void runtime::intelgpu::do_softmax_operation(cldnn::topology& topology,
                                              const string& input_name,
                                              const Shape& input_shape,
-                                             const element::Type& input_type,
+                                             const Type& input_type,
                                              const string& output_name,
                                              const Shape& output_shape,
-                                             const element::Type& output_type,
+                                             const Type& output_type,
                                              const AxisSet& axes)
 {
     const cldnn::layout layout = IntelGPULayout::create_cldnn_layout(output_type, output_shape);

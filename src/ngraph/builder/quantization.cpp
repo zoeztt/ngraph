@@ -31,7 +31,7 @@ namespace ngraph
         std::shared_ptr<Node> ScaledQuantize(std::shared_ptr<Node> input,
                                              std::shared_ptr<Node> min,
                                              std::shared_ptr<Node> max,
-                                             const ngraph::element::Type& quant_type,
+                                             const ngraph::Type& quant_type,
                                              const ngraph::AxisSet& axes,
                                              op::Quantize::RoundMode round_mode)
         {
@@ -61,7 +61,7 @@ namespace ngraph
         std::shared_ptr<Node> ScaledDequantize(std::shared_ptr<Node> input,
                                                std::shared_ptr<Node> min,
                                                std::shared_ptr<Node> max,
-                                               const ngraph::element::Type& real_type,
+                                               const ngraph::Type& real_type,
                                                const ngraph::AxisSet& axes)
         {
             auto quant_type = input->get_element_type();
@@ -121,7 +121,7 @@ namespace ngraph
                                            std::shared_ptr<Node> max_freezed_output,
                                            const bool with_relu)
         {
-            auto output_et = with_relu ? element::u8 : element::i8;
+            auto output_et = with_relu ? u8 : i8;
             auto requantization_scale = quantization_util::get_scale(min_input,
                                                                      max_input,
                                                                      min_filter,
@@ -130,9 +130,9 @@ namespace ngraph
                                                                      max_freezed_output,
                                                                      output_et);
 
-            if (bias->get_element_type() != element::i32)
+            if (bias->get_element_type() != i32)
             {
-                auto zero = make_constant(element::i32, min_input->get_shape(), 0);
+                auto zero = make_constant(i32, min_input->get_shape(), 0);
                 AxisSet quantization_axes;
                 auto bias_scale =
                     quantization_util::get_bias_scale(min_input, max_input, min_filter, max_filter);
@@ -140,7 +140,7 @@ namespace ngraph
                     op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_EVEN;
 
                 bias = make_shared<op::Quantize>(
-                    bias, bias_scale, zero, element::i32, quantization_axes, round_mode);
+                    bias, bias_scale, zero, i32, quantization_axes, round_mode);
             }
             return make_shared<op::QuantizedConvolutionBias>(input,
                                                              filters,
@@ -175,7 +175,7 @@ namespace ngraph
                                                                      max_filter,
                                                                      min_freezed_output,
                                                                      max_freezed_output,
-                                                                     element::u8);
+                                                                     u8);
 
             return make_shared<op::QuantizedConvolutionRelu>(input,
                                                              filters,
@@ -207,7 +207,7 @@ namespace ngraph
                                                                      max_filter,
                                                                      min_freezed_output,
                                                                      max_freezed_output,
-                                                                     element::i8);
+                                                                     i8);
 
             return make_shared<op::QuantizedConvolution>(input,
                                                          filters,
@@ -251,7 +251,7 @@ namespace ngraph
                                               std::shared_ptr<Node> max_freezed_output_conv_2,
                                               const bool with_relu)
         {
-            auto output_et = with_relu ? element::u8 : element::i8;
+            auto output_et = with_relu ? u8 : i8;
             auto requantization_scale = quantization_util::get_scale(min_input,
                                                                      max_input,
                                                                      min_filter,
@@ -265,9 +265,9 @@ namespace ngraph
                                                                        min_freezed_output_conv_2,
                                                                        max_freezed_output_conv_2);
 
-            if (bias->get_element_type() != element::i32)
+            if (bias->get_element_type() != i32)
             {
-                auto zero = make_constant(element::i32, min_input->get_shape(), 0);
+                auto zero = make_constant(i32, min_input->get_shape(), 0);
                 AxisSet quantization_axes;
                 auto bias_scale =
                     quantization_util::get_bias_scale(min_input, max_input, min_filter, max_filter);
@@ -275,7 +275,7 @@ namespace ngraph
                     op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_EVEN;
 
                 bias = make_shared<op::Quantize>(
-                    bias, bias_scale, zero, element::i32, quantization_axes, round_mode);
+                    bias, bias_scale, zero, i32, quantization_axes, round_mode);
             }
             return make_shared<op::QuantizedConvolutionBiasAdd>(input,
                                                                 filters,
@@ -311,7 +311,7 @@ namespace ngraph
                                                     std::shared_ptr<Node> max_freezed_output_conv_2,
                                                     const bool with_relu)
         {
-            auto output_et = with_relu ? element::u8 : element::i8;
+            auto output_et = with_relu ? u8 : i8;
             auto requantization_scale = quantization_util::get_scale(min_input,
                                                                      max_input,
                                                                      min_filter,
@@ -325,9 +325,9 @@ namespace ngraph
                                                                        min_freezed_output_conv_2,
                                                                        max_freezed_output_conv_2);
 
-            if (bias->get_element_type() != element::i32)
+            if (bias->get_element_type() != i32)
             {
-                auto zero = make_constant(element::i32, min_input->get_shape(), 0);
+                auto zero = make_constant(i32, min_input->get_shape(), 0);
                 AxisSet quantization_axes;
                 auto bias_scale =
                     quantization_util::get_bias_scale(min_input, max_input, min_filter, max_filter);
@@ -335,7 +335,7 @@ namespace ngraph
                     op::Quantize::RoundMode::ROUND_NEAREST_TOWARD_EVEN;
 
                 bias = make_shared<op::Quantize>(
-                    bias, bias_scale, zero, element::i32, quantization_axes, round_mode);
+                    bias, bias_scale, zero, i32, quantization_axes, round_mode);
             }
             return make_shared<op::QuantizedConvolutionBiasSignedAdd>(input,
                                                                       filters,

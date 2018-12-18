@@ -28,9 +28,9 @@ using namespace std;
 TEST(nop_elimination, eliminate_pad)
 {
     Shape shape_a{2};
-    auto A = make_shared<op::Parameter>(element::f32, shape_a);
+    auto A = make_shared<op::Parameter>(f32, shape_a);
     Shape shape_b{};
-    auto B = make_shared<op::Parameter>(element::f32, shape_b);
+    auto B = make_shared<op::Parameter>(f32, shape_b);
     Shape padding_below{0};
     Shape padding_above{0};
     Shape padding_interior{0};
@@ -48,7 +48,7 @@ TEST(nop_elimination, eliminate_pad)
 TEST(nop_elimination, eliminate_sum)
 {
     Shape shape{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
     auto f = make_shared<Function>(make_shared<op::Sum>(A, AxisSet{}), ParameterVector{A});
 
     pass::Manager pass_manager;
@@ -61,9 +61,9 @@ TEST(nop_elimination, eliminate_sum)
 TEST(nop_elimination, eliminate_convert)
 {
     Shape shape{};
-    auto type = element::f32;
+    auto type = f32;
     auto A = make_shared<op::Parameter>(type, shape);
-    auto f = make_shared<Function>(make_shared<op::Convert>(A, element::f32), ParameterVector{A});
+    auto f = make_shared<Function>(make_shared<op::Convert>(A, f32), ParameterVector{A});
 
     pass::Manager pass_manager;
     pass_manager.register_pass<pass::NopElimination>();
@@ -75,7 +75,7 @@ TEST(nop_elimination, eliminate_convert)
 TEST(nop_elimination, eliminate_slice)
 {
     Shape shape{2, 2};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
     auto f = make_shared<Function>(make_shared<op::Slice>(A, Coordinate{0, 0}, Coordinate{2, 2}),
                                    ParameterVector{A});
 
@@ -89,7 +89,7 @@ TEST(nop_elimination, eliminate_slice)
 TEST(nop_elimination, eliminate_broadcast)
 {
     Shape shape{};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
     auto f =
         make_shared<Function>(make_shared<op::Broadcast>(A, shape, AxisSet{}), ParameterVector{A});
 
@@ -103,7 +103,7 @@ TEST(nop_elimination, eliminate_broadcast)
 TEST(nop_elimination, eliminate_stop_gradient)
 {
     Shape shape{};
-    auto A = make_shared<op::Parameter>(element::f32, shape);
+    auto A = make_shared<op::Parameter>(f32, shape);
     auto f = make_shared<Function>(make_shared<op::StopGradient>(A), ParameterVector{A});
 
     pass::Manager pass_manager;

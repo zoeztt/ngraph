@@ -93,7 +93,7 @@ namespace ngraph
                                             std::shared_ptr<Node> max_filter,
                                             std::shared_ptr<Node> min_freezed_output,
                                             std::shared_ptr<Node> max_freezed_output,
-                                            const ngraph::element::Type& output_type)
+                                            const ngraph::Type& output_type)
             {
                 auto type = min_input->get_element_type();
                 if (type != max_input->get_element_type() ||
@@ -143,7 +143,7 @@ namespace ngraph
                 // 5. s8 = s32 * std::pow(2, -24) * max_abs32 / max_abs8;
 
                 return make_constant(
-                           type, shape, std::pow(2, (output_type == element::i8) ? -24 : -23)) *
+                           type, shape, std::pow(2, (output_type == i8) ? -24 : -23)) *
                        (max_abs32 / max_abs8);
             }
 
@@ -205,7 +205,7 @@ namespace ngraph
 
             std::shared_ptr<Node> get_scale(std::shared_ptr<Node> input_min_range,
                                             std::shared_ptr<Node> input_max_range,
-                                            const ngraph::element::Type& quant_type,
+                                            const ngraph::Type& quant_type,
                                             bool bump_by_eps = false)
             {
                 auto type = input_min_range->get_element_type();

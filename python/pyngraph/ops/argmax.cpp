@@ -29,5 +29,5 @@ void regclass_pyngraph_op_ArgMax(py::module m)
                ngraph::op::util::IndexReduction>
         add(m, "ArgMax");
     add.doc() = "ngraph.impl.op.ArgMax wraps ngraph::op::ArgMax";
-    add.def(py::init<const std::shared_ptr<ngraph::Node>&, size_t, const ngraph::element::Type&>());
+    add.def(py::init<const std::shared_ptr<ngraph::Node>&, size_t, const ngraph::Type&>());
 }

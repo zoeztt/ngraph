@@ -57,7 +57,7 @@ public:
     /// \param shape The shape of the tensor
     /// \returns shared_ptr to a new backend-specific tensor
     virtual std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::element::Type& element_type, const Shape& shape) = 0;
+        create_tensor(const ngraph::Type& element_type, const Shape& shape) = 0;
 
     /// \brief Create a tensor specific to this backend
     /// \param element_type The type of the tensor element
@@ -67,7 +67,7 @@ public:
     ///     responsibility of the caller.
     /// \returns shared_ptr to a new backend-specific tensor
     virtual std::shared_ptr<ngraph::runtime::Tensor> create_tensor(
-        const ngraph::element::Type& element_type, const Shape& shape, void* memory_pointer) = 0;
+        const ngraph::Type& element_type, const Shape& shape, void* memory_pointer) = 0;
 
     /// \brief Create a tensor of C type T specific to this backend
     /// \param shape The shape of the tensor
@@ -75,7 +75,7 @@ public:
     template <typename T>
     std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const Shape& shape)
     {
-        return create_tensor(element::from<T>(), shape);
+        return create_tensor(from<T>(), shape);
     }
 
     /// \brief Compiles a Function.
