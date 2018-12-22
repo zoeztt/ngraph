@@ -30,7 +30,8 @@ using namespace ngraph;
 
 void ngraph::default_logger_handler_func(const string& s)
 {
-    cout << s << endl;
+    // Concat string is multi-threaded friendly. Don't use std::endl here.
+    cout << s + "\n";
 }
 
 LogHelper::LogHelper(LOG_TYPE type,

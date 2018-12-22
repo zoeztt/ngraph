@@ -18,8 +18,6 @@
 #include "ngraph/graph_util.hpp"
 #include "ngraph/pass/manager.hpp"
 #include "ngraph/pass/visualize_tree.hpp"
-#include "ngraph/runtime/gpu/gpu_backend.hpp"
-#include "ngraph/runtime/gpu/gpu_tensor.hpp"
 #include "ngraph/runtime/host_tensor.hpp"
 #include "ngraph/runtime/hybrid/hybrid_util.hpp"
 #include "ngraph/runtime/hybrid/pass/assign_placement.hpp"
@@ -40,32 +38,33 @@ shared_ptr<runtime::Tensor>
     runtime::hybrid::HybridBackend::create_tensor(const element::Type& element_type,
                                                   const Shape& shape)
 {
-    auto it = m_backend_list.begin();
-    return (*it)->create_tensor(element_type, shape);
+    return m_backend_list[0]->create_tensor(element_type, shape);
 }
 
 shared_ptr<runtime::Tensor> runtime::hybrid::HybridBackend::create_tensor(
     const element::Type& element_type, const Shape& shape, void* memory_pointer)
 {
-    auto it = m_backend_list.begin();
-    return (*it)->create_tensor(element_type, shape, memory_pointer);
+    return m_backend_list[0]->create_tensor(element_type, shape, memory_pointer);
 }
 
 runtime::Handle runtime::hybrid::HybridBackend::compile(shared_ptr<Function> func)
 {
-    if (m_function_map.find(func) == m_function_map.end())
+    FunctionInstance& instance = m_function_map[func];
+    if (!instance.m_is_compiled)
     {
         // Clone function
-        FunctionInstance instance;
+        instance.m_is_compiled = true;
         instance.m_function = clone_function(*func);
 
         // Run placement pass
         ngraph::pass::Manager pass_manager;
         pass_manager.register_pass<runtime::hybrid::pass::AssignPlacement>(m_backend_list);
         pass_manager.register_pass<runtime::hybrid::pass::FixGetOutputElement>();
-#ifdef GPUH_DEBUG
-        pass_manager.register_pass<ngraph::pass::VisualizeTree>("graph.png");
-#endif
+        if (std::getenv("HYBRID_DEBUG") != nullptr)
+        {
+            NGRAPH_INFO << "HYBRID_DEBUG enabled";
+            pass_manager.register_pass<ngraph::pass::VisualizeTree>("graph.png");
+        }
         pass_manager.run_passes(instance.m_function);
 
         // Split function to sub_functions
@@ -74,10 +73,19 @@ runtime::Handle runtime::hybrid::HybridBackend::compile(shared_ptr<Function> fun
         m_function_map.insert({func, instance});
 
         // Compile subfunctions in corresponding backends
-        for (shared_ptr<Function>& sub_function : instance.m_sub_functions)
+        int subgraph_count = 0;
+        for (const shared_ptr<Function>& sub_function : instance.m_sub_functions)
         {
-            size_t placement = runtime::hybrid::get_colocated_function_placement(sub_function);
+            if (std::getenv("HYBRID_DEBUG") != nullptr)
+            {
+                ngraph::pass::Manager pm;
+                pm.register_pass<ngraph::pass::VisualizeTree>("subgraph_" +
+                                                              to_string(subgraph_count++) + ".png");
+                pm.run_passes(sub_function);
+            }
+            size_t placement = sub_function->get_placement();
             auto backend = m_backend_list[placement];
+            backend->enable_performance_data(sub_function, instance.m_enable_performance_data);
             backend->compile(sub_function);
 
             // Compile will replace nodes so we need to make one more pass through all
@@ -101,12 +109,11 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
 
     using node_map_t = unordered_map<shared_ptr<Node>, shared_ptr<runtime::Tensor>>;
 
-    auto fit = m_function_map.find(func);
-    if (fit == m_function_map.end())
+    FunctionInstance& instance = m_function_map[func];
+    if (!instance.m_is_compiled)
     {
         throw runtime_error("compile() must be called before call().");
     }
-    FunctionInstance& instance = fit->second;
 
     // Parameter and result node in sub_function maps to one Tensor
     node_map_t map_node_to_tensor;
@@ -123,7 +130,7 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
     for (const shared_ptr<Function>& sub_function : instance.m_sub_functions)
     {
         // Init backend
-        size_t placement = runtime::hybrid::get_colocated_function_placement(sub_function);
+        size_t placement = sub_function->get_placement();
         auto backend = m_backend_list[placement];
 
         // Prepare parameter Tensors
@@ -200,6 +207,28 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
     return rc;
 }
 
+void runtime::hybrid::HybridBackend::enable_performance_data(std::shared_ptr<Function> func,
+                                                             bool enable)
+{
+    FunctionInstance& instance = m_function_map[func];
+    instance.m_enable_performance_data = enable;
+}
+
+vector<runtime::PerformanceCounter>
+    runtime::hybrid::HybridBackend::get_performance_data(std::shared_ptr<Function> func) const
+{
+    vector<runtime::PerformanceCounter> rc;
+    const FunctionInstance& instance = m_function_map.at(func);
+    for (const shared_ptr<Function>& sub_function : instance.m_sub_functions)
+    {
+        size_t placement = sub_function->get_placement();
+        auto backend = m_backend_list[placement];
+        auto tmp = backend->get_performance_data(sub_function);
+        rc.insert(rc.end(), tmp.begin(), tmp.end());
+    }
+    return rc;
+}
+
 bool runtime::hybrid::HybridBackend::is_supported(const Node& node) const
 {
     return true;
@@ -208,27 +237,29 @@ bool runtime::hybrid::HybridBackend::is_supported(const Node& node) const
 string runtime::hybrid::HybridBackend::get_placement_name(const runtime::Tensor* t)
 {
     string rc;
-    if (dynamic_cast<const runtime::HostTensor*>(t) != nullptr)
-    {
-        rc = "HostTensor";
-    }
-    else if (dynamic_cast<const runtime::gpu::GPUTensor*>(t) != nullptr)
-    {
-        rc = "GPUTensor";
-    }
+    // TODO: Fix this
+    // if (dynamic_cast<const runtime::HostTensor*>(t) != nullptr)
+    // {
+    //     rc = "HostTensor";
+    // }
+    // else if (dynamic_cast<const runtime::gpu::GPUTensor*>(t) != nullptr)
+    // {
+    //     rc = "GPUTensor";
+    // }
     return rc;
 }
 string runtime::hybrid::HybridBackend::get_placement_name(const runtime::Backend* t)
 {
     string rc;
-    if (dynamic_cast<const runtime::interpreter::INTBackend*>(t) != nullptr)
-    {
-        rc = "INTBackend";
-    }
-    else if (dynamic_cast<const runtime::gpu::GPU_Backend*>(t) != nullptr)
-    {
-        rc = "GPU_Backend";
-    }
+    // TODO: Fix this
+    // if (dynamic_cast<const runtime::interpreter::INTBackend*>(t) != nullptr)
+    // {
+    //     rc = "INTBackend";
+    // }
+    // else if (dynamic_cast<const runtime::gpu::GPU_Backend*>(t) != nullptr)
+    // {
+    //     rc = "GPU_Backend";
+    // }
     return rc;
 }
 size_t runtime::hybrid::HybridBackend::get_placement(const runtime::Tensor* t)
