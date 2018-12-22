@@ -54,6 +54,9 @@ public:
               const std::vector<std::shared_ptr<ngraph::runtime::Tensor>>& outputs,
               const std::vector<std::shared_ptr<ngraph::runtime::Tensor>>& inputs) override;
 
+    void enable_performance_data(std::shared_ptr<Function> func, bool enable) override;
+    std::vector<PerformanceCounter>
+        get_performance_data(std::shared_ptr<Function> func) const override;
     bool is_supported(const ngraph::Node& node) const override;
 
 private:
@@ -65,6 +68,8 @@ private:
         std::unordered_map<std::shared_ptr<ngraph::op::Parameter>,
                            std::shared_ptr<ngraph::op::Result>>
             m_map_parameter_to_result;
+        bool m_is_compiled = false;
+        bool m_enable_performance_data = false;
     };
 
     std::map<std::shared_ptr<ngraph::Function>, FunctionInstance> m_function_map;

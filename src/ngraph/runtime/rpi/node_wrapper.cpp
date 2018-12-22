@@ -14,27 +14,31 @@
 // limitations under the License.
 //*****************************************************************************
 
-#pragma once
+#include "ngraph/runtime/rpi/node_wrapper.hpp"
 
-#include <memory>
-#include <unordered_map>
-#include <vector>
+using namespace ngraph;
+using namespace std;
 
-#include "ngraph/function.hpp"
-#include "ngraph/op/parameter.hpp"
-#include "ngraph/op/result.hpp"
-
-namespace ngraph
+runtime::rpi::NodeWrapper::NodeWrapper(const shared_ptr<const Node>& node)
+    : m_node{node}
 {
-    namespace runtime
+// This expands the op list in op_tbl.hpp into a list of enumerations that look like this:
+// {"Abs", runtime::rpi::OP_TYPEID::Abs},
+// {"Acos", runtime::rpi::OP_TYPEID::Acos},
+// ...
+#define NGRAPH_OP(a, b) {#a, runtime::rpi::OP_TYPEID::a},
+    static unordered_map<string, runtime::rpi::OP_TYPEID> typeid_map{
+#include "ngraph/op/op_tbl.hpp"
+    };
+#undef NGRAPH_OP
+
+    auto it = typeid_map.find(m_node->description());
+    if (it != typeid_map.end())
     {
-        namespace hybrid
-        {
-            // Split function to function(s) with unique placement
-            std::pair<
-                std::vector<std::shared_ptr<Function>>,
-                std::unordered_map<std::shared_ptr<op::Parameter>, std::shared_ptr<op::Result>>>
-                split_function_by_placement(const std::shared_ptr<Function>& f);
-        }
+        m_typeid = it->second;
+    }
+    else
+    {
+        throw unsupported_op("Unsupported op '" + m_node->description() + "'");
     }
 }

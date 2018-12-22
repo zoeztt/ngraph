@@ -16,25 +16,26 @@
 
 #pragma once
 
-#include <memory>
-#include <unordered_map>
+#include <algorithm>
+#include <cmath>
+#include <numeric>
 #include <vector>
-
-#include "ngraph/function.hpp"
-#include "ngraph/op/parameter.hpp"
-#include "ngraph/op/result.hpp"
+#include "ngraph/shape.hpp"
 
 namespace ngraph
 {
     namespace runtime
     {
-        namespace hybrid
+        namespace rpi
         {
-            // Split function to function(s) with unique placement
-            std::pair<
-                std::vector<std::shared_ptr<Function>>,
-                std::unordered_map<std::shared_ptr<op::Parameter>, std::shared_ptr<op::Result>>>
-                split_function_by_placement(const std::shared_ptr<Function>& f);
+            namespace kernel
+            {
+                template <typename T>
+                void result(const T* arg, T* out, size_t count)
+                {
+                    memcpy(out, arg, sizeof(T) * count);
+                }
+            }
         }
     }
 }
