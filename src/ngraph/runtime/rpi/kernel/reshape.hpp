@@ -32,7 +32,7 @@ namespace ngraph
             namespace kernel
             {
                 template <typename T, unsigned int IN_RANK, unsigned int OUT_RANK>
-                void reshape_in_out(T* input,
+                void reshape_in_out(const T* input,
                                     T* output,
                                     const Shape& input_shape,
                                     const AxisVector& input_axis_order,
@@ -56,28 +56,14 @@ namespace ngraph
 
                     Eigen::TensorMap<Eigen::Tensor<T, OUT_RANK, Eigen::RowMajor>> out(output,
                                                                                       out_dims);
-                    Eigen::TensorMap<Eigen::Tensor<T, IN_RANK, Eigen::RowMajor>> in(input, in_dims);
+                    Eigen::TensorMap<Eigen::Tensor<const T, IN_RANK, Eigen::RowMajor>> in(input,
+                                                                                          in_dims);
 
                     out = in.shuffle(axis_order).reshape(out_dims);
                 }
 
-                // template <typename T, unsigned int IN_RANK, unsigned int OUT_RANK>
-                // void reshape(void* input,
-                //              void* output,
-                //              const Shape& input_shape,
-                //              const AxisVector& input_axis_order,
-                //              const Shape& output_shape)
-                // {
-                //     NGRAPH_INFO << IN_RANK << " x " << OUT_RANK;
-                //     reshape<T, IN_RANK, OUT_RANK>(static_cast<T*>(input),
-                //                                   static_cast<T*>(output),
-                //                                   input_shape,
-                //                                   input_axis_order,
-                //                                   output_shape);
-                // }
-
                 template <typename T, unsigned int IN_RANK>
-                void reshape_in(T* input,
+                void reshape_in(const T* input,
                                 T* output,
                                 const Shape& input_shape,
                                 const AxisVector& input_axis_order,
@@ -129,69 +115,35 @@ namespace ngraph
                 {
                     NGRAPH_INFO << input_shape.size() << " x " << output_shape.size();
 
-                    reference::reshape(static_cast<const T*>(input),
-                                       static_cast<T*>(output),
-                                       input_shape,
-                                       input_axis_order,
-                                       output_shape);
-                }
-
-                template <>
-                void reshape(const float* input,
-                             float* output,
-                             const Shape& input_shape,
-                             const AxisVector& input_axis_order,
-                             const Shape& output_shape)
-                {
-                    NGRAPH_INFO << input_shape.size() << " x " << output_shape.size();
-
                     switch (input_shape.size())
                     {
                     // case 0:
-                    //     reshape_in<float, 0>(
+                    //     reshape_in<T, 0>(
                     //         input, output, input_shape, input_axis_order, output_shape);
                     //     break;
                     case 1:
-                        reshape_in<float, 1>(const_cast<float*>(input),
-                                             output,
-                                             input_shape,
-                                             input_axis_order,
-                                             output_shape);
+                        reshape_in<T, 1>(
+                            input, output, input_shape, input_axis_order, output_shape);
                         break;
                     case 2:
-                        reshape_in<float, 2>(const_cast<float*>(input),
-                                             output,
-                                             input_shape,
-                                             input_axis_order,
-                                             output_shape);
+                        reshape_in<T, 2>(
+                            input, output, input_shape, input_axis_order, output_shape);
                         break;
                     case 3:
-                        reshape_in<float, 3>(const_cast<float*>(input),
-                                             output,
-                                             input_shape,
-                                             input_axis_order,
-                                             output_shape);
+                        reshape_in<T, 3>(
+                            input, output, input_shape, input_axis_order, output_shape);
                         break;
                     case 4:
-                        reshape_in<float, 4>(const_cast<float*>(input),
-                                             output,
-                                             input_shape,
-                                             input_axis_order,
-                                             output_shape);
+                        reshape_in<T, 4>(
+                            input, output, input_shape, input_axis_order, output_shape);
                         break;
                     case 5:
-                        reshape_in<float, 5>(const_cast<float*>(input),
-                                             output,
-                                             input_shape,
-                                             input_axis_order,
-                                             output_shape);
+                        reshape_in<T, 5>(
+                            input, output, input_shape, input_axis_order, output_shape);
                         break;
                     default:
-                        reference::reshape(const_cast<float*>(input),
-                                           static_cast<float*>(output),
-                                           input_shape,
-                                           input_axis_order,
-                                           output_shape);
+                        reference::reshape(
+                            input, output, input_shape, input_axis_order, output_shape);
                         break;
                     }
                 }

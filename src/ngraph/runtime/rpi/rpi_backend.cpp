@@ -21,11 +21,21 @@
 #include "ngraph/op/convert.hpp"
 #include "ngraph/op/select.hpp"
 #include "ngraph/op/util/binary_elementwise_comparison.hpp"
+#include "ngraph/pass/algebraic_simplification.hpp"
+#include "ngraph/pass/any_all_replacement.hpp"
 #include "ngraph/pass/assign_layout.hpp"
+#include "ngraph/pass/constant_folding.hpp"
+#include "ngraph/pass/core_fusion.hpp"
+#include "ngraph/pass/get_output_element_elimination.hpp"
+#include "ngraph/pass/like_replacement.hpp"
 #include "ngraph/pass/like_replacement.hpp"
 #include "ngraph/pass/liveness.hpp"
 #include "ngraph/pass/manager.hpp"
 #include "ngraph/pass/memory_layout.hpp"
+#include "ngraph/pass/nop_elimination.hpp"
+#include "ngraph/pass/reshape_elimination.hpp"
+#include "ngraph/pass/reshape_sinking.hpp"
+#include "ngraph/pass/zero_dim_tensor_elimination.hpp"
 #include "ngraph/runtime/backend_manager.hpp"
 #include "ngraph/runtime/interpreter/int_backend.hpp"
 #include "ngraph/runtime/rpi/rpi_backend.hpp"
@@ -71,8 +81,17 @@ runtime::Handle runtime::rpi::RPIBackendOverride::compile(shared_ptr<Function> f
     {
         instance.m_is_compiled = true;
         pass::Manager pass_manager;
+        pass_manager.register_pass<pass::AnyAllReplacement>();
         pass_manager.register_pass<pass::LikeReplacement>();
+        pass_manager.register_pass<pass::NopElimination>();
+        pass_manager.register_pass<pass::ZeroDimTensorElimination>();
+        pass_manager.register_pass<pass::AlgebraicSimplification>();
+        pass_manager.register_pass<pass::ReshapeSinking>();
+        pass_manager.register_pass<pass::ReshapeElimination>();
+        pass_manager.register_pass<pass::CoreFusion>();
+        pass_manager.register_pass<pass::ConstantFolding>();
         pass_manager.register_pass<pass::AssignLayout<DenseTensorLayout>>();
+        pass_manager.register_pass<pass::GetOutputElementElimination>();
         pass_manager.register_pass<pass::Liveness>();
         pass_manager.register_pass<pass::MemoryLayout>(get_alignment());
         pass_manager.run_passes(function);
@@ -290,9 +309,9 @@ bool runtime::rpi::RPIBackendOverride::is_supported(const Node& node) const
     {
         rc = true;
     }
-    else if (node.description() == "Reshape")
-    {
-        rc = true;
-    }
+    // else if (node.description() == "Reshape")
+    // {
+    //     rc = true;
+    // }
     return rc;
 }
