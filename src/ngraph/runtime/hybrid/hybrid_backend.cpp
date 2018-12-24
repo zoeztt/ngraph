@@ -30,6 +30,8 @@
 using namespace ngraph;
 using namespace std;
 
+#define HYBRID_DEBUG
+
 runtime::hybrid::HybridBackend::HybridBackend(
     const std::vector<std::shared_ptr<runtime::Backend>>& backend_list)
     : m_backend_list{backend_list}
@@ -64,8 +66,9 @@ runtime::Handle runtime::hybrid::HybridBackend::compile(shared_ptr<Function> fun
         ngraph::pass::Manager pass_manager;
         pass_manager.register_pass<runtime::hybrid::pass::AssignPlacement>(m_backend_list);
         pass_manager.register_pass<runtime::hybrid::pass::FixGetOutputElement>();
-#ifdef GPUH_DEBUG
+#ifdef HYBRID_DEBUG
         pass_manager.register_pass<ngraph::pass::VisualizeTree>("graph.png");
+        int count = 0;
 #endif
         pass_manager.run_passes(instance.m_function);
 
@@ -77,6 +80,12 @@ runtime::Handle runtime::hybrid::HybridBackend::compile(shared_ptr<Function> fun
         // Compile subfunctions in corresponding backends
         for (const shared_ptr<Function>& sub_function : instance.m_sub_functions)
         {
+#ifdef HYBRID_DEBUG
+            ngraph::pass::Manager pm;
+            pm.register_pass<ngraph::pass::VisualizeTree>("subgraph_" + to_string(count++) +
+                                                          ".png");
+            pm.run_passes(sub_function);
+#endif
             size_t placement = sub_function->get_placement();
             auto backend = m_backend_list[placement];
             backend->enable_performance_data(sub_function, instance.m_enable_performance_data);

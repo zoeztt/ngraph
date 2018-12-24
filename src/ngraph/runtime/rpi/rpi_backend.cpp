@@ -290,9 +290,9 @@ bool runtime::rpi::RPIBackendOverride::is_supported(const Node& node) const
     {
         rc = true;
     }
-    // else if (node.description() == "Reshape")
-    // {
-    //     rc = true;
-    // }
+    else if (node.description() == "Reshape")
+    {
+        rc = true;
+    }
     return rc;
 }

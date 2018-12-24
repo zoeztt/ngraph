@@ -115,13 +115,13 @@ private:
         {
             const op::Dot* dot = static_cast<const op::Dot*>(&node);
 
-            kernel::dot(static_cast<const T*>(args[0]),
-                        static_cast<const T*>(args[1]),
-                        static_cast<T*>(out[0]),
-                        node.get_input_shape(0),
-                        node.get_input_shape(1),
-                        node.get_output_shape(0),
-                        dot->get_reduction_axes_count());
+            rpi::kernel::dot(static_cast<const T*>(args[0]),
+                             static_cast<const T*>(args[1]),
+                             static_cast<T*>(out[0]),
+                             node.get_input_shape(0),
+                             node.get_input_shape(1),
+                             node.get_output_shape(0),
+                             dot->get_reduction_axes_count());
             break;
         }
         case OP_TYPEID::Reshape:
@@ -130,19 +130,19 @@ private:
             const Shape& in_shape = node.get_input_shape(0);
             const Shape& out_shape = node.get_output_shape(0);
             NGRAPH_INFO << "in_shape=" << in_shape << ", out_shape=" << out_shape;
-            // kernel::reshape<T, in_shape.size(), out_shape.size()>(static_cast<const T*>(args[0]),
-            //                                                       static_cast<T*>(out[0]),
-            //                                                       in_shape,
-            //                                                       reshape->get_input_order(),
-            //                                                       out_shape);
+            rpi::kernel::reshape<T>(static_cast<const T*>(args[0]),
+                                    static_cast<T*>(out[0]),
+                                    in_shape,
+                                    reshape->get_input_order(),
+                                    out_shape);
             break;
         }
         case OP_TYPEID::Result:
         {
             const op::Result* res = static_cast<const op::Result*>(&node);
-            kernel::result(static_cast<const T*>(args[0]),
-                           static_cast<T*>(out[0]),
-                           shape_size(res->get_shape()));
+            rpi::kernel::result(static_cast<const T*>(args[0]),
+                                static_cast<T*>(out[0]),
+                                shape_size(res->get_shape()));
             break;
         }
         default: throw unsupported_op("Unsupported op '" + node.description() + "'");
