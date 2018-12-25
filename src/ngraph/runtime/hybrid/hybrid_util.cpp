@@ -254,12 +254,6 @@ pair<vector<shared_ptr<Function>>, unordered_map<shared_ptr<op::Parameter>, shar
         auto sub_function = make_shared<Function>(res_vector, par_vector);
         sub_function->set_placement(placement);
         sub_functions.push_back(sub_function);
-#ifdef HYBRID_DEBUG
-        ngraph::pass::Manager pass_manager;
-        pass_manager.register_pass<ngraph::pass::VisualizeTree>("subgraph_" + to_string(index++) +
-                                                                ".png");
-        pass_manager.run_passes(sub_function);
-#endif
     }
 
     return make_pair(sub_functions, map_parameter_to_result);

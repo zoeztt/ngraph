@@ -14,8 +14,8 @@
 // limitations under the License.
 //*****************************************************************************
 
+#include "ngraph/runtime/rpi/rpi_backend.hpp"
 #include <omp.h>
-
 #include "ngraph/descriptor/layout/dense_tensor_layout.hpp"
 #include "ngraph/except.hpp"
 #include "ngraph/op/convert.hpp"
@@ -38,7 +38,6 @@
 #include "ngraph/pass/zero_dim_tensor_elimination.hpp"
 #include "ngraph/runtime/backend_manager.hpp"
 #include "ngraph/runtime/interpreter/int_backend.hpp"
-#include "ngraph/runtime/rpi/rpi_backend.hpp"
 #include "ngraph/util.hpp"
 
 using namespace std;
@@ -305,7 +304,11 @@ vector<runtime::PerformanceCounter>
 bool runtime::rpi::RPIBackendOverride::is_supported(const Node& node) const
 {
     bool rc = false;
-    if (node.description() == "Dot")
+    if (node.description() == "Broadcast")
+    {
+        rc = true;
+    }
+    else if (node.description() == "Dot")
     {
         rc = true;
     }
@@ -313,5 +316,6 @@ bool runtime::rpi::RPIBackendOverride::is_supported(const Node& node) const
     // {
     //     rc = true;
     // }
+
     return rc;
 }

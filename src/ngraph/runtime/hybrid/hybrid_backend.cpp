@@ -16,10 +16,21 @@
 
 #include "ngraph/runtime/hybrid/hybrid_backend.hpp"
 #include "ngraph/graph_util.hpp"
+#include "ngraph/pass/algebraic_simplification.hpp"
+#include "ngraph/pass/any_all_replacement.hpp"
+#include "ngraph/pass/assign_layout.hpp"
+#include "ngraph/pass/constant_folding.hpp"
+#include "ngraph/pass/core_fusion.hpp"
+#include "ngraph/pass/get_output_element_elimination.hpp"
+#include "ngraph/pass/like_replacement.hpp"
+#include "ngraph/pass/liveness.hpp"
 #include "ngraph/pass/manager.hpp"
+#include "ngraph/pass/memory_layout.hpp"
+#include "ngraph/pass/nop_elimination.hpp"
+#include "ngraph/pass/reshape_elimination.hpp"
+#include "ngraph/pass/reshape_sinking.hpp"
 #include "ngraph/pass/visualize_tree.hpp"
-#include "ngraph/runtime/gpu/gpu_backend.hpp"
-#include "ngraph/runtime/gpu/gpu_tensor.hpp"
+#include "ngraph/pass/zero_dim_tensor_elimination.hpp"
 #include "ngraph/runtime/host_tensor.hpp"
 #include "ngraph/runtime/hybrid/hybrid_util.hpp"
 #include "ngraph/runtime/hybrid/pass/assign_placement.hpp"
@@ -29,8 +40,6 @@
 
 using namespace ngraph;
 using namespace std;
-
-#define HYBRID_DEBUG
 
 runtime::hybrid::HybridBackend::HybridBackend(
     const std::vector<std::shared_ptr<runtime::Backend>>& backend_list)
@@ -66,10 +75,10 @@ runtime::Handle runtime::hybrid::HybridBackend::compile(shared_ptr<Function> fun
         ngraph::pass::Manager pass_manager;
         pass_manager.register_pass<runtime::hybrid::pass::AssignPlacement>(m_backend_list);
         pass_manager.register_pass<runtime::hybrid::pass::FixGetOutputElement>();
-#ifdef HYBRID_DEBUG
-        pass_manager.register_pass<ngraph::pass::VisualizeTree>("graph.png");
-        int count = 0;
-#endif
+        if (std::getenv("HYBRID_DEBUG") != nullptr)
+        {
+            pass_manager.register_pass<ngraph::pass::VisualizeTree>("graph.png");
+        }
         pass_manager.run_passes(instance.m_function);
 
         // Split function to sub_functions
@@ -78,14 +87,16 @@ runtime::Handle runtime::hybrid::HybridBackend::compile(shared_ptr<Function> fun
         m_function_map.insert({func, instance});
 
         // Compile subfunctions in corresponding backends
+        int subgraph_count = 0;
         for (const shared_ptr<Function>& sub_function : instance.m_sub_functions)
         {
-#ifdef HYBRID_DEBUG
-            ngraph::pass::Manager pm;
-            pm.register_pass<ngraph::pass::VisualizeTree>("subgraph_" + to_string(count++) +
-                                                          ".png");
-            pm.run_passes(sub_function);
-#endif
+            if (std::getenv("HYBRID_DEBUG") != nullptr)
+            {
+                ngraph::pass::Manager pm;
+                pm.register_pass<ngraph::pass::VisualizeTree>("subgraph_" +
+                                                              to_string(subgraph_count++) + ".png");
+                pm.run_passes(sub_function);
+            }
             size_t placement = sub_function->get_placement();
             auto backend = m_backend_list[placement];
             backend->enable_performance_data(sub_function, instance.m_enable_performance_data);

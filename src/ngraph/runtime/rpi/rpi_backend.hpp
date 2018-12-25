@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 
+#include "ngraph/op/broadcast.hpp"
 #include "ngraph/op/dot.hpp"
 #include "ngraph/op/reshape.hpp"
 #include "ngraph/op/result.hpp"
@@ -28,12 +29,14 @@
 #include "ngraph/runtime/backend.hpp"
 #include "ngraph/runtime/host_tensor.hpp"
 #include "ngraph/runtime/hybrid/hybrid_backend.hpp"
+#include "ngraph/runtime/rpi/kernel/broadcast.hpp"
 #include "ngraph/runtime/rpi/kernel/dot.hpp"
 #include "ngraph/runtime/rpi/kernel/reshape.hpp"
 #include "ngraph/runtime/rpi/kernel/result.hpp"
 #include "ngraph/runtime/rpi/node_wrapper.hpp"
 #include "ngraph/runtime/tensor.hpp"
 #include "ngraph/state/rng_state.hpp"
+#include "ngraph/util.hpp"
 
 #ifdef NGRAPH_DISTRIBUTED
 #include "ngraph/runtime/reference/allreduce.hpp"
@@ -111,10 +114,22 @@ private:
 
         switch (node_wrapper.get_typeid())
         {
+        case OP_TYPEID::Broadcast:
+        {
+            const op::Broadcast* broadcast = static_cast<const op::Broadcast*>(&node);
+            const Shape& in_shape = node.get_input_shape(0);
+            const Shape& out_shape = node.get_output_shape(0);
+            const AxisSet& broadcast_axes = broadcast->get_broadcast_axes();
+            rpi::kernel::broadcast(static_cast<const T*>(args[0]),
+                                   static_cast<T*>(out[0]),
+                                   in_shape,
+                                   out_shape,
+                                   broadcast_axes);
+            break;
+        }
         case OP_TYPEID::Dot:
         {
             const op::Dot* dot = static_cast<const op::Dot*>(&node);
-
             rpi::kernel::dot(static_cast<const T*>(args[0]),
                              static_cast<const T*>(args[1]),
                              static_cast<T*>(out[0]),
