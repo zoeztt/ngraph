@@ -53,15 +53,47 @@ namespace ngraph
                 }
 
                 template <typename T>
+                void broadcast_3d(const T* in,
+                                  T* out,
+                                  const Shape& in_shape,
+                                  const Shape& out_shape,
+                                  const AxisSet& broadcast_axes)
+                {
+                    size_t index[3];
+                    size_t* out_index =
+                        (broadcast_axes.find(0) == broadcast_axes.end() ? &index[0] : &index[1]);
+                    // size_t* out_index;
+                    // for (size_t i = 0; i < 3; i++)
+                    // {
+                    //     if (broadcast_axes.count(i) > 0)
+                    //     {
+                    //         out_index = &index[i];
+                    //         break;
+                    //     }
+                    // }
+                    for (index[0] = 0; index[0] < out_shape[0]; ++index[0])
+                    {
+                        for (index[1] = 0; index[1] < out_shape[1]; ++index[1])
+                        {
+                            for (index[2] = 0; index[2] < out_shape[2]; ++index[2])
+                            {
+                                out[index[0] * out_shape[1] * out_shape[2] +
+                                    index[1] * out_shape[2] + index[2]] = in[*out_index];
+                            }
+                        }
+                    }
+                }
+
+                template <typename T>
                 void broadcast(const T* in,
                                T* out,
                                const Shape& in_shape,
                                const Shape& out_shape,
                                const AxisSet& broadcast_axes)
                 {
-                    // NGRAPH_INFO << "in_shape=" << in_shape << ", out_shape=" << out_shape
-                    //             << ",  broadcast_axes(" << broadcast_axes.size()
-                    //             << ")=" << join(broadcast_axes);
+                    NGRAPH_INFO << "in_shape=" << in_shape << ", out_shape=" << out_shape
+                                << ",  broadcast_axes(" << broadcast_axes.size()
+                                << ")=" << join(broadcast_axes);
                     if (in_shape.size() == 0)
                     {
                         for (size_t i = 0; i < shape_size(out_shape); ++i)
@@ -71,7 +103,13 @@ namespace ngraph
                     }
                     else if (in_shape.size() == 1 && out_shape.size() == 2)
                     {
+                        NGRAPH_INFO;
                         broadcast_2d<T>(in, out, in_shape, out_shape, broadcast_axes);
+                    }
+                    else if (in_shape.size() == 1 && out_shape.size() == 3)
+                    {
+                        NGRAPH_INFO;
+                        broadcast_3d<T>(in, out, in_shape, out_shape, broadcast_axes);
                     }
                     else
                     {
