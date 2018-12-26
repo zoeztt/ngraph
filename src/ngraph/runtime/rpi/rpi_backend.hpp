@@ -111,6 +111,8 @@ private:
     {
         const Node& node = node_wrapper.get_node();
         NGRAPH_INFO << node.description();
+        stopwatch timer;
+        timer.start();
 
         switch (node_wrapper.get_typeid())
         {
@@ -162,6 +164,6 @@ private:
         }
         default: throw unsupported_op("Unsupported op '" + node.description() + "'");
         }
-        NGRAPH_INFO << node.description();
+        NGRAPH_INFO << node.description() << ", time: " << timer.get_milliseconds() << "ms";
     }
 };

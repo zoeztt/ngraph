@@ -60,7 +60,6 @@ runtime::HostTensor::HostTensor(const ngraph::element::Type& element_type,
                                 const Backend* parent)
     : HostTensor(element_type, shape, nullptr, parent)
 {
-    NGRAPH_INFO << parent;
 }
 
 runtime::HostTensor::~HostTensor()

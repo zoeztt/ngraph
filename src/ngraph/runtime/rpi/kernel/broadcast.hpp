@@ -60,6 +60,7 @@ namespace ngraph
                     }
                 }
 
+                // #define PARALLEL
                 template <typename T>
                 void broadcast_3d(const T* in,
                                   T* out,
@@ -79,44 +80,33 @@ namespace ngraph
                         start = 0;
                         finish = out_shape[0];
 #endif
-                        if (start != finish)
+                        size_t i0;
+                        size_t i1;
+                        size_t i2;
+                        size_t* index[3] = {&i0, &i1, &i2};
+                        size_t* out_index;
+                        for (size_t i = 0; i < 3; i++)
                         {
-                            NGRAPH_INFO << omp_get_thread_num() << " start=" << start
-                                        << ", finish=" << finish;
-                            size_t i0;
-                            size_t i1;
-                            size_t i2;
-                            size_t* index[3] = {&i0, &i1, &i2};
-                            size_t* out_index;
-                            for (size_t i = 0; i < 3; i++)
+                            if (broadcast_axes.count(i) == 0)
                             {
-                                if (broadcast_axes.count(i) == 0)
+                                out_index = index[i];
+                                break;
+                            }
+                        }
+                        for (i0 = start; i0 < finish; ++i0)
+                        {
+                            for (i1 = 0; i1 < out_shape[1]; ++i1)
+                            {
+                                for (i2 = 0; i2 < out_shape[2]; ++i2)
                                 {
-                                    out_index = index[i];
-                                    NGRAPH_INFO << omp_get_thread_num() << ", " << i << ", "
-                                                << out_index;
-                                    break;
+                                    // out[i0 * out_shape[1] * out_shape[2] + i1 * out_shape[2] +
+                                    //     i2] = in[*out_index];
+                                    *out = in[*out_index];
+                                    out++;
                                 }
                             }
-                            NGRAPH_INFO << omp_get_thread_num() << ", i0=" << &i0 << ", i1=" << &i1
-                                        << ", i2=" << &i2 << " *out_index=" << out_index;
-                            for (i0 = start; i0 < finish; ++i0)
-                            {
-                                for (i1 = 0; i1 < out_shape[1]; ++i1)
-                                {
-                                    for (i2 = 0; i2 < out_shape[2]; ++i2)
-                                    {
-                                        // out[i0 * out_shape[1] * out_shape[2] + i1 * out_shape[2] +
-                                        //     i2] = in[*out_index];
-                                        *out = in[*out_index];
-                                        out++;
-                                    }
-                                }
-                            }
-                            NGRAPH_INFO;
                         }
                     }
-                    NGRAPH_INFO;
                 }
 
                 template <typename T>
