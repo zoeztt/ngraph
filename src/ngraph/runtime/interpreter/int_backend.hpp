@@ -777,7 +777,7 @@ private:
             {
                 element::Type et = function->get_output_element_type(i);
                 Shape shape = function->get_output_shape(i);
-                auto host_tensor = std::make_shared<HostTensor>(et, shape, out[i]);
+                auto host_tensor = std::make_shared<HostTensor>(et, shape, out[i], this);
                 outputs.push_back(std::static_pointer_cast<runtime::Tensor>(host_tensor));
             }
 
@@ -789,7 +789,7 @@ private:
                 element::Type et = parameter->get_element_type();
                 Shape shape = parameter->get_shape();
                 auto host_tensor =
-                    std::make_shared<HostTensor>(et, shape, const_cast<void*>(args[i]));
+                    std::make_shared<HostTensor>(et, shape, const_cast<void*>(args[i]), this);
                 inputs.push_back(std::static_pointer_cast<runtime::Tensor>(host_tensor));
             }
 
@@ -1058,12 +1058,12 @@ private:
             std::shared_ptr<Function> reduction_function = reduce->get_functions()[0];
 
             std::function<T(T, T)> f = [this, &node, reduction_function](T x, T y) -> T {
-                auto tx = std::make_shared<HostTensor>(
-                    node.get_inputs().at(0).get_element_type(), Shape{}, &x, "reduce_temp_x");
-                auto ty = std::make_shared<HostTensor>(
-                    node.get_inputs().at(1).get_element_type(), Shape{}, &y, "reduce_temp_y");
-                auto tr = std::make_shared<HostTensor>(
-                    node.get_output_element_type(0), Shape{}, "reduce_temp_r");
+                auto tx = std::static_pointer_cast<HostTensor>(
+                    create_tensor(node.get_inputs().at(0).get_element_type(), Shape{}, &x));
+                auto ty = std::static_pointer_cast<HostTensor>(
+                    create_tensor(node.get_inputs().at(1).get_element_type(), Shape{}, &y));
+                auto tr = std::static_pointer_cast<HostTensor>(
+                    create_tensor(node.get_output_element_type(0), Shape{}));
                 auto handle = compile(reduction_function);
                 call(handle, {tr}, {tx, ty});
                 return *(tr->get_data_ptr<T>());
@@ -1084,16 +1084,12 @@ private:
             std::shared_ptr<Function> reduction_function = reduce_window->get_functions()[0];
 
             std::function<T(T, T)> f = [this, &node, reduction_function](T x, T y) -> T {
-                auto tx = std::make_shared<HostTensor>(node.get_inputs().at(0).get_element_type(),
-                                                       Shape{},
-                                                       &x,
-                                                       "reduce_window_temp_x");
-                auto ty = std::make_shared<HostTensor>(node.get_inputs().at(1).get_element_type(),
-                                                       Shape{},
-                                                       &y,
-                                                       "reduce_window_temp_y");
-                auto tr = std::make_shared<HostTensor>(
-                    node.get_output_element_type(0), Shape{}, "reduce_window_temp_r");
+                auto tx = std::static_pointer_cast<HostTensor>(
+                    create_tensor(node.get_inputs().at(0).get_element_type(), Shape{}, &x));
+                auto ty = std::static_pointer_cast<HostTensor>(
+                    create_tensor(node.get_inputs().at(1).get_element_type(), Shape{}, &y));
+                auto tr = std::static_pointer_cast<HostTensor>(
+                    create_tensor(node.get_output_element_type(0), Shape{}));
                 auto handle = compile(reduction_function);
                 call(handle, {tr}, {tx, ty});
                 return *(tr->get_data_ptr<T>());
@@ -1204,12 +1200,12 @@ private:
                 select_and_scatter->get_functions()[0];
             std::function<bool(T, T)> f_selection = [this, &node, selection_function](T x,
                                                                                       T y) -> bool {
-                auto tx = std::make_shared<runtime::HostTensor>(
-                    node.get_inputs().at(0).get_element_type(), Shape{}, &x, "selection_temp_x");
-                auto ty = std::make_shared<runtime::HostTensor>(
-                    node.get_inputs().at(1).get_element_type(), Shape{}, &y, "selection_temp_y");
-                auto tr = std::make_shared<runtime::HostTensor>(
-                    element::boolean, Shape{}, "selection_temp_r");
+                auto tx = std::static_pointer_cast<HostTensor>(
+                    create_tensor(node.get_inputs().at(0).get_element_type(), Shape{}, &x));
+                auto ty = std::static_pointer_cast<HostTensor>(
+                    create_tensor(node.get_inputs().at(1).get_element_type(), Shape{}, &y));
+                auto tr =
+                    std::static_pointer_cast<HostTensor>(create_tensor(element::boolean, Shape{}));
                 auto handle = compile(selection_function);
                 call(handle, {tr}, {tx, ty});
                 return *(tr->get_data_ptr<char>());
@@ -1218,12 +1214,12 @@ private:
             std::shared_ptr<ngraph::Function> scatter_function =
                 select_and_scatter->get_functions()[1];
             std::function<T(T, T)> f_scatter = [this, &node, scatter_function](T x, T y) -> T {
-                auto tx = std::make_shared<runtime::HostTensor>(
-                    node.get_inputs().at(0).get_element_type(), Shape{}, &x, "scatter_temp_x");
-                auto ty = std::make_shared<runtime::HostTensor>(
-                    node.get_inputs().at(1).get_element_type(), Shape{}, &y, "scatter_temp_y");
-                auto tr = std::make_shared<runtime::HostTensor>(
-                    node.get_output_element_type(0), Shape{}, "scatter_temp_r");
+                auto tx = std::static_pointer_cast<HostTensor>(
+                    create_tensor(node.get_inputs().at(0).get_element_type(), Shape{}, &x));
+                auto ty = std::static_pointer_cast<HostTensor>(
+                    create_tensor(node.get_inputs().at(1).get_element_type(), Shape{}, &y));
+                auto tr = std::static_pointer_cast<HostTensor>(
+                    create_tensor(node.get_output_element_type(0), Shape{}));
                 auto handle = compile(scatter_function);
                 call(handle, {tr}, {tx, ty});
                 return *(tr->get_data_ptr<T>());

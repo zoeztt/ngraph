@@ -194,7 +194,7 @@ bool runtime::interpreter::INTBackend::call(shared_ptr<Function> function,
             }
             op_outputs.push_back(host_tensor);
             htv_outputs.push_back(make_shared<runtime::HostTensor>(
-                tensor->get_element_type(), tensor->get_shape(), host_tensor));
+                tensor->get_element_type(), tensor->get_shape(), host_tensor, this));
         }
 
         // get op type

@@ -64,13 +64,13 @@ runtime::rpi::RPIBackend::RPIBackend()
 shared_ptr<runtime::Tensor>
     runtime::rpi::RPIBackendOverride::create_tensor(const element::Type& type, const Shape& shape)
 {
-    return make_shared<runtime::HostTensor>(type, shape, "external");
+    return make_shared<runtime::HostTensor>(type, shape, this);
 }
 
 shared_ptr<runtime::Tensor> runtime::rpi::RPIBackendOverride::create_tensor(
     const element::Type& type, const Shape& shape, void* memory_pointer)
 {
-    return make_shared<runtime::HostTensor>(type, shape, memory_pointer, "external");
+    return make_shared<runtime::HostTensor>(type, shape, memory_pointer, this);
 }
 
 runtime::Handle runtime::rpi::RPIBackendOverride::compile(shared_ptr<Function> function)
@@ -207,8 +207,8 @@ bool runtime::rpi::RPIBackendOverride::call(shared_ptr<Function> function,
                 host_tensor = it->second;
             }
             op_outputs.push_back(host_tensor);
-            htv_outputs.push_back(make_shared<runtime::HostTensor>(
-                tensor->get_element_type(), tensor->get_shape(), host_tensor));
+            htv_outputs.push_back(static_pointer_cast<runtime::HostTensor>(
+                create_tensor(tensor->get_element_type(), tensor->get_shape(), host_tensor)));
         }
 
         // get op type
@@ -242,12 +242,15 @@ bool runtime::rpi::RPIBackendOverride::call(shared_ptr<Function> function,
         {
             instance.m_timer_map[op].start();
         }
+        NGRAPH_INFO;
         generate_calls(type, wrapped, op_outputs, op_inputs, instance);
+        NGRAPH_INFO;
         if (instance.m_performance_counters_enabled)
         {
             instance.m_timer_map[op].stop();
         }
     }
+    NGRAPH_INFO;
 
     return true;
 }
@@ -304,11 +307,8 @@ vector<runtime::PerformanceCounter>
 bool runtime::rpi::RPIBackendOverride::is_supported(const Node& node) const
 {
     bool rc = false;
-    if (node.description() == "Broadcast")
-    {
-        rc = true;
-    }
-    else if (node.description() == "Dot")
+    static set<string> supported = {"Parameter", "Result", "Broadcast", "Dot"};
+    if (supported.count(node.description()) > 0)
     {
         rc = true;
     }

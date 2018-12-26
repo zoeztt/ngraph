@@ -148,8 +148,8 @@ vector<runtime::PerformanceCounter> run_benchmark(shared_ptr<Function> f,
     for (shared_ptr<op::Parameter> param : f->get_parameters())
     {
         auto tensor = backend->create_tensor(param->get_element_type(), param->get_shape());
-        auto tensor_data =
-            make_shared<runtime::HostTensor>(param->get_element_type(), param->get_shape());
+        auto tensor_data = make_shared<runtime::HostTensor>(
+            param->get_element_type(), param->get_shape(), nullptr);
         random_init(tensor_data);
         tensor->write(tensor_data->get_data_ptr(),
                       0,
@@ -166,7 +166,7 @@ vector<runtime::PerformanceCounter> run_benchmark(shared_ptr<Function> f,
     {
         auto result = backend->create_tensor(out->get_element_type(), out->get_shape());
         auto tensor_data =
-            make_shared<runtime::HostTensor>(out->get_element_type(), out->get_shape());
+            make_shared<runtime::HostTensor>(out->get_element_type(), out->get_shape(), nullptr);
         results.push_back(result);
         result_data.push_back(tensor_data);
     }

@@ -26,9 +26,8 @@ using namespace std;
 runtime::HostTensor::HostTensor(const ngraph::element::Type& element_type,
                                 const Shape& shape,
                                 void* memory_pointer,
-                                const string& name,
                                 const Backend* parent)
-    : runtime::Tensor(std::make_shared<ngraph::descriptor::Tensor>(element_type, shape, name),
+    : runtime::Tensor(std::make_shared<ngraph::descriptor::Tensor>(element_type, shape, "external"),
                       parent)
     , m_allocated_buffer_pool(nullptr)
     , m_aligned_buffer_pool(nullptr)
@@ -58,25 +57,10 @@ runtime::HostTensor::HostTensor(const ngraph::element::Type& element_type,
 
 runtime::HostTensor::HostTensor(const ngraph::element::Type& element_type,
                                 const Shape& shape,
-                                const string& name,
                                 const Backend* parent)
-    : HostTensor(element_type, shape, nullptr, name, parent)
+    : HostTensor(element_type, shape, nullptr, parent)
 {
-}
-
-runtime::HostTensor::HostTensor(const ngraph::element::Type& element_type,
-                                const Shape& shape,
-                                const Backend* parent)
-    : HostTensor(element_type, shape, nullptr, "external", parent)
-{
-}
-
-runtime::HostTensor::HostTensor(const ngraph::element::Type& element_type,
-                                const Shape& shape,
-                                void* memory_pointer,
-                                const Backend* parent)
-    : HostTensor(element_type, shape, memory_pointer, "external", parent)
-{
+    NGRAPH_INFO << parent;
 }
 
 runtime::HostTensor::~HostTensor()

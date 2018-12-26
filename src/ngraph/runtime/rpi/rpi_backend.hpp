@@ -110,7 +110,7 @@ private:
                    FunctionInstance& instance)
     {
         const Node& node = node_wrapper.get_node();
-        std::string node_op = node.description();
+        NGRAPH_INFO << node.description();
 
         switch (node_wrapper.get_typeid())
         {
@@ -162,5 +162,6 @@ private:
         }
         default: throw unsupported_op("Unsupported op '" + node.description() + "'");
         }
+        NGRAPH_INFO << node.description();
     }
 };

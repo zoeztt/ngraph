@@ -67,11 +67,18 @@ namespace ngraph
                                   const Shape& out_shape,
                                   const AxisSet& broadcast_axes)
                 {
+#ifdef PARALLEL
 #pragma omp parallel
+#endif
                     {
                         size_t start;
                         size_t finish;
+#ifdef PARALLEL
                         std::tie(start, finish) = get_start_finish(out_shape[0]);
+#else
+                        start = 0;
+                        finish = out_shape[0];
+#endif
                         if (start != finish)
                         {
                             NGRAPH_INFO << omp_get_thread_num() << " start=" << start
@@ -99,14 +106,17 @@ namespace ngraph
                                 {
                                     for (i2 = 0; i2 < out_shape[2]; ++i2)
                                     {
-                                        out[i0 * out_shape[1] * out_shape[2] + i1 * out_shape[2] +
-                                            i2] = in[*out_index];
-                                        // *out++ = in[*out_index];
+                                        // out[i0 * out_shape[1] * out_shape[2] + i1 * out_shape[2] +
+                                        //     i2] = in[*out_index];
+                                        *out = in[*out_index];
+                                        out++;
                                     }
                                 }
                             }
+                            NGRAPH_INFO;
                         }
                     }
+                    NGRAPH_INFO;
                 }
 
                 template <typename T>

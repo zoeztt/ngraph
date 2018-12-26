@@ -37,15 +37,6 @@ class ngraph::runtime::HostTensor : public ngraph::runtime::Tensor
 public:
     HostTensor(const ngraph::element::Type& element_type,
                const Shape& shape,
-               const std::string& name = "external",
-               const Backend* parent = nullptr);
-    HostTensor(const ngraph::element::Type& element_type,
-               const Shape& shape,
-               void* memory_pointer,
-               const std::string& name = "external",
-               const Backend* parent = nullptr);
-    HostTensor(const ngraph::element::Type& element_type,
-               const Shape& shape,
                const Backend* parent);
     HostTensor(const ngraph::element::Type& element_type,
                const Shape& shape,

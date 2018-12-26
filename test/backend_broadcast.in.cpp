@@ -258,7 +258,11 @@ static void broadcast_test_helper(const Shape& shape_a, const Shape& shape_r, co
     auto wrk_result = wrk_backend->create_tensor(element::f32, shape_r);
     auto ref_result = ref_backend->create_tensor(element::f32, shape_r);
 
-    wrk_backend->call_with_validate(wrk_backend->compile(f), {wrk_result}, {wrk_a});
+    NGRAPH_INFO;
+    auto handle = wrk_backend->compile(f);
+    NGRAPH_INFO;
+    wrk_backend->call_with_validate(handle, {wrk_result}, {wrk_a});
+    NGRAPH_INFO;
     // ref_backend->call_with_validate(ref_backend->compile(f), {ref_result}, {ref_a});
     // EXPECT_EQ(read_vector<float>(ref_result), read_vector<float>(wrk_result));
 }
@@ -266,7 +270,7 @@ static void broadcast_test_helper(const Shape& shape_a, const Shape& shape_r, co
 NGRAPH_TEST(${BACKEND_NAME}, broadcast_algo_vector_middle)
 {
     Shape shape_a{2000};
-    Shape shape_r{3000, 2000, 4000};
+    Shape shape_r{300, 2000, 4000};
     AxisSet axis{0, 2};
     broadcast_test_helper(shape_a, shape_r, axis);
 }

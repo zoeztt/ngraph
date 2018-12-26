@@ -51,15 +51,13 @@ shared_ptr<runtime::Tensor>
     runtime::hybrid::HybridBackend::create_tensor(const element::Type& element_type,
                                                   const Shape& shape)
 {
-    auto it = m_backend_list.begin();
-    return (*it)->create_tensor(element_type, shape);
+    return m_backend_list[0]->create_tensor(element_type, shape);
 }
 
 shared_ptr<runtime::Tensor> runtime::hybrid::HybridBackend::create_tensor(
     const element::Type& element_type, const Shape& shape, void* memory_pointer)
 {
-    auto it = m_backend_list.begin();
-    return (*it)->create_tensor(element_type, shape, memory_pointer);
+    return m_backend_list[0]->create_tensor(element_type, shape, memory_pointer);
 }
 
 runtime::Handle runtime::hybrid::HybridBackend::compile(shared_ptr<Function> func)
@@ -210,13 +208,18 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
         }
 
         // Call
+        NGRAPH_INFO;
         backend->call(sub_function, results, parameters);
+        NGRAPH_INFO;
 
         // Need to copy any results to the correct device
         for (const auto& p : copy_back)
         {
+            NGRAPH_INFO << p.second->get_size_in_bytes();
             p.second->copy_from(*p.first);
+            NGRAPH_INFO;
         }
+        NGRAPH_INFO;
     }
     return rc;
 }
