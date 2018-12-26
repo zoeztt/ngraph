@@ -33,6 +33,14 @@ namespace ngraph
         {
             namespace kernel
             {
+                std::tuple<size_t, size_t> get_start_finish(size_t size)
+                {
+                    const size_t nthreads = omp_get_num_threads();
+                    const size_t ithread = omp_get_thread_num();
+                    const size_t start = ithread * size / nthreads;
+                    const size_t finish = (ithread + 1) * size / nthreads;
+                    return std::make_tuple(start, finish);
+                }
                 template <typename T>
                 void broadcast_2d(const T* in,
                                   T* out,
@@ -59,24 +67,43 @@ namespace ngraph
                                   const Shape& out_shape,
                                   const AxisSet& broadcast_axes)
                 {
-                    size_t index[3];
-                    size_t* out_index;
-                    for (size_t i = 0; i < 3; i++)
+#pragma omp parallel
                     {
-                        if (broadcast_axes.count(i) == 0)
+                        size_t start;
+                        size_t finish;
+                        std::tie(start, finish) = get_start_finish(out_shape[0]);
+                        if (start != finish)
                         {
-                            out_index = &index[i];
-                            break;
-                        }
-                    }
-                    for (index[0] = 0; index[0] < out_shape[0]; ++index[0])
-                    {
-                        for (index[1] = 0; index[1] < out_shape[1]; ++index[1])
-                        {
-                            for (index[2] = 0; index[2] < out_shape[2]; ++index[2])
+                            NGRAPH_INFO << omp_get_thread_num() << " start=" << start
+                                        << ", finish=" << finish;
+                            size_t i0;
+                            size_t i1;
+                            size_t i2;
+                            size_t* index[3] = {&i0, &i1, &i2};
+                            size_t* out_index;
+                            for (size_t i = 0; i < 3; i++)
                             {
-                                out[index[0] * out_shape[1] * out_shape[2] +
-                                    index[1] * out_shape[2] + index[2]] = in[*out_index];
+                                if (broadcast_axes.count(i) == 0)
+                                {
+                                    out_index = index[i];
+                                    NGRAPH_INFO << omp_get_thread_num() << ", " << i << ", "
+                                                << out_index;
+                                    break;
+                                }
+                            }
+                            NGRAPH_INFO << omp_get_thread_num() << ", i0=" << &i0 << ", i1=" << &i1
+                                        << ", i2=" << &i2 << " *out_index=" << out_index;
+                            for (i0 = start; i0 < finish; ++i0)
+                            {
+                                for (i1 = 0; i1 < out_shape[1]; ++i1)
+                                {
+                                    for (i2 = 0; i2 < out_shape[2]; ++i2)
+                                    {
+                                        out[i0 * out_shape[1] * out_shape[2] + i1 * out_shape[2] +
+                                            i2] = in[*out_index];
+                                        // *out++ = in[*out_index];
+                                    }
+                                }
                             }
                         }
                     }

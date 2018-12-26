@@ -113,7 +113,7 @@ namespace ngraph
                              const AxisVector& input_axis_order,
                              const Shape& output_shape)
                 {
-                    NGRAPH_INFO << input_shape.size() << " x " << output_shape.size();
+                    NGRAPH_INFO << input_shape << " -> " << output_shape;
 
                     switch (input_shape.size())
                     {
