@@ -16,10 +16,14 @@
 
 #pragma once
 
+#include <stdexcept>
+
 #include "ngraph/ngraph.hpp"
 #include "ngraph/node.hpp"
+#include "ngraph/runtime/aligned_buffer.hpp"
 #include "ngraph/runtime/backend.hpp"
 #include "ngraph/runtime/backend_manager.hpp"
+#include "ngraph/runtime/hybrid/hybrid_backend.hpp"
 #include "util/all_close.hpp"
 #include "util/all_close_f.hpp"
 #include "util/ndarray.hpp"
@@ -27,71 +31,89 @@
 #include "util/test_control.hpp"
 #include "util/test_tools.hpp"
 
-class TestBackend : public ngraph::runtime::Backend
+// This expands the op list in op_tbl.hpp into a list of enumerations that look like this:
+// Abs,
+// Acos,
+// ...
+#define NGRAPH_OP(a, b) a,
+enum class OP_TYPEID
+{
+#include "ngraph/op/op_tbl.hpp"
+};
+#undef NGRAPH_OP
+
+/// \brief This class allows adding an enum typeid to each Node. This makes dealing with
+/// collections of Nodes a little easier and faster as we can use switch() instead of
+/// if/else statements
+class NodeWrapper
 {
 public:
-    TestBackend(const std::vector<std::shared_ptr<ngraph::runtime::Backend>>& backend_list);
+    NodeWrapper(const std::shared_ptr<const ngraph::Node>& node);
 
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::element::Type& element_type,
-                      const ngraph::Shape& shape) override;
-
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::element::Type& element_type,
-                      const ngraph::Shape& shape,
-                      void* memory_pointer) override;
-
-    bool compile(std::shared_ptr<ngraph::Function> func) override;
-
-    bool call(std::shared_ptr<ngraph::Function> func,
-              const std::vector<std::shared_ptr<ngraph::runtime::Tensor>>& outputs,
-              const std::vector<std::shared_ptr<ngraph::runtime::Tensor>>& inputs) override;
-
+    const ngraph::Node& get_node() const { return *m_node; }
+    OP_TYPEID get_typeid() const { return m_typeid; }
 private:
-    // This list of backends is in order of priority with the first backend higher priority
-    // than the second.
-    std::vector<std::shared_ptr<ngraph::runtime::Backend>> m_backend_list;
-
-protected:
-    class FunctionInstance
-    {
-    public:
-        std::shared_ptr<ngraph::Function> m_function;
-        std::vector<std::shared_ptr<ngraph::Function>> m_sub_functions;
-        std::unordered_map<std::shared_ptr<ngraph::op::Parameter>,
-                           std::shared_ptr<ngraph::op::Result>>
-            m_map_parameter_to_result;
-    };
-
-    std::map<std::shared_ptr<ngraph::Function>, FunctionInstance> m_function_map;
+    std::shared_ptr<const ngraph::Node> m_node;
+    OP_TYPEID m_typeid;
 };
 
-class BackendWrapper : public ngraph::runtime::Backend
+class TestBackend : public ngraph::runtime::hybrid::HybridBackend
 {
 public:
-    BackendWrapper(const std::string& backend_name,
-                   const std::set<std::string>& supported_ops,
-                   const std::string& name);
+    TestBackend();
+};
 
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::element::Type& element_type,
-                      const ngraph::Shape& shape) override;
+class TestBackendImplementation : public ngraph::runtime::Backend
+{
+public:
+    std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::element::Type& type,
+                                                           const ngraph::Shape& shape,
+                                                           void* memory_pointer) override;
 
-    std::shared_ptr<ngraph::runtime::Tensor>
-        create_tensor(const ngraph::element::Type& element_type,
-                      const ngraph::Shape& shape,
-                      void* memory_pointer) override;
+    std::shared_ptr<ngraph::runtime::Tensor> create_tensor(const ngraph::element::Type& type,
+                                                           const ngraph::Shape& shape) override;
 
-    bool compile(std::shared_ptr<ngraph::Function> func) override;
+    ngraph::runtime::Handle compile(std::shared_ptr<ngraph::Function> function) override;
 
-    bool call(std::shared_ptr<ngraph::Function> func,
+    bool call(std::shared_ptr<ngraph::Function> function,
               const std::vector<std::shared_ptr<ngraph::runtime::Tensor>>& outputs,
-              const std::vector<std::shared_ptr<ngraph::runtime::Tensor>>& inputs) override;
+              const std::vector<std::shared_ptr<ngraph::runtime::Tensor>>& intputs) override;
 
     bool is_supported(const ngraph::Node& node) const override;
 
 private:
-    std::shared_ptr<ngraph::runtime::Backend> m_backend;
-    const std::set<std::string> m_supported_ops;
-    const std::string m_name;
+    int get_alignment() const { return 64; }
+    class FunctionInstance
+    {
+    public:
+        bool m_is_compiled = false;
+        std::vector<NodeWrapper> m_wrapped_nodes;
+        // std::unordered_map<const ngraph::Node*, std::shared_ptr<RNGState>> m_states;
+        std::shared_ptr<ngraph::runtime::AlignedBuffer> m_temporary_memory;
+
+        void* get_temporary_pointer(size_t offset) { return m_temporary_memory->get_ptr(offset); }
+    };
+    std::map<std::shared_ptr<ngraph::Function>, FunctionInstance> m_function_map;
+
+    void generate_calls(const ngraph::element::Type& type,
+                        const NodeWrapper& op,
+                        const std::vector<void*>& outputs,
+                        const std::vector<const void*>& inputs,
+                        FunctionInstance& instance);
+
+    template <typename T>
+    void op_engine(const NodeWrapper& node_wrapper,
+                   const std::vector<void*>& out,
+                   const std::vector<const void*>& args,
+                   FunctionInstance& instance)
+    {
+        const ngraph::Node& node = node_wrapper.get_node();
+
+        switch (node_wrapper.get_typeid())
+        {
+        case OP_TYPEID::Add: { break;
+        }
+        default: NGRAPH_INFO << "Unsupported op '" << node.description() << "'";
+        }
+    }
 };
