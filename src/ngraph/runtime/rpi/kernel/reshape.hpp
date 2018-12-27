@@ -38,29 +38,25 @@ namespace ngraph
                                  const AxisVector& in_axis_order,
                                  const Shape& out_shape)
                 {
-                    size_t i0_size;
-                    size_t i1_size;
-                    size_t i0;
-                    size_t i1;
-                    size_t o0;
-                    size_t o1;
-                    size_t* index[2];
-                    size_t* p[2] = {&i0_size, &i1_size};
-                    size_t* t[2] = {&i0, &i1};
+                    size_t size[2];
+                    size_t in_index[2];
+                    size_t* map_index[2];
+                    size_t* p[2] = {&size[0], &size[1]};
+                    size_t* t[2] = {&in_index[0], &in_index[1]};
                     for (size_t i = 0; i < 2; i++)
                     {
-                        *p[i] = in_shape[in_axis_order[i]];
-                        index[i] = t[in_axis_order[i]];
+                        size[i] = in_shape[in_axis_order[i]];
+                        map_index[i] = t[in_axis_order[i]];
                     }
-                    NGRAPH_INFO << i0_size << ", " << i1_size;
-                    for (i0 = 0; i0 < i0_size; ++i0)
+                    NGRAPH_INFO << size[0] << ", " << size[1];
+                    for (in_index[0] = 0; in_index[0] < size[0]; ++in_index[0])
                     {
-                        for (i1 = 0; i1 < i1_size; ++i1)
+                        for (in_index[1] = 0; in_index[1] < size[1]; ++in_index[1])
                         {
-                            NGRAPH_INFO << i0 << ", " << i1 << "         " << *index[0] << ", "
-                                        << *index[1] << " -> "
-                                        << (*index[0] * in_shape[1] + *index[1]);
-                            *out++ = in[*index[0] * in_shape[1] + *index[1]];
+                            NGRAPH_INFO << in_index[0] << ", " << in_index[1] << "         "
+                                        << *map_index[0] << ", " << *map_index[1] << " -> "
+                                        << (*map_index[0] * in_shape[1] + *map_index[1]);
+                            *out++ = in[*map_index[0] * in_shape[1] + *map_index[1]];
                         }
                     }
                 }
