@@ -38,6 +38,7 @@ namespace ngraph
                                  const AxisVector& in_axis_order,
                                  const Shape& out_shape)
                 {
+                    NGRAPH_INFO;
                     size_t size[2];
                     size_t in_index[2];
                     size_t* map_index[2];
@@ -50,6 +51,8 @@ namespace ngraph
                     {
                         for (in_index[1] = 0; in_index[1] < size[1]; ++in_index[1])
                         {
+                            NGRAPH_INFO << *map_index[0] << ", " << *map_index[1] << " -> "
+                                        << (*map_index[0] * in_shape[1] + *map_index[1]);
                             *out++ = in[*map_index[0] * in_shape[1] + *map_index[1]];
                         }
                     }
@@ -62,29 +65,35 @@ namespace ngraph
                                  const AxisVector& in_axis_order,
                                  const Shape& out_shape)
                 {
-                    size_t o0_size;
-                    size_t o1_size;
-                    size_t o2_size;
-                    size_t i0;
-                    size_t i1;
-                    size_t i2;
-                    size_t o0;
-                    size_t o1;
-                    size_t o2;
-                    size_t* index[3] = {&o0_size, &o1_size, &o2_size};
+                    NGRAPH_INFO;
+                    size_t size[3];
+                    size_t in_index[3];
+                    size_t* map_index[3];
                     for (size_t i = 0; i < 3; i++)
                     {
-                        *index[i] = in_shape[in_axis_order[i]];
+                        // 2, 3, 4 order 1, 2, 0 -> 3, 4, 2
+                        size[i] = in_shape[in_axis_order[i]];
+                        map_index[in_axis_order[i]] = &in_index[i];
+                        // size[i] = in_shape[i];
+                        // map_index[i] = &in_index[i];
                     }
-                    NGRAPH_INFO << o0_size << ", " << o1_size << ", " << o2_size;
-                    for (i0 = 0; i0 < in_shape[0]; ++i0)
+                    NGRAPH_INFO << "size = " << size[0] << ", " << size[1] << ", " << size[2];
+                    // NGRAPH_INFO << "map_index[" << i << "] = " << map_index[0] << ", "
+                    //             << map_index[1] << ", " << map_index[2];
+                    for (in_index[0] = 0; in_index[0] < size[0]; ++in_index[0]) // axis 1
                     {
-                        for (i1 = 0; i1 < in_shape[1]; ++i1)
+                        for (in_index[1] = 0; in_index[1] < size[1]; ++in_index[1]) // axis 2
                         {
-                            for (i2 = 0; i2 < in_shape[2]; ++i2)
+                            for (in_index[2] = 0; in_index[2] < size[2]; ++in_index[2]) // axis 0
                             {
-                                out[o0 * out_shape[1] * out_shape[2] + o1 * out_shape[2] + o2] =
-                                    in[i0 * in_shape[1] * in_shape[2] + i1 * in_shape[2] + i2];
+                                // NGRAPH_INFO << "in_index " << in_index[0] << ", " << in_index[1]
+                                //             << ", " << in_index[2];
+                                NGRAPH_INFO << *map_index[0] << ", " << *map_index[1] << ", "
+                                            << *map_index[2] << " -> "
+                                            << (*map_index[0] * size[1] * size[2] +
+                                                *map_index[1] * size[2] + *map_index[2]);
+                                *out++ = in[*map_index[0] * in_shape[1] * in_shape[2] +
+                                            *map_index[1] * in_shape[2] + *map_index[2]];
                             }
                         }
                     }
@@ -105,10 +114,10 @@ namespace ngraph
                     {
                     // case 0: reshape_in0<T>(in, out, in_shape, in_axis_order, out_shape); break;
                     // case 1: reshape_in1<T>(in, out, in_shape, in_axis_order, out_shape); break;
-                    case 2:
-                        reshape_in2<T>(in, out, in_shape, in_axis_order, out_shape);
+                    case 2: reshape_in2<T>(in, out, in_shape, in_axis_order, out_shape); break;
+                    case 3:
+                        reshape_in3<T>(in, out, in_shape, in_axis_order, out_shape);
                         break;
-                    // case 3: reshape_in3<T>(in, out, in_shape, in_axis_order, out_shape); break;
                     // case 4: reshape_in4<T>(in, out, in_shape, in_axis_order, out_shape); break;
                     // case 5: reshape_in<5T>(in, out, in_shape, in_axis_order, out_shape); break;
                     default:
