@@ -58,8 +58,9 @@ namespace ngraph
                         for (i1 = 0; i1 < i1_size; ++i1)
                         {
                             NGRAPH_INFO << i0 << ", " << i1 << "         " << *index[0] << ", "
-                                        << *index[1] << " -> " << *index[0] * i1_size + *index[1];
-                            *out++ = in[*index[0] * i1_size + *index[1]];
+                                        << *index[1] << " -> "
+                                        << (*index[0] * in_shape[1] + *index[1]);
+                            *out++ = in[*index[0] * in_shape[1] + *index[1]];
                         }
                     }
                 }
