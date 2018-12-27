@@ -141,16 +141,16 @@ private:
         case OP_TYPEID::Reshape:
         {
             const op::Reshape* reshape = static_cast<const op::Reshape*>(&node);
-            reference::reshape(static_cast<const T*>(args[0]),
-                               static_cast<T*>(out[0]),
-                               node.get_input_shape(0),
-                               reshape->get_input_order(),
-                               node.get_output_shape(0));
-            // rpi::kernel::reshape<T>(static_cast<const T*>(args[0]),
-            //                         static_cast<T*>(out[0]),
-            //                         node.get_input_shape(0),
-            //                         reshape->get_input_order(),
-            //                         node.get_output_shape(0));
+            // reference::reshape(static_cast<const T*>(args[0]),
+            //                    static_cast<T*>(out[0]),
+            //                    node.get_input_shape(0),
+            //                    reshape->get_input_order(),
+            //                    node.get_output_shape(0));
+            rpi::kernel::reshape<T>(static_cast<const T*>(args[0]),
+                                    static_cast<T*>(out[0]),
+                                    node.get_input_shape(0),
+                                    reshape->get_input_order(),
+                                    node.get_output_shape(0));
             break;
         }
         case OP_TYPEID::Result:

@@ -115,9 +115,9 @@ namespace ngraph
                     {
                     // case 0: reshape_in0<T>(in, out, in_shape, in_axis_order, out_shape); break;
                     // case 1: reshape_in1<T>(in, out, in_shape, in_axis_order, out_shape); break;
-                    // case 2:
-                    //     reshape_in2<T>(in, out, in_shape, in_axis_order, out_shape);
-                    //     break;
+                    case 2:
+                        reshape_in2<T>(in, out, in_shape, in_axis_order, out_shape);
+                        break;
                     // case 3: reshape_in3<T>(in, out, in_shape, in_axis_order, out_shape); break;
                     // case 4: reshape_in4<T>(in, out, in_shape, in_axis_order, out_shape); break;
                     // case 5: reshape_in<5T>(in, out, in_shape, in_axis_order, out_shape); break;
