@@ -85,8 +85,8 @@ runtime::Handle runtime::rpi::RPIBackendOverride::compile(shared_ptr<Function> f
         pass_manager.register_pass<pass::NopElimination>();
         pass_manager.register_pass<pass::ZeroDimTensorElimination>();
         pass_manager.register_pass<pass::AlgebraicSimplification>();
-        pass_manager.register_pass<pass::ReshapeSinking>();
-        pass_manager.register_pass<pass::ReshapeElimination>();
+        // pass_manager.register_pass<pass::ReshapeSinking>();
+        // pass_manager.register_pass<pass::ReshapeElimination>();
         pass_manager.register_pass<pass::CoreFusion>();
         pass_manager.register_pass<pass::ConstantFolding>();
         pass_manager.register_pass<pass::AssignLayout<DenseTensorLayout>>();
