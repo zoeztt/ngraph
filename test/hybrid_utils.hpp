@@ -61,6 +61,7 @@ class TestBackend : public ngraph::runtime::hybrid::HybridBackend
 {
 public:
     TestBackend();
+    static void Register();
 };
 
 class TestBackendImplementation : public ngraph::runtime::Backend

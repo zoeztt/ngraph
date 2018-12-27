@@ -68,10 +68,23 @@ NodeWrapper::NodeWrapper(const shared_ptr<const Node>& node)
     }
 }
 
+extern "C" runtime::Backend* hybrid1_creator(const char* configuration_string)
+{
+    return new TestBackend();
+}
+
 TestBackend::TestBackend()
     : HybridBackend({{make_shared<TestBackendImplementation>()},
                      {make_shared<ngraph::runtime::interpreter::INTBackend>()}})
 {
+    NGRAPH_INFO;
+}
+
+void TestBackend::Register()
+{
+    NGRAPH_INFO;
+    const string backend_name = "HYBRID1";
+    runtime::BackendManager::register_backend(backend_name, hybrid1_creator);
 }
 
 shared_ptr<runtime::Tensor> TestBackendImplementation::create_tensor(const element::Type& type,
@@ -290,15 +303,15 @@ void TestBackendImplementation::generate_calls(const element::Type& type,
 bool TestBackendImplementation::is_supported(const Node& node) const
 {
     bool rc = false;
-    static set<string> supported = {"Parameter", "Result", "Broadcast", "Dot"};
-    if (supported.count(node.description()) > 0)
-    {
-        rc = true;
-    }
-    else if (node.description() == "Reshape")
-    {
-        rc = true;
-    }
+    // static set<string> supported = {"Parameter", "Result", "Broadcast", "Dot"};
+    // if (supported.count(node.description()) > 0)
+    // {
+    //     rc = true;
+    // }
+    // else if (node.description() == "Reshape")
+    // {
+    //     rc = true;
+    // }
 
     return rc;
 }
