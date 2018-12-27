@@ -45,7 +45,7 @@ namespace ngraph
                     for (size_t i = 0; i < 2; i++)
                     {
                         size[i] = in_shape[in_axis_order[i]];
-                        map_index[i] = &in_index[in_axis_order[i]];
+                        map_index[in_axis_order[i]] = &in_index[i];
                     }
                     for (in_index[0] = 0; in_index[0] < size[0]; ++in_index[0])
                     {
