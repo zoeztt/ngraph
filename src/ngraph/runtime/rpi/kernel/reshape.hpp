@@ -41,20 +41,15 @@ namespace ngraph
                     size_t size[2];
                     size_t in_index[2];
                     size_t* map_index[2];
-                    size_t* t[2] = {&in_index[0], &in_index[1]};
                     for (size_t i = 0; i < 2; i++)
                     {
                         size[i] = in_shape[in_axis_order[i]];
                         map_index[i] = &in_index[in_axis_order[i]];
                     }
-                    NGRAPH_INFO << size[0] << ", " << size[1];
                     for (in_index[0] = 0; in_index[0] < size[0]; ++in_index[0])
                     {
                         for (in_index[1] = 0; in_index[1] < size[1]; ++in_index[1])
                         {
-                            NGRAPH_INFO << in_index[0] << ", " << in_index[1] << "         "
-                                        << *map_index[0] << ", " << *map_index[1] << " -> "
-                                        << (*map_index[0] * in_shape[1] + *map_index[1]);
                             *out++ = in[*map_index[0] * in_shape[1] + *map_index[1]];
                         }
                     }
