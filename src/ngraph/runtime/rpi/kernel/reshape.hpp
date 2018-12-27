@@ -31,119 +31,98 @@ namespace ngraph
         {
             namespace kernel
             {
-                template <typename T, unsigned int IN_RANK, unsigned int OUT_RANK>
-                void reshape_in_out(const T* input,
-                                    T* output,
-                                    const Shape& input_shape,
-                                    const AxisVector& input_axis_order,
-                                    const Shape& output_shape)
+                template <typename T>
+                void reshape_in2(const T* in,
+                                 T* out,
+                                 const Shape& in_shape,
+                                 const AxisVector& in_axis_order,
+                                 const Shape& out_shape)
                 {
-                    NGRAPH_INFO << IN_RANK << " x " << OUT_RANK;
-                    Eigen::array<Eigen::Index, OUT_RANK> out_dims;
-                    Eigen::array<Eigen::Index, IN_RANK> in_dims;
-                    Eigen::array<Eigen::Index, IN_RANK> axis_order;
-
-                    for (int i = 0; i < OUT_RANK; i++)
+                    size_t i0_size;
+                    size_t i1_size;
+                    size_t i0;
+                    size_t i1;
+                    size_t o0;
+                    size_t o1;
+                    size_t* index[2];
+                    size_t* p[2] = {&i0_size, &i1_size};
+                    size_t* t[2] = {&i0, &i1};
+                    for (size_t i = 0; i < 2; i++)
                     {
-                        out_dims[i] = output_shape[i];
+                        *p[i] = in_shape[in_axis_order[i]];
+                        index[i] = t[in_axis_order[i]];
                     }
-
-                    for (int i = 0; i < IN_RANK; i++)
+                    NGRAPH_INFO << i0_size << ", " << i1_size;
+                    for (i0 = 0; i0 < i0_size; ++i0)
                     {
-                        in_dims[i] = input_shape[i];
-                        axis_order[i] = input_axis_order[i];
-                    }
-
-                    Eigen::TensorMap<Eigen::Tensor<T, OUT_RANK, Eigen::RowMajor>> out(output,
-                                                                                      out_dims);
-                    Eigen::TensorMap<Eigen::Tensor<const T, IN_RANK, Eigen::RowMajor>> in(input,
-                                                                                          in_dims);
-
-                    out = in.shuffle(axis_order).reshape(out_dims);
-                }
-
-                template <typename T, unsigned int IN_RANK>
-                void reshape_in(const T* input,
-                                T* output,
-                                const Shape& input_shape,
-                                const AxisVector& input_axis_order,
-                                const Shape& output_shape)
-                {
-                    NGRAPH_INFO << IN_RANK;
-                    switch (output_shape.size())
-                    {
-                    // case 0:
-                    //     reshape_in_out<T, IN_RANK, 0>(
-                    //         input, output, input_shape, input_axis_order, output_shape);
-                    //     break;
-                    case 1:
-                        reshape_in_out<T, IN_RANK, 1>(
-                            input, output, input_shape, input_axis_order, output_shape);
-                        break;
-                    case 2:
-                        reshape_in_out<T, IN_RANK, 2>(
-                            input, output, input_shape, input_axis_order, output_shape);
-                        break;
-                    case 3:
-                        reshape_in_out<T, IN_RANK, 3>(
-                            input, output, input_shape, input_axis_order, output_shape);
-                        break;
-                    case 4:
-                        reshape_in_out<T, IN_RANK, 4>(
-                            input, output, input_shape, input_axis_order, output_shape);
-                        break;
-                    case 5:
-                        reshape_in_out<T, IN_RANK, 5>(
-                            input, output, input_shape, input_axis_order, output_shape);
-                        break;
-                    default:
-                        reference::reshape(static_cast<const T*>(input),
-                                           static_cast<T*>(output),
-                                           input_shape,
-                                           input_axis_order,
-                                           output_shape);
-                        break;
+                        for (i1 = 0; i1 < i1_size; ++i1)
+                        {
+                            NGRAPH_INFO << i0 << ", " << i1 << "         " << *index[0] << ", "
+                                        << *index[1] << " -> " << *index[0] * i1_size + *index[1];
+                            *out++ = in[*index[0] * i1_size + *index[1]];
+                        }
                     }
                 }
 
                 template <typename T>
-                void reshape(const T* input,
-                             T* output,
-                             const Shape& input_shape,
-                             const AxisVector& input_axis_order,
-                             const Shape& output_shape)
+                void reshape_in3(const T* in,
+                                 T* out,
+                                 const Shape& in_shape,
+                                 const AxisVector& in_axis_order,
+                                 const Shape& out_shape)
                 {
-                    NGRAPH_INFO << input_shape << " -> " << output_shape;
-
-                    switch (input_shape.size())
+                    size_t o0_size;
+                    size_t o1_size;
+                    size_t o2_size;
+                    size_t i0;
+                    size_t i1;
+                    size_t i2;
+                    size_t o0;
+                    size_t o1;
+                    size_t o2;
+                    size_t* index[3] = {&o0_size, &o1_size, &o2_size};
+                    for (size_t i = 0; i < 3; i++)
                     {
-                    // case 0:
-                    //     reshape_in<T, 0>(
-                    //         input, output, input_shape, input_axis_order, output_shape);
-                    //     break;
-                    case 1:
-                        reshape_in<T, 1>(
-                            input, output, input_shape, input_axis_order, output_shape);
-                        break;
+                        *index[i] = in_shape[in_axis_order[i]];
+                    }
+                    NGRAPH_INFO << o0_size << ", " << o1_size << ", " << o2_size;
+                    for (i0 = 0; i0 < in_shape[0]; ++i0)
+                    {
+                        for (i1 = 0; i1 < in_shape[1]; ++i1)
+                        {
+                            for (i2 = 0; i2 < in_shape[2]; ++i2)
+                            {
+                                out[o0 * out_shape[1] * out_shape[2] + o1 * out_shape[2] + o2] =
+                                    in[i0 * in_shape[1] * in_shape[2] + i1 * in_shape[2] + i2];
+                            }
+                        }
+                    }
+                }
+
+                template <typename T>
+                void reshape(const T* in,
+                             T* out,
+                             const Shape& in_shape,
+                             const AxisVector& in_axis_order,
+                             const Shape& out_shape)
+                {
+                    NGRAPH_INFO << in_shape << " -> " << out_shape << " order "
+                                << join(in_axis_order);
+                    NGRAPH_INFO << shape_size(in_shape) << " size " << shape_size(out_shape);
+
+                    switch (in_shape.size())
+                    {
+                    // case 0: reshape_in0<T>(in, out, in_shape, in_axis_order, out_shape); break;
+                    // case 1: reshape_in1<T>(in, out, in_shape, in_axis_order, out_shape); break;
                     case 2:
-                        reshape_in<T, 2>(
-                            input, output, input_shape, input_axis_order, output_shape);
+                        reshape_in2<T>(in, out, in_shape, in_axis_order, out_shape);
                         break;
-                    case 3:
-                        reshape_in<T, 3>(
-                            input, output, input_shape, input_axis_order, output_shape);
-                        break;
-                    case 4:
-                        reshape_in<T, 4>(
-                            input, output, input_shape, input_axis_order, output_shape);
-                        break;
-                    case 5:
-                        reshape_in<T, 5>(
-                            input, output, input_shape, input_axis_order, output_shape);
-                        break;
+                    // case 3: reshape_in3<T>(in, out, in_shape, in_axis_order, out_shape); break;
+                    // case 4: reshape_in4<T>(in, out, in_shape, in_axis_order, out_shape); break;
+                    // case 5: reshape_in<5T>(in, out, in_shape, in_axis_order, out_shape); break;
                     default:
-                        reference::reshape(
-                            input, output, input_shape, input_axis_order, output_shape);
+                        NGRAPH_INFO << "reference::reshape";
+                        reference::reshape(in, out, in_shape, in_axis_order, out_shape);
                         break;
                     }
                 }

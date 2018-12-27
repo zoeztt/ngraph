@@ -75,6 +75,7 @@ runtime::Handle runtime::hybrid::HybridBackend::compile(shared_ptr<Function> fun
         pass_manager.register_pass<runtime::hybrid::pass::FixGetOutputElement>();
         if (std::getenv("HYBRID_DEBUG") != nullptr)
         {
+            NGRAPH_INFO << "HYBRID_DEBUG enabled";
             pass_manager.register_pass<ngraph::pass::VisualizeTree>("graph.png");
         }
         pass_manager.run_passes(instance.m_function);
@@ -208,9 +209,7 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
         }
 
         // Call
-        NGRAPH_INFO;
         backend->call(sub_function, results, parameters);
-        NGRAPH_INFO;
 
         // Need to copy any results to the correct device
         for (const auto& p : copy_back)
@@ -219,7 +218,6 @@ bool runtime::hybrid::HybridBackend::call(shared_ptr<Function> func,
             p.second->copy_from(*p.first);
             NGRAPH_INFO;
         }
-        NGRAPH_INFO;
     }
     return rc;
 }

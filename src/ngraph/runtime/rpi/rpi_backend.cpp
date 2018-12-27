@@ -242,15 +242,12 @@ bool runtime::rpi::RPIBackendOverride::call(shared_ptr<Function> function,
         {
             instance.m_timer_map[op].start();
         }
-        NGRAPH_INFO;
         generate_calls(type, wrapped, op_outputs, op_inputs, instance);
-        NGRAPH_INFO;
         if (instance.m_performance_counters_enabled)
         {
             instance.m_timer_map[op].stop();
         }
     }
-    NGRAPH_INFO;
 
     return true;
 }
@@ -312,10 +309,10 @@ bool runtime::rpi::RPIBackendOverride::is_supported(const Node& node) const
     {
         rc = true;
     }
-    // else if (node.description() == "Reshape")
-    // {
-    //     rc = true;
-    // }
+    else if (node.description() == "Reshape")
+    {
+        rc = true;
+    }
 
     return rc;
 }
