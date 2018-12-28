@@ -62,6 +62,8 @@ runtime::Handle runtime::hybrid::HybridBackend::compile(shared_ptr<Function> fun
         pass_manager.register_pass<runtime::hybrid::pass::FixGetOutputElement>();
         if (std::getenv("HYBRID_DEBUG") != nullptr)
         {
+            // If you enable this then things get really slow so I print a message to annoy
+            // you and let you know why it is so slow.
             NGRAPH_INFO << "HYBRID_DEBUG enabled";
             pass_manager.register_pass<ngraph::pass::VisualizeTree>("graph.png");
         }
@@ -234,34 +236,6 @@ bool runtime::hybrid::HybridBackend::is_supported(const Node& node) const
     return true;
 }
 
-string runtime::hybrid::HybridBackend::get_placement_name(const runtime::Tensor* t)
-{
-    string rc;
-    // TODO: Fix this
-    // if (dynamic_cast<const runtime::HostTensor*>(t) != nullptr)
-    // {
-    //     rc = "HostTensor";
-    // }
-    // else if (dynamic_cast<const runtime::gpu::GPUTensor*>(t) != nullptr)
-    // {
-    //     rc = "GPUTensor";
-    // }
-    return rc;
-}
-string runtime::hybrid::HybridBackend::get_placement_name(const runtime::Backend* t)
-{
-    string rc;
-    // TODO: Fix this
-    // if (dynamic_cast<const runtime::interpreter::INTBackend*>(t) != nullptr)
-    // {
-    //     rc = "INTBackend";
-    // }
-    // else if (dynamic_cast<const runtime::gpu::GPU_Backend*>(t) != nullptr)
-    // {
-    //     rc = "GPU_Backend";
-    // }
-    return rc;
-}
 size_t runtime::hybrid::HybridBackend::get_placement(const runtime::Tensor* t)
 {
     size_t index = 0;
