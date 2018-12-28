@@ -39,7 +39,6 @@
 #include "ngraph/runtime/backend_manager.hpp"
 #include "ngraph/runtime/interpreter/int_backend.hpp"
 #include "ngraph/util.hpp"
-
 using namespace std;
 using namespace ngraph;
 
@@ -56,41 +55,43 @@ extern "C" runtime::Backend* new_backend(const char* configuration_string)
 }
 
 runtime::rpi::RPIBackend::RPIBackend()
-    : HybridBackend({{make_shared<ngraph::runtime::rpi::RPIBackendOverride>()},
-                     {make_shared<ngraph::runtime::interpreter::INTBackend>()}})
 {
 }
 
-shared_ptr<runtime::Tensor>
-    runtime::rpi::RPIBackendOverride::create_tensor(const element::Type& type, const Shape& shape)
+runtime::rpi::RPIBackend::RPIBackend(const vector<string>& unsupported_op_name_list)
+    : m_unsupported_op_name_list{unsupported_op_name_list.begin(), unsupported_op_name_list.end()}
+{
+}
+
+shared_ptr<runtime::Tensor> runtime::rpi::RPIBackend::create_tensor(const element::Type& type,
+                                                                    const Shape& shape)
 {
     return make_shared<runtime::HostTensor>(type, shape, this);
 }
 
-shared_ptr<runtime::Tensor> runtime::rpi::RPIBackendOverride::create_tensor(
-    const element::Type& type, const Shape& shape, void* memory_pointer)
+shared_ptr<runtime::Tensor> runtime::rpi::RPIBackend::create_tensor(const element::Type& type,
+                                                                    const Shape& shape,
+                                                                    void* memory_pointer)
 {
     return make_shared<runtime::HostTensor>(type, shape, memory_pointer, this);
 }
 
-runtime::Handle runtime::rpi::RPIBackendOverride::compile(shared_ptr<Function> function)
+runtime::Handle runtime::rpi::RPIBackend::compile(shared_ptr<Function> function)
 {
     FunctionInstance& instance = m_function_map[function];
     if (!instance.m_is_compiled)
     {
         instance.m_is_compiled = true;
         pass::Manager pass_manager;
-        pass_manager.register_pass<pass::AnyAllReplacement>();
+        // pass_manager.register_pass<pass::AnyAllReplacement>();
         pass_manager.register_pass<pass::LikeReplacement>();
         pass_manager.register_pass<pass::NopElimination>();
         pass_manager.register_pass<pass::ZeroDimTensorElimination>();
         pass_manager.register_pass<pass::AlgebraicSimplification>();
-        // pass_manager.register_pass<pass::ReshapeSinking>();
-        // pass_manager.register_pass<pass::ReshapeElimination>();
-        pass_manager.register_pass<pass::CoreFusion>();
-        pass_manager.register_pass<pass::ConstantFolding>();
+        // pass_manager.register_pass<pass::CoreFusion>();
+        // pass_manager.register_pass<pass::ConstantFolding>();
         pass_manager.register_pass<pass::AssignLayout<DenseTensorLayout>>();
-        pass_manager.register_pass<pass::GetOutputElementElimination>();
+        // pass_manager.register_pass<pass::GetOutputElementElimination>();
         pass_manager.register_pass<pass::Liveness>();
         pass_manager.register_pass<pass::MemoryLayout>(get_alignment());
         pass_manager.run_passes(function);
@@ -107,9 +108,9 @@ runtime::Handle runtime::rpi::RPIBackendOverride::compile(shared_ptr<Function> f
     return function;
 }
 
-bool runtime::rpi::RPIBackendOverride::call(shared_ptr<Function> function,
-                                            const vector<shared_ptr<runtime::Tensor>>& outputs,
-                                            const vector<shared_ptr<runtime::Tensor>>& inputs)
+bool runtime::rpi::RPIBackend::call(shared_ptr<Function> function,
+                                    const vector<shared_ptr<runtime::Tensor>>& outputs,
+                                    const vector<shared_ptr<runtime::Tensor>>& inputs)
 {
     auto fit = m_function_map.find(function);
     if (fit == m_function_map.end())
@@ -207,8 +208,8 @@ bool runtime::rpi::RPIBackendOverride::call(shared_ptr<Function> function,
                 host_tensor = it->second;
             }
             op_outputs.push_back(host_tensor);
-            htv_outputs.push_back(static_pointer_cast<runtime::HostTensor>(
-                create_tensor(tensor->get_element_type(), tensor->get_shape(), host_tensor)));
+            htv_outputs.push_back(make_shared<runtime::HostTensor>(
+                tensor->get_element_type(), tensor->get_shape(), host_tensor, this));
         }
 
         // get op type
@@ -252,11 +253,11 @@ bool runtime::rpi::RPIBackendOverride::call(shared_ptr<Function> function,
     return true;
 }
 
-void runtime::rpi::RPIBackendOverride::generate_calls(const element::Type& type,
-                                                      const NodeWrapper& op,
-                                                      const vector<void*>& outputs,
-                                                      const vector<const void*>& inputs,
-                                                      FunctionInstance& instance)
+void runtime::rpi::RPIBackend::generate_calls(const element::Type& type,
+                                              const NodeWrapper& op,
+                                              const vector<void*>& outputs,
+                                              const vector<const void*>& inputs,
+                                              FunctionInstance& instance)
 {
     stringstream ss;
     switch (type.get_type_enum())
@@ -280,15 +281,14 @@ void runtime::rpi::RPIBackendOverride::generate_calls(const element::Type& type,
     }
 }
 
-void runtime::rpi::RPIBackendOverride::enable_performance_data(shared_ptr<Function> func,
-                                                               bool enable)
+void runtime::rpi::RPIBackend::enable_performance_data(shared_ptr<Function> func, bool enable)
 {
     FunctionInstance& instance = m_function_map[func];
     instance.m_performance_counters_enabled = enable;
 }
 
 vector<runtime::PerformanceCounter>
-    runtime::rpi::RPIBackendOverride::get_performance_data(shared_ptr<Function> func) const
+    runtime::rpi::RPIBackend::get_performance_data(shared_ptr<Function> func) const
 {
     vector<runtime::PerformanceCounter> rc;
     const FunctionInstance& instance = m_function_map.at(func);
@@ -301,18 +301,7 @@ vector<runtime::PerformanceCounter>
     return rc;
 }
 
-bool runtime::rpi::RPIBackendOverride::is_supported(const Node& node) const
+bool runtime::rpi::RPIBackend::is_supported(const Node& node) const
 {
-    bool rc = false;
-    static set<string> supported = {"Parameter", "Result", "Broadcast", "Dot"};
-    if (supported.count(node.description()) > 0)
-    {
-        rc = true;
-    }
-    else if (node.description() == "Reshape")
-    {
-        rc = true;
-    }
-
-    return rc;
+    return m_unsupported_op_name_list.find(node.description()) == m_unsupported_op_name_list.end();
 }
