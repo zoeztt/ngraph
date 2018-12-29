@@ -833,47 +833,47 @@ protected:
     uint32_t num_inputs;
 };
 
-NGRAPH_TEST_P(${BACKEND_NAME}, concat_vector_params, concat_vector_large)
-{
-    Shape shape_a{1};
-    NodeVector inputs;
-    ParameterVector inputs_param;
-    for (uint32_t i = 0; i < num_inputs; i++)
-    {
-        auto A = make_shared<op::Parameter>(element::f32, shape_a);
-        inputs_param.push_back(A);
-        inputs.push_back(A);
-    }
-    Shape shape_r{num_inputs};
-    auto f = make_shared<Function>(make_shared<op::Concat>(inputs, 0), inputs_param);
+// NGRAPH_TEST_P(${BACKEND_NAME}, concat_vector_params, concat_vector_large)
+// {
+//     Shape shape_a{1};
+//     NodeVector inputs;
+//     ParameterVector inputs_param;
+//     for (uint32_t i = 0; i < num_inputs; i++)
+//     {
+//         auto A = make_shared<op::Parameter>(element::f32, shape_a);
+//         inputs_param.push_back(A);
+//         inputs.push_back(A);
+//     }
+//     Shape shape_r{num_inputs};
+//     auto f = make_shared<Function>(make_shared<op::Concat>(inputs, 0), inputs_param);
 
-    auto backend = runtime::Backend::create("${BACKEND_NAME}");
+//     auto backend = runtime::Backend::create("${BACKEND_NAME}");
 
-    // Create some tensors for input/output
-    std::vector<std::shared_ptr<runtime::Tensor>> inputs_value;
-    std::vector<float> ref_result;
-    for (uint32_t i = 0; i < num_inputs; i++)
-    {
-        auto a = backend->create_tensor(element::f32, shape_a);
-        copy_data(a, vector<float>{static_cast<float>(i)});
-        ref_result.push_back(static_cast<float>(i));
-        inputs_value.push_back(a);
-    }
-    auto result = backend->create_tensor(element::f32, shape_r);
+//     // Create some tensors for input/output
+//     std::vector<std::shared_ptr<runtime::Tensor>> inputs_value;
+//     std::vector<float> ref_result;
+//     for (uint32_t i = 0; i < num_inputs; i++)
+//     {
+//         auto a = backend->create_tensor(element::f32, shape_a);
+//         copy_data(a, vector<float>{static_cast<float>(i)});
+//         ref_result.push_back(static_cast<float>(i));
+//         inputs_value.push_back(a);
+//     }
+//     auto result = backend->create_tensor(element::f32, shape_r);
 
-    auto handle = backend->compile(f);
-    backend->call_with_validate(handle, {result}, inputs_value);
-    EXPECT_EQ(ref_result, read_vector<float>(result));
-}
+//     auto handle = backend->compile(f);
+//     backend->call_with_validate(handle, {result}, inputs_value);
+//     EXPECT_EQ(ref_result, read_vector<float>(result));
+// }
 
-// concat_vector_large case generation
-// Add thhosw tests to cover paramter space overflow:
-// cuda kernel parameter space have limit, if there is large number of parameters,
-// there will be overflow for parameter space.
-NGRAPH_INSTANTIATE_TEST_CASE_P(${BACKEND_NAME},
-                               input_sizes,
-                               concat_vector_params,
-                               testing::Values(100, 128, 999));
+// // concat_vector_large case generation
+// // Add thhosw tests to cover paramter space overflow:
+// // cuda kernel parameter space have limit, if there is large number of parameters,
+// // there will be overflow for parameter space.
+// NGRAPH_INSTANTIATE_TEST_CASE_P(${BACKEND_NAME},
+//                                input_sizes,
+//                                concat_vector_params,
+//                                testing::Values(100, 128, 999));
 
 NGRAPH_TEST(${BACKEND_NAME}, concat_vector)
 {
