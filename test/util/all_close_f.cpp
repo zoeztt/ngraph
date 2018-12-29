@@ -222,10 +222,10 @@ uint32_t test::matching_mantissa_bits(uint64_t distance)
     return matching_matissa_bits;
 }
 
-::testing::AssertionResult test::all_close_f(const vector<float>& a,
-                                             const vector<float>& b,
-                                             int mantissa_bits,
-                                             int tolerance_bits)
+bool test::all_close_f(const vector<float>& a,
+                       const vector<float>& b,
+                       int mantissa_bits,
+                       int tolerance_bits)
 {
     bool rc = true;
     stringstream msg;
@@ -309,14 +309,10 @@ uint32_t test::matching_mantissa_bits(uint64_t distance)
     msg << "median match     - mismatch occurred @ mantissa bit: "
         << matching_mantissa_bits(median_distance) << " or next bit\n";
 
-    ::testing::AssertionResult res =
-        rc ? ::testing::AssertionSuccess() : ::testing::AssertionFailure();
-    res << msg.str();
-    return res;
+    return rc;
 }
 
-::testing::AssertionResult
-    test::all_close_f(const vector<double>& a, const vector<double>& b, int tolerance_bits)
+bool test::all_close_f(const vector<double>& a, const vector<double>& b, int tolerance_bits)
 {
     constexpr int mantissa_bits = 53;
 
@@ -399,40 +395,36 @@ uint32_t test::matching_mantissa_bits(uint64_t distance)
     msg << "median match     - mismatch occurred @ mantissa bit: "
         << matching_mantissa_bits(median_distance) << " or next bit\n";
 
-    ::testing::AssertionResult res =
-        rc ? ::testing::AssertionSuccess() : ::testing::AssertionFailure();
-    res << msg.str();
-    return res;
+    return rc;
 }
 
-::testing::AssertionResult test::all_close_f(const std::shared_ptr<runtime::Tensor>& a,
-                                             const std::shared_ptr<runtime::Tensor>& b,
-                                             int mantissa_bits,
-                                             int tolerance_bits)
+bool test::all_close_f(const std::shared_ptr<runtime::Tensor>& a,
+                       const std::shared_ptr<runtime::Tensor>& b,
+                       int mantissa_bits,
+                       int tolerance_bits)
 {
     // Check that the layouts are compatible
     if (*a->get_tensor_layout() != *b->get_tensor_layout())
     {
-        return ::testing::AssertionFailure() << "Cannot compare tensors with different layouts";
+        return false;
     }
     if (a->get_shape() != b->get_shape())
     {
-        return ::testing::AssertionFailure() << "Cannot compare tensors with different shapes";
+        return false;
     }
 
     return test::all_close_f(
         read_float_vector(a), read_float_vector(b), mantissa_bits, tolerance_bits);
 }
 
-::testing::AssertionResult
-    test::all_close_f(const std::vector<std::shared_ptr<runtime::Tensor>>& as,
-                      const std::vector<std::shared_ptr<runtime::Tensor>>& bs,
-                      int mantissa_bits,
-                      int tolerance_bits)
+bool test::all_close_f(const std::vector<std::shared_ptr<runtime::Tensor>>& as,
+                       const std::vector<std::shared_ptr<runtime::Tensor>>& bs,
+                       int mantissa_bits,
+                       int tolerance_bits)
 {
     if (as.size() != bs.size())
     {
-        return ::testing::AssertionFailure() << "Cannot compare tensors with different sizes";
+        return false;
     }
     for (size_t i = 0; i < as.size(); ++i)
     {
@@ -442,5 +434,5 @@ uint32_t test::matching_mantissa_bits(uint64_t distance)
             return ar;
         }
     }
-    return ::testing::AssertionSuccess();
+    return true;
 }
