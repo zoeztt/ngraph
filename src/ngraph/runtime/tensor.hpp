@@ -39,7 +39,7 @@ namespace ngraph
         {
         protected:
             Tensor(const std::shared_ptr<ngraph::descriptor::Tensor>& descriptor,
-                   const Backend* parent)
+                   const Backend* parent = nullptr)
                 : m_descriptor(descriptor)
                 , m_stale(true)
                 , m_parent(parent)
