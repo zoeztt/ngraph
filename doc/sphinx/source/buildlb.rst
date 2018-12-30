@@ -194,7 +194,7 @@ according to those conventions. These scripts require the command
 Testing the build 
 =================
 
-The |InG| library code base uses GoogleTest's\* `googletest framework`_ 
+The built code base uses GoogleTest's\* `googletest framework`_ 
 for unit tests. The ``cmake`` command from the :doc:`buildlb` guide 
 automatically downloaded a copy of the needed ``gtest`` files when 
 it configured the build directory.
