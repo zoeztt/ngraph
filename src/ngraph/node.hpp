@@ -267,6 +267,7 @@ namespace ngraph
         std::unordered_map<Node*, autodiff::Adjoints> m_adjoint_map;
         Placement m_placement = Placement::DEFAULT;
         size_t m_placement_index = placement_invalid;
+        bool m_output_type_set = false;
     };
 
     class NodeValidationError : public AssertionFailure

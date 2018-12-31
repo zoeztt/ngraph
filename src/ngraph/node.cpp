@@ -86,6 +86,7 @@ void Node::validate_and_infer_types()
 
 void Node::set_output_type(size_t i, const element::Type& element_type, const PartialShape& pshape)
 {
+    m_output_type_set = true;
     m_outputs.at(i).get_tensor_ptr()->set_tensor_type(element_type, pshape);
 }
 
@@ -274,16 +275,31 @@ const element::Type& Node::get_element_type() const
 
 const Shape& Node::get_output_shape(size_t i) const
 {
+    if (!m_output_type_set)
+    {
+        throw ngraph_error("set_output_type() must be called in " + description() +
+                           " ctor before shape is valid");
+    }
     return m_outputs.at(i).get_shape();
 }
 
 const PartialShape& Node::get_output_partial_shape(size_t i) const
 {
+    if (!m_output_type_set)
+    {
+        throw ngraph_error("set_output_type() must be called in " + description() +
+                           " ctor before shape is valid");
+    }
     return m_outputs.at(i).get_partial_shape();
 }
 
 const Shape& Node::get_shape() const
 {
+    if (!m_output_type_set)
+    {
+        throw ngraph_error("set_output_type() must be called in " + description() +
+                           " ctor before shape is valid");
+    }
     if (get_output_size() != 1)
     {
         stringstream es;
