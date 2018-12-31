@@ -409,37 +409,16 @@ void codegen::CompilerCore::configure_search_path()
 #endif
 
 #if defined(__APPLE__)
-#ifdef EIGEN_HEADERS_PATH
-    add_header_search_path(EIGEN_HEADERS_PATH);
-#endif
-#ifdef MKLDNN_HEADERS_PATH
-    add_header_search_path(MKLDNN_HEADERS_PATH);
-#endif
-#ifdef TBB_HEADERS_PATH
-    add_header_search_path(TBB_HEADERS_PATH);
-#endif
-    add_header_search_path(NGRAPH_HEADERS_PATH);
+    add_header_search_path(CLANG_LIBCPP_HEADERS_PATH);
+    add_header_search_path("/usr/local/include");
     add_header_search_path(CLANG_BUILTIN_HEADERS_PATH);
-
-    add_header_search_path("/Library/Developer/CommandLineTools/usr/include/c++/v1");
+    add_header_search_path("/usr/include");
 #else
     // Add base toolchain-supplied header paths
     // Ideally one would use the Linux toolchain definition in clang/lib/Driver/ToolChains.h
     // But that's a private header and isn't part of the public libclang API
     // Instead of re-implementing all of that functionality in a custom toolchain
     // just hardcode the paths relevant to frequently used build/test machines for now
-    add_header_search_path(CLANG_BUILTIN_HEADERS_PATH);
-#ifdef EIGEN_HEADERS_PATH
-    add_header_search_path(EIGEN_HEADERS_PATH);
-#endif
-#ifdef MKLDNN_HEADERS_PATH
-    add_header_search_path(MKLDNN_HEADERS_PATH);
-#endif
-#ifdef TBB_HEADERS_PATH
-    add_header_search_path(TBB_HEADERS_PATH);
-#endif
-    add_header_search_path(NGRAPH_HEADERS_PATH);
-
     string header_version = find_header_version("/usr/include/c++");
     string os_specific_path =
         find_os_specific_path(file_util::path_join("/usr/include/c++", header_version));
@@ -458,9 +437,20 @@ void codegen::CompilerCore::configure_search_path()
         file_util::path_join("/usr/include/c++/", header_version, os_specific_path));
     add_header_search_path(
         file_util::path_join("/usr/lib/gcc/x86_64-linux-gnu/", header_version, "/include-fixed"));
+    add_header_search_path(CLANG_BUILTIN_HEADERS_PATH);
     add_header_search_path("/usr/include/x86_64-linux-gnu");
     add_header_search_path("/usr/include");
 #endif
+#ifdef EIGEN_HEADERS_PATH
+    add_header_search_path(EIGEN_HEADERS_PATH);
+#endif
+#ifdef MKLDNN_HEADERS_PATH
+    add_header_search_path(MKLDNN_HEADERS_PATH);
+#endif
+#ifdef TBB_HEADERS_PATH
+    add_header_search_path(TBB_HEADERS_PATH);
+#endif
+    add_header_search_path(NGRAPH_HEADERS_PATH);
 
 #ifdef CUDA_HEADER_PATHS
     // Only needed for GPU backend
