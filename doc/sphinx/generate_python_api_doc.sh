@@ -15,7 +15,7 @@ EXCLUDE_DIRS="${NGRAPH_REPO}/python/ngraph/impl*
               ${NGRAPH_REPO}/python/ngraph/utils*"
 CURRENT_DIR=.
 
-cd ${NGRAPH_REPO}/python/ngraph
+cd ${NGRAPH_REPO}/build/python/ngraph
 PYTHONPATH=. sphinx-autogen -t ${DOC_DIR}/sphinx/source/_templates/ -o ${TMP_DIR} \
                              ${DOC_DIR}/sphinx/source/python_api/structure.rst
 sphinx-apidoc -f -M -d 1 -T -o ${TMP_DIR} ${CURRENT_DIR} ${EXCLUDE_DIRS}

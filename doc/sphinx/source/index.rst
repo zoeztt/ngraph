@@ -109,7 +109,7 @@ Contents
 
 .. toctree::
    :maxdepth: 1
-   :caption: Python Ops for ONNX
+   :caption: Python API
 
    python_api/index.rst
 
